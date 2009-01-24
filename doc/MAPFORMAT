@@ -1,0 +1,48 @@
+This file describes the file format of a RSETTLER game map.
+
+A map is a plaintext file containing the definition of
+a map for the game. The format is as follows:
+
+Line:  Content:
+  1    The name of the map
+  2    The author of the map
+  3    The width (in tiles) of the map
+  4    The height (in tiles) of the map
+  5..  All the following lines contain the map data.
+       Each tile is represented by a character. The
+       data has a length of width*height characters.
+
+A character describing a tile can be one of:
+
+  X - Sea Tile
+  C - Clay Tile
+  W - Wood Tile
+  S - Sheep Tile
+  E - Weed Tile
+  G - Gold Tile
+  D - Desert Tile
+
+  <any other character> - empty, no tile
+
+  The characters can be lowercase or uppercase.
+  A lowercase character specifies a tile with an
+  fixed position. An uppercase letter defines a
+  tile that will be randomized when the board is
+  created.
+
+As an example the default map (StandardSettlers.rms)
+is appended. Each line begins with a number that is
+the number of the the line in the file.
+
+< 1>Standard Settlers Map
+< 2>Rene Kuettner <rene@bitkanal.net>
+< 3>7
+< 4>7
+< 5>__XXXX_
+< 6>_XOCWX_
+< 7>_XSDSOX
+< 8>XEWCWEX
+< 9>_XSOESX
+<10>_XWCWX_
+<11>__XXXX_
+
