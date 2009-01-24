@@ -66,6 +66,9 @@ void MainWindow::createDockWidgets()
     playerListWidget = new QDockWidget(tr("Player List"), this);
     playerListWidget->setAllowedAreas(
         Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    playerListWidget->setFeatures(
+        QDockWidget::DockWidgetFloatable |
+        QDockWidget::DockWidgetMovable);
     addDockWidget(Qt::LeftDockWidgetArea, playerListWidget);
 
     gameChatWidget = new QDockWidget(tr("Game Chat"), this);
@@ -74,6 +77,9 @@ void MainWindow::createDockWidgets()
 
     gameControlWidget = new QDockWidget(tr("Game Control"), this);
     gameControlWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    gameControlWidget->setFeatures(
+        QDockWidget::DockWidgetFloatable | 
+        QDockWidget::DockWidgetMovable);
     addDockWidget(Qt::BottomDockWidgetArea, gameControlWidget);
 }
 
