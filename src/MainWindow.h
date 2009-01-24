@@ -36,6 +36,7 @@ class MainWindow : public QMainWindow
     private:
         void createActions();
         void createMenus();
+        void createDockWidgets();
 
         GLWidget *glWidget;
 
@@ -45,6 +46,9 @@ class MainWindow : public QMainWindow
         QAction *quitAct;
         QAction *preferencesAct;
         QAction *aboutAct;
+        QDockWidget *gameControlWidget;
+        QDockWidget *gameChatWidget;
+        QDockWidget *playerListWidget;
 };
 
 #endif
