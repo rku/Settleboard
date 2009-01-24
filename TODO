@@ -1,1 +1,3 @@
-* center the board correctly (avoid rotation when zooming in/out)
+* Add preferences dialogue
+* Add docking widgets
+* Add basic dialogues (Load board, New game etc.)
