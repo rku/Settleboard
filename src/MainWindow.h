@@ -2,7 +2,7 @@
  * RSETTLE
  *
  * This file is part of
- * RSETTLE - A board game like settlers.
+ * rSETTLE - A board game like settlers.
  * Copyright (C) 2007 Rene Kuettner <rene@bitkanal.net>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ class MainWindow : public QMainWindow
         QAction *quitAct;
         QAction *preferencesAct;
         QAction *aboutAct;
+        QDockWidget *chatWidget;
+        QDockWidget *controllerWidget;
 };
 
 #endif

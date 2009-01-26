@@ -33,6 +33,7 @@ MainWindow::MainWindow()
 
     createActions();
     createMenus();
+    createDockWidgets();
 }
 
 void MainWindow::createActions()
@@ -58,5 +59,18 @@ void MainWindow::createMenus()
 
     helpMenu = _menuBar->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
+}
+
+void MainWindow::createDockWidgets()
+{
+    chatWidget = new QDockWidget(tr("Game Chat"), this);
+    chatWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    addDockWidget(Qt::BottomDockWidgetArea, chatWidget);
+
+    controllerWidget = new QDockWidget(tr("Controller"), this);
+    controllerWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    controllerWidget->setFeatures(
+        QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+    addDockWidget(Qt::BottomDockWidgetArea, controllerWidget);
 }
 
