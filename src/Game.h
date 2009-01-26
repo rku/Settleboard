@@ -24,17 +24,23 @@
 #include "Board.h"
 #include "TextureManager.h"
 
+class GameUI;
+
 class Game
 {
     public:
         Game();
         ~Game();
 
+        void render();
+
         TextureManager *getTextureManager();
+        GameUI *getUI();
         Board *getBoard();
 
     protected:
         TextureManager *textureManager;
+        GameUI *ui;
         Board *board;
 };
 

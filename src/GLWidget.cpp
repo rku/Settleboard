@@ -87,7 +87,7 @@ void GLWidget::paintGL()
 
     updateCameraPos();
 
-    game->getBoard()->render();
+    game->render();
 }
 
 void GLWidget::updateCameraPos()

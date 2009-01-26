@@ -46,9 +46,6 @@ class MainWindow : public QMainWindow
         QAction *quitAct;
         QAction *preferencesAct;
         QAction *aboutAct;
-        QDockWidget *gameControlWidget;
-        QDockWidget *gameChatWidget;
-        QDockWidget *playerListWidget;
 };
 
 #endif

@@ -19,10 +19,13 @@
  */
 
 #include "Game.h"
+#include "GameUI.h"
 
 Game::Game()
 {
     textureManager = new TextureManager(this);
+
+    ui = new GameUI(this);
 
     board = new Board(this);
     board->loadByName("StandardSettlers");
@@ -31,6 +34,7 @@ Game::Game()
 Game::~Game()
 {
     delete board;
+    delete ui;
     delete textureManager;
 }
 
@@ -39,8 +43,19 @@ TextureManager* Game::getTextureManager()
     return textureManager;
 }
 
+GameUI* Game::getUI()
+{
+    return ui;
+}
+
 Board* Game::getBoard()
 {
     return board;
+}
+
+void Game::render()
+{
+    board->render();
+    ui->render();
 }
 
