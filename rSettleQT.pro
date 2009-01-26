@@ -3,8 +3,8 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += . src
 INCLUDEPATH += . src
-MOC_DIR = build/
-OBJECTS_DIR = build/
+#MOC_DIR = build/
+#OBJECTS_DIR = build/
 QT += opengl
 
 # Input

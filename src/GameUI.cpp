@@ -19,7 +19,7 @@
  */
 
 #include "GameUI.h"
-#inlcude "Game.h"
+#include "Game.h"
 
 GameUI::GameUI(Game* _game) : game(_game)
 {
