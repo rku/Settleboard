@@ -69,8 +69,7 @@ void MainWindow::createDockWidgets()
 
     controllerWidget = new QDockWidget(tr("Controller"), this);
     controllerWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-    controllerWidget->setFeatures(
-        QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+    controllerWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     addDockWidget(Qt::BottomDockWidgetArea, controllerWidget);
 }
 
