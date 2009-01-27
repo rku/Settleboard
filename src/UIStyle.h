@@ -2,7 +2,7 @@
  * RSETTLE
  *
  * This file is part of
- * rSETTLE - A board game like settlers.
+ * RSETTLE - A board game like settlers.
  * Copyright (C) 2007 Rene Kuettner <rene@bitkanal.net>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,37 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef UISTYLE_H
+#define UISTYLE_H
 
-#include <QMainWindow>
-#include <QWidget>
+#include <QCleanlooksStyle>
+#include <QPalette>
 
-class GLWidget;
-class UIStyle;
-
-class MainWindow : public QMainWindow
+class UIStyle : public QCleanlooksStyle
 {
     Q_OBJECT
 
     public:
-        MainWindow();
+        UIStyle() {}
 
-    private:
-        void createActions();
-        void createMenus();
-        void createDockWidgets();
-
-        GLWidget *glWidget;
-        UIStyle *uiStyle;
-        QMenu *gameMenu;
-        QMenu *settingsMenu;
-        QMenu *helpMenu;
-        QAction *quitAct;
-        QAction *preferencesAct;
-        QAction *aboutAct;
-        QDockWidget *chatWidget;
-        QDockWidget *controllerWidget;
 };
 
 #endif

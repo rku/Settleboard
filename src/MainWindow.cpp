@@ -22,12 +22,15 @@
 
 #include "MainWindow.h"
 #include "GLWidget.h"
+#include "UIStyle.h"
 
 MainWindow::MainWindow()
 {
     glWidget = new GLWidget;
 
     setCentralWidget(glWidget);
+
+    uiStyle = new UIStyle();
 
     setWindowTitle(tr("rSettle"));
 
@@ -65,10 +68,12 @@ void MainWindow::createDockWidgets()
 {
     chatWidget = new QDockWidget(tr("Game Chat"), this);
     chatWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    chatWidget->setStyle(uiStyle);
     addDockWidget(Qt::BottomDockWidgetArea, chatWidget);
 
     controllerWidget = new QDockWidget(tr("Controller"), this);
     controllerWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    controllerWidget->setStyle(uiStyle);
     controllerWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     addDockWidget(Qt::BottomDockWidgetArea, controllerWidget);
 }
