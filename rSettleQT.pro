@@ -6,6 +6,7 @@ INCLUDEPATH += . src
 MOC_DIR = build/
 OBJECTS_DIR = build/
 UI_DIR = build/
+RCC_DIR = build/
 QT += opengl
 
 FORMS = src/ui/connectorform.ui \

@@ -25,16 +25,16 @@
    <item>
     <widget class="QTabWidget" name="tabView" >
      <property name="currentIndex" >
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="genericTab" >
       <attribute name="title" >
-       <string>General</string>
+       <string>&amp;General</string>
       </attribute>
      </widget>
      <widget class="QWidget" name="graphicsTab" >
       <attribute name="title" >
-       <string>Graphics</string>
+       <string>Gra&amp;phics</string>
       </attribute>
       <widget class="QSlider" name="horizontalSlider" >
        <property name="geometry" >
@@ -78,6 +78,11 @@
        </property>
       </widget>
      </widget>
+     <widget class="QWidget" name="networkTab" >
+      <attribute name="title" >
+       <string>&amp;Network</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
    <item>
@@ -86,7 +91,10 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::RestoreDefaults</set>
+     </property>
+     <property name="centerButtons" >
+      <bool>false</bool>
      </property>
     </widget>
    </item>
