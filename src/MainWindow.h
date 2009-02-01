@@ -34,7 +34,14 @@ class MainWindow : public QMainWindow
 
     public:
         MainWindow();
+
+        void initGame();
         void newGame();
+
+    private slots:
+        void showConnector();
+        void showPrefs();
+        void showAbout();
 
     private:
         void createActions();
@@ -48,8 +55,9 @@ class MainWindow : public QMainWindow
         QMenu *gameMenu;
         QMenu *settingsMenu;
         QMenu *helpMenu;
+        QAction *connectAct;
         QAction *quitAct;
-        QAction *preferencesAct;
+        QAction *prefsAct;
         QAction *aboutAct;
         QToolBar *gameToolBar;
         QDockWidget *controllerWidget;

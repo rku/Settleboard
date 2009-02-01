@@ -35,10 +35,10 @@ MainWindow::MainWindow()
     createMenus();
     createDockWidgets();
 
-    newGame();
+    initGame();
 }
 
-void MainWindow::newGame()
+void MainWindow::initGame()
 {
     GLWidget *glWidget;
 
@@ -46,30 +46,45 @@ void MainWindow::newGame()
     glWidget = new GLWidget(game);
     setCentralWidget(glWidget);
     game->setGLWidget(glWidget);
+}
 
+void MainWindow::newGame()
+{
     createToolBars();
 }
 
 void MainWindow::createActions()
 {
-    quitAct = new QAction(tr("Quit"), this);
+    connectAct = new QAction(tr("&Connect To Server..."), this);
+    connectAct->setShortcut(tr("Ctrl-C"));
+    connectAct->setStatusTip(tr("Connect to a game server."));
+    connect(connectAct, SIGNAL(triggered()), this, SLOT(showConnector()));
+
+    quitAct = new QAction(tr("&Quit"), this);
+    quitAct->setShortcut(tr("Ctrl-Q"));
     quitAct->setStatusTip(tr("Quit the game."));
+    connect(quitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    preferencesAct = new QAction(tr("Preferences..."), this);
-    preferencesAct->setStatusTip(tr("Open the preferences dialogue..."));
+    prefsAct = new QAction(tr("&Preferences..."), this);
+    prefsAct->setStatusTip(tr("Open the preferences dialogue..."));
+    connect(prefsAct, SIGNAL(triggered()), this, SLOT(showPrefs()));
 
-    aboutAct = new QAction(tr("About..."), this);
+    aboutAct = new QAction(tr("&About..."), this);
     aboutAct->setStatusTip(tr("Show about dialogue..."));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(showAbout()));
 }
 
 void MainWindow::createMenus()
 {
     QMenuBar *_menuBar = menuBar();
+
     gameMenu = _menuBar->addMenu(tr("&Game"));
+    gameMenu->addAction(connectAct);
+    gameMenu->addSeparator();
     gameMenu->addAction(quitAct);
 
     settingsMenu = _menuBar->addMenu(tr("&Settings"));
-    settingsMenu->addAction(preferencesAct);
+    settingsMenu->addAction(prefsAct);
 
     helpMenu = _menuBar->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
@@ -99,5 +114,20 @@ void MainWindow::createDockWidgets()
     controllerWidget->setMaximumSize(QSize(200,0));
     controllerWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     addDockWidget(Qt::RightDockWidgetArea, controllerWidget);
+}
+
+void MainWindow::showConnector()
+{
+    qDebug() << "showConnector()";
+}
+
+void MainWindow::showPrefs()
+{
+    qDebug() << "showPrefs()";
+}
+
+void MainWindow::showAbout()
+{
+    qDebug() << "showAbout()";
 }
 
