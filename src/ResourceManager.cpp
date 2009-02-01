@@ -70,7 +70,7 @@ unsigned int ResourceManager::registerNewResource(const QString name)
 
 Resource *ResourceManager::getResource(unsigned int type)
 {
-    Q_ASSERT(type < resources.size());
+    Q_ASSERT(type < (unsigned int)resources.size());
 
     return resources.at(type);
 }

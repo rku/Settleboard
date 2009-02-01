@@ -25,6 +25,8 @@
 #include <QWidget>
 
 class GLWidget;
+class GameConnector;
+class PrefsForm;
 class UIStyle;
 class Game;
 
@@ -44,6 +46,7 @@ class MainWindow : public QMainWindow
         void showAbout();
 
     private:
+        void createDialogs();
         void createActions();
         void createMenus();
         void createToolBars();
@@ -51,6 +54,8 @@ class MainWindow : public QMainWindow
 
         Game *game;
         GLWidget *glWidget;
+        GameConnector *gameConnector;
+        PrefsForm *prefsForm;
         UIStyle *uiStyle;
         QMenu *gameMenu;
         QMenu *settingsMenu;

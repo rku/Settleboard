@@ -24,6 +24,8 @@
 #include "GLWidget.h"
 #include "UIStyle.h"
 #include "Game.h"
+#include "GameConnector.h"
+#include "PrefsForm.h"
 
 MainWindow::MainWindow()
 {
@@ -31,6 +33,7 @@ MainWindow::MainWindow()
 
     setWindowTitle(tr("rSettle"));
 
+    createDialogs();
     createActions();
     createMenus();
     createDockWidgets();
@@ -51,6 +54,15 @@ void MainWindow::initGame()
 void MainWindow::newGame()
 {
     createToolBars();
+}
+
+void MainWindow::createDialogs()
+{
+    gameConnector = new GameConnector(game, this);
+    gameConnector->setModal(true);
+
+    prefsForm = new PrefsForm(game, this);
+    prefsForm->setModal(true);
 }
 
 void MainWindow::createActions()
@@ -106,24 +118,26 @@ void MainWindow::createToolBars()
 
 void MainWindow::createDockWidgets()
 {
-    controllerWidget = new QDockWidget(this);
+    /*controllerWidget = new QDockWidget(this);
     controllerWidget->setAllowedAreas(Qt::RightDockWidgetArea);
     controllerWidget->setStyle(uiStyle);
     controllerWidget->setTitleBarWidget(0);
     controllerWidget->setMinimumSize(QSize(200,200));
     controllerWidget->setMaximumSize(QSize(200,0));
     controllerWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    addDockWidget(Qt::RightDockWidgetArea, controllerWidget);
+    addDockWidget(Qt::RightDockWidgetArea, controllerWidget);*/
 }
 
 void MainWindow::showConnector()
 {
     qDebug() << "showConnector()";
+    gameConnector->show();
 }
 
 void MainWindow::showPrefs()
 {
     qDebug() << "showPrefs()";
+    prefsForm->show();
 }
 
 void MainWindow::showAbout()

@@ -1,0 +1,114 @@
+<ui version="4.0" >
+ <class>PrefsForm</class>
+ <widget class="QDialog" name="PrefsForm" >
+  <property name="windowModality" >
+   <enum>Qt::WindowModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>false</bool>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QTabWidget" name="tabView" >
+     <property name="currentIndex" >
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="genericTab" >
+      <attribute name="title" >
+       <string>General</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="graphicsTab" >
+      <attribute name="title" >
+       <string>Graphics</string>
+      </attribute>
+      <widget class="QSlider" name="horizontalSlider" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>360</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimum" >
+        <number>20</number>
+       </property>
+       <property name="maximum" >
+        <number>2000</number>
+       </property>
+       <property name="singleStep" >
+        <number>10</number>
+       </property>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label" >
+       <property name="geometry" >
+        <rect>
+         <x>9</x>
+         <y>9</y>
+         <width>360</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Maximum Camera Distance</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>PrefsForm</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>199</x>
+     <y>274</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

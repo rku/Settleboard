@@ -54,7 +54,7 @@ QList<QAction*> GameRules::getActions()
     return actions;
 }
 
-const unsigned int GameRules::getWinningPoints()
+unsigned int GameRules::getWinningPoints()
 {
     return winningPoints;
 }

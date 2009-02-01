@@ -18,36 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GAMERULES_H
-#define GAMERULES_H
+#ifndef PREFSFORM_H
+#define PREFSFORM_H
 
-#include <QObject>
-#include <QAction>
-#include <QList>
+#include <QtGui>
+
+#include "ui_prefsform.h"
 
 class Game;
 
-class GameRules : public QObject 
+class PrefsForm : public QDialog
 {
     Q_OBJECT
 
     public:
-        GameRules(Game*);
+        PrefsForm(Game*,QWidget *parent = 0);
 
-        void initActions();
-
-        QList<QAction*> getActions();
-        unsigned int getWinningPoints();
-        void setWinningPoints(unsigned int);
-
-    protected:
+    private:
         Game *game;
-        QList<QAction*> actions;
-        unsigned int winningPoints;
-        QAction *tradeAct;
-        QAction *buildSettlementAct;
-        QAction *buildCityAct;
-        QAction *buildRoadAct;
+
+        Ui::PrefsForm ui;
 };
 
 #endif

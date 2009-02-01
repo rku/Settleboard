@@ -18,37 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GAMERULES_H
-#define GAMERULES_H
+#include "GameConnector.h" 
 
-#include <QObject>
-#include <QAction>
-#include <QList>
-
-class Game;
-
-class GameRules : public QObject 
+GameConnector::GameConnector(Game *_game, QWidget *parent)
+    : QDialog(parent), game(_game)
 {
-    Q_OBJECT
-
-    public:
-        GameRules(Game*);
-
-        void initActions();
-
-        QList<QAction*> getActions();
-        unsigned int getWinningPoints();
-        void setWinningPoints(unsigned int);
-
-    protected:
-        Game *game;
-        QList<QAction*> actions;
-        unsigned int winningPoints;
-        QAction *tradeAct;
-        QAction *buildSettlementAct;
-        QAction *buildCityAct;
-        QAction *buildRoadAct;
-};
-
-#endif
+    ui.setupUi(this);
+}
 
