@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>401</width>
-    <height>300</height>
+    <width>452</width>
+    <height>309</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -15,6 +15,12 @@
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <widget class="QTabWidget" name="tabWidget" >
+     <property name="tabPosition" >
+      <enum>QTabWidget::North</enum>
+     </property>
+     <property name="tabShape" >
+      <enum>QTabWidget::Rounded</enum>
+     </property>
      <property name="currentIndex" >
       <number>0</number>
      </property>
@@ -24,7 +30,23 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2" >
        <item>
-        <widget class="QListView" name="localServersList" />
+        <widget class="QTableWidget" name="tableWidget_2" >
+         <column>
+          <property name="text" >
+           <string>Server</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Board</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Player</string>
+          </property>
+         </column>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -34,7 +56,28 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3" >
        <item>
-        <widget class="QListView" name="internetServersList" />
+        <widget class="QTableWidget" name="tableWidget" >
+         <column>
+          <property name="text" >
+           <string>Server</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Board</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Player</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Secure</string>
+          </property>
+         </column>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -59,6 +102,13 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QPushButton" name="cancelButton" >
+        <property name="text" >
+         <string>&amp;Cancel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer" >
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
@@ -70,13 +120,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="cancelButton" >
-        <property name="text" >
-         <string>&amp;Cancel</string>
-        </property>
-       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton" >
