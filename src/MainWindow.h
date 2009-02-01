@@ -51,6 +51,7 @@ class MainWindow : public QMainWindow
         void createMenus();
         void createToolBars();
         void createDockWidgets();
+        void createStatusBar();
 
         Game *game;
         GLWidget *glWidget;
@@ -65,7 +66,6 @@ class MainWindow : public QMainWindow
         QAction *prefsAct;
         QAction *aboutAct;
         QToolBar *gameToolBar;
-        QDockWidget *controllerWidget;
 };
 
 #endif

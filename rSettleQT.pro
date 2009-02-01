@@ -7,7 +7,7 @@ MOC_DIR = build/
 OBJECTS_DIR = build/
 UI_DIR = build/
 RCC_DIR = build/
-QT += opengl
+QT += network opengl
 
 FORMS = src/ui/connectorform.ui \
         src/ui/prefsform.ui

@@ -37,6 +37,7 @@ MainWindow::MainWindow()
     createActions();
     createMenus();
     createDockWidgets();
+    createStatusBar();
 
     initGame();
 }
@@ -118,14 +119,11 @@ void MainWindow::createToolBars()
 
 void MainWindow::createDockWidgets()
 {
-    /*controllerWidget = new QDockWidget(this);
-    controllerWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-    controllerWidget->setStyle(uiStyle);
-    controllerWidget->setTitleBarWidget(0);
-    controllerWidget->setMinimumSize(QSize(200,200));
-    controllerWidget->setMaximumSize(QSize(200,0));
-    controllerWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    addDockWidget(Qt::RightDockWidgetArea, controllerWidget);*/
+}
+
+void MainWindow::createStatusBar()
+{
+    statusBar();
 }
 
 void MainWindow::showConnector()
