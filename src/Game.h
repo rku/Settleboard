@@ -22,7 +22,9 @@
 #define GAME_H
 
 #include "Board.h"
+#include "GLWidget.h"
 #include "TextureManager.h"
+#include "GameRules.h"
 
 class GameUI;
 class ResourceManager;
@@ -35,11 +37,20 @@ class Game
 
         void render();
 
-        TextureManager *getTextureManager();
-        GameUI *getUI();
-        Board *getBoard();
+        void setGLWidget(GLWidget *w) { glWidget = w; }
+        GLWidget* getGLWidget() { return glWidget; }
+
+        void setRules(GameRules *r) { rules = r; }
+        GameRules* getRules() { return rules; }
+
+        TextureManager *getTextureManager() { return textureManager; }
+        GameUI *getUI() { return ui; }
+        Board *getBoard() { return board; }
+        ResourceManager *getResourceManager() { return resourceManager; }
 
     protected:
+        GLWidget *glWidget;
+        GameRules *rules;
         TextureManager *textureManager;
         GameUI *ui;
         ResourceManager *resourceManager;

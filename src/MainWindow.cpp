@@ -23,21 +23,31 @@
 #include "MainWindow.h"
 #include "GLWidget.h"
 #include "UIStyle.h"
+#include "Game.h"
 
 MainWindow::MainWindow()
 {
-    glWidget = new GLWidget;
-
-    setCentralWidget(glWidget);
-
     uiStyle = new UIStyle();
 
     setWindowTitle(tr("rSettle"));
 
     createActions();
     createMenus();
-    createToolBars();
     createDockWidgets();
+
+    newGame();
+}
+
+void MainWindow::newGame()
+{
+    GLWidget *glWidget;
+
+    game = new Game();
+    glWidget = new GLWidget(game);
+    setCentralWidget(glWidget);
+    game->setGLWidget(glWidget);
+
+    createToolBars();
 }
 
 void MainWindow::createActions()
@@ -50,17 +60,6 @@ void MainWindow::createActions()
 
     aboutAct = new QAction(tr("About..."), this);
     aboutAct->setStatusTip(tr("Show about dialogue..."));
-
-    // toolbar
-    tradeAct = new QAction(tr("Trade"), this);
-
-    buildSettlementAct = new QAction(tr("Build Settlement"), this);
-
-    buildCityAct = new QAction(tr("Build City"), this);
-
-    buildRoadAct = new QAction(tr("Build Road"), this);
-
-    buildShipAct = new QAction(tr("Build Ship"), this);
 }
 
 void MainWindow::createMenus()
@@ -78,12 +77,16 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
+    QList<QAction*> actions;
+    GameRules *rules;
+
+    rules = game->getRules();
+    actions = rules->getActions();
+
     gameToolBar = addToolBar(tr("Game"));
-    gameToolBar->addAction(tradeAct);
-    gameToolBar->addAction(buildSettlementAct);
-    gameToolBar->addAction(buildCityAct);
-    gameToolBar->addAction(buildRoadAct);
-    gameToolBar->addAction(buildShipAct);
+
+    for(int i=0; i < actions.size(); ++i)
+        gameToolBar->addAction(actions.at(i));
 }
 
 void MainWindow::createDockWidgets()

@@ -30,6 +30,8 @@ Game::Game()
 
     resourceManager = new ResourceManager(this);
 
+    rules = new GameRules(this);
+
     board = new Board(this);
     board->loadByName("StandardSettlers");
 }
@@ -37,23 +39,9 @@ Game::Game()
 Game::~Game()
 {
     delete board;
+    delete rules;
     delete ui;
     delete textureManager;
-}
-
-TextureManager* Game::getTextureManager()
-{
-    return textureManager;
-}
-
-GameUI* Game::getUI()
-{
-    return ui;
-}
-
-Board* Game::getBoard()
-{
-    return board;
 }
 
 void Game::render()

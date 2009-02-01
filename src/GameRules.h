@@ -18,47 +18,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GLWIDGET_H
-#define GLWIDGET_H
+#ifndef GAMERULES_H
+#define GAMERULES_H
 
-#include <QGLWidget>
+#include <QObject>
+#include <QAction>
+#include <QList>
 
 class Game;
 
-class GLWidget : public QGLWidget
+class GameRules : public QObject 
 {
     Q_OBJECT
 
     public:
-        GLWidget(Game *_game, QWidget *parent = 0);
-        ~GLWidget();
+        GameRules(Game*);
 
-        QSize minimumSizeHint() const;
-        QSize sizeHint() const;
+        void initActions();
 
-    public slots:
-
-    signals:
+        QList<QAction*> getActions();
+        const unsigned int getWinningPoints();
+        void setWinningPoints(unsigned int);
 
     protected:
-        void initializeGL();
-        void paintGL();
-        void resizeGL(int width, int height);
-        void mousePressEvent(QMouseEvent *event);
-        void mouseMoveEvent(QMouseEvent *event);
-        void wheelEvent(QWheelEvent *event);
-
-    private:
-        void updateCameraPos();
-
         Game *game;
-        GLdouble cameraAngleX;
-        GLdouble cameraAngleY;
-        GLdouble cameraDistance;
-        GLdouble cameraMinDistance;
-        GLdouble cameraMaxDistance;
-        QPoint lastMousePos;
- };
+        QList<QAction*> actions;
+        unsigned int winningPoints;
+        QAction *tradeAct;
+        QAction *buildSettlementAct;
+        QAction *buildCityAct;
+        QAction *buildRoadAct;
+};
 
- #endif
+#endif
 

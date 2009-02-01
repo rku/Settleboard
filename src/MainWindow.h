@@ -26,6 +26,7 @@
 
 class GLWidget;
 class UIStyle;
+class Game;
 
 class MainWindow : public QMainWindow
 {
@@ -33,6 +34,7 @@ class MainWindow : public QMainWindow
 
     public:
         MainWindow();
+        void newGame();
 
     private:
         void createActions();
@@ -40,6 +42,7 @@ class MainWindow : public QMainWindow
         void createToolBars();
         void createDockWidgets();
 
+        Game *game;
         GLWidget *glWidget;
         UIStyle *uiStyle;
         QMenu *gameMenu;
@@ -48,11 +51,6 @@ class MainWindow : public QMainWindow
         QAction *quitAct;
         QAction *preferencesAct;
         QAction *aboutAct;
-        QAction *tradeAct;
-        QAction *buildSettlementAct;
-        QAction *buildCityAct;
-        QAction *buildRoadAct;
-        QAction *buildShipAct;
         QToolBar *gameToolBar;
         QDockWidget *controllerWidget;
 };

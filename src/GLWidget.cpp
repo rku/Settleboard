@@ -31,8 +31,8 @@
 #define CAM_MAX_Y_ANGLE         (0.49*M_PI)      // max 90 degree
 #define CAM_MIN_Y_ANGLE         0.1 
 
-GLWidget::GLWidget(QWidget *parent)
-    : QGLWidget(parent)
+GLWidget::GLWidget(Game *_game, QWidget *parent)
+    : QGLWidget(parent), game(_game)
 {
     cameraAngleX        = 0;
     cameraAngleY        = 0.9;
@@ -42,8 +42,6 @@ GLWidget::GLWidget(QWidget *parent)
 
     lastMousePos.setX(0);
     lastMousePos.setY(0);
-
-    game = new Game();
 }
 
 GLWidget::~GLWidget()

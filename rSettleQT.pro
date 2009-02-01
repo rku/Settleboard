@@ -19,7 +19,8 @@ HEADERS += src/GLWidget.h \
            src/Board.h \
            src/UIStyle.h \
            src/GameUI.h \
-           src/ResourceManager.h
+           src/ResourceManager.h \
+           src/GameRules.h
 
 SOURCES += src/GLWidget.cpp \
            src/Game.cpp \
@@ -32,5 +33,6 @@ SOURCES += src/GLWidget.cpp \
            src/Board.cpp\
            src/UISTyle.cpp \
            src/GameUI.cpp \
-           src/ResourceManager.cpp
+           src/ResourceManager.cpp \
+           src/GameRules.cpp
 
