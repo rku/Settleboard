@@ -1,4 +1,5 @@
 
+CONFIG = qt debug
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += . src
@@ -17,7 +18,8 @@ HEADERS += src/GLWidget.h \
            src/OpenGLDrawObject.h \
            src/Board.h \
            src/UIStyle.h \
-           src/GameUI.h
+           src/GameUI.h \
+           src/ResourceManager.h
 
 SOURCES += src/GLWidget.cpp \
            src/Game.cpp \
@@ -29,5 +31,6 @@ SOURCES += src/GLWidget.cpp \
            src/OpenGLDrawObject.cpp \
            src/Board.cpp\
            src/UISTyle.cpp \
-           src/GameUI.cpp
+           src/GameUI.cpp \
+           src/ResourceManager.cpp
 

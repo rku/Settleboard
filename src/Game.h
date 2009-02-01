@@ -25,6 +25,7 @@
 #include "TextureManager.h"
 
 class GameUI;
+class ResourceManager;
 
 class Game
 {
@@ -41,6 +42,7 @@ class Game
     protected:
         TextureManager *textureManager;
         GameUI *ui;
+        ResourceManager *resourceManager;
         Board *board;
 };
 

@@ -20,12 +20,15 @@
 
 #include "Game.h"
 #include "GameUI.h"
+#include "ResourceManager.h"
 
 Game::Game()
 {
     textureManager = new TextureManager(this);
 
     ui = new GameUI(this);
+
+    resourceManager = new ResourceManager(this);
 
     board = new Board(this);
     board->loadByName("StandardSettlers");

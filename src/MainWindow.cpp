@@ -36,6 +36,7 @@ MainWindow::MainWindow()
 
     createActions();
     createMenus();
+    createToolBars();
     createDockWidgets();
 }
 
@@ -49,6 +50,17 @@ void MainWindow::createActions()
 
     aboutAct = new QAction(tr("About..."), this);
     aboutAct->setStatusTip(tr("Show about dialogue..."));
+
+    // toolbar
+    tradeAct = new QAction(tr("Trade"), this);
+
+    buildSettlementAct = new QAction(tr("Build Settlement"), this);
+
+    buildCityAct = new QAction(tr("Build City"), this);
+
+    buildRoadAct = new QAction(tr("Build Road"), this);
+
+    buildShipAct = new QAction(tr("Build Ship"), this);
 }
 
 void MainWindow::createMenus()
@@ -64,17 +76,25 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutAct);
 }
 
+void MainWindow::createToolBars()
+{
+    gameToolBar = addToolBar(tr("Game"));
+    gameToolBar->addAction(tradeAct);
+    gameToolBar->addAction(buildSettlementAct);
+    gameToolBar->addAction(buildCityAct);
+    gameToolBar->addAction(buildRoadAct);
+    gameToolBar->addAction(buildShipAct);
+}
+
 void MainWindow::createDockWidgets()
 {
-    chatWidget = new QDockWidget(tr("Game Chat"), this);
-    chatWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-    chatWidget->setStyle(uiStyle);
-    addDockWidget(Qt::BottomDockWidgetArea, chatWidget);
-
-    controllerWidget = new QDockWidget(tr("Controller"), this);
-    controllerWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    controllerWidget = new QDockWidget(this);
+    controllerWidget->setAllowedAreas(Qt::RightDockWidgetArea);
     controllerWidget->setStyle(uiStyle);
+    controllerWidget->setTitleBarWidget(0);
+    controllerWidget->setMinimumSize(QSize(200,200));
+    controllerWidget->setMaximumSize(QSize(200,0));
     controllerWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    addDockWidget(Qt::BottomDockWidgetArea, controllerWidget);
+    addDockWidget(Qt::RightDockWidgetArea, controllerWidget);
 }
 
