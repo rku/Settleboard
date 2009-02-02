@@ -50,7 +50,7 @@ bool OBJReader::read(QString filename)
         if(line.startsWith("#")) continue;
 
         parts = line.split(" ", QString::SkipEmptyParts);
-        if(parts.size() < 4 || parts.size() > 5) continue;
+        if(parts.size() < 4) continue;
 
         if(parts.at(0) == "v") // vertex data
         {
