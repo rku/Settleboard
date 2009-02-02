@@ -34,8 +34,8 @@
 GLWidget::GLWidget(Game *_game, QWidget *parent)
     : QGLWidget(parent), game(_game)
 {
-    cameraAngleX        = 0;
-    cameraAngleY        = 0.9;
+    cameraAngleX        = 0.0;
+    cameraAngleY        = 0.5;
     cameraDistance      = 10;
     cameraMaxDistance   = 20;
     cameraMinDistance   = 2;
@@ -70,7 +70,7 @@ void GLWidget::initializeGL()
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective (65.0, width() / height(), 1.0, 1024.0);
+    gluPerspective (90.0, width() / height(), 1.0, 1024.0);
 
     glMatrixMode(GL_MODELVIEW);
 
