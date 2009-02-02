@@ -19,9 +19,21 @@
  */
 
 #include "Player.h"
+#include "Resource.h"
+#include "Building.h"
 
 Player::Player(Game *_game)
     : game(_game)
 {
+}
+
+QList<Resource*> Player::getResources()
+{
+    return resources;
+}
+
+QList<Building*> Player::getBuildings()
+{
+    return buildings;
 }
 

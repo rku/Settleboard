@@ -22,17 +22,25 @@
 #define PLAYER_H
 
 #include <QString>
+#include <QList>
 
 class Game;
+class Resource;
+class Building;
 
 class Player
 {
     public:
         Player(Game*);
 
+        QList<Resource*> getResources();
+        QList<Building*> getBuildings();
+
     private:
         Game *game;
         QString name;
+        QList<Resource*> resources;
+        QList<Building*> buildings;
 };
 
 #endif

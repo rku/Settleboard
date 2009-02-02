@@ -18,33 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Game.h"
-#include "GameUI.h"
-#include "Player.h"
+#ifndef RESOURCE_H
+#define RESOURCE_H
 
-Game::Game()
+#include <QtGui>
+
+class Game;
+
+class Resource
 {
-    textureManager = new TextureManager(this);
+    public:
+        // Resource(game,name,initamount=0)
+        Resource(Game*, const QString name, const int _initamount = 0);
 
-    ui = new GameUI(this);
+        void setName(const QString _name) { name = _name; }
+        const QString& getName() { return name; }
 
-    rules = new GameRules(this);
+        unsigned int add(const unsigned int n);
+        unsigned int remove(const unsigned int n);
+        unsigned int getAmount() { return amount; } 
 
-    board = new Board(this);
-    board->loadByName("StandardSettlers");
-}
+    private:
+        Game *game;
+        QString name;
+        unsigned int amount;
+};
 
-Game::~Game()
-{
-    delete board;
-    delete rules;
-    delete ui;
-    delete textureManager;
-}
-
-void Game::render()
-{
-    board->render();
-    ui->render();
-}
+#endif
 

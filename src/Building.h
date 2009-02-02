@@ -18,42 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESOURCEMANAGER_H
-#define RESOURCEMANAGER_H
-
-#include <QtGui>
+#ifndef BUILDING_H
+#define BUILDING_H
 
 class Game;
 
-class Resource
+class Building
 {
     public:
-        Resource(const QString &_name, const int _initamount = 0);
-
-        void setName(const QString _name) { name = _name; }
-        const QString& getName() { return name; }
-
-        unsigned int add(const unsigned int n);
-        unsigned int remove(const unsigned int n);
-        unsigned int getAmount() { return amount; } 
-
-    private:
-        QString name;
-        unsigned int amount;
-};
-
-class ResourceManager 
-{
-    public:
-        ResourceManager(Game*);
-        ~ResourceManager();
-
-        unsigned int registerNewResource(const QString name);
-        Resource *getResource(unsigned int type);
+        Building(Game*);
 
     private:
         Game *game;
-        QList<Resource*> resources;
 };
 
 #endif

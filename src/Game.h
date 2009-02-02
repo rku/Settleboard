@@ -27,7 +27,7 @@
 #include "GameRules.h"
 
 class GameUI;
-class ResourceManager;
+class Player;
 
 class Game
 {
@@ -46,15 +46,14 @@ class Game
         TextureManager *getTextureManager() { return textureManager; }
         GameUI *getUI() { return ui; }
         Board *getBoard() { return board; }
-        ResourceManager *getResourceManager() { return resourceManager; }
 
     protected:
         GLWidget *glWidget;
         GameRules *rules;
         TextureManager *textureManager;
         GameUI *ui;
-        ResourceManager *resourceManager;
         Board *board;
+        QList<Player*> players;
 };
 
 #endif

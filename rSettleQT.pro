@@ -22,11 +22,12 @@ HEADERS = src/GLWidget.h \
           src/Board.h \
           src/UIStyle.h \
           src/GameUI.h \
-          src/ResourceManager.h \
+          src/Resource.h \
           src/GameRules.h \
           src/GameConnector.h \
           src/PrefsForm.h \
-          src/Player.h
+          src/Player.h \
+          src/Building.h
 
 SOURCES = src/GLWidget.cpp \
           src/Game.cpp \
@@ -39,9 +40,10 @@ SOURCES = src/GLWidget.cpp \
           src/Board.cpp\
           src/UISTyle.cpp \
           src/GameUI.cpp \
-          src/ResourceManager.cpp \
+          src/Resource.cpp \
           src/GameRules.cpp \
           src/GameConnector.cpp \
           src/PrefsForm.cpp \
-          src/Player.cpp
+          src/Player.cpp \
+          src/Building.cpp
 

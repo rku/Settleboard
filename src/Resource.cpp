@@ -18,11 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ResourceManager.h"
+#include "Resource.h"
 #include "Game.h"
 
-Resource::Resource(const QString& _name, const int _initamount)
-    : name(_name), amount(_initamount)
+Resource::Resource(Game *_game, const QString _name, const int _initamount)
+    : game(_game), name(_name), amount(_initamount)
 {
     qDebug() << "Resource" << getName() << "initialized.";
 }
@@ -44,34 +44,5 @@ unsigned int Resource::remove(unsigned int n)
     qDebug() << getName() << "-" << n << "=" << getAmount();
 
     return getAmount();
-}
-
-// --- ResourceManager ---
-
-ResourceManager::ResourceManager(Game *_game)
-    : game(_game)
-{
-    qDebug() << "ResourceManager initialized.";
-}
-
-ResourceManager::~ResourceManager()
-{
-    while(!resources.isEmpty())
-        delete resources.takeFirst();
-}
-
-unsigned int ResourceManager::registerNewResource(const QString name)
-{
-    Q_ASSERT(!name.isEmpty());
-
-    resources.append(new Resource(name));
-    return (resources.size() - 1);
-}
-
-Resource *ResourceManager::getResource(unsigned int type)
-{
-    Q_ASSERT(type < (unsigned int)resources.size());
-
-    return resources.at(type);
 }
 

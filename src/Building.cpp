@@ -18,33 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Building.h"
 #include "Game.h"
-#include "GameUI.h"
-#include "Player.h"
 
-Game::Game()
+Building::Building(Game *_game)
+    : game(_game)
 {
-    textureManager = new TextureManager(this);
-
-    ui = new GameUI(this);
-
-    rules = new GameRules(this);
-
-    board = new Board(this);
-    board->loadByName("StandardSettlers");
-}
-
-Game::~Game()
-{
-    delete board;
-    delete rules;
-    delete ui;
-    delete textureManager;
-}
-
-void Game::render()
-{
-    board->render();
-    ui->render();
 }
 
