@@ -54,7 +54,6 @@ class Board : public OpenGLDrawObject
         QString author;
         QString boardFilesPath;
         QString boardFilesSuffix;
-        GLuint displayListID;
 };
 
 #endif

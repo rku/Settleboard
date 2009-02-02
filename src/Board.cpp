@@ -27,7 +27,6 @@ Board::Board(Game *_game) : game(_game)
 {
     boardFilesPath      = "Data/Boards/";
     boardFilesSuffix    = ".rsm";
-    displayListID       = glGenLists(1);
 }
 
 Board::~Board()
