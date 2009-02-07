@@ -20,12 +20,6 @@
 
 #include "OBJGLLoader.h"
 
-typedef struct _Vertex {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-} Vertex;
-
 OBJGLLoader::OBJGLLoader()
 {
 }
@@ -33,7 +27,6 @@ OBJGLLoader::OBJGLLoader()
 bool OBJGLLoader::load(QString filename)
 {
     QFile file(filename);
-    QList<Vertex> vertices;
 
     if(!file.exists())
     {
@@ -46,8 +39,6 @@ bool OBJGLLoader::load(QString filename)
         qDebug() << "Can't read file:" << filename << file.error();
         return false;
     }
-
-    glBegin(GL_POLYGON);
 
     while(!file.atEnd())
     {
@@ -72,18 +63,26 @@ bool OBJGLLoader::load(QString filename)
         }
         else if(parts.at(0) == "f") // faces
         {
+            Face face;
+
             for(int i = 1; i < parts.size(); i++)
             {
                 QStringList faceParts = parts.at(i).split("/");
-                if(faceParts.size() > 0)
-                {
-                    int i = faceParts.at(0).toInt() - 1;
+                FaceData fdata;
 
-                    glVertex3f( vertices.at(i).x,
-                                vertices.at(i).y,
-                                vertices.at(i).z);
-                } 
+                if(faceParts.size() > 0)
+                    fdata.vertexId = faceParts.at(0).toInt();
+
+                if(faceParts.size() > 1 && !faceParts.at(1).isEmpty())
+                    fdata.textureVertexId = faceParts.at(1).toInt();
+
+                if(faceParts.size() > 2 && !faceParts.at(2).isEmpty())
+                    fdata.vertexNormalId = faceParts.at(2).toInt();
+
+                face.data.append(fdata);
             }
+
+            faces.append(face);
         }
         else
         {
@@ -91,9 +90,29 @@ bool OBJGLLoader::load(QString filename)
         }
     }
 
-    glEnd();
     file.close();
+
+    createGLModel();
 
     return true;
 }
 
+void OBJGLLoader::createGLModel()
+{
+    glBegin(GL_POLYGON);
+
+    for(int i = 0; i < faces.size(); ++i)
+    {
+        Face face = faces.at(i);
+
+        for(int f = 0; f < face.data.size(); f++)
+        {
+            FaceData data = face.data.at(f);
+            Vertex v = vertices.at( data.vertexId - 1 );
+
+            glVertex3f(v.x, v.y, v.z);
+        }
+    }
+
+    glEnd();
+}

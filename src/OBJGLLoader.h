@@ -26,12 +26,40 @@
 #include <QList>
 #include <QFile>
 
+typedef struct _Vertex {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+} Vertex;
+
+typedef struct _FaceData {
+    _FaceData()
+    {
+        vertexId        = -1;
+        textureVertexId = -1;
+        vertexNormalId  = -1;
+    };
+    int vertexId;
+    int textureVertexId;
+    int vertexNormalId;
+} FaceData;
+
+typedef struct _Face {
+    QList<FaceData> data;
+} Face;
+
 class OBJGLLoader
 {
     public:
         OBJGLLoader();
 
         bool load(QString filename);
+
+    private:
+        void createGLModel();
+
+        QList<Vertex> vertices;
+        QList<Face> faces;
 };
 
 #endif
