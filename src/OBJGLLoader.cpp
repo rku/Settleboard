@@ -18,16 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "OBJReader.h"
+#include "OBJGLLoader.h"
 
-OBJReader::OBJReader(QString filename)
+typedef struct _Vertex {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+} Vertex;
+
+OBJGLLoader::OBJGLLoader()
 {
-    if(filename != 0) read(filename);
 }
 
-bool OBJReader::read(QString filename)
+bool OBJGLLoader::load(QString filename)
 {
     QFile file(filename);
+    QList<Vertex> vertices;
 
     if(!file.exists())
     {
@@ -40,6 +46,8 @@ bool OBJReader::read(QString filename)
         qDebug() << "Can't read file:" << filename << file.error();
         return false;
     }
+
+    glBegin(GL_POLYGON);
 
     while(!file.atEnd())
     {
@@ -54,15 +62,28 @@ bool OBJReader::read(QString filename)
 
         if(parts.at(0) == "v") // vertex data
         {
-            vertices.append(parts.at(1).toFloat());
-            vertices.append(parts.at(2).toFloat());
-            vertices.append(parts.at(3).toFloat());
+            Vertex v;
+
+            v.x = parts.at(1).toFloat();
+            v.y = parts.at(2).toFloat();
+            v.z = parts.at(3).toFloat();
+
+            vertices.append(v);
         }
         else if(parts.at(0) == "f") // faces
         {
-            faces.append(parts.size() - 1);
             for(int i = 1; i < parts.size(); i++)
-                faces.append(parts.at(i).toUInt());
+            {
+                QStringList faceParts = parts.at(i).split("/");
+                if(faceParts.size() > 0)
+                {
+                    int i = faceParts.at(0).toInt() - 1;
+
+                    glVertex3f( vertices.at(i).x,
+                                vertices.at(i).y,
+                                vertices.at(i).z);
+                } 
+            }
         }
         else
         {
@@ -70,22 +91,9 @@ bool OBJReader::read(QString filename)
         }
     }
 
+    glEnd();
     file.close();
+
     return true;
-}
-
-QVector<GLfloat> OBJReader::getVertices()
-{
-    return vertices;
-}
-
-QVector<unsigned int> OBJReader::getNormals()
-{
-    return normals;
-}
-
-QVector<unsigned int> OBJReader::getFaces()
-{
-    return faces;
 }
 

@@ -21,7 +21,7 @@
 #include "HexTile.h"
 #include "Game.h"
 
-#include "OBJReader.h"
+#include "OBJGLLoader.h"
 
 HexTile::HexTile(Game *_game) : game(_game)
 {
@@ -46,16 +46,14 @@ const QString HexTile::getType()
 
 void HexTile::create()
 {
-    OBJReader *reader = new OBJReader("Data/Objects/hextile.obj");
-
-    QVector<GLfloat> odata = reader->getVertices();
-    QVector<unsigned int> fdata = reader->getFaces();
-
-    delete reader;
+    OBJGLLoader *loader = new OBJGLLoader();
 
     displayListID = glGenLists(1);
 
     glNewList(displayListID, GL_COMPILE);
+
+    loader->load("Data/Objects/hextile.obj");
+    delete loader;
 
     /*glEnable(GL_TEXTURE_2D);
 
@@ -64,7 +62,7 @@ void HexTile::create()
     glEnableClientState(GL_VERTEX_ARRAY);
     // glVertexPointer(3, GL_FLOAT, 0, objectData);
     glVertexPointer(3, GL_FLOAT, 0, vdata);
-    */
+    
     glBegin(GL_POLYGON);
 
     for(int i = 0; i < fdata.size(); ++i)
@@ -74,7 +72,7 @@ void HexTile::create()
     }
     glEnd();
 
-    /*glBindTexture(GL_TEXTURE_2D, texture.id);
+    glBindTexture(GL_TEXTURE_2D, texture.id);
 
     glDrawElements(GL_POLYGON, 7, GL_UNSIGNED_BYTE, &hexTileIndices);
     glDrawElements(GL_POLYGON, 7, GL_UNSIGNED_BYTE, &hexTileIndices[ 7]);

@@ -18,30 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJREADER_H
-#define OBJREADER_H
+#ifndef OBJLOADER_H
+#define OBJLOADER_H
 
 #include <QtOpenGL>
 #include <QString>
 #include <QList>
 #include <QFile>
 
-class OBJReader
+class OBJGLLoader
 {
     public:
-        OBJReader(QString filename = 0);
+        OBJGLLoader();
 
-        bool read(QString filename);
-
-        QVector<GLfloat> getVertices();
-        QVector<unsigned int> getNormals();
-        QVector<unsigned int> getFaces();
-
-    private:
-        QFile file;
-        QVector<GLfloat> vertices;
-        QVector<unsigned int> normals;
-        QVector<unsigned int> faces;
+        bool load(QString filename);
 };
 
 #endif
