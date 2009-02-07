@@ -52,7 +52,7 @@ void HexTile::create()
 
     glNewList(displayListID, GL_COMPILE);
 
-    loader->load("Data/Objects/hextile.obj");
+    loader->load("Data/Objects/deserttile.obj");
     delete loader;
 
     /*glEnable(GL_TEXTURE_2D);

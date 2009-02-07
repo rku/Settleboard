@@ -18,6 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// this obj and mtl file loader implements only the features
+// we need at the moment - it is far away from being a full featured
+// obj file loader
+
 #ifndef OBJLOADER_H
 #define OBJLOADER_H
 
@@ -27,18 +31,14 @@
 #include <QFile>
 
 typedef struct _Vertex {
+    _Vertex() { x = 0; y = 0; z = 0; };
     GLfloat x;
     GLfloat y;
     GLfloat z;
 } Vertex;
 
 typedef struct _FaceData {
-    _FaceData()
-    {
-        vertexId        = -1;
-        textureVertexId = -1;
-        vertexNormalId  = -1;
-    };
+    _FaceData() { vertexId = textureVertexId = vertexNormalId = -1; };
     int vertexId;
     int textureVertexId;
     int vertexNormalId;
@@ -46,7 +46,24 @@ typedef struct _FaceData {
 
 typedef struct _Face {
     QList<FaceData> data;
+    QString material;
 } Face;
+
+typedef struct _Material {
+    void clear()
+    {
+        name = QString();
+        texFilename = QString();
+        ka[0] = ka[1] = ka[2] = 0; ka[3] = 1.0;
+        kd[0] = kd[1] = kd[2] = 0; kd[3] = 1.0;
+        ks[0] = ks[1] = ks[2] = 0; ks[3] = 1.0;
+    };
+    QString name;
+    GLfloat ka[4];
+    GLfloat kd[4];
+    GLfloat ks[4];
+    QString texFilename;
+} Material;
 
 class OBJGLLoader
 {
@@ -56,10 +73,15 @@ class OBJGLLoader
         bool load(QString filename);
 
     private:
+        void loadMaterials(QString mtlFilename);
+        void setGLMaterial(QString name);
         void createGLModel();
 
         QList<Vertex> vertices;
+        QList<Vertex> vertexNormals;
+        QList<Vertex> textureCoords;
         QList<Face> faces;
+        QList<Material> materials;
 };
 
 #endif

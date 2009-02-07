@@ -27,6 +27,7 @@ OBJGLLoader::OBJGLLoader()
 bool OBJGLLoader::load(QString filename)
 {
     QFile file(filename);
+    QFileInfo finfo(file);
 
     if(!file.exists())
     {
@@ -49,19 +50,39 @@ bool OBJGLLoader::load(QString filename)
         if(line.startsWith("#")) continue;
 
         parts = line.split(" ", QString::SkipEmptyParts);
-        if(parts.size() < 4) continue;
+        if(parts.size() < 2) continue;
 
-        if(parts.at(0) == "v") // vertex data
+        // vertex data
+        if(!parts.at(0).isEmpty() && parts.at(0).at(0) == 'v')
         {
             Vertex v;
 
-            v.x = parts.at(1).toFloat();
-            v.y = parts.at(2).toFloat();
-            v.z = parts.at(3).toFloat();
+            if(parts.size() > 1)
+                v.x = parts.at(1).toFloat();
+            if(parts.size() > 2)
+                v.y = parts.at(2).toFloat();
+            if(parts.size() > 3)
+                v.z = parts.at(3).toFloat();
 
-            vertices.append(v);
+            if(parts.at(0).size() == 1)
+            {
+                vertices.append(v);
+            }
+            else switch(parts.at(0).at(1).toAscii())
+            {
+                case 't':
+                    textureCoords.append(v);
+                    break;
+                case 'n':
+                    vertexNormals.append(v);
+                    break;
+                default:
+                    qDebug() << "Unknown vertex data:" << line;
+                    break;
+            }
         }
-        else if(parts.at(0) == "f") // faces
+        // faces
+        else if(parts.at(0) == "f")
         {
             Face face;
 
@@ -84,9 +105,23 @@ bool OBJGLLoader::load(QString filename)
 
             faces.append(face);
         }
+        // material library file
+        else if(parts.at(0) == "mtllib")
+        {
+            loadMaterials(QString("%1/%2")
+                .arg(finfo.path()).arg(parts.at(1)));
+        }
+        // material
+        else if(parts.at(0) == "usemtl")
+        {
+            Face face;
+            face.material = parts.at(1);
+            faces.append(face);
+        }
+        // unhandled data
         else
         {
-            qDebug() << "Unknown data in obj file:" << parts;
+            qDebug() << "Unhandled data in obj file:" << parts;
         }
     }
 
@@ -97,6 +132,97 @@ bool OBJGLLoader::load(QString filename)
     return true;
 }
 
+void OBJGLLoader::loadMaterials(QString mtlFilename)
+{
+    QFile file(mtlFilename);
+    Material mtl;
+
+    if(!file.exists())
+    {
+        qDebug() << "Material library doesn't exist:" << mtlFilename;
+        return;
+    }
+
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Can't open mtl file:" << mtlFilename << file.error();
+    }
+
+    qDebug() << "Loading materials from" << mtlFilename;
+
+    while(!file.atEnd())
+    {
+        QString line = file.readLine().trimmed();
+        QStringList parts = line.split(" ", QString::SkipEmptyParts);
+
+        if(parts.size() < 2) continue;
+        if(parts.at(0).startsWith("#")) continue;
+
+        if(parts.at(0) == "newmtl")
+        {
+            if(!mtl.name.isEmpty()) materials.append(mtl);
+
+            mtl.clear();
+            mtl.name = parts.at(1);
+        }
+        else if(parts.at(0) == "Ka" && parts.size() == 4)
+        {
+            mtl.ka[0] = parts.at(1).toFloat();
+            mtl.ka[1] = parts.at(2).toFloat();
+            mtl.ka[2] = parts.at(3).toFloat();
+        }
+        else if(parts.at(0) == "Kd" && parts.size() == 4)
+        {
+            mtl.kd[0] = parts.at(1).toFloat();
+            mtl.kd[1] = parts.at(2).toFloat();
+            mtl.kd[2] = parts.at(3).toFloat();
+        }
+        else if(parts.at(0) == "Ks" && parts.size() == 4)
+        {
+            mtl.ks[0] = parts.at(1).toFloat();
+            mtl.ks[1] = parts.at(2).toFloat();
+            mtl.ks[2] = parts.at(3).toFloat();
+        } 
+        else if(parts.at(0) == "map_Kd")
+        {
+            mtl.texFilename = parts.last(); 
+        }
+        else
+        {
+            qDebug() << "Unhandled material data:" << line;
+        }
+    }
+
+    if(!mtl.name.isEmpty()) materials.append(mtl);
+    mtl.clear();
+
+    file.close(); 
+}
+
+void OBJGLLoader::setGLMaterial(QString name)
+{
+    Material mtl;
+
+    for(int i = 0; i < materials.size(); ++i)
+    {
+        if(materials.at(i).name == name)
+        {
+            mtl = materials.at(i);
+            break;
+        }
+    }
+
+    if(mtl.name.isEmpty())
+    {
+        qDebug() << "Missing material:" << name;
+        return;
+    }
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mtl.ka);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mtl.kd);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mtl.ks);
+}
+
 void OBJGLLoader::createGLModel()
 {
     glBegin(GL_POLYGON);
@@ -105,10 +231,31 @@ void OBJGLLoader::createGLModel()
     {
         Face face = faces.at(i);
 
+        if(!face.material.isEmpty()) setGLMaterial(face.material);
+
         for(int f = 0; f < face.data.size(); f++)
         {
             FaceData data = face.data.at(f);
-            Vertex v = vertices.at( data.vertexId - 1 );
+            int vertexId = data.vertexId;
+            int normalId = data.vertexNormalId;
+            int texVerId = data.textureVertexId;
+            Vertex v, n, t;
+
+            if(vertexId == -1 || vertexId > vertices.size()) continue;
+
+            v = vertices.at(data.vertexId - 1);
+
+            if(texVerId > -1 && !texVerId > textureCoords.size())
+            {
+                t = textureCoords.at(texVerId - 1);
+                glTexCoord2f(t.x, t.y);
+            }
+
+            if(normalId > -1 && !normalId > vertexNormals.size())
+            {
+                n = vertexNormals.at(normalId - 1);
+                glNormal3f(n.x, n.y, n.z);
+            }
 
             glVertex3f(v.x, v.y, v.z);
         }
@@ -116,3 +263,4 @@ void OBJGLLoader::createGLModel()
 
     glEnd();
 }
+
