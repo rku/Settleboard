@@ -178,8 +178,8 @@ void Board::generate()
                 continue;
         }
 
-        x =  1.0f    + (-1.0f    * width ) + (2.0f  * col) + ((int)row % 2);
-        z = -0.4385f + (-0.4385f * height) + (1.75f * row);
+        x =  1.0f + (-1.0f * width ) + (2.0f  * col) + ((int)row % 2);
+        z = -0.5f + (-0.5f * height) + (1.75f * row);
         newTile->setPos(x, 0.0f, z);
         newTile->rotateY(90.0f);
         newTile->create();

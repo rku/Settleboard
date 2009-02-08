@@ -55,6 +55,8 @@ bool OBJGLLoader::load(QString filename)
         return true;
     }
 
+    qDebug() << "Loading object model:" << filename;
+
     if(!file.exists())
     {
         qDebug() << "File not found:" << filename;
@@ -259,9 +261,9 @@ void OBJGLLoader::setGLMaterial(OBJ &obj, QString name)
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    //glMaterialfv(GL_FRONT, GL_AMBIENT,  mtl.ka);
-    //glMaterialfv(GL_FRONT, GL_DIFFUSE,  mtl.kd);
-    //glMaterialfv(GL_FRONT, GL_SPECULAR, mtl.ks);
+    glMaterialfv(GL_FRONT, GL_AMBIENT,  mtl.ka);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE,  mtl.kd);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mtl.ks);
 }
 
 void OBJGLLoader::createGLModel(OBJ &obj)
@@ -282,17 +284,18 @@ void OBJGLLoader::createGLModel(OBJ &obj)
             int texVerId = data.textureVertexId;
             Vertex v, n, t;
 
-            if(vertexId == -1 || vertexId > obj.vertices.size()) continue;
+            if((vertexId == -1) || (vertexId > obj.vertices.size()))
+                continue;
 
             v = obj.vertices.at(data.vertexId - 1);
 
-            if(texVerId > -1 && !texVerId > obj.textureCoords.size())
+            if((texVerId > -1) && (texVerId <= obj.textureCoords.size()))
             {
                 t = obj.textureCoords.at(texVerId - 1);
                 glTexCoord2f(t.x, t.y);
             }
 
-            if(normalId > -1 && !normalId > obj.vertexNormals.size())
+            if((normalId > -1) && (normalId <= obj.vertexNormals.size()))
             {
                 n = obj.vertexNormals.at(normalId - 1);
                 glNormal3f(n.x, n.y, n.z);
