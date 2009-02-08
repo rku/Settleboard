@@ -32,7 +32,6 @@ Game::Game()
     rules = new GameRules(this);
 
     board = new Board(this);
-    board->loadByName("StandardSettlers");
 
     objGLLoader = new OBJGLLoader(this);
 }

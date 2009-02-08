@@ -32,7 +32,7 @@ class Game;
 
 #define BOARD_MAX_TILES   64
 
-class Board : public OpenGLDrawObject
+class Board
 {
     public:
         Board(Game*);

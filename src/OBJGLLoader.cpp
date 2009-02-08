@@ -33,7 +33,7 @@ OBJ OBJGLLoader::getObjectFromCache(QString filename)
     QString name = info.absoluteFilePath();
     OBJ obj;
 
-    for(int i; i < objectCache.size(); ++i)
+    for(int i = 0; i < objectCache.size(); ++i)
     {
         if(objectCache.at(i).name == name) return objectCache.at(i);
     }

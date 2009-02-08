@@ -74,6 +74,7 @@ void GLWidget::initializeGL()
 
     glMatrixMode(GL_MODELVIEW);
 
+    game->getBoard()->loadByName("StandardSettlers");
     game->getBoard()->generate();
 }
 
