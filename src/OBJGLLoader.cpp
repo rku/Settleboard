@@ -46,10 +46,10 @@ bool OBJGLLoader::load(QString filename)
     QFile file(filename);
     QFileInfo finfo(file);
     OBJ obj;
+    GLfloat scaleQuot = 0;
 
-    obj = getObjectFromCache(filename);
-
-    if(!obj.name.isEmpty())
+    // try to find the model in the cache
+    if(!(obj = getObjectFromCache(filename)).name.isEmpty())
     {
         createGLModel(obj);
         return true;
@@ -95,6 +95,7 @@ bool OBJGLLoader::load(QString filename)
             if(parts.at(0).size() == 1)
             {
                 obj.vertices.append(v);
+                scaleQuot = qMax( qMax( qMax(v.x, v.y), v.z), scaleQuot);
             }
             else switch(parts.at(0).at(1).toAscii())
             {
@@ -155,6 +156,20 @@ bool OBJGLLoader::load(QString filename)
 
     file.close();
 
+    // scale each vertice so that the model fits in a
+    // ( -1,1 ; -1,-1 ; 1,-1 ; 1,1 ) box - we already know
+    // the biggest vertice value so we just have to divide
+    // each one with it
+    Q_ASSERT(scaleQuot != 0);
+    for(int i = 0; i < obj.vertices.size(); ++i)
+    {
+        Vertex v = obj.vertices.at(i);
+        v.x = v.x / scaleQuot;
+        v.y = v.y / scaleQuot;
+        v.z = v.z / scaleQuot;
+    }
+
+    // add model to cache
     obj.name = finfo.absoluteFilePath();
     objectCache.append(obj);
 
