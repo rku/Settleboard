@@ -160,7 +160,7 @@ bool OBJGLLoader::load(QString filename)
     // 2x2 cube - we already know the biggest vertice value
     // so we just have to divide each one with it
     Q_ASSERT(scaleQuot != 0);
-    for(int i = 0; i < obj.vertices.size(); ++i)
+    for(int i = 0; i < obj.vertices.size() && scaleQuot != 0; ++i)
     {
         Vertex v = obj.vertices.at(i);
         v.x = v.x / scaleQuot;
