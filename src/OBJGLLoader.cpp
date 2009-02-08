@@ -95,7 +95,7 @@ bool OBJGLLoader::load(QString filename)
             if(parts.at(0).size() == 1)
             {
                 obj.vertices.append(v);
-                scaleQuot = qMax( qMax( qMax(v.x, v.y), v.z), scaleQuot);
+                scaleDiv = qMax( qMax( qMax(v.x, v.y), v.z), scaleDiv);
             }
             else switch(parts.at(0).at(1).toAscii())
             {

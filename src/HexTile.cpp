@@ -48,7 +48,7 @@ void HexTile::create()
 
     glNewList(displayListID, GL_COMPILE);
 
-    loader->load("Data/Objects/deserttile.obj");
+    loader->load("Data/Objects/hextile_water.obj");
 
     glEndList();
 }
