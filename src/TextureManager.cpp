@@ -24,7 +24,6 @@
 TextureManager::TextureManager(Game *_game) : game(_game)
 {
     texturePath     = "Data/Textures/";
-    textureSuffix   = ".jpg";
 }
 
 TextureManager::~TextureManager()
@@ -45,9 +44,7 @@ const Texture& TextureManager::loadTexture(const QString& filename)
     QImage tex;
     QString filepath;
 
-    filepath = QString(filename);
-    filepath.insert(0, texturePath);
-    filepath.append(textureSuffix);
+    filepath = QString("%1/%2").arg(texturePath).arg(filename);
 
     newTex.name   = filename;
     newTex.width  = 0;

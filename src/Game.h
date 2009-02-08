@@ -28,6 +28,7 @@
 
 class GameUI;
 class Player;
+class OBJGLLoader;
 
 class Game
 {
@@ -46,6 +47,7 @@ class Game
         TextureManager *getTextureManager() { return textureManager; }
         GameUI *getUI() { return ui; }
         Board *getBoard() { return board; }
+        OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
 
     protected:
         GLWidget *glWidget;
@@ -53,6 +55,7 @@ class Game
         TextureManager *textureManager;
         GameUI *ui;
         Board *board;
+        OBJGLLoader *objGLLoader;
         QList<Player*> players;
 };
 

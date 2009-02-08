@@ -19,15 +19,41 @@
  */
 
 #include "OBJGLLoader.h"
+#include "TextureManager.h"
+#include "Game.h"
 
-OBJGLLoader::OBJGLLoader()
+OBJGLLoader::OBJGLLoader(Game *_game)
+    : game(_game)
 {
+}
+
+OBJ OBJGLLoader::getObjectFromCache(QString filename)
+{
+    QFileInfo info(filename);
+    QString name = info.absoluteFilePath();
+    OBJ obj;
+
+    for(int i; i < objectCache.size(); ++i)
+    {
+        if(objectCache.at(i).name == name) return objectCache.at(i);
+    }
+
+    return obj;
 }
 
 bool OBJGLLoader::load(QString filename)
 {
     QFile file(filename);
     QFileInfo finfo(file);
+    OBJ obj;
+
+    obj = getObjectFromCache(filename);
+
+    if(!obj.name.isEmpty())
+    {
+        createGLModel(obj);
+        return true;
+    }
 
     if(!file.exists())
     {
@@ -66,15 +92,15 @@ bool OBJGLLoader::load(QString filename)
 
             if(parts.at(0).size() == 1)
             {
-                vertices.append(v);
+                obj.vertices.append(v);
             }
             else switch(parts.at(0).at(1).toAscii())
             {
                 case 't':
-                    textureCoords.append(v);
+                    obj.textureCoords.append(v);
                     break;
                 case 'n':
-                    vertexNormals.append(v);
+                    obj.vertexNormals.append(v);
                     break;
                 default:
                     qDebug() << "Unknown vertex data:" << line;
@@ -103,12 +129,12 @@ bool OBJGLLoader::load(QString filename)
                 face.data.append(fdata);
             }
 
-            faces.append(face);
+            obj.faces.append(face);
         }
         // material library file
         else if(parts.at(0) == "mtllib")
         {
-            loadMaterials(QString("%1/%2")
+            loadMaterials(obj, QString("%1/%2")
                 .arg(finfo.path()).arg(parts.at(1)));
         }
         // material
@@ -116,7 +142,7 @@ bool OBJGLLoader::load(QString filename)
         {
             Face face;
             face.material = parts.at(1);
-            faces.append(face);
+            obj.faces.append(face);
         }
         // unhandled data
         else
@@ -127,12 +153,15 @@ bool OBJGLLoader::load(QString filename)
 
     file.close();
 
-    createGLModel();
+    obj.name = finfo.absoluteFilePath();
+    objectCache.append(obj);
+
+    createGLModel(obj);
 
     return true;
 }
 
-void OBJGLLoader::loadMaterials(QString mtlFilename)
+void OBJGLLoader::loadMaterials(OBJ &obj, QString mtlFilename)
 {
     QFile file(mtlFilename);
     Material mtl;
@@ -160,7 +189,7 @@ void OBJGLLoader::loadMaterials(QString mtlFilename)
 
         if(parts.at(0) == "newmtl")
         {
-            if(!mtl.name.isEmpty()) materials.append(mtl);
+            if(!mtl.name.isEmpty()) obj.materials.append(mtl);
 
             mtl.clear();
             mtl.name = parts.at(1);
@@ -193,21 +222,20 @@ void OBJGLLoader::loadMaterials(QString mtlFilename)
         }
     }
 
-    if(!mtl.name.isEmpty()) materials.append(mtl);
-    mtl.clear();
+    if(!mtl.name.isEmpty()) obj.materials.append(mtl);
 
     file.close(); 
 }
 
-void OBJGLLoader::setGLMaterial(QString name)
+void OBJGLLoader::setGLMaterial(OBJ &obj, QString name)
 {
     Material mtl;
 
-    for(int i = 0; i < materials.size(); ++i)
+    for(int i = 0; i < obj.materials.size(); ++i)
     {
-        if(materials.at(i).name == name)
+        if(obj.materials.at(i).name == name)
         {
-            mtl = materials.at(i);
+            mtl = obj.materials.at(i);
             break;
         }
     }
@@ -218,20 +246,33 @@ void OBJGLLoader::setGLMaterial(QString name)
         return;
     }
 
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mtl.ka);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mtl.kd);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mtl.ks);
+    glEnable(GL_TEXTURE_2D);
+
+    if(!mtl.texFilename.isEmpty())
+    {
+        TextureManager *tm = game->getTextureManager();
+        GLuint texId = tm->getTextureId(mtl.texFilename);
+        glBindTexture(GL_TEXTURE_2D, texId);
+    }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    //glMaterialfv(GL_FRONT, GL_AMBIENT,  mtl.ka);
+    //glMaterialfv(GL_FRONT, GL_DIFFUSE,  mtl.kd);
+    //glMaterialfv(GL_FRONT, GL_SPECULAR, mtl.ks);
 }
 
-void OBJGLLoader::createGLModel()
+void OBJGLLoader::createGLModel(OBJ &obj)
 {
-    glBegin(GL_POLYGON);
-
-    for(int i = 0; i < faces.size(); ++i)
+    for(int i = 0; i < obj.faces.size(); ++i)
     {
-        Face face = faces.at(i);
+        Face face = obj.faces.at(i);
 
-        if(!face.material.isEmpty()) setGLMaterial(face.material);
+        if(!face.material.isEmpty()) setGLMaterial(obj, face.material);
+
+        glBegin(GL_POLYGON);
 
         for(int f = 0; f < face.data.size(); f++)
         {
@@ -241,26 +282,26 @@ void OBJGLLoader::createGLModel()
             int texVerId = data.textureVertexId;
             Vertex v, n, t;
 
-            if(vertexId == -1 || vertexId > vertices.size()) continue;
+            if(vertexId == -1 || vertexId > obj.vertices.size()) continue;
 
-            v = vertices.at(data.vertexId - 1);
+            v = obj.vertices.at(data.vertexId - 1);
 
-            if(texVerId > -1 && !texVerId > textureCoords.size())
+            if(texVerId > -1 && !texVerId > obj.textureCoords.size())
             {
-                t = textureCoords.at(texVerId - 1);
+                t = obj.textureCoords.at(texVerId - 1);
                 glTexCoord2f(t.x, t.y);
             }
 
-            if(normalId > -1 && !normalId > vertexNormals.size())
+            if(normalId > -1 && !normalId > obj.vertexNormals.size())
             {
-                n = vertexNormals.at(normalId - 1);
+                n = obj.vertexNormals.at(normalId - 1);
                 glNormal3f(n.x, n.y, n.z);
             }
 
             glVertex3f(v.x, v.y, v.z);
         }
-    }
 
-    glEnd();
+        glEnd();
+    }
 }
 

@@ -46,7 +46,6 @@ class TextureManager
         Game *game;
         QList<Texture> textures;
         QString texturePath;
-        QString textureSuffix;
 
         const Texture& loadTexture(const QString&);
 };

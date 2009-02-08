@@ -21,6 +21,7 @@
 #include "Game.h"
 #include "GameUI.h"
 #include "Player.h"
+#include "OBJGLLoader.h"
 
 Game::Game()
 {
@@ -32,10 +33,13 @@ Game::Game()
 
     board = new Board(this);
     board->loadByName("StandardSettlers");
+
+    objGLLoader = new OBJGLLoader(this);
 }
 
 Game::~Game()
 {
+    delete objGLLoader;
     delete board;
     delete rules;
     delete ui;

@@ -65,23 +65,32 @@ typedef struct _Material {
     QString texFilename;
 } Material;
 
+typedef struct _OBJ {
+    QString name;
+    QList<Vertex> vertices;
+    QList<Vertex> vertexNormals;
+    QList<Vertex> textureCoords;
+    QList<Face> faces;
+    QList<Material> materials;
+} OBJ;
+
+class Game;
+
 class OBJGLLoader
 {
     public:
-        OBJGLLoader();
+        OBJGLLoader(Game*);
 
         bool load(QString filename);
 
     private:
-        void loadMaterials(QString mtlFilename);
-        void setGLMaterial(QString name);
-        void createGLModel();
+        OBJ  getObjectFromCache(QString filename);
+        void loadMaterials(OBJ &obj, QString mtlFilename);
+        void setGLMaterial(OBJ &obj, QString name);
+        void createGLModel(OBJ &object);
 
-        QList<Vertex> vertices;
-        QList<Vertex> vertexNormals;
-        QList<Vertex> textureCoords;
-        QList<Face> faces;
-        QList<Material> materials;
+        Game *game;
+        QList<OBJ> objectCache;
 };
 
 #endif

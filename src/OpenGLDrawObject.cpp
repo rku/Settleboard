@@ -22,6 +22,8 @@
 
 OpenGLDrawObject::OpenGLDrawObject()
 {
+    displayListID = glGenLists(1);
+
     posX   = posY 
            = posZ 
            = 0.0f;
