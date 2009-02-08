@@ -157,9 +157,8 @@ bool OBJGLLoader::load(QString filename)
     file.close();
 
     // scale each vertice so that the model fits in a
-    // ( -1,1 ; -1,-1 ; 1,-1 ; 1,1 ) box - we already know
-    // the biggest vertice value so we just have to divide
-    // each one with it
+    // 2x2 cube - we already know the biggest vertice value
+    // so we just have to divide each one with it
     Q_ASSERT(scaleQuot != 0);
     for(int i = 0; i < obj.vertices.size(); ++i)
     {
