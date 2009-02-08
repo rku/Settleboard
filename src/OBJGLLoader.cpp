@@ -46,7 +46,7 @@ bool OBJGLLoader::load(QString filename)
     QFile file(filename);
     QFileInfo finfo(file);
     OBJ obj;
-    GLfloat scaleQuot = 0;
+    GLfloat scaleDiv = 0;
 
     // try to find the model in the cache
     if(!(obj = getObjectFromCache(filename)).name.isEmpty())
@@ -159,13 +159,13 @@ bool OBJGLLoader::load(QString filename)
     // scale each vertice so that the model fits in a
     // 2x2 cube - we already know the biggest vertice value
     // so we just have to divide each one with it
-    Q_ASSERT(scaleQuot != 0);
-    for(int i = 0; i < obj.vertices.size() && scaleQuot != 0; ++i)
+    Q_ASSERT(scaleDiv != 0); // a divisor must never be zero
+    for(int i = 0; i < obj.vertices.size() && scaleDiv != 0; ++i)
     {
         Vertex v = obj.vertices.at(i);
-        v.x = v.x / scaleQuot;
-        v.y = v.y / scaleQuot;
-        v.z = v.z / scaleQuot;
+        v.x = v.x / scaleDiv;
+        v.y = v.y / scaleDiv;
+        v.z = v.z / scaleDiv;
     }
 
     // add model to cache
