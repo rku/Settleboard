@@ -74,6 +74,10 @@ void GLWidget::initializeGL()
 
     glMatrixMode(GL_MODELVIEW);
 
+    qDebug() << "OpenGL initialized:" << (char*)glGetString(GL_VERSION)
+        << (char*)glGetString(GL_VENDOR);
+    qDebug() << (char*)glGetString(GL_RENDERER);
+
     game->getBoard()->loadByName("StandardSettlers");
     game->getBoard()->generate();
 }
