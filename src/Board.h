@@ -26,7 +26,6 @@
 
 #include "HexTile.h"
 #include "NumberChip.h"
-#include "TextureManager.h"
 
 class Game;
 

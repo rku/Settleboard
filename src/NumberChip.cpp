@@ -19,8 +19,10 @@
  */
 
 #include "NumberChip.h"
+#include "Game.h"
 
-NumberChip::NumberChip()
+NumberChip::NumberChip(Game *_game)
+    : GLGameModel(_game)
 {
     number = 1;
 }

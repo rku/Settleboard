@@ -18,18 +18,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GLOBJECT_H
-#define GLOBJECT_H
+#ifndef GLGAMEMODEL_H
+#define GLGAMEMODEL_H
 
 #include <QtOpenGL>
+#include <QObject>
+#include <QVector>
 
-class GLObject
+typedef struct _Vertex3f {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+} Vertex3f;
+
+typedef struct _Vertex2f {
+    GLfloat x;
+    GLfloat y;
+} Vertex2f;
+
+typedef struct _GLModelFace {
+    QString texFilename;
+    QVector<GLuint> vertexIDs;
+    QVector<GLuint> vertexNormalIDs;
+    QVector<GLuint> textureCoordIDs; 
+} GLModelFace;
+
+class OBJGLLoader;
+class Game;
+
+class GLGameModel : public QObject
 {
-    public:
-        GLObject();
-        ~GLObject();
+    Q_OBJECT
 
-        void render();
+    public:
+        GLGameModel(Game*);
+        ~GLGameModel();
+
+        void load(QString filename);
+        void draw();
+
+        void setName(QString s) { name = s; }
+        QString getName() { return name; }
+
+        QVector<Vertex3f>& getVertices() { return vertices; }
+        QVector<Vertex3f>& getVertexNormals() { return vertexNormals; }
+        QVector<Vertex2f>& getTextureCoords() { return textureCoords; }
+        QList<GLModelFace>& getGLModelFaces() { return glModelFaces; }
 
         void setPosX(GLfloat i) { posX = i; }
         GLfloat getPosX() { return posX; }
@@ -61,11 +95,19 @@ class GLObject
             { moveX(x); moveY(y); moveZ(z); }
 
     protected:
-        GLuint displayListID;
-
+        void create();
         void transform();
 
+        GLuint displayListID;
+
     private:
+        Game *game;
+        bool created;
+        QString name;
+        QVector<Vertex3f> vertices;
+        QVector<Vertex3f> vertexNormals;
+        QVector<Vertex2f> textureCoords;
+        QList<GLModelFace> glModelFaces;
         GLfloat posX;
         GLfloat posY;
         GLfloat posZ;
@@ -75,4 +117,4 @@ class GLObject
         GLfloat angleZ;
 };
 
-#endif /* GLOBJECT_H */
+#endif /* GLGAMEMODEL_H */

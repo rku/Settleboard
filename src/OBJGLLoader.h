@@ -30,67 +30,38 @@
 #include <QList>
 #include <QFile>
 
-typedef struct _Vertex {
-    _Vertex() { x = 0; y = 0; z = 0; };
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-} Vertex;
-
-typedef struct _FaceData {
-    _FaceData() { vertexId = textureVertexId = vertexNormalId = -1; };
-    int vertexId;
-    int textureVertexId;
-    int vertexNormalId;
-} FaceData;
-
-typedef struct _Face {
-    QList<FaceData> data;
-    QString material;
-} Face;
+#include "GLGameModel.h"
 
 typedef struct _Material {
-    void clear()
-    {
-        name = QString();
-        texFilename = QString();
-        ka[0] = ka[1] = ka[2] = 0; ka[3] = 1.0;
-        kd[0] = kd[1] = kd[2] = 0; kd[3] = 1.0;
-        ks[0] = ks[1] = ks[2] = 0; ks[3] = 1.0;
-    };
     QString name;
-    GLfloat ka[4];
-    GLfloat kd[4];
-    GLfloat ks[4];
     QString texFilename;
 } Material;
 
 typedef struct _OBJ {
     QString name;
-    QList<Vertex> vertices;
-    QList<Vertex> vertexNormals;
-    QList<Vertex> textureCoords;
-    QList<Face> faces;
-    QList<Material> materials;
+    QVector<Vertex3f> vertices;
+    QVector<Vertex3f> vertexNormals;
+    QVector<Vertex2f> textureCoords;
+    QList<GLModelFace> glModelFaces;
 } OBJ;
 
+class GLModel;
 class Game;
 
 class OBJGLLoader
 {
     public:
-        OBJGLLoader(Game*);
+        OBJGLLoader();
+        ~OBJGLLoader();
 
-        bool load(QString filename);
+        int load(QString filename);
+        OBJ& getOBJByCacheID(int id);
 
     private:
-        OBJ  getObjectFromCache(QString filename);
-        void loadMaterials(OBJ &obj, QString mtlFilename);
-        void setGLMaterial(OBJ &obj, QString name);
-        void createGLModel(OBJ &object);
+        int getOBJCacheID(QString filename);
+        QList<Material> loadMaterials(QString mtlFilename);
 
-        Game *game;
-        QList<OBJ> objectCache;
+        QList<OBJ> objCache;
 };
 
 #endif

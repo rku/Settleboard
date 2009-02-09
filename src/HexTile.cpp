@@ -21,11 +21,10 @@
 #include "HexTile.h"
 #include "Game.h"
 
-#include "OBJGLLoader.h"
-
-HexTile::HexTile(Game *_game) : game(_game)
+HexTile::HexTile(Game *_game)
+    : GLGameModel(_game)
 {
-    type = HEX_TILE_TYPE_WATER;
+    setType(HEX_TILE_TYPE_WATER);
 }
 
 HexTile::~HexTile()
@@ -35,21 +34,11 @@ HexTile::~HexTile()
 void HexTile::setType(const QString &_type)
 {
     type = _type;
+    load("Data/Objects/hextile_water.obj");
 }
 
 const QString HexTile::getType()
 {
     return type;
-}
-
-void HexTile::create()
-{
-    OBJGLLoader *loader = game->getOBJGLLoader();;
-
-    glNewList(displayListID, GL_COMPILE);
-
-    loader->load("Data/Objects/hextile_water.obj");
-
-    glEndList();
 }
 

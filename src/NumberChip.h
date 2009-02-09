@@ -24,13 +24,14 @@
 #include <QtOpenGL>
 
 #include "TextureManager.h"
-#include "GLObject.h"
+#include "GLGameModel.h"
 
+class Game;
 
-class NumberChip : public GLObject
+class NumberChip : public GLGameModel
 {
     public:
-        NumberChip();
+        NumberChip(Game*);
         ~NumberChip();
         void create();
 

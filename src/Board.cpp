@@ -44,7 +44,7 @@ void Board::render()
 {
     // render every single tile
     for(int i = 0; i < boardTiles.size(); ++i)
-        ((HexTile*)boardTiles.at(i))->render();
+        ((HexTile*)boardTiles.at(i))->draw();
 }
 
 // load a board from a plain textfile
@@ -182,7 +182,6 @@ void Board::generate()
         z = -0.5f + (-0.5f * height) + (1.75f * row);
         newTile->setPos(x, 0.0f, z);
         newTile->rotateY(90.0f);
-        newTile->create();
 
         boardTiles.insert(boardTiles.begin(), newTile);
     }

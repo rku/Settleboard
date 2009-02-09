@@ -33,7 +33,7 @@ Game::Game()
 
     board = new Board(this);
 
-    objGLLoader = new OBJGLLoader(this);
+    objGLLoader = new OBJGLLoader();
 }
 
 Game::~Game()

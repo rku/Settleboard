@@ -22,51 +22,60 @@
 #include "TextureManager.h"
 #include "Game.h"
 
-OBJGLLoader::OBJGLLoader(Game *_game)
-    : game(_game)
+OBJGLLoader::OBJGLLoader()
 {
 }
 
-OBJ OBJGLLoader::getObjectFromCache(QString filename)
+OBJGLLoader::~OBJGLLoader()
+{
+}
+
+int OBJGLLoader::getOBJCacheID(QString filename)
 {
     QFileInfo info(filename);
     QString name = info.absoluteFilePath();
-    OBJ obj;
 
-    for(int i = 0; i < objectCache.size(); ++i)
+    for(int i = 0; i < objCache.size(); ++i)
     {
-        if(objectCache.at(i).name == name) return objectCache.at(i);
+        OBJ obj = objCache.at(i);
+        if(obj.name == name) return i;
     }
 
-    return obj;
+    return -1;
 }
 
-bool OBJGLLoader::load(QString filename)
+OBJ& OBJGLLoader::getOBJByCacheID(int id)
+{
+    Q_ASSERT(id > -1 && id < objCache.size());
+    return objCache[id];
+}
+
+int OBJGLLoader::load(QString filename)
 {
     QFile file(filename);
     QFileInfo finfo(file);
-    OBJ obj;
     GLfloat scaleDiv = 0;
+    int currentMaterial = -1;
+    QList<Material> materials;
+    OBJ obj;
+    int id;
 
     // try to find the model in the cache
-    if(!(obj = getObjectFromCache(filename)).name.isEmpty())
-    {
-        createGLModel(obj);
-        return true;
-    }
+    if((id = getOBJCacheID(filename)) > -1)
+        return id;
 
     qDebug() << "Loading object model:" << filename;
 
     if(!file.exists())
     {
         qDebug() << "File not found:" << filename;
-        return false;
+        return -1;
     }
 
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "Can't read file:" << filename << file.error();
-        return false;
+        return -1;
     }
 
     while(!file.atEnd())
@@ -83,7 +92,7 @@ bool OBJGLLoader::load(QString filename)
         // vertex data
         if(!parts.at(0).isEmpty() && parts.at(0).at(0) == 'v')
         {
-            Vertex v;
+            Vertex3f v;
 
             if(parts.size() > 1)
                 v.x = parts.at(1).toFloat();
@@ -100,7 +109,8 @@ bool OBJGLLoader::load(QString filename)
             else switch(parts.at(0).at(1).toAscii())
             {
                 case 't':
-                    obj.textureCoords.append(v);
+                    Vertex2f v2; v2.x = v.x; v2.y = v.y;
+                    obj.textureCoords.append(v2);
                     break;
                 case 'n':
                     obj.vertexNormals.append(v);
@@ -113,39 +123,40 @@ bool OBJGLLoader::load(QString filename)
         // faces
         else if(parts.at(0) == "f")
         {
-            Face face;
+            GLModelFace face;
 
             for(int i = 1; i < parts.size(); i++)
             {
                 QStringList faceParts = parts.at(i).split("/");
-                FaceData fdata;
 
                 if(faceParts.size() > 0)
-                    fdata.vertexId = faceParts.at(0).toInt();
+                    face.vertexIDs.append(faceParts.at(0).toInt() - 1);
 
                 if(faceParts.size() > 1 && !faceParts.at(1).isEmpty())
-                    fdata.textureVertexId = faceParts.at(1).toInt();
+                    face.textureCoordIDs.append(faceParts.at(1).toInt() - 1);
 
                 if(faceParts.size() > 2 && !faceParts.at(2).isEmpty())
-                    fdata.vertexNormalId = faceParts.at(2).toInt();
-
-                face.data.append(fdata);
+                    face.vertexNormalIDs.append(faceParts.at(2).toInt() - 1);
             }
 
-            obj.faces.append(face);
+            if(currentMaterial > -1 && currentMaterial < materials.size())
+                face.texFilename = materials.at(currentMaterial).texFilename;
+
+            obj.glModelFaces.append(face);
         }
         // material library file
         else if(parts.at(0) == "mtllib")
         {
-            loadMaterials(obj, QString("%1/%2")
+            materials = loadMaterials(QString("%1/%2")
                 .arg(finfo.path()).arg(parts.at(1)));
         }
         // material
         else if(parts.at(0) == "usemtl")
         {
-            Face face;
-            face.material = parts.at(1);
-            obj.faces.append(face);
+            currentMaterial = -1;
+            for(int i = 0; i < materials.size(); ++i)
+                if(materials.at(i).name == parts.at(1))
+                    currentMaterial = i;
         }
         // unhandled data
         else
@@ -162,35 +173,35 @@ bool OBJGLLoader::load(QString filename)
     Q_ASSERT(scaleDiv != 0); // a divisor must never be zero
     for(int i = 0; i < obj.vertices.size() && scaleDiv != 0; ++i)
     {
-        Vertex v = obj.vertices.at(i);
-        v.x = v.x / scaleDiv;
-        v.y = v.y / scaleDiv;
-        v.z = v.z / scaleDiv;
+        obj.vertices[i].x /= scaleDiv;
+        obj.vertices[i].y /= scaleDiv;
+        obj.vertices[i].z /= scaleDiv;
     }
 
     // add model to cache
     obj.name = finfo.absoluteFilePath();
-    objectCache.append(obj);
+    id = objCache.size();
+    objCache.append(obj);
 
-    createGLModel(obj);
-
-    return true;
+    return id;
 }
 
-void OBJGLLoader::loadMaterials(OBJ &obj, QString mtlFilename)
+QList<Material> OBJGLLoader::loadMaterials(QString mtlFilename)
 {
     QFile file(mtlFilename);
     Material mtl;
+    QList<Material> materials;
 
     if(!file.exists())
     {
         qDebug() << "Material library doesn't exist:" << mtlFilename;
-        return;
+        return materials;
     }
 
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "Can't open mtl file:" << mtlFilename << file.error();
+        return materials;
     }
 
     qDebug() << "Loading materials from" << mtlFilename;
@@ -205,29 +216,10 @@ void OBJGLLoader::loadMaterials(OBJ &obj, QString mtlFilename)
 
         if(parts.at(0) == "newmtl")
         {
-            if(!mtl.name.isEmpty()) obj.materials.append(mtl);
+            if(!mtl.name.isEmpty()) materials.append(mtl);
 
-            mtl.clear();
             mtl.name = parts.at(1);
         }
-        else if(parts.at(0) == "Ka" && parts.size() == 4)
-        {
-            mtl.ka[0] = parts.at(1).toFloat();
-            mtl.ka[1] = parts.at(2).toFloat();
-            mtl.ka[2] = parts.at(3).toFloat();
-        }
-        else if(parts.at(0) == "Kd" && parts.size() == 4)
-        {
-            mtl.kd[0] = parts.at(1).toFloat();
-            mtl.kd[1] = parts.at(2).toFloat();
-            mtl.kd[2] = parts.at(3).toFloat();
-        }
-        else if(parts.at(0) == "Ks" && parts.size() == 4)
-        {
-            mtl.ks[0] = parts.at(1).toFloat();
-            mtl.ks[1] = parts.at(2).toFloat();
-            mtl.ks[2] = parts.at(3).toFloat();
-        } 
         else if(parts.at(0) == "map_Kd")
         {
             mtl.texFilename = parts.last(); 
@@ -238,87 +230,10 @@ void OBJGLLoader::loadMaterials(OBJ &obj, QString mtlFilename)
         }
     }
 
-    if(!mtl.name.isEmpty()) obj.materials.append(mtl);
+    if(!mtl.name.isEmpty()) materials.append(mtl);
 
     file.close(); 
-}
 
-void OBJGLLoader::setGLMaterial(OBJ &obj, QString name)
-{
-    Material mtl;
-
-    for(int i = 0; i < obj.materials.size(); ++i)
-    {
-        if(obj.materials.at(i).name == name)
-        {
-            mtl = obj.materials.at(i);
-            break;
-        }
-    }
-
-    if(mtl.name.isEmpty())
-    {
-        qDebug() << "Missing material:" << name;
-        return;
-    }
-
-    glEnable(GL_TEXTURE_2D);
-
-    if(!mtl.texFilename.isEmpty())
-    {
-        TextureManager *tm = game->getTextureManager();
-        GLuint texId = tm->getTextureId(mtl.texFilename);
-        glBindTexture(GL_TEXTURE_2D, texId);
-    }
-    else
-    {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    glMaterialfv(GL_FRONT, GL_AMBIENT,  mtl.ka);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE,  mtl.kd);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mtl.ks);
-}
-
-void OBJGLLoader::createGLModel(OBJ &obj)
-{
-    for(int i = 0; i < obj.faces.size(); ++i)
-    {
-        Face face = obj.faces.at(i);
-
-        if(!face.material.isEmpty()) setGLMaterial(obj, face.material);
-
-        glBegin(GL_POLYGON);
-
-        for(int f = 0; f < face.data.size(); f++)
-        {
-            FaceData data = face.data.at(f);
-            int vertexId = data.vertexId;
-            int normalId = data.vertexNormalId;
-            int texVerId = data.textureVertexId;
-            Vertex v, n, t;
-
-            if((vertexId == -1) || (vertexId > obj.vertices.size()))
-                continue;
-
-            v = obj.vertices.at(data.vertexId - 1);
-
-            if((texVerId > -1) && (texVerId <= obj.textureCoords.size()))
-            {
-                t = obj.textureCoords.at(texVerId - 1);
-                glTexCoord2f(t.x, t.y);
-            }
-
-            if((normalId > -1) && (normalId <= obj.vertexNormals.size()))
-            {
-                n = obj.vertexNormals.at(normalId - 1);
-                glNormal3f(n.x, n.y, n.z);
-            }
-
-            glVertex3f(v.x, v.y, v.z);
-        }
-
-        glEnd();
-    }
+    return materials;
 }
 

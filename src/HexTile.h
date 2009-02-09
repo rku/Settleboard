@@ -23,8 +23,7 @@
 
 #include <QtOpenGL>
 
-#include "TextureManager.h"
-#include "GLObject.h"
+#include "GLGameModel.h"
 
 class Game;
 
@@ -37,24 +36,21 @@ class Game;
 #define HEX_TILE_TYPE_CLAY    "clay"
 #define HEX_TILE_TYPE_GOLD    "gold"
 
-class HexTile : public GLObject
+class HexTile : public GLGameModel
 {
     public:
         HexTile(Game*);
         ~HexTile();
-        void create();
         void setType(const QString&);
         const QString getType();
         void setFixedPosition(bool b) { fixedPosition = b; }
         bool hasFixedPosition() { return fixedPosition; }
 
     private:
-        Game *game;
         bool isPort;
         bool fixedPosition;
         int number;
         QString type;
-        Texture texture;
 };
 
 #endif /* HEX_TILE_H */
