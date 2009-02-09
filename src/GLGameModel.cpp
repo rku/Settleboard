@@ -45,31 +45,61 @@ GLGameModel::~GLGameModel()
 
 void GLGameModel::create()
 {
+    GLuint currentTex = 0;
     TextureManager *tm = game->getTextureManager();
 
     glNewList(displayListID, GL_COMPILE);
 
     glEnable(GL_TEXTURE_2D);
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, vertices.data());
-
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, textureCoords.data());
-
     for(int i = 0; i < glModelFaces.size(); ++i)
     {
         GLModelFace face = glModelFaces.at(i);
-        GLuint num = face.vertexIDs.size();
 
         if(!face.texFilename.isEmpty())
         {
             GLuint texId = tm->getTextureId(face.texFilename);
-            glBindTexture(GL_TEXTURE_2D, texId);
+            if(currentTex != texId)
+                glBindTexture(GL_TEXTURE_2D, texId);
+            currentTex = texId;
+        }
+        else
+        {
+            if(currentTex != 0)
+            {
+                currentTex = 0;
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
         }
 
-        glDrawElements(GL_POLYGON, num,
-            GL_UNSIGNED_INT, face.vertexIDs.data());
+        glBegin(GL_POLYGON);
+
+        for(int n = 0; n < face.vertexIDs.size(); ++n)
+        {
+            int x = face.vertexIDs.at(n);
+
+            if(x < 0 || x >= vertices.size()) continue;
+
+            Vertex3f v = vertices.at(x);
+
+            if(n < face.textureCoordIDs.size() && currentTex > 0)
+            {
+                x = face.textureCoordIDs.at(n);
+                Vertex2f vt = textureCoords.at(x);
+                glTexCoord2f(vt.x, vt.y);
+            } 
+
+            if(n < face.vertexNormalIDs.size())
+            {
+                x = face.vertexNormalIDs.at(n);
+                Vertex3f vn = vertexNormals.at(x);
+                glNormal3f(vn.x, vn.y, vn.z);
+            }
+
+            glVertex3f(v.x, v.y, v.z);
+        }
+
+        glEnd();
     }
 
     glEndList();
@@ -96,6 +126,7 @@ void GLGameModel::draw()
     glPushMatrix();
     transform();
     glCallList(displayListID);
+    glFinish();
     glPopMatrix();
 }
 
