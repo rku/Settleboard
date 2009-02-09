@@ -18,7 +18,7 @@ HEADERS = src/GLWidget.h \
           src/NumberChip.h \
           src/MainWindow.h \
           src/TextureManager.h \
-          src/OpenGLDrawObject.h \
+          src/GLObject.h \
           src/Board.h \
           src/UIStyle.h \
           src/GameUI.h \
@@ -37,7 +37,7 @@ SOURCES = src/GLWidget.cpp \
           src/main.cpp \
           src/MainWindow.cpp \
           src/TextureManager.cpp \
-          src/OpenGLDrawObject.cpp \
+          src/GLObject.cpp \
           src/Board.cpp\
           src/UISTyle.cpp \
           src/GameUI.cpp \

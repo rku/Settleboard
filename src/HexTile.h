@@ -24,7 +24,7 @@
 #include <QtOpenGL>
 
 #include "TextureManager.h"
-#include "OpenGLDrawObject.h"
+#include "GLObject.h"
 
 class Game;
 
@@ -37,7 +37,7 @@ class Game;
 #define HEX_TILE_TYPE_CLAY    "clay"
 #define HEX_TILE_TYPE_GOLD    "gold"
 
-class HexTile : public OpenGLDrawObject
+class HexTile : public GLObject
 {
     public:
         HexTile(Game*);

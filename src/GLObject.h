@@ -18,16 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENGLDRAWOBJECT_H
-#define OPENGLDRAWOBJECT_H
+#ifndef GLOBJECT_H
+#define GLOBJECT_H
 
 #include <QtOpenGL>
 
-class OpenGLDrawObject
+class GLObject
 {
     public:
-        OpenGLDrawObject();
-        ~OpenGLDrawObject();
+        GLObject();
+        ~GLObject();
 
         void render();
 
@@ -75,4 +75,4 @@ class OpenGLDrawObject
         GLfloat angleZ;
 };
 
-#endif /* OPENGLDRAWOBJECT_H */
+#endif /* GLOBJECT_H */

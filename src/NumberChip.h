@@ -24,10 +24,10 @@
 #include <QtOpenGL>
 
 #include "TextureManager.h"
-#include "OpenGLDrawObject.h"
+#include "GLObject.h"
 
 
-class NumberChip : public OpenGLDrawObject
+class NumberChip : public GLObject
 {
     public:
         NumberChip();
