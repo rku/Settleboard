@@ -54,8 +54,6 @@ void GLGameModel::create()
     {
         GLModelFace face = glModelFaces.at(i);
 
-        qDebug() << face.texFilename.isEmpty();
-
         // set or unset texture if neccessary
         if(!face.texFilename.isEmpty())
         {
