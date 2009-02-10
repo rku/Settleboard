@@ -155,8 +155,7 @@ OBJ *OBJGLLoader::load(QString filename)
         {
             currentMaterial = -1;
             for(int i = 0; i < materials.size(); ++i)
-                if(materials.at(i).name == parts.at(1))
-                    currentMaterial = i;
+                if(materials.at(i).name == parts.at(1)) currentMaterial = i;
         }
         // unhandled data
         else

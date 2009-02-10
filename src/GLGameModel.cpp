@@ -45,23 +45,27 @@ GLGameModel::~GLGameModel()
 
 void GLGameModel::create()
 {
-    GLuint currentTex = 0;
+    GLuint currentTex = -1;
     TextureManager *tm = game->getTextureManager();
 
     glNewList(displayListID, GL_COMPILE);
-
-    glEnable(GL_TEXTURE_2D);
 
     for(int i = 0; i < glModelFaces.size(); ++i)
     {
         GLModelFace face = glModelFaces.at(i);
 
+        qDebug() << face.texFilename.isEmpty();
+
+        // set or unset texture if neccessary
         if(!face.texFilename.isEmpty())
         {
             GLuint texId = tm->getTextureId(face.texFilename);
             if(currentTex != texId)
+            {
+                glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texId);
-            currentTex = texId;
+                currentTex = texId;
+            }
         }
         else
         {
@@ -69,8 +73,11 @@ void GLGameModel::create()
             {
                 currentTex = 0;
                 glBindTexture(GL_TEXTURE_2D, 0);
+                glDisable(GL_TEXTURE_2D);
             }
         }
+
+        // draw the model
 
         glBegin(GL_POLYGON);
 
