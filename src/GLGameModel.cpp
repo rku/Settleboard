@@ -163,3 +163,42 @@ void GLGameModel::transform()
     glScalef(scale, scale, scale);
 }
 
+GLfloat GLGameModel::width()
+{
+    GLfloat xMin = 0, xMax = 0;
+
+    for(int i = 0; i < vertices.size(); ++i)
+    {
+        xMin = qMin(xMin, vertices.at(i).x);
+        xMax = qMax(xMax, vertices.at(i).x);
+    }
+
+    return xMax - xMin;
+}
+
+GLfloat GLGameModel::height()
+{
+    GLfloat yMin = 0, yMax = 0;
+
+    for(int i = 0; i < vertices.size(); ++i)
+    {   
+        yMin = qMin(yMin, vertices.at(i).y);
+        yMax = qMax(yMax, vertices.at(i).y);
+    }   
+
+    return yMax - yMin;
+}
+
+GLfloat GLGameModel::depth()
+{
+    GLfloat zMin = 0, zMax = 0;
+
+    for(int i = 0; i < vertices.size(); ++i)
+    {   
+        zMin = qMin(zMin, vertices.at(i).z);
+        zMax = qMax(zMax, vertices.at(i).z);
+    }   
+
+    return zMax - zMin;
+}
+

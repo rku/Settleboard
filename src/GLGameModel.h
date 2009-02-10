@@ -78,6 +78,10 @@ class GLGameModel : public QObject
         void move(GLfloat x, GLfloat y, GLfloat z)
             { moveX(x); moveY(y); moveZ(z); }
 
+        GLfloat width();
+        GLfloat height();
+        GLfloat depth();
+
     protected:
         void create();
         void transform();

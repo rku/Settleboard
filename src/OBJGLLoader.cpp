@@ -54,7 +54,6 @@ OBJ *OBJGLLoader::load(QString filename)
 {
     QFile file(filename);
     QFileInfo finfo(file);
-    GLfloat scaleDiv = 0;
     int currentMaterial = -1;
     QList<Material> materials;
     OBJ obj;
@@ -104,7 +103,6 @@ OBJ *OBJGLLoader::load(QString filename)
             if(parts.at(0).size() == 1)
             {
                 obj.vertices.append(v);
-                scaleDiv = qMax( qMax( qMax(v.x, v.y), v.z), scaleDiv);
             }
             else switch(parts.at(0).at(1).toAscii())
             {
@@ -165,17 +163,6 @@ OBJ *OBJGLLoader::load(QString filename)
     }
 
     file.close();
-
-    // scale each vertice so that the model fits in a
-    // 2x2 cube - we already know the biggest vertice value
-    // so we just have to divide each one with it
-    Q_ASSERT(scaleDiv != 0); // a divisor must never be zero
-    for(int i = 0; i < obj.vertices.size() && scaleDiv != 0; ++i)
-    {
-        obj.vertices[i].x /= scaleDiv;
-        obj.vertices[i].y /= scaleDiv;
-        obj.vertices[i].z /= scaleDiv;
-    }
 
     // add model to cache
     obj.name = finfo.absoluteFilePath();
