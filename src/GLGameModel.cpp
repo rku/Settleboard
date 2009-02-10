@@ -74,24 +74,24 @@ void GLGameModel::create()
 
         glBegin(GL_POLYGON);
 
-        for(int n = 0; n < face.vertexIDs.size(); ++n)
+        for(int n = 0; n < face.vertexIds.size(); ++n)
         {
-            int x = face.vertexIDs.at(n);
+            int x = face.vertexIds.at(n);
 
             if(x < 0 || x >= vertices.size()) continue;
 
             Vertex3f v = vertices.at(x);
 
-            if(n < face.textureCoordIDs.size() && currentTex > 0)
+            if(n < face.textureCoordIds.size() && currentTex > 0)
             {
-                x = face.textureCoordIDs.at(n);
+                x = face.textureCoordIds.at(n);
                 Vertex2f vt = textureCoords.at(x);
                 glTexCoord2f(vt.x, vt.y);
             } 
 
-            if(n < face.vertexNormalIDs.size())
+            if(n < face.vertexNormalIds.size())
             {
-                x = face.vertexNormalIDs.at(n);
+                x = face.vertexNormalIds.at(n);
                 Vertex3f vn = vertexNormals.at(x);
                 glNormal3f(vn.x, vn.y, vn.z);
             }
@@ -110,13 +110,12 @@ void GLGameModel::create()
 void GLGameModel::load(QString filename)
 {
     OBJGLLoader *loader = game->getOBJGLLoader();
-    int id = loader->load(filename);
-    OBJ obj = loader->getOBJByCacheID(id);
+    OBJ *obj = loader->load(filename);
 
-    vertices = obj.vertices;
-    vertexNormals = obj.vertexNormals;
-    textureCoords = obj.textureCoords;
-    glModelFaces = obj.glModelFaces;
+    vertices      = obj->vertices;
+    vertexNormals = obj->vertexNormals;
+    textureCoords = obj->textureCoords;
+    glModelFaces  = obj->glModelFaces;
 }
 
 void GLGameModel::draw()

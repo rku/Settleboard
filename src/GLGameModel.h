@@ -38,9 +38,9 @@ typedef struct _Vertex2f {
 
 typedef struct _GLModelFace {
     QString texFilename;
-    QVector<GLuint> vertexIDs;
-    QVector<GLuint> vertexNormalIDs;
-    QVector<GLuint> textureCoordIDs; 
+    QVector<GLuint> vertexIds;
+    QVector<GLuint> vertexNormalIds;
+    QVector<GLuint> textureCoordIds; 
 } GLModelFace;
 
 class OBJGLLoader;

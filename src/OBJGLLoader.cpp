@@ -30,7 +30,7 @@ OBJGLLoader::~OBJGLLoader()
 {
 }
 
-int OBJGLLoader::getOBJCacheID(QString filename)
+int OBJGLLoader::getOBJCacheId(QString filename)
 {
     QFileInfo info(filename);
     QString name = info.absoluteFilePath();
@@ -44,13 +44,13 @@ int OBJGLLoader::getOBJCacheID(QString filename)
     return -1;
 }
 
-OBJ& OBJGLLoader::getOBJByCacheID(int id)
+OBJ& OBJGLLoader::getOBJByCacheId(int id)
 {
     Q_ASSERT(id > -1 && id < objCache.size());
     return objCache[id];
 }
 
-int OBJGLLoader::load(QString filename)
+OBJ *OBJGLLoader::load(QString filename)
 {
     QFile file(filename);
     QFileInfo finfo(file);
@@ -61,21 +61,21 @@ int OBJGLLoader::load(QString filename)
     int id;
 
     // try to find the model in the cache
-    if((id = getOBJCacheID(filename)) > -1)
-        return id;
+    if((id = getOBJCacheId(filename)) > -1)
+        return &getOBJByCacheId(id);
 
     qDebug() << "Loading object model:" << filename;
 
     if(!file.exists())
     {
         qDebug() << "File not found:" << filename;
-        return -1;
+        return NULL;
     }
 
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "Can't read file:" << filename << file.error();
-        return -1;
+        return NULL;
     }
 
     while(!file.atEnd())
@@ -130,13 +130,13 @@ int OBJGLLoader::load(QString filename)
                 QStringList faceParts = parts.at(i).split("/");
 
                 if(faceParts.size() > 0)
-                    face.vertexIDs.append(faceParts.at(0).toInt() - 1);
+                    face.vertexIds.append(faceParts.at(0).toInt() - 1);
 
                 if(faceParts.size() > 1 && !faceParts.at(1).isEmpty())
-                    face.textureCoordIDs.append(faceParts.at(1).toInt() - 1);
+                    face.textureCoordIds.append(faceParts.at(1).toInt() - 1);
 
                 if(faceParts.size() > 2 && !faceParts.at(2).isEmpty())
-                    face.vertexNormalIDs.append(faceParts.at(2).toInt() - 1);
+                    face.vertexNormalIds.append(faceParts.at(2).toInt() - 1);
             }
 
             if(currentMaterial > -1 && currentMaterial < materials.size())
@@ -183,7 +183,7 @@ int OBJGLLoader::load(QString filename)
     id = objCache.size();
     objCache.append(obj);
 
-    return id;
+    return &getOBJByCacheId(id);
 }
 
 QList<Material> OBJGLLoader::loadMaterials(QString mtlFilename)

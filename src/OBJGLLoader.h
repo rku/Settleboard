@@ -54,11 +54,11 @@ class OBJGLLoader
         OBJGLLoader();
         ~OBJGLLoader();
 
-        int load(QString filename);
-        OBJ& getOBJByCacheID(int id);
+        OBJ* load(QString filename);
+        int getOBJCacheId(QString filename);
+        OBJ& getOBJByCacheId(int id);
 
     private:
-        int getOBJCacheID(QString filename);
         QList<Material> loadMaterials(QString mtlFilename);
 
         QList<OBJ> objCache;
