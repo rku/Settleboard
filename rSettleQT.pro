@@ -13,6 +13,7 @@ FORMS = src/ui/connectorform.ui \
         src/ui/prefsform.ui
 
 HEADERS = src/GLWidget.h \
+          src/GLTypes.h \
           src/Game.h \
           src/HexTile.h \
           src/NumberChip.h \

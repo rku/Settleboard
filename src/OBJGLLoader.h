@@ -30,7 +30,7 @@
 #include <QList>
 #include <QFile>
 
-#include "GLGameModel.h"
+#include "GLTypes.h"
 
 typedef struct _Material {
     QString name;

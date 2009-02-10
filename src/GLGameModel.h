@@ -25,23 +25,7 @@
 #include <QObject>
 #include <QVector>
 
-typedef struct _Vertex3f {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-} Vertex3f;
-
-typedef struct _Vertex2f {
-    GLfloat x;
-    GLfloat y;
-} Vertex2f;
-
-typedef struct _GLModelFace {
-    QString texFilename;
-    QVector<GLuint> vertexIds;
-    QVector<GLuint> vertexNormalIds;
-    QVector<GLuint> textureCoordIds; 
-} GLModelFace;
+#include "GLTypes.h"
 
 class OBJGLLoader;
 class Game;
