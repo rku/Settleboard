@@ -113,12 +113,21 @@ bool Board::loadByName(const QString &name)
     return loadFromFile(path);
 }
 
+Vertex3f Board::getPosForTileAt(int col, int row)
+{
+    Vertex3f pos;
+
+    pos.x = -1.0f  - (width * 1.0f)   + (col * 2.0f) + (row % 2);
+    pos.y = 0.0f;
+    pos.z = -0.85f - (height * 0.85f) + (row * 1.7f);
+
+    return pos;
+}
+
 void Board::generate()
 {
-    GLfloat x,
-            z,
-            row = -1.0f,
-            col = -1.0f;
+    unsigned int row = 0, col = 0;
+    Vertex3f pos;
 
     // discard old board
     freeObjects();
@@ -126,13 +135,6 @@ void Board::generate()
     for(char *p = tileData; row < height && *p; p++)
     {
         HexTile *newTile = new HexTile( game);
-
-        col += 1.0f;
-        if(col >= width)
-        {
-            col  = 0.0f;
-            row += 1.0f;
-        }
 
         switch(*p)
         {
@@ -178,11 +180,16 @@ void Board::generate()
                 continue;
         }
 
-        x =  1.0f - (1.0f * width ) + (2.0f * col) + 1.0f*((int)row % 2);
-        z =  1.0f - (1.0f * height) + (2.0f * row);
-        newTile->setPos(x, 0.0f, z);
+        pos = getPosForTileAt(col, row);
+        newTile->setPos(pos.x, pos.y, pos.z);
 
         boardTiles.insert(boardTiles.begin(), newTile);
+
+        if(++col >= width)
+        {
+            col = 0;
+            row++;
+        }
     }
 }
 

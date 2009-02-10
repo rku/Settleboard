@@ -26,6 +26,7 @@
 
 #include "HexTile.h"
 #include "NumberChip.h"
+#include "GLTypes.h"
 
 class Game;
 
@@ -43,6 +44,8 @@ class Board
         bool loadByName(const QString&);
 
     protected:
+        Vertex3f getPosForTileAt(int col, int row);
+
         Game *game;
         QList<HexTile*> boardTiles;
         QList<NumberChip*> numberChips;

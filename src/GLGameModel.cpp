@@ -163,7 +163,7 @@ void GLGameModel::transform()
     glScalef(scale, scale, scale);
 }
 
-GLfloat GLGameModel::width()
+GLfloat GLGameModel::getWidth()
 {
     GLfloat xMin = 0, xMax = 0;
 
@@ -176,7 +176,7 @@ GLfloat GLGameModel::width()
     return xMax - xMin;
 }
 
-GLfloat GLGameModel::height()
+GLfloat GLGameModel::getHeight()
 {
     GLfloat yMin = 0, yMax = 0;
 
@@ -189,7 +189,7 @@ GLfloat GLGameModel::height()
     return yMax - yMin;
 }
 
-GLfloat GLGameModel::depth()
+GLfloat GLGameModel::getDepth()
 {
     GLfloat zMin = 0, zMax = 0;
 
