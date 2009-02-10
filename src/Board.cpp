@@ -178,8 +178,8 @@ void Board::generate()
                 continue;
         }
 
-        x =  1.0f - (1.0f * width)  + (2.0f * col) + 1.0f*((int)row % 2);
-        z =  1.075f - (1.075f * height) + (2.15f * row);
+        x =  1.0f - (1.0f * width ) + (2.0f * col) + 1.0f*((int)row % 2);
+        z =  1.0f - (1.0f * height) + (2.0f * row);
         newTile->setPos(x, 0.0f, z);
 
         boardTiles.insert(boardTiles.begin(), newTile);
