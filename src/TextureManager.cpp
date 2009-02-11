@@ -66,7 +66,6 @@ const Texture& TextureManager::loadTexture(const QString& filename)
 
     if(!tex.isNull())
     {
-
         newTex.width = tex.width();
         newTex.height = tex.height();
 
@@ -77,13 +76,10 @@ const Texture& TextureManager::loadTexture(const QString& filename)
             GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
 
         qDebug() << "Loaded texture: " << filepath;
-
     }
     else
     {   
-
         qCritical() << "Can't load image file: " << filepath;
-
     }
 
     textures.insert(textures.begin(), newTex);
