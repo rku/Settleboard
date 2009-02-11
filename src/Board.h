@@ -30,7 +30,7 @@
 
 class Game;
 
-#define BOARD_MAX_TILES   64
+#define BOARD_MAX_TILES     512 
 
 class Board
 {

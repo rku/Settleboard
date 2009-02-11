@@ -32,11 +32,6 @@
 
 #include "GLTypes.h"
 
-typedef struct _Material {
-    QString name;
-    QString texFilename;
-} Material;
-
 typedef struct _OBJ {
     QString name;
     QVector<Vertex3f> vertices;
@@ -59,8 +54,6 @@ class OBJGLLoader
         OBJ& getOBJByCacheId(int id);
 
     private:
-        QList<Material> loadMaterials(QString mtlFilename);
-
         QList<OBJ> objCache;
 };
 

@@ -54,8 +54,7 @@ OBJ *OBJGLLoader::load(QString filename)
 {
     QFile file(filename);
     QFileInfo finfo(file);
-    int currentMaterial = -1;
-    QList<Material> materials;
+    QString texFilename;
     OBJ obj;
     int id;
 
@@ -137,23 +136,19 @@ OBJ *OBJGLLoader::load(QString filename)
                     face.vertexNormalIds.append(faceParts.at(2).toInt() - 1);
             }
 
-            if(currentMaterial > -1 && currentMaterial < materials.size())
-                face.texFilename = materials.at(currentMaterial).texFilename;
+            if(!texFilename.isEmpty())
+                face.texFilename = texFilename;
 
             obj.glModelFaces.append(face);
         }
-        // material library file
-        else if(parts.at(0) == "mtllib")
-        {
-            materials = loadMaterials(QString("%1/%2")
-                .arg(finfo.path()).arg(parts.at(1)));
-        }
         // material
-        else if(parts.at(0) == "usemtl")
+        else if(parts.at(0) == "usemtl" && parts.size() == 2)
         {
-            currentMaterial = -1;
-            for(int i = 0; i < materials.size(); ++i)
-                if(materials.at(i).name == parts.at(1)) currentMaterial = i;
+            QStringList matNameParts = parts.at(1).split("_");
+            if(matNameParts.isEmpty() || matNameParts.last().isEmpty())
+            { texFilename = QString(); }
+            else
+            { texFilename = matNameParts.last(); }
         }
         // unhandled data
         else
@@ -170,56 +165,5 @@ OBJ *OBJGLLoader::load(QString filename)
     objCache.append(obj);
 
     return &getOBJByCacheId(id);
-}
-
-QList<Material> OBJGLLoader::loadMaterials(QString mtlFilename)
-{
-    QFile file(mtlFilename);
-    Material mtl;
-    QList<Material> materials;
-
-    if(!file.exists())
-    {
-        qDebug() << "Material library doesn't exist:" << mtlFilename;
-        return materials;
-    }
-
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        qDebug() << "Can't open mtl file:" << mtlFilename << file.error();
-        return materials;
-    }
-
-    qDebug() << "Loading materials from" << mtlFilename;
-
-    while(!file.atEnd())
-    {
-        QString line = file.readLine().trimmed();
-        QStringList parts = line.split(" ", QString::SkipEmptyParts);
-
-        if(parts.size() < 2) continue;
-        if(parts.at(0).startsWith("#")) continue;
-
-        if(parts.at(0) == "newmtl")
-        {
-            if(!mtl.name.isEmpty()) materials.append(mtl);
-
-            mtl.name = parts.at(1);
-        }
-        else if(parts.at(0) == "map_Kd")
-        {
-            mtl.texFilename = parts.last(); 
-        }
-        else
-        {
-            qDebug() << "Unhandled material data:" << line;
-        }
-    }
-
-    if(!mtl.name.isEmpty()) materials.append(mtl);
-
-    file.close(); 
-
-    return materials;
 }
 

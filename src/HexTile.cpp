@@ -34,7 +34,7 @@ HexTile::~HexTile()
 void HexTile::setType(const QString &_type)
 {
     type = _type;
-    load("Data/Objects/hextile_water.obj");
+    load(QString("Data/Objects/hextile_%1.obj").arg(type));
 }
 
 const QString HexTile::getType()
