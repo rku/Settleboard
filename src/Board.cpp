@@ -117,24 +117,33 @@ Vertex3f Board::getPosForTileAt(int col, int row)
 {
     Vertex3f pos;
 
-    pos.x = -1.0f  - (width * 1.0f)   + (col * 2.0f) + (row % 2);
+    // center - boardwidth/2 + tilewidth*col
+    pos.x = (width * -1.0f) + (col * 2.0f) + (row % 2);
     pos.y = 0.0f;
-    pos.z = -0.85f - (height * 0.85f) + (row * 1.7f);
+    // center - boardheight/2 - tiledepth/2 + row*tiledepth
+    pos.z = 0.85f - (height * 0.85f) + (row * 1.7f);
 
     return pos;
 }
 
 void Board::generate()
 {
-    unsigned int row = 0, col = 0;
+    int row = 0, col = -1;
     Vertex3f pos;
 
     // discard old board
     freeObjects();
 
-    for(char *p = tileData; row < height && *p; p++)
+    for(char *p = tileData; row < (int)height && *p; p++)
     {
-        HexTile *newTile = new HexTile( game);
+        HexTile *newTile = new HexTile(game);
+
+        col++;
+        if(col >= (int)width)
+        {
+            col = 0;
+            row++;
+        }
 
         switch(*p)
         {
@@ -184,12 +193,6 @@ void Board::generate()
         newTile->setPos(pos.x, pos.y, pos.z);
 
         boardTiles.insert(boardTiles.begin(), newTile);
-
-        if(++col >= width)
-        {
-            col = 0;
-            row++;
-        }
     }
 }
 
