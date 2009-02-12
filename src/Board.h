@@ -44,7 +44,7 @@ class Board
         bool loadByName(const QString&);
 
     protected:
-        Vertex3f getPosForTileAt(int col, int row);
+        Vertex3f getPosForTile(HexTile*, int col, int row);
 
         Game *game;
         QList<HexTile*> boardTiles;

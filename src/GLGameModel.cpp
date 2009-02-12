@@ -18,6 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QColor>
+
+#include <QColor>
+
 #include "GLGameModel.h"
 #include "Game.h"
 #include "OBJGLLoader.h"
@@ -36,6 +40,8 @@ GLGameModel::GLGameModel(Game *_game)
     angleX = 0.0f;
     angleY = 0.0f;
     angleZ = 0.0f;
+
+    color = Qt::gray;
 }
 
 GLGameModel::~GLGameModel()
@@ -62,6 +68,7 @@ void GLGameModel::create()
             {
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texId);
+                game->getGLWidget()->qglColor(Qt::white);
                 currentTex = texId;
             }
         }
@@ -72,6 +79,7 @@ void GLGameModel::create()
                 currentTex = 0;
                 glBindTexture(GL_TEXTURE_2D, 0);
                 glDisable(GL_TEXTURE_2D);
+                game->getGLWidget()->qglColor(color);
             }
         }
 
@@ -112,7 +120,7 @@ void GLGameModel::create()
     created = true;
 }
 
-void GLGameModel::load(QString filename)
+void GLGameModel::load(QString filename, QColor objColor)
 {
     OBJGLLoader *loader = game->getOBJGLLoader();
     OBJ *obj = loader->load(filename);
@@ -121,6 +129,8 @@ void GLGameModel::load(QString filename)
     vertexNormals = obj->vertexNormals;
     textureCoords = obj->textureCoords;
     glModelFaces  = obj->glModelFaces;
+
+    setColor(objColor);
 }
 
 void GLGameModel::draw()

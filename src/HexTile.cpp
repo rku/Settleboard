@@ -24,17 +24,60 @@
 HexTile::HexTile(Game *_game)
     : GLGameModel(_game)
 {
-    setType(HEX_TILE_TYPE_WATER);
+    setType(HEXTILE_TYPE_WATER);
 }
 
 HexTile::~HexTile()
 {
 }
 
-void HexTile::setType(const QString &_type)
+void HexTile::setType(const unsigned int _type)
 {
+    QColor color;
+    QString model("Data/Objects/%1.obj");
+    QString modelName;
+
+    switch(_type)
+    {
+        case HEXTILE_TYPE_WATER:
+            modelName = "hextile_water";
+            color.setRgb(22,73,142,255);
+            break;
+        case HEXTILE_TYPE_DESERT:
+            modelName = "hextile_desert";
+            color.setRgb(225,130,7,255);
+            break;
+        case HEXTILE_TYPE_WOOD:
+            modelName = "hextile_wood";
+            color.setRgb(27,150,11,255);
+            break;
+        case HEXTILE_TYPE_SHEEP:
+            modelName = "hextile_sheep";
+            color.setRgb(208,241,206,255);
+            break;
+        case HEXTILE_TYPE_WEED:
+            modelName = "hextile_weed";
+            color.setRgb(237,239,97,255); 
+            break;
+        case HEXTILE_TYPE_ORE:
+            modelName = "hextile_ore";
+            color.setRgb(106,112,124,255);
+            break;
+        case HEXTILE_TYPE_GOLD:
+            modelName = "hextile_gold"; 
+            color.setRgb(222,224,35,255);
+            break;
+        case HEXTILE_TYPE_CLAY:
+            modelName = "hextile_clay";
+            color.setRgb(231,126,33,255);
+            break;
+        default:
+            qDebug() << "Unknown hextile type:" << _type;
+            return;
+    }
+
     type = _type;
-    load(QString("Data/Objects/hextile_%1.obj").arg(type));
+    load(model.arg(modelName), color);
 }
 
 const QString HexTile::getType()

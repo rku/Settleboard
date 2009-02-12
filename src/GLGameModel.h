@@ -38,7 +38,7 @@ class GLGameModel : public QObject
         GLGameModel(Game*);
         ~GLGameModel();
 
-        void load(QString filename);
+        void load(QString filename, QColor objColor = 0);
         void draw();
 
         void setName(QString s) { name = s; }
@@ -67,6 +67,9 @@ class GLGameModel : public QObject
         GLfloat getAngleY() { return angleY; }
         void setAngleZ(GLfloat);
         GLfloat getAngleZ() { return angleZ; }
+
+        QColor getColor() { return color; }
+        void setColor(QColor c) { color = c; }
 
         void rotateX(GLfloat i) { setAngleX(angleX + i); }
         void rotateY(GLfloat i) { setAngleY(angleY + i); }
@@ -103,6 +106,7 @@ class GLGameModel : public QObject
         GLfloat angleX;
         GLfloat angleY;
         GLfloat angleZ;
+        QColor color;
 };
 
 #endif /* GLGAMEMODEL_H */

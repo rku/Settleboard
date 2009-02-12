@@ -27,21 +27,21 @@
 
 class Game;
 
-#define HEX_TILE_TYPE_WOOD    "wood"
-#define HEX_TILE_TYPE_WATER   "water"
-#define HEX_TILE_TYPE_WEED    "weed"
-#define HEX_TILE_TYPE_SHEEP   "sheep"
-#define HEX_TILE_TYPE_DESERT  "desert"
-#define HEX_TILE_TYPE_ORE     "ore"
-#define HEX_TILE_TYPE_CLAY    "clay"
-#define HEX_TILE_TYPE_GOLD    "gold"
+#define HEXTILE_TYPE_WOOD    0x00 
+#define HEXTILE_TYPE_WATER   0x01
+#define HEXTILE_TYPE_WEED    0x02
+#define HEXTILE_TYPE_SHEEP   0x03
+#define HEXTILE_TYPE_DESERT  0x04
+#define HEXTILE_TYPE_ORE     0x05
+#define HEXTILE_TYPE_CLAY    0x06
+#define HEXTILE_TYPE_GOLD    0x07
 
 class HexTile : public GLGameModel
 {
     public:
         HexTile(Game*);
         ~HexTile();
-        void setType(const QString&);
+        void setType(const unsigned int);
         const QString getType();
         void setFixedPosition(bool b) { fixedPosition = b; }
         bool hasFixedPosition() { return fixedPosition; }

@@ -113,15 +113,17 @@ bool Board::loadByName(const QString &name)
     return loadFromFile(path);
 }
 
-Vertex3f Board::getPosForTileAt(int col, int row)
+Vertex3f Board::getPosForTile(HexTile *tile, int col, int row)
 {
     Vertex3f pos;
+    float w = tile->getWidth();
+    float d = tile->getDepth() - 0.7f;
 
     // center - boardwidth/2 + tilewidth*col
-    pos.x = (width * -1.0f) + (col * 2.0f) + (row % 2);
+    pos.x = 0 - ( width * (w/2) ) + (col * w) + (row % 2);
     pos.y = 0.0f;
     // center - boardheight/2 - tiledepth/2 + row*tiledepth
-    pos.z = 0.85f - (height * 0.85f) + (row * 1.7f);
+    pos.z = (d/2) - ( height * (d/2) ) + (row * d);
 
     return pos;
 }
@@ -150,46 +152,46 @@ void Board::generate()
             case 'X':
                 newTile->setFixedPosition(true);
             case 'x':
-                newTile->setType(HEX_TILE_TYPE_WATER);
+                newTile->setType(HEXTILE_TYPE_WATER);
                 break;
             case 'E': // weed
                 newTile->setFixedPosition(true);
             case 'e':
-                newTile->setType(HEX_TILE_TYPE_WEED);
+                newTile->setType(HEXTILE_TYPE_WEED);
                 break;
             case 'S': // sheep
                 newTile->setFixedPosition(true);
             case 's':
-                newTile->setType(HEX_TILE_TYPE_SHEEP);
+                newTile->setType(HEXTILE_TYPE_SHEEP);
                 break;
             case 'W': // wood
                 newTile->setFixedPosition(true);
             case 'w':
-                newTile->setType(HEX_TILE_TYPE_WOOD);
+                newTile->setType(HEXTILE_TYPE_WOOD);
                 break;
             case 'C': // clay
                 newTile->setFixedPosition(true);
             case 'c':
-                newTile->setType(HEX_TILE_TYPE_CLAY);
+                newTile->setType(HEXTILE_TYPE_CLAY);
                 break;
             case 'G': // gold
                 newTile->setFixedPosition(true);
             case 'g':
-                newTile->setType(HEX_TILE_TYPE_GOLD);
+                newTile->setType(HEXTILE_TYPE_GOLD);
                 break;
             case 'O': // ore
                 newTile->setFixedPosition(true);
             case 'o':
-                newTile->setType(HEX_TILE_TYPE_ORE);
+                newTile->setType(HEXTILE_TYPE_ORE);
                 break;
             case 'D': // desert
-                newTile->setType(HEX_TILE_TYPE_DESERT);
+                newTile->setType(HEXTILE_TYPE_DESERT);
                 break;
             default:
                 continue;
         }
 
-        pos = getPosForTileAt(col, row);
+        pos = getPosForTile(newTile, col, row);
         newTile->setPos(pos.x, pos.y, pos.z);
 
         boardTiles.insert(boardTiles.begin(), newTile);
