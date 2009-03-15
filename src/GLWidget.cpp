@@ -30,6 +30,7 @@
 #define CAM_ZOOM_DELTA          1
 #define CAM_MAX_Y_ANGLE         (0.49*M_PI)      // max 90 degree
 #define CAM_MIN_Y_ANGLE         0.1 
+#define CAM_FOV                 65.0
 
 GLWidget::GLWidget(Game *_game, QWidget *parent)
     : QGLWidget(parent), game(_game)
@@ -107,7 +108,7 @@ void GLWidget::resizeGL(int width, int height)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, (GLfloat) width / (GLfloat) height, 1.0, 1024.0);
+    gluPerspective(CAM_FOV, (GLfloat) width / (GLfloat) height, 1.0, 1024.0);
 
     glMatrixMode(GL_MODELVIEW);
     updateGL();
