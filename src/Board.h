@@ -42,6 +42,7 @@ class Board
         void generate();
         bool loadFromFile(const QString&);
         bool loadByName(const QString&);
+        void getIndexOfTileAtMousePos(QPoint);
 
     protected:
         Vertex3f getPosForTile(HexTile*, int col, int row);

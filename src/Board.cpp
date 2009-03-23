@@ -47,6 +47,36 @@ void Board::render()
         ((HexTile*)boardTiles.at(i))->draw();
 }
 
+void Board::getIndexOfTileAtMousePos(QPoint mousePos)
+{
+    QList<GLuint> hits;
+    GLWidget *widget = game->getGLWidget();
+
+    widget->beginGLSelection(mousePos);
+
+    for(int i = 0; i < boardTiles.size(); ++i)
+    {
+        glLoadName(i);
+        ((HexTile*)boardTiles.at(i))->draw();
+    }
+
+    hits = widget->endGLSelection();
+
+    // test the picking mechanism by deleting clicked tiles
+    // this ought to be removed when picking is implemented
+    // fully
+
+    for(int i = 0; i < hits.size(); ++i)
+    {
+        delete boardTiles.takeAt(hits.at(i));
+        widget->updateGL();
+        break;
+        qDebug() << "Tile hit" << hits.at(i);
+    }
+
+    qDebug() << "tiles at mouse pos" << hits.size();
+}
+
 // load a board from a plain textfile
 // See MAPFORMAT for a description of the
 // file format.

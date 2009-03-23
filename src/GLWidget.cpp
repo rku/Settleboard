@@ -117,7 +117,13 @@ void GLWidget::resizeGL(int width, int height)
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
     // reset last mouse position
-    if(event->type() & QEvent::MouseButtonRelease)
+    if(event->type() & QEvent::MouseButtonPress &&
+        event->button() & Qt::LeftButton)
+    {
+        qDebug() << "Mouse pressed";
+        game->getBoard()->getIndexOfTileAtMousePos(event->pos());
+    }
+    else if(event->type() & QEvent::MouseButtonRelease)
     {
         lastMousePos.setX(0);
         lastMousePos.setY(0);
@@ -177,20 +183,40 @@ void GLWidget::beginGLSelection(QPoint pos)
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluPickMatrix( (GLdouble)pos.x(), (GLdouble) (viewport[3] - pos.y()),
-        5.0, 5.0, viewport);
-    gluOrtho2D(0.0, 3.0, 0.0, 3.0);
+    gluPickMatrix(
+        (GLdouble) pos.x(),
+        (GLdouble) (viewport[3] - pos.y()),
+        1.0, 1.0,
+        viewport);
+    gluPerspective(CAM_FOV, (GLfloat) width() / (GLfloat) height(), 1.0, 1024.0);
+
+    glMatrixMode(GL_MODELVIEW);
 }
 
 QList<GLuint> GLWidget::endGLSelection()
 {
     GLint c;
+    GLuint *hit_ptr;
     QList<GLuint> hits;
 
+    glMatrixMode(GL_PROJECTION);
     glPopMatrix();
+
     glFlush();
 
     c = glRenderMode(GL_RENDER);
+
+    hit_ptr = (GLuint *)selectionBuffer;
+    for(int i = 0; i < c; i++)
+    {
+        GLuint names = *hit_ptr;
+        hit_ptr += 3; // skip z values for now
+        for(GLuint j = 0; j < names; ++j)
+        {
+            hits.append(*hit_ptr);
+            hit_ptr++;
+        }
+    }
 
     return hits;
 }
