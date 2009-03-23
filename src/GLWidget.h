@@ -23,6 +23,8 @@
 
 #include <QGLWidget>
 
+#define GL_SELBUF_SIZE      512
+
 class Game;
 
 class GLWidget : public QGLWidget
@@ -35,6 +37,8 @@ class GLWidget : public QGLWidget
 
         QSize minimumSizeHint() const;
         QSize sizeHint() const;
+        void beginGLSelection(QPoint);
+        QList<GLuint> endGLSelection();
 
     public slots:
 
@@ -57,7 +61,8 @@ class GLWidget : public QGLWidget
         GLdouble cameraDistance;
         GLdouble cameraMinDistance;
         GLdouble cameraMaxDistance;
-        QPoint lastMousePos;
+        QPoint   lastMousePos;
+        GLuint   selectionBuffer[GL_SELBUF_SIZE];
  };
 
  #endif

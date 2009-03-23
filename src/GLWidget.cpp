@@ -161,3 +161,37 @@ void GLWidget::wheelEvent(QWheelEvent *event)
     updateGL();
 }
 
+void GLWidget::beginGLSelection(QPoint pos)
+{
+    GLint viewport[4];
+
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    glSelectBuffer(GL_SELBUF_SIZE, selectionBuffer);
+
+    (void) glRenderMode(GL_SELECT);
+
+    glInitNames();
+    glPushName(-1);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluPickMatrix( (GLdouble)pos.x(), (GLdouble) (viewport[3] - pos.y()),
+        5.0, 5.0, viewport);
+    gluOrtho2D(0.0, 3.0, 0.0, 3.0);
+}
+
+QList<GLuint> GLWidget::endGLSelection()
+{
+    GLint c;
+    QList<GLuint> hits;
+
+    glPopMatrix();
+    glFlush();
+
+    c = glRenderMode(GL_RENDER);
+
+    return hits;
+}
+
