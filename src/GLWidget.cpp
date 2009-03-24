@@ -86,6 +86,7 @@ void GLWidget::initializeGL()
 void GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -108,7 +109,7 @@ void GLWidget::resizeGL(int width, int height)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(CAM_FOV, (GLfloat) width / (GLfloat) height, 1.0, 1024.0);
+    setPerspective();
 
     glMatrixMode(GL_MODELVIEW);
     updateGL();
@@ -167,6 +168,11 @@ void GLWidget::wheelEvent(QWheelEvent *event)
     updateGL();
 }
 
+void GLWidget::setPerspective()
+{
+    gluPerspective(CAM_FOV, (GLfloat) width() / (GLfloat) height(), 1.0, 1024.0);
+}
+
 void GLWidget::beginGLSelection(QPoint pos)
 {
     GLint viewport[4];
@@ -188,7 +194,7 @@ void GLWidget::beginGLSelection(QPoint pos)
         (GLdouble) (viewport[3] - pos.y()),
         1.0, 1.0,
         viewport);
-    gluPerspective(CAM_FOV, (GLfloat) width() / (GLfloat) height(), 1.0, 1024.0);
+    setPerspective();
 
     glMatrixMode(GL_MODELVIEW);
 }
