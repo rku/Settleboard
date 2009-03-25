@@ -29,7 +29,8 @@ HEADERS = src/GLWidget.h \
           src/PrefsForm.h \
           src/Player.h \
           src/Building.h \
-          src/OBJGLLoader.h
+          src/OBJGLLoader.h \
+          src/CrossRoad.h
 
 SOURCES = src/GLWidget.cpp \
           src/Game.cpp \
@@ -48,5 +49,6 @@ SOURCES = src/GLWidget.cpp \
           src/PrefsForm.cpp \
           src/Player.cpp \
           src/Building.cpp \
-          src/OBJGLLoader.cpp
+          src/OBJGLLoader.cpp \
+          src/CrossRoad.cpp
 

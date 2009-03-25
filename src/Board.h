@@ -29,6 +29,7 @@
 #include "GLTypes.h"
 
 class Game;
+class CrossRoad;
 
 #define BOARD_MAX_TILES     512 
 
@@ -53,6 +54,7 @@ class Board
         unsigned int width;
         unsigned int height;
         char tileData[BOARD_MAX_TILES];
+        QList<CrossRoad> crossRoads;
         QString name;
         QString author;
         QString boardFilesPath;
