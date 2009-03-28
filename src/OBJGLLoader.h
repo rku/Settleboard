@@ -36,7 +36,7 @@ typedef struct _OBJ {
     QString name;
     QVector<Vertex3f> vertices;
     QVector<Vertex3f> vertexNormals;
-    QList<GLVertexGroup> vertexGroups;
+    QList<VertexGroup> vertexGroups;
     QVector<Vertex2f> textureCoords;
     QList<GLModelFace> glModelFaces;
 } OBJ;

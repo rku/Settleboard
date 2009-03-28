@@ -92,10 +92,9 @@ OBJ *OBJGLLoader::load(QString filename)
         {
             if(parts.size() >= 3)
             {
-                GLVertexGroup vertexGroup;
+                VertexGroup vertexGroup;
 
                 vertexGroup.name = parts.at(1);
-                qDebug() << vertexGroup.name;
 
                 for(int i = 2; i < parts.size(); i++)
                     vertexGroup.indices.append(parts.at(i).toInt());

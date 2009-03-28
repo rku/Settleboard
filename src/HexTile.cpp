@@ -85,3 +85,25 @@ const QString HexTile::getType()
     return type;
 }
 
+Vertex3f HexTile::getEdgeVertex(int which)
+{
+    QString name;
+    QList<Vertex3f> vertices;
+
+    switch(which)
+    {
+        case HEXTILE_EDGE_TOP_LEFT: name = "CROSS_TL"; break;
+        case HEXTILE_EDGE_TOP_RIGHT: name = "CROSS_TR"; break;
+        case HEXTILE_EDGE_MIDDLE_LEFT: name = "CROSS_ML"; break;
+        case HEXTILE_EDGE_MIDDLE_RIGHT: name = "CROSS_RL"; break;
+        case HEXTILE_EDGE_BOTTOM_LEFT: name = "CROSS_BL"; break;
+        case HEXTILE_EDGE_BOTTOM_RIGHT: name = "CROSS_BR"; break;
+        default: Q_ASSERT(false);
+    }
+
+    vertices = getVerticesOfGroupWithName(name);
+    Q_ASSERT(vertices.size() > 0);
+
+    return vertices.at(0);
+}
+

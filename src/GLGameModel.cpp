@@ -213,7 +213,7 @@ GLfloat GLGameModel::getDepth()
     return zMax - zMin;
 }
 
-bool GLGameModel::getVertexGroupWithName(QString name, GLVertexGroup &group)
+bool GLGameModel::getVertexGroupWithName(QString name, VertexGroup &group)
 {
     for(int i = 0; i < vertexGroups.size(); i++)
     {
@@ -225,5 +225,21 @@ bool GLGameModel::getVertexGroupWithName(QString name, GLVertexGroup &group)
     }
 
     return false;
+}
+
+QList<Vertex3f> GLGameModel::getVerticesOfGroupWithName(QString name)
+{
+    VertexGroup group;
+    QList<Vertex3f> list;
+
+    if(!getVertexGroupWithName(name, group)) return list;
+
+    for(int i = 0; i < group.indices.size(); i++)
+    {
+        if(group.indices.at(i) >= (unsigned int)vertices.size()) continue;
+        list.append(vertices.at(group.indices.at(i)));
+    }
+
+    return list;
 }
 
