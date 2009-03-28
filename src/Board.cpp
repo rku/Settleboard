@@ -46,6 +46,12 @@ void Board::render()
     // render every single tile
     for(int i = 0; i < boardTiles.size(); ++i)
         ((HexTile*)boardTiles.at(i))->draw();
+
+    // test robber :)
+    GLGameModel *robber = new GLGameModel(game);
+    robber->load("Data/Objects/robber.obj");
+    robber->draw();
+    delete robber;
 }
 
 void Board::getIndexOfTileAtMousePos(QPoint mousePos)
@@ -148,10 +154,10 @@ Vertex3f Board::getPosForTile(HexTile *tile, int col, int row)
 {
     Vertex3f pos;
     float w = tile->getWidth();
-    float d = tile->getDepth() - 0.7f;
+    float d = tile->getDepth() - 0.6f;
 
     // center - boardwidth/2 + tilewidth*col
-    pos.x = 0 - ( width * (w/2) ) + (col * w) + (row % 2);
+    pos.x = 0 - ( width * (w/2) ) + (col * w) + (row % 2) * (w/2);
     pos.y = 0.0f;
     // center - boardheight/2 - tiledepth/2 + row*tiledepth
     pos.z = (d/2) - ( height * (d/2) ) + (row * d);

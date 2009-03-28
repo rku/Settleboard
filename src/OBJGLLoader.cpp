@@ -55,6 +55,7 @@ OBJ *OBJGLLoader::load(QString filename)
     QFile file(filename);
     QFileInfo finfo(file);
     QString texFilename;
+    GLfloat vMax = 0.0f;
     OBJ obj;
     int id;
 
@@ -117,6 +118,9 @@ OBJ *OBJGLLoader::load(QString filename)
 
             if(parts.at(0).size() == 1)
             {
+                GLfloat tm = qMax( v.x, qMax( v.y, v.z ));
+                if(tm > vMax) vMax = tm; // track max vertex for scaling
+
                 obj.vertices.append(v);
             }
             else switch(parts.at(0).at(1).toAscii())
@@ -174,6 +178,20 @@ OBJ *OBJGLLoader::load(QString filename)
     }
 
     file.close();
+
+    // scale model to fit -1,1,-1,1 cube
+    if(vMax > 0.0f)
+    {
+        qDebug() << "Scaling model by factor" << (1 / vMax);
+        for(int i = 0; i < obj.vertices.size(); i++)
+        {
+            Vertex3f v = obj.vertices.at(i);
+            v.x /= vMax;
+            v.y /= vMax;
+            v.z /= vMax;
+            obj.vertices.replace(i, v);
+        }
+    }
 
     // add model to cache
     obj.name = finfo.absoluteFilePath();
