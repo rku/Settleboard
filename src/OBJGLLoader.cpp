@@ -87,8 +87,25 @@ OBJ *OBJGLLoader::load(QString filename)
         parts = line.split(" ", QString::SkipEmptyParts);
         if(parts.size() < 2) continue;
 
+        // vertex group
+        if(parts.at(0) == "vgroup")
+        {
+            if(parts.size() >= 3)
+            {
+                GLVertexGroup vertexGroup;
+
+                vertexGroup.name = parts.at(1);
+                qDebug() << vertexGroup.name;
+
+                for(int i = 2; i < parts.size(); i++)
+                    vertexGroup.indices.append(parts.at(i).toInt());
+
+                obj.vertexGroups.append(vertexGroup);
+            }
+
+        }
         // vertex data
-        if(!parts.at(0).isEmpty() && parts.at(0).at(0) == 'v')
+        else if(!parts.at(0).isEmpty() && parts.at(0).at(0) == 'v')
         {
             Vertex3f v;
 

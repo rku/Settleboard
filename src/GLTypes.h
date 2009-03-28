@@ -41,4 +41,9 @@ typedef struct _GLModelFace {
     QVector<GLuint> textureCoordIds; 
 } GLModelFace;
 
+typedef struct _GLVertexGroup {
+    QString name;
+    QList<GLuint> indices;
+} GLVertexGroup;
+
 #endif /* GLTYPES_H */

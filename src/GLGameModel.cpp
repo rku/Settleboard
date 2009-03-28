@@ -127,6 +127,7 @@ void GLGameModel::load(QString filename, QColor objColor)
 
     vertices      = obj->vertices;
     vertexNormals = obj->vertexNormals;
+    vertexGroups  = obj->vertexGroups;
     textureCoords = obj->textureCoords;
     glModelFaces  = obj->glModelFaces;
 
@@ -210,5 +211,19 @@ GLfloat GLGameModel::getDepth()
     }   
 
     return zMax - zMin;
+}
+
+bool GLGameModel::getVertexGroupWithName(QString name, GLVertexGroup &group)
+{
+    for(int i = 0; i < vertexGroups.size(); i++)
+    {
+        if(vertexGroups.at(i).name == name)
+        {
+            group = vertexGroups.at(i);
+            return true;
+        }
+    }
+
+    return false;
 }
 

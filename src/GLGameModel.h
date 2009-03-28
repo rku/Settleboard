@@ -85,6 +85,8 @@ class GLGameModel : public QObject
         GLfloat getHeight();
         GLfloat getDepth();
 
+        bool getVertexGroupWithName(QString,GLVertexGroup&);
+
     protected:
         void create();
         void transform();
@@ -97,6 +99,7 @@ class GLGameModel : public QObject
         QString name;
         QVector<Vertex3f> vertices;
         QVector<Vertex3f> vertexNormals;
+        QList<GLVertexGroup> vertexGroups;
         QVector<Vertex2f> textureCoords;
         QList<GLModelFace> glModelFaces;
         GLfloat posX;
