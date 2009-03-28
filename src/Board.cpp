@@ -20,6 +20,7 @@
 
 #include "Board.h"
 #include "Game.h"
+#include "CrossRoad.h"
 
 #include <math.h>
 
