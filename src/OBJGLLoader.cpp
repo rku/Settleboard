@@ -98,7 +98,7 @@ OBJ *OBJGLLoader::load(QString filename)
                 vertexGroup.name = parts.at(1);
 
                 for(int i = 2; i < parts.size(); i++)
-                    vertexGroup.indices.append(parts.at(i).toInt());
+                    vertexGroup.indices.append(parts.at(i).toInt()-1);
 
                 obj.vertexGroups.append(vertexGroup);
             }

@@ -224,6 +224,7 @@ bool GLGameModel::getVertexGroupWithName(QString name, VertexGroup &group)
         }
     }
 
+    qDebug() << "Unknown vertex group: " << name;
     return false;
 }
 

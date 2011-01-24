@@ -26,13 +26,9 @@
 Game::Game()
 {
     textureManager = new TextureManager(this);
-
     ui = new GameUI(this);
-
     rules = new GameRules(this);
-
     board = new Board(this);
-
     objGLLoader = new OBJGLLoader();
 }
 

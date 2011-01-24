@@ -80,30 +80,35 @@ void HexTile::setType(const unsigned int _type)
     load(model.arg(modelName), color);
 }
 
-const QString HexTile::getType()
+unsigned int HexTile::getType()
 {
     return type;
 }
 
-Vertex3f HexTile::getEdgeVertex(int which)
+Vertex3f HexTile::getCornerVertex(int which)
 {
     QString name;
     QList<Vertex3f> vertices;
 
     switch(which)
     {
-        case HEXTILE_EDGE_TOP_LEFT:     name = "CROSS_TL"; break;
-        case HEXTILE_EDGE_TOP_RIGHT:    name = "CROSS_TR"; break;
-        case HEXTILE_EDGE_MIDDLE_LEFT:  name = "CROSS_ML"; break;
-        case HEXTILE_EDGE_MIDDLE_RIGHT: name = "CROSS_RL"; break;
-        case HEXTILE_EDGE_BOTTOM_LEFT:  name = "CROSS_BL"; break;
-        case HEXTILE_EDGE_BOTTOM_RIGHT: name = "CROSS_BR"; break;
+        case HEXTILE_CORNER1:   name = "CORNER1"; break;
+        case HEXTILE_CORNER2:   name = "CORNER2"; break;
+        case HEXTILE_CORNER3:   name = "CORNER3"; break;
+        case HEXTILE_CORNER4:   name = "CORNER4"; break;
+        case HEXTILE_CORNER5:   name = "CORNER5"; break;
+        case HEXTILE_CORNER6:   name = "CORNER6"; break;
         default: Q_ASSERT(false);
     }
 
     vertices = getVerticesOfGroupWithName(name);
     Q_ASSERT(vertices.size() > 0);
 
-    return vertices.at(0);
+    Vertex3f v = vertices.at(0);
+    v.x += posX;
+    v.y += posY;
+    v.z += posZ;
+
+    return v;
 }
 

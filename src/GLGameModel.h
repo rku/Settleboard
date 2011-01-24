@@ -55,6 +55,7 @@ class GLGameModel : public QObject
         GLfloat getPosY() { return posY; }
         void setPosZ(GLfloat i) { posZ = i; }
         GLfloat getPosZ() { return posZ; }
+        void setPos(Vertex3f v) { setPos(v.x, v.y, v.z); }
         void setPos(GLfloat x, GLfloat y, GLfloat z)
             { setPosX(x); setPosY(y); setPosZ(z); }
 

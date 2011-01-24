@@ -20,9 +20,11 @@
 
 #include "Board.h"
 #include "Game.h"
-#include "CrossRoad.h"
+#include "Crossroad.h"
 
 #include <math.h>
+
+static GLGameModel *robber = NULL;
 
 Board::Board(Game *_game) : game(_game)
 {
@@ -47,11 +49,12 @@ void Board::render()
     for(int i = 0; i < boardTiles.size(); ++i)
         ((HexTile*)boardTiles.at(i))->draw();
 
-    // test robber :)
-    GLGameModel *robber = new GLGameModel(game);
-    robber->load("Data/Objects/robber.obj");
+    if(!robber)
+    {
+        robber = new GLGameModel(game);
+        robber->load("Data/Objects/robber.obj");
+    }
     robber->draw();
-    delete robber;
 }
 
 void Board::getIndexOfTileAtMousePos(QPoint mousePos)
@@ -75,10 +78,19 @@ void Board::getIndexOfTileAtMousePos(QPoint mousePos)
 
     for(int i = 0; i < hits.size(); ++i)
     {
-        delete boardTiles.takeAt(hits.at(i));
+        HexTile *tile = boardTiles.at(hits.at(i));
+
+        if(robber) robber->setPos(tile->getCornerVertex(HEXTILE_CORNER1));
+
+        Crossroad *c = getCrossroadNearPosition(tile->getCornerVertex(HEXTILE_CORNER1));
+        qDebug() << "Crossroad of" << c->getTiles().size() << "tiles";
+        for(int b=0; b<c->getTiles().size();b++)
+        {
+            qDebug() << "A tile of type" << c->getTiles().at(b)->getType();
+        }
         widget->updateGL();
+
         break;
-        qDebug() << "Tile hit" << hits.at(i);
     }
 
     qDebug() << "tiles at mouse pos" << hits.size();
@@ -228,10 +240,51 @@ void Board::generate()
                 continue;
         }
 
+        // set position
         pos = getPosForTile(newTile, col, row);
         newTile->setPos(pos.x, pos.y, pos.z);
 
+#define SETUP_CROSSROAD(_b) if(1) { \
+    Vertex3f _cv = newTile->getCornerVertex(_b); \
+    Crossroad *_cr = getCrossroadNearPosition(_cv, true); \
+    _cr->addTile(newTile); }
+
+        // setup corners
+        SETUP_CROSSROAD(HEXTILE_CORNER1);
+        SETUP_CROSSROAD(HEXTILE_CORNER2);
+        SETUP_CROSSROAD(HEXTILE_CORNER3);
+        SETUP_CROSSROAD(HEXTILE_CORNER4);
+        SETUP_CROSSROAD(HEXTILE_CORNER5);
+        SETUP_CROSSROAD(HEXTILE_CORNER6);
+
+        // add tile
         boardTiles.insert(boardTiles.begin(), newTile);
     }
+
+    qDebug() << "Board generated." << crossroads.size() << "crossroads" <<
+        "and" << boardTiles.size() << "board tiles";
+}
+
+Crossroad *Board::getCrossroadNearPosition(Vertex3f pos, bool create)
+{
+    for(int i = 0; i < crossroads.size(); i++)
+    {
+        Crossroad *a = crossroads.at(i);
+        Vertex3f v = a->getVertex();
+
+        v.x -= pos.x; v.y -= pos.y; v.z -= pos.z;
+        if(qAbs(v.x) < 0.1f && qAbs(v.y) < 0.1f && qAbs(v.z) < 0.1f) return a;
+    }
+
+    // not found
+    Crossroad *c = NULL;
+
+    if(create)
+    {
+        c = new Crossroad(pos);
+        crossroads.append(c);
+    }
+
+    return c;
 }
 

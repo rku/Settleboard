@@ -29,7 +29,7 @@
 #include "GLTypes.h"
 
 class Game;
-class CrossRoad;
+class Crossroad;
 
 #define BOARD_MAX_TILES     512 
 
@@ -47,6 +47,7 @@ class Board
 
     protected:
         Vertex3f getPosForTile(HexTile*, int col, int row);
+        Crossroad *getCrossroadNearPosition(Vertex3f, bool create = false);
 
         Game *game;
         QList<HexTile*> boardTiles;
@@ -54,7 +55,7 @@ class Board
         unsigned int width;
         unsigned int height;
         char tileData[BOARD_MAX_TILES];
-        QList<CrossRoad> crossRoads;
+        QList<Crossroad*> crossroads;
         QString name;
         QString author;
         QString boardFilesPath;

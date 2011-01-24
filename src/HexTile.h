@@ -27,21 +27,21 @@
 
 class Game;
 
-#define HEXTILE_TYPE_WOOD    0x00 
-#define HEXTILE_TYPE_WATER   0x01
-#define HEXTILE_TYPE_WEED    0x02
-#define HEXTILE_TYPE_SHEEP   0x03
-#define HEXTILE_TYPE_DESERT  0x04
-#define HEXTILE_TYPE_ORE     0x05
-#define HEXTILE_TYPE_CLAY    0x06
-#define HEXTILE_TYPE_GOLD    0x07
+#define HEXTILE_TYPE_WOOD   0x00 
+#define HEXTILE_TYPE_WATER  0x01
+#define HEXTILE_TYPE_WEED   0x02
+#define HEXTILE_TYPE_SHEEP  0x03
+#define HEXTILE_TYPE_DESERT 0x04
+#define HEXTILE_TYPE_ORE    0x05
+#define HEXTILE_TYPE_CLAY   0x06
+#define HEXTILE_TYPE_GOLD   0x07
 
-#define HEXTILE_EDGE_TOP_LEFT       0x00
-#define HEXTILE_EDGE_TOP_RIGHT      0x01
-#define HEXTILE_EDGE_MIDDLE_LEFT    0x02
-#define HEXTILE_EDGE_MIDDLE_RIGHT   0x03
-#define HEXTILE_EDGE_BOTTOM_LEFT    0x04
-#define HEXTILE_EDGE_BOTTOM_RIGHT   0x05
+#define HEXTILE_CORNER1     0x00
+#define HEXTILE_CORNER2     0x01
+#define HEXTILE_CORNER3     0x02
+#define HEXTILE_CORNER4     0x03
+#define HEXTILE_CORNER5     0x04
+#define HEXTILE_CORNER6     0x05
 
 class HexTile : public GLGameModel
 {
@@ -49,16 +49,16 @@ class HexTile : public GLGameModel
         HexTile(Game*);
         ~HexTile();
         void setType(const unsigned int);
-        const QString getType();
+        unsigned int getType();
         void setFixedPosition(bool b) { fixedPosition = b; }
         bool hasFixedPosition() { return fixedPosition; }
-        Vertex3f getEdgeVertex(int name);
+        Vertex3f getCornerVertex(int name);
 
     private:
         bool isPort;
         bool fixedPosition;
         int number;
-        QString type;
+        unsigned int type;
 };
 
 #endif /* HEX_TILE_H */
