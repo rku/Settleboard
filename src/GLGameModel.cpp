@@ -32,6 +32,7 @@ GLGameModel::GLGameModel(Game *_game)
     created = false;
 
     displayListID = glGenLists(1);
+    borderDisplayListID = glGenLists(1);
 
     posX   = posY 
            = posZ 
@@ -47,6 +48,7 @@ GLGameModel::GLGameModel(Game *_game)
 GLGameModel::~GLGameModel()
 {
     glDeleteLists(displayListID, 1);
+    glDeleteLists(borderDisplayListID, 1);
 }
 
 void GLGameModel::create()
@@ -117,6 +119,8 @@ void GLGameModel::create()
 
     glEndList();
 
+    createBorder();
+
     created = true;
 }
 
@@ -132,6 +136,10 @@ void GLGameModel::load(QString filename, QColor objColor)
     glModelFaces  = obj->glModelFaces;
 
     setColor(objColor);
+}
+
+void GLGameModel::createBorder()
+{
 }
 
 void GLGameModel::draw()

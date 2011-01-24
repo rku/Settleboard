@@ -80,35 +80,30 @@ void HexTile::setType(const unsigned int _type)
     load(model.arg(modelName), color);
 }
 
+void HexTile::draw()
+{
+    GLGameModel::draw();
+}
+
 unsigned int HexTile::getType()
 {
     return type;
 }
 
-Vertex3f HexTile::getCornerVertex(int which)
+QList<Vertex3f> HexTile::getCornerVertices()
 {
-    QString name;
     QList<Vertex3f> vertices;
 
-    switch(which)
-    {
-        case HEXTILE_CORNER1:   name = "CORNER1"; break;
-        case HEXTILE_CORNER2:   name = "CORNER2"; break;
-        case HEXTILE_CORNER3:   name = "CORNER3"; break;
-        case HEXTILE_CORNER4:   name = "CORNER4"; break;
-        case HEXTILE_CORNER5:   name = "CORNER5"; break;
-        case HEXTILE_CORNER6:   name = "CORNER6"; break;
-        default: Q_ASSERT(false);
-    }
-
-    vertices = getVerticesOfGroupWithName(name);
+    vertices = getVerticesOfGroupWithName("CORNERS");
     Q_ASSERT(vertices.size() > 0);
 
-    Vertex3f v = vertices.at(0);
-    v.x += posX;
-    v.y += posY;
-    v.z += posZ;
+    for(int i = 0; i < vertices.size(); i++)
+    {
+        vertices[i].x += posX;
+        vertices[i].y += posY;
+        vertices[i].z += posZ;
+    }
 
-    return v;
+    return vertices;
 }
 

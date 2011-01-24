@@ -1,15 +1,13 @@
 
+#include <QtOpenGL>
+
+#include "Game.h"
 #include "Crossroad.h"
 
-Crossroad::Crossroad(Vertex3f v)
-{
-    northWestCorner = NULL;
-    northEastCorner = NULL;
-    westCorner      = NULL;
-    eastCorner      = NULL;
-    southWestCorner = NULL;
-    southEastCorner = NULL;
+static const double PI = 3.14159265358979323846264338327950288419717;
 
+Crossroad::Crossroad(Game *_game, Vertex3f v) : game(_game)
+{
     setVertex(v);
 }
 
@@ -17,51 +15,46 @@ Crossroad::~Crossroad()
 {
 }
 
-void Crossroad::connectToNorthWestCorner(Crossroad *other)
+void Crossroad::drawCircle()
 {
-    if(northWestCorner == other) return;
+    int n = 20;
+    Vertex3f center = vertex, p1, p2;
+    float r = 0.2f;
+    float gamma = 2 * PI / n;
 
-    northWestCorner = other;
-    if(other != NULL) other->connectToSouthWestCorner(this);
+    p1.y = center.y + 0.05f; p2.y = p1.y;
+
+    game->getGLWidget()->qglColor(Qt::red);
+
+    glPushMatrix();
+    glTranslatef(center.x, p1.y, center.z);
+
+    for(int i = 0; i < n; i++)
+    {
+        p1.x = r * cos(i*gamma);
+        p1.z = r * sin(i*gamma);
+        p2.x = r * cos((i+1)*gamma);
+        p2.z = r * sin((i+1)*gamma);
+
+        glBegin(GL_TRIANGLES);
+        glVertex3f(0.0f, p1.y, 0.0f);
+        glVertex3f(p2.x, p1.y, p2.z);
+        glVertex3f(p1.x, p1.y, p1.z);
+        glEnd();
+    }
+
+    glPopMatrix();
 }
 
-void Crossroad::connectToWestCorner(Crossroad *other)
+void Crossroad::addTile(HexTile *tile)
 {
-    if(westCorner == other) return;
-
-    westCorner = other;
-    if(other != NULL) other->connectToEastCorner(this);
+    Q_ASSERT(tiles.size() < 3);
+    tiles.append(tile);
 }
 
-void Crossroad::connectToNorthEastCorner(Crossroad *other)
+void Crossroad::addNeighbour(Crossroad *neighbour)
 {
-    if(northEastCorner == other) return;
-
-    northEastCorner = other;
-    if(other != NULL) other->connectToNorthWestCorner(this);
-}
-
-void Crossroad::connectToSouthWestCorner(Crossroad *other)
-{
-    if(southWestCorner == other) return;
-
-    southWestCorner = other;
-    if(other != NULL) other->connectToNorthEastCorner(this);
-}
-
-void Crossroad::connectToEastCorner(Crossroad *other)
-{
-    if(eastCorner == other) return;
-
-    eastCorner = other;
-    if(other != NULL) other->connectToWestCorner(this);
-}
-
-void Crossroad::connectToSouthEastCorner(Crossroad *other)
-{
-    if(southEastCorner == other) return;
-
-    southEastCorner = other;
-    if(other != NULL) other->connectToNorthWestCorner(this);
+    Q_ASSERT(neighbours.size() < 3);
+    neighbours.append(neighbour);
 }
 

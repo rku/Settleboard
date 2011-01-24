@@ -91,9 +91,11 @@ class GLGameModel : public QObject
 
     protected:
         void create();
+        void createBorder();
         void transform();
 
         GLuint displayListID;
+        GLuint borderDisplayListID;
         Game *game;
         bool created;
         QString name;

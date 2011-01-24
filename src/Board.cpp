@@ -41,19 +41,24 @@ void Board::freeObjects()
 {
     while(!numberChips.isEmpty()) delete numberChips.takeFirst();
     while(!boardTiles.isEmpty()) delete boardTiles.takeFirst();
+    while(!crossroads.isEmpty()) delete crossroads.takeFirst();
 }
 
 void Board::render()
 {
     // render every single tile
     for(int i = 0; i < boardTiles.size(); ++i)
-        ((HexTile*)boardTiles.at(i))->draw();
+        boardTiles.at(i)->draw();
+
+    for(int i = 0; i < crossroads.size(); ++i)
+        crossroads.at(i)->drawCircle();
 
     if(!robber)
     {
         robber = new GLGameModel(game);
         robber->load("Data/Objects/robber.obj");
     }
+
     robber->draw();
 }
 
@@ -80,9 +85,9 @@ void Board::getIndexOfTileAtMousePos(QPoint mousePos)
     {
         HexTile *tile = boardTiles.at(hits.at(i));
 
-        if(robber) robber->setPos(tile->getCornerVertex(HEXTILE_CORNER1));
+        if(robber) robber->setPos(tile->getCornerVertices()[0]);
 
-        Crossroad *c = getCrossroadNearPosition(tile->getCornerVertex(HEXTILE_CORNER1));
+        Crossroad *c = getCrossroadNearPosition(tile->getCornerVertices()[0]);
         qDebug() << "Crossroad of" << c->getTiles().size() << "tiles";
         for(int b=0; b<c->getTiles().size();b++)
         {
@@ -244,18 +249,14 @@ void Board::generate()
         pos = getPosForTile(newTile, col, row);
         newTile->setPos(pos.x, pos.y, pos.z);
 
-#define SETUP_CROSSROAD(_b) if(1) { \
-    Vertex3f _cv = newTile->getCornerVertex(_b); \
-    Crossroad *_cr = getCrossroadNearPosition(_cv, true); \
-    _cr->addTile(newTile); }
-
-        // setup corners
-        SETUP_CROSSROAD(HEXTILE_CORNER1);
-        SETUP_CROSSROAD(HEXTILE_CORNER2);
-        SETUP_CROSSROAD(HEXTILE_CORNER3);
-        SETUP_CROSSROAD(HEXTILE_CORNER4);
-        SETUP_CROSSROAD(HEXTILE_CORNER5);
-        SETUP_CROSSROAD(HEXTILE_CORNER6);
+        // setup crossroads
+        QList<Vertex3f> vertices = newTile->getCornerVertices();
+        Q_ASSERT(vertices.size() == 6);
+        for(int i = 0; i < vertices.size(); i++)
+        {
+            Crossroad *cr = getCrossroadNearPosition(vertices.at(i), true);
+            cr->addTile(newTile);
+        }
 
         // add tile
         boardTiles.insert(boardTiles.begin(), newTile);
@@ -281,7 +282,7 @@ Crossroad *Board::getCrossroadNearPosition(Vertex3f pos, bool create)
 
     if(create)
     {
-        c = new Crossroad(pos);
+        c = new Crossroad(game, pos);
         crossroads.append(c);
     }
 
