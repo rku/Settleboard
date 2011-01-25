@@ -25,7 +25,7 @@ void Crossroad::createSelectionCircle()
 
     int n = 10;
     float r = 0.15f;
-    float gamma = 2 * PI / n;
+    float gamma = 2 * M_PI / n;
 
     for(int i = 0; i < n; i++)
     {
