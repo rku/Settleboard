@@ -30,8 +30,14 @@
 
 class Game;
 class Crossroad;
+class Roadway;
 
 #define BOARD_MAX_TILES     512 
+
+#define BOARD_STATE_NORMAL          0x00
+#define BOARD_STATE_SET_BUILDING    0x01
+#define BOARD_STATE_SET_ROAD        0x02
+#define BOARD_STATE_ROLL            0x04
 
 class Board
 {
@@ -48,14 +54,17 @@ class Board
     protected:
         Vertex3f getPosForTile(HexTile*, int col, int row);
         Crossroad *getCrossroadNearPosition(Vertex3f, bool create = false);
+        Roadway *getRoadwayNear(Vertex3f, Vertex3f, bool create = false);
 
         Game *game;
         QList<HexTile*> boardTiles;
         QList<NumberChip*> numberChips;
         unsigned int width;
         unsigned int height;
+        unsigned int state;
         char tileData[BOARD_MAX_TILES];
         QList<Crossroad*> crossroads;
+        QList<Roadway*> roadways;
         QString name;
         QString author;
         QString boardFilesPath;

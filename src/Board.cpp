@@ -21,6 +21,7 @@
 #include "Board.h"
 #include "Game.h"
 #include "Crossroad.h"
+#include "Roadway.h"
 
 #include <math.h>
 
@@ -28,6 +29,7 @@ static GLGameModel *robber = NULL;
 
 Board::Board(Game *_game) : game(_game)
 {
+    state               = BOARD_STATE_NORMAL;
     boardFilesPath      = "Data/Boards/";
     boardFilesSuffix    = ".rsm";
 }
@@ -40,18 +42,37 @@ Board::~Board()
 void Board::freeObjects()
 {
     while(!numberChips.isEmpty()) delete numberChips.takeFirst();
-    while(!boardTiles.isEmpty()) delete boardTiles.takeFirst();
-    while(!crossroads.isEmpty()) delete crossroads.takeFirst();
+    while(!boardTiles.isEmpty() ) delete boardTiles.takeFirst();
+    while(!crossroads.isEmpty() ) delete crossroads.takeFirst();
+    while(!roadways.isEmpty()   ) delete roadways.takeFirst();
 }
 
 void Board::render()
 {
-    // render every single tile
     for(int i = 0; i < boardTiles.size(); ++i)
         boardTiles.at(i)->draw();
 
-    for(int i = 0; i < crossroads.size(); ++i)
-        crossroads.at(i)->drawCircle();
+    // render every single tile
+    if(state == BOARD_STATE_NORMAL)
+    {
+        for(int i = 0; i < crossroads.size(); ++i)
+            crossroads.at(i)->draw();
+
+        for(int i = 0; i < roadways.size(); ++i)
+            roadways.at(i)->draw();
+    }
+
+    if(state == BOARD_STATE_SET_BUILDING)
+    {
+        for(int i = 0; i < crossroads.size(); ++i)
+            crossroads.at(i)->drawSelectionCircle();
+    }
+
+    if(state == BOARD_STATE_SET_ROAD)
+    {
+        for(int i = 0; i < roadways.size(); ++i)
+            roadways.at(i)->drawSelectionRect();
+    }
 
     if(!robber)
     {
@@ -258,6 +279,17 @@ void Board::generate()
             cr->addTile(newTile);
         }
 
+        // setup roadways
+        vertices.append(vertices[0]);
+        for(int i = 1; i < vertices.size(); i++)
+        {
+            // connect every corner of the tile
+            getRoadwayNear(vertices.at(i-1), vertices.at(i), true);
+        }
+        vertices.removeLast();
+
+        qDebug() << "ROADWAYS:" << roadways.size();
+
         // add tile
         boardTiles.insert(boardTiles.begin(), newTile);
     }
@@ -287,5 +319,32 @@ Crossroad *Board::getCrossroadNearPosition(Vertex3f pos, bool create)
     }
 
     return c;
+}
+
+Roadway *Board::getRoadwayNear(Vertex3f a, Vertex3f b, bool create)
+{
+    for(int i = 0; i < roadways.size(); i++)
+    {
+        Roadway *r = roadways.at(i);
+        Vertex3f ra = r->getVertices().at(0);
+        Vertex3f rb = r->getVertices().at(1);
+
+#define COMP_ROADWAY_VECS(c,d) if(1) { \
+    if(qAbs(a.x-c.x) + qAbs(a.y-c.y) + qAbs(a.z-c.z) + \
+        qAbs(b.x-d.x) + qAbs(b.y-d.y) + qAbs(b.z-d.z) < 0.5f) return r; }
+
+        COMP_ROADWAY_VECS(ra, rb);
+        COMP_ROADWAY_VECS(rb, ra);
+    }
+
+    Roadway *newR = NULL;
+
+    if(create)
+    {
+        newR = new Roadway(game, a, b);
+        roadways.append(newR);
+    }
+
+    return newR;
 }
 

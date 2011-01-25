@@ -36,13 +36,6 @@ class Game;
 #define HEXTILE_TYPE_CLAY   0x06
 #define HEXTILE_TYPE_GOLD   0x07
 
-#define HEXTILE_CORNER1     0x00
-#define HEXTILE_CORNER2     0x01
-#define HEXTILE_CORNER3     0x02
-#define HEXTILE_CORNER4     0x03
-#define HEXTILE_CORNER5     0x04
-#define HEXTILE_CORNER6     0x05
-
 class HexTile : public GLGameModel
 {
     public:

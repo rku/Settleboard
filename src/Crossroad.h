@@ -1,11 +1,13 @@
 
-#ifndef BOARDTILECORNER_H
-#define BOARDTILECORNER_H 1
+#ifndef CROSSROAD_H
+#define CROSSROAD_H 1
 
+#include "GLGameModel.h"
 #include "GLTypes.h"
 
 class HexTile;
 class Game;
+class Roadway;
 
 class Crossroad
 {
@@ -13,7 +15,8 @@ class Crossroad
         Crossroad(Game*, Vertex3f);
         ~Crossroad();
 
-        void drawCircle();
+        void draw();
+        void drawSelectionCircle();
 
         Vertex3f getVertex() { return vertex; }
         void setVertex(Vertex3f v) { vertex = v; }
@@ -24,11 +27,18 @@ class Crossroad
         const QList<Crossroad*> getNeighbours() { return neighbours; }
         void addNeighbour(Crossroad*);
 
+        const QList<Roadway*> getRoadways() { return roadways; }
+        void addRoadway(Roadway*);
+
     private:
+        void createSelectionCircle();
+
         Game *game;
+        GLuint selectionCircleListID;
         Vertex3f vertex;
         QList<HexTile*> tiles;
         QList<Crossroad*> neighbours;
+        QList<Roadway*> roadways;
 };
 
 #endif

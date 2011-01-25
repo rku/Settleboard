@@ -30,7 +30,8 @@ HEADERS = src/GLWidget.h \
           src/Player.h \
           src/Building.h \
           src/OBJGLLoader.h \
-          src/Crossroad.h
+          src/Crossroad.h \
+          src/Roadway.h
 
 SOURCES = src/GLWidget.cpp \
           src/Game.cpp \
@@ -50,5 +51,6 @@ SOURCES = src/GLWidget.cpp \
           src/Player.cpp \
           src/Building.cpp \
           src/OBJGLLoader.cpp \
-          src/Crossroad.cpp
+          src/Crossroad.cpp \
+          src/Roadway.cpp
 

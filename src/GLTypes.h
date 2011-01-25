@@ -23,6 +23,8 @@
 
 #include <QtOpenGL>
 
+static const double PI = 3.14159265358979323846264338327950288419717;
+
 typedef struct _Vertex3f {
     GLfloat x;
     GLfloat y;
