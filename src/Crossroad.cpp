@@ -20,7 +20,7 @@ Crossroad::~Crossroad()
 
 void Crossroad::createSelectionCircle()
 {
-    // create a circle
+    // create a circle of n triangles
     glNewList(selectionCircleListID, GL_COMPILE);
 
     int n = 10;
@@ -31,8 +31,8 @@ void Crossroad::createSelectionCircle()
     {
         glBegin(GL_TRIANGLES);
         glVertex3f(0.0f, 0.0f, 0.0f);
-        glVertex3f(r*cos((i+1)*gamma), 0.0f, r*sin((i+1)*gamma));
-        glVertex3f(r*cos( i   *gamma), 0.0f, r*sin( i   *gamma));
+        glVertex3f(r*qCos((i+1)*gamma), 0.0f, r*qSin((i+1)*gamma));
+        glVertex3f(r*qCos( i   *gamma), 0.0f, r*qSin( i   *gamma));
         glEnd();
     }
 
@@ -43,7 +43,7 @@ void Crossroad::drawSelectionCircle()
 {
     glPushMatrix();
     game->getGLWidget()->qglColor(Qt::red); // FIXME: use player's color
-    glTranslatef(vertex.x, vertex.y + 0.02f, vertex.z);
+    glTranslatef(vertex.x, vertex.y + 0.03f, vertex.z);
     glCallList(selectionCircleListID);
     glPopMatrix();
 }

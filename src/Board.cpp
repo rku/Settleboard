@@ -29,7 +29,7 @@ static GLGameModel *robber = NULL;
 
 Board::Board(Game *_game) : game(_game)
 {
-    state               = BOARD_STATE_NORMAL;
+    state               = BOARD_STATE_SET_BUILDING;
     boardFilesPath      = "Data/Boards/";
     boardFilesSuffix    = ".rsm";
 }
@@ -64,6 +64,9 @@ void Board::render()
 
     if(state == BOARD_STATE_SET_BUILDING)
     {
+        for(int i = 0; i < roadways.size(); ++i)
+            roadways.at(i)->draw();
+
         for(int i = 0; i < crossroads.size(); ++i)
             crossroads.at(i)->drawSelectionCircle();
     }
