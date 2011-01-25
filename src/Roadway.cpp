@@ -19,7 +19,6 @@ void Roadway::createSelectionRect()
 {
     glNewList(selectionRectListID, GL_COMPILE);
 
-    glLineWidth(3.0f);
     glTranslatef(0.0f, 0.01f, 0.0f);
 
     glBegin(GL_LINES);
@@ -37,12 +36,20 @@ void Roadway::drawSelectionRect()
 {
     glPushMatrix();
     game->getGLWidget()->qglColor(Qt::red); // FIXME: use player's color
+    glLineWidth(3.5f);
     glCallList(selectionRectListID);
     glPopMatrix();
 }
 
 void Roadway::draw()
 {
+    // draw roadway lines
+    glPushMatrix();
+    game->getGLWidget()->qglColor(Qt::black);
+    glLineWidth(2.0f);
+    glCallList(selectionRectListID);
+    glPopMatrix();
+
     // draw roads
 }
 
@@ -53,7 +60,7 @@ void Roadway::setVertices(Vertex3f a, Vertex3f b)
     // a roadway between a and b
 
     // calculate the vector between a and b
-    Vertex3f s;
+    /*Vertex3f s;
     s.x = b.x - a.x;
     s.y = b.y - a.y;
     s.z = b.z - a.z;
@@ -62,7 +69,7 @@ void Roadway::setVertices(Vertex3f a, Vertex3f b)
 
     // new points are a + s and b - s
     a.x += s.x; a.y += s.y; a.z += s.z;
-    b.x -= s.x; b.y -= s.y; b.z -= s.z;
+    b.x -= s.x; b.y -= s.y; b.z -= s.z;*/
 
     // add vertices
     vertices.clear();
