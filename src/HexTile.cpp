@@ -90,6 +90,13 @@ unsigned int HexTile::getType()
     return type;
 }
 
+Vertex3f HexTile::getCenterVertex()
+{
+    Vertex3f c;
+    c.x = posX; c.y = posY; c.z = posZ;
+    return c;
+}
+
 QList<Vertex3f> HexTile::getCornerVertices()
 {
     QList<Vertex3f> vertices;

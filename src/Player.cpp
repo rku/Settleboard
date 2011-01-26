@@ -25,14 +25,16 @@
 Player::Player(Game *_game)
     : game(_game)
 {
+    color = Qt::red;
+    name = "unknown";
 }
 
-QList<Resource*> Player::getResources()
+QList<Resource*>& Player::getResources()
 {
     return resources;
 }
 
-QList<Building*> Player::getBuildings()
+QList<Building*>& Player::getBuildings()
 {
     return buildings;
 }

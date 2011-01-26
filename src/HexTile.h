@@ -46,6 +46,7 @@ class HexTile : public GLGameModel
         void setFixedPosition(bool b) { fixedPosition = b; }
         bool hasFixedPosition() { return fixedPosition; }
         void draw();
+        Vertex3f getCenterVertex();
         QList<Vertex3f> getCornerVertices();
 
     private:

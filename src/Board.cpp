@@ -42,9 +42,9 @@ Board::~Board()
 void Board::freeObjects()
 {
     while(!numberChips.isEmpty()) delete numberChips.takeFirst();
-    while(!boardTiles.isEmpty() ) delete boardTiles.takeFirst();
-    while(!crossroads.isEmpty() ) delete crossroads.takeFirst();
-    while(!roadways.isEmpty()   ) delete roadways.takeFirst();
+    while(! boardTiles.isEmpty()) delete boardTiles.takeFirst();
+    while(! crossroads.isEmpty()) delete crossroads.takeFirst();
+    while(!   roadways.isEmpty()) delete roadways.takeFirst();
 }
 
 void Board::render()
@@ -86,7 +86,7 @@ void Board::render()
     robber->draw();
 }
 
-void Board::getIndexOfTileAtMousePos(QPoint mousePos)
+const QList<HexTile*> Board::getTilesAtMousePos(QPoint &mousePos)
 {
     QList<GLuint> hits;
     GLWidget *widget = game->getGLWidget();
@@ -96,33 +96,53 @@ void Board::getIndexOfTileAtMousePos(QPoint mousePos)
     for(int i = 0; i < boardTiles.size(); ++i)
     {
         glLoadName(i);
-        ((HexTile*)boardTiles.at(i))->draw();
+        boardTiles.at(i)->draw();
     }
 
     hits = widget->endGLSelection();
 
-    // test the picking mechanism by deleting clicked tiles
-    // this ought to be removed when picking is implemented
-    // fully
+    QList<HexTile*> tiles;
+    for(int i = 0; i < hits.size(); ++i) tiles.append(boardTiles.at(hits.at(i)));
+    return tiles;
+}
 
-    for(int i = 0; i < hits.size(); ++i)
+const QList<Crossroad*> Board::getCrossroadsAtMousePos(QPoint &mousePos)
+{
+    QList<GLuint> hits;
+    GLWidget *widget = game->getGLWidget();
+
+    widget->beginGLSelection(mousePos);
+
+    for(int i = 0; i < crossroads.size(); ++i)
     {
-        HexTile *tile = boardTiles.at(hits.at(i));
-
-        if(robber) robber->setPos(tile->getCornerVertices()[0]);
-
-        Crossroad *c = getCrossroadNearPosition(tile->getCornerVertices()[0]);
-        qDebug() << "Crossroad of" << c->getTiles().size() << "tiles";
-        for(int b=0; b<c->getTiles().size();b++)
-        {
-            qDebug() << "A tile of type" << c->getTiles().at(b)->getType();
-        }
-        widget->updateGL();
-
-        break;
+        glLoadName(i);
+        crossroads.at(i)->drawSelectionCircle();
     }
 
-    qDebug() << "tiles at mouse pos" << hits.size();
+    hits = widget->endGLSelection();
+
+    QList<Crossroad*> crs;
+    for(int i = 0; i < hits.size(); ++i) crs.append(crossroads.at(hits.at(i)));
+    return crs;
+}
+
+void Board::onMouseOver(QPoint mousePos)
+{
+    if(state == BOARD_STATE_SET_BUILDING)
+    {
+        QList<Crossroad*> crs = getCrossroadsAtMousePos(mousePos);
+        if(crs.size()==1)
+        {
+            crs.at(0)->setIsHighlighted(true);
+        }
+        else
+        {
+            for(int i = 0; i < crossroads.size(); i++)
+                crossroads.at(i)->setIsHighlighted(false);
+        }
+
+        game->getGLWidget()->updateGL();
+    }
 }
 
 // load a board from a plain textfile
@@ -273,32 +293,27 @@ void Board::generate()
         pos = getPosForTile(newTile, col, row);
         newTile->setPos(pos.x, pos.y, pos.z);
 
-        // setup crossroads
+        // setup crossroads and roadways
         QList<Vertex3f> vertices = newTile->getCornerVertices();
         Q_ASSERT(vertices.size() == 6);
-        for(int i = 0; i < vertices.size(); i++)
-        {
-            Crossroad *cr = getCrossroadNearPosition(vertices.at(i), true);
-            cr->addTile(newTile);
-        }
-
-        // setup roadways
         vertices.append(vertices[0]);
         for(int i = 1; i < vertices.size(); i++)
         {
-            // connect every corner of the tile
-            getRoadwayNear(vertices.at(i-1), vertices.at(i), true);
-        }
-        vertices.removeLast();
+            Crossroad *cr = getCrossroadNearPosition(vertices.at(i-1), true);
+            cr->addTile(newTile);
 
-        qDebug() << "ROADWAYS:" << roadways.size();
+            Roadway *rw = getRoadwayNear(vertices.at(i-1), vertices.at(i), true);
+            rw->addTile(newTile);
+            rw->addCrossroad(cr);
+        }
 
         // add tile
         boardTiles.insert(boardTiles.begin(), newTile);
     }
 
-    qDebug() << "Board generated." << crossroads.size() << "crossroads" <<
-        "and" << boardTiles.size() << "board tiles";
+    qDebug() << "Board generated:" << crossroads.size() << "crossroads" <<
+        "," << roadways.size() << "roadways" <<
+        "and" << boardTiles.size() << "tiles";
 }
 
 Crossroad *Board::getCrossroadNearPosition(Vertex3f pos, bool create)

@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "Roadway.h"
+#include "Player.h"
 #include "Crossroad.h"
 
 Crossroad::Crossroad(Game *_game, Vertex3f v) : game(_game)
@@ -11,6 +12,7 @@ Crossroad::Crossroad(Game *_game, Vertex3f v) : game(_game)
     createSelectionCircle();
 
     setVertex(v);
+    setIsHighlighted(false);
 }
 
 Crossroad::~Crossroad()
@@ -41,8 +43,11 @@ void Crossroad::createSelectionCircle()
 
 void Crossroad::drawSelectionCircle()
 {
+    QGLWidget *widget = game->getGLWidget();
+    QColor color = game->getPlayers().at(0)->getColor();
+
     glPushMatrix();
-    game->getGLWidget()->qglColor(Qt::red); // FIXME: use player's color
+    widget->qglColor((isHighlighted) ? color.lighter() : color); // FIXME: use player's color
     glTranslatef(vertex.x, vertex.y + 0.03f, vertex.z);
     glCallList(selectionCircleListID);
     glPopMatrix();

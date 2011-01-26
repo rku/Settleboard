@@ -30,6 +30,8 @@ class Crossroad
         const QList<Roadway*> getRoadways() { return roadways; }
         void addRoadway(Roadway*);
 
+        void setIsHighlighted(bool b) { isHighlighted = b; }
+
     private:
         void createSelectionCircle();
 
@@ -39,6 +41,7 @@ class Crossroad
         QList<HexTile*> tiles;
         QList<Crossroad*> neighbours;
         QList<Roadway*> roadways;
+        bool isHighlighted;
 };
 
 #endif

@@ -23,6 +23,7 @@
 
 #include <QString>
 #include <QList>
+#include <QColor>
 
 class Game;
 class Resource;
@@ -33,11 +34,16 @@ class Player
     public:
         Player(Game*);
 
-        QList<Resource*> getResources();
-        QList<Building*> getBuildings();
+        const QColor &getColor() { return color; }
+        void setColor(QColor c) { color = c; }
+        const QString &getName() { return name; }
+        void setName(QString n) { name = n; }
+        QList<Resource*> &getResources();
+        QList<Building*> &getBuildings();
 
     private:
         Game *game;
+        QColor color;
         QString name;
         QList<Resource*> resources;
         QList<Building*> buildings;

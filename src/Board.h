@@ -49,9 +49,12 @@ class Board
         void generate();
         bool loadFromFile(const QString&);
         bool loadByName(const QString&);
-        void getIndexOfTileAtMousePos(QPoint);
+
+        void onMouseOver(QPoint mousePos);
 
     protected:
+        const QList<HexTile*> getTilesAtMousePos(QPoint&);
+        const QList<Crossroad*> getCrossroadsAtMousePos(QPoint&);
         Vertex3f getPosForTile(HexTile*, int col, int row);
         Crossroad *getCrossroadNearPosition(Vertex3f, bool create = false);
         Roadway *getRoadwayNear(Vertex3f, Vertex3f, bool create = false);

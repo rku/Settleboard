@@ -43,6 +43,8 @@ GLWidget::GLWidget(Game *_game, QWidget *parent)
 
     lastMousePos.setX(0);
     lastMousePos.setY(0);
+
+    setMouseTracking(true);
 }
 
 GLWidget::~GLWidget()
@@ -121,8 +123,7 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
     if(event->type() & QEvent::MouseButtonPress &&
         event->button() & Qt::LeftButton)
     {
-        qDebug() << "Mouse pressed";
-        game->getBoard()->getIndexOfTileAtMousePos(event->pos());
+        qDebug() << "Mouse pressed" << event->pos();
     }
     else if(event->type() & QEvent::MouseButtonRelease)
     {
@@ -151,6 +152,10 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
         updateGL();
     }
+    else
+    {
+        game->getBoard()->onMouseOver(event->pos());
+    }
 
     lastMousePos = event->pos();
 }
@@ -178,9 +183,7 @@ void GLWidget::beginGLSelection(QPoint pos)
     GLint viewport[4];
 
     glGetIntegerv(GL_VIEWPORT, viewport);
-
     glSelectBuffer(GL_SELBUF_SIZE, selectionBuffer);
-
     (void) glRenderMode(GL_SELECT);
 
     glInitNames();

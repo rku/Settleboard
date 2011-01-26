@@ -48,6 +48,7 @@ class Game
         GameUI *getUI() { return ui; }
         Board *getBoard() { return board; }
         OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
+        const QList<Player*>& getPlayers() { return players; }
 
     protected:
         GLWidget *glWidget;

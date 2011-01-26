@@ -30,6 +30,7 @@ Game::Game()
     rules = new GameRules(this);
     board = new Board(this);
     objGLLoader = new OBJGLLoader();
+    players.append(new Player(this));
 }
 
 Game::~Game()
