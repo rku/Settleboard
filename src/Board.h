@@ -28,11 +28,11 @@
 #include "HexTile.h"
 #include "NumberChip.h"
 #include "GLTypes.h"
+#include "BoardState.h"
 
 class Game;
 class Crossroad;
 class Roadway;
-class BoardState;
 
 #define BOARD_MAX_TILES                 512 
 
@@ -49,13 +49,19 @@ class Board : public GameObject
         void freeObjects();
         void render();
         void generate();
+        void update();
         bool loadFromFile(const QString&);
         bool loadByName(const QString&);
 
+        void resetBoardState(BoardObjectState s = defaultBoardObjectState);
         void updateBoardState(BoardState&);
 
-        void onMouseClick(QPoint mousePos);
-        void onMouseOver(QPoint mousePos);
+        bool handleMouseClick(QPoint mousePos);
+        bool handleMouseOver(QPoint mousePos);
+
+        const QList<HexTile*> getBoardTiles() { return boardTiles; }
+        const QList<Crossroad*> getCrossroads() { return crossroads; }
+        const QList<Roadway*> getRoadways() { return roadways; }
 
     protected:
         template <typename T> const T getObjectsAtMousePos(T, QPoint&);

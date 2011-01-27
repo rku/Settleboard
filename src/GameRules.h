@@ -30,23 +30,32 @@
 
 class Game;
 class Player;
+class GameRules;
+class GLGameModel;
 
-typedef struct _gameRule {
-    void* check_func;
-    void* cancel_func;
-    void* select_func;
-    void* finish_func;
+typedef struct _GameRule {
+    bool (GameRules::*ruleFunc)(_GameRule,Player*);
 } GameRule;
 
-#define REGISTER_GAMERULE(name, check_f, cancel_f, select_f, finish_f) \
+typedef struct _RuleChainElement {
+    Player *player;
+    QString name;
+    bool suspend;
+} RuleChainElement;
+
+#define REGISTER_RULE(func) \
     if(1) { \
         GameRule rule; \
-        rule.check_func = check_f; \
-        rule.cancel_func = cancel_f; \
-        rule.select_func = select_f; \
-        rule.finish_func = finish_f; \
-        game->getGameRules()->registerRule(name, rule); \
+        rule.ruleFunc = &GameRules::func; \
+        registerRule(#func, rule); \
     }
+#define DECLARE_RULE(a) bool a(GameRule, Player*);
+#define IMPLEMENT_RULE(a) bool GameRules::a(GameRule rule, Player *player)
+#define EXECUTE_SUBRULE(n) executeRule(n, player)
+#define RULECHAIN_ADD(n) if(1) { \
+    RuleChainElement _rce; \
+    _rce.player = player; _rce.name = n; _rce.suspend = false; \
+    ruleChain.append(_rce); }
 
 class GameRules : public QObject, public GameObject
 {
@@ -56,15 +65,35 @@ class GameRules : public QObject, public GameObject
         GameRules(Game*);
         ~GameRules();
 
-        void initActions();
+        void registerRule(QString name, GameRule);
+        bool executeRule(QString name, Player*);
+        bool getIsRuleChainWaiting() { return isRuleChainWaiting; }
+        void continueRuleChain();
+        void cancelCurrentRuleChain();
+
+        void handleSelectedObject(GLGameModel*);
 
         QList<QAction*> getActions();
         unsigned int getWinningPoints();
         void setWinningPoints(unsigned int);
 
     protected:
+        void initActions();
+        void startRuleChain();
+        void suspendRuleChain();
+        
+        DECLARE_RULE(ruleUserActionBuildSettlement);
+        DECLARE_RULE(ruleBuildSettlement);
+        DECLARE_RULE(ruleCanBuildSettlement);
+        DECLARE_RULE(ruleSelectCrossroad);
+        DECLARE_RULE(ruleCanSelectCrossroad);
+        DECLARE_RULE(ruleSelectRoadway);
+        DECLARE_RULE(ruleCanSelectRoadway);
+
         QList<QAction*> actions;
-        QStack<QString> ruleExecutionStack;
+        QStack<void*> ruleData;
+        QStack<RuleChainElement> ruleChain;
+        bool isRuleChainWaiting;
         QMap<QString, GameRule> rules;
         unsigned int winningPoints;
         QAction *tradeAct;

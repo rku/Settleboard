@@ -40,12 +40,15 @@ class Player : public GameObject
         void setColor(QColor c) { color = c; }
         const QString &getName() { return name; }
         void setName(QString n) { name = n; }
+        bool getIsLocal() { return isLocal; }
+        void setIsLocal(bool b) { isLocal = b; }
         QList<Resource*> &getResources();
         QList<Building*> &getBuildings();
 
     private:
         QColor color;
         QString name;
+        bool isLocal;
         QList<Resource*> resources;
         QList<Building*> buildings;
 };

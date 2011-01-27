@@ -64,6 +64,11 @@ void Board::render()
     delete robber;
 }
 
+void Board::update()
+{
+    game->getGLWidget()->updateGL();
+}
+
 /* returns the glgamemodel objects in objs at 2d mouse position pos*/
 template <typename T>
 const T Board::getObjectsAtMousePos(T objs, QPoint &pos)
@@ -103,22 +108,15 @@ void Board::highlightObjectsAtMousePos(T objs, QPoint &pos)
             hits.at(i)->setIsHighlighted(true);
 }
 
-void Board::onMouseClick(QPoint mousePos)
+bool Board::handleMouseClick(QPoint mousePos)
 {
-    BoardState state;
-    BoardObjectState s;
+    // execute test rule
+    game->getRules()->executeRule("ruleUserActionBuildSettlement", game->getPlayers()[0]);
 
-    s.index = 1;
-    s.selectable = true;
-
-    state.crossroadStates.append(s);
-    state.roadwayStates.append(s);
-
-    qDebug() << "updating state...";
-    updateBoardState(state);
+    return true;
 }
 
-void Board::onMouseOver(QPoint mousePos)
+bool Board::handleMouseOver(QPoint mousePos)
 {
     // highlight selectable objects at mousepos
     highlightObjectsAtMousePos(crossroads, mousePos);
@@ -126,6 +124,24 @@ void Board::onMouseOver(QPoint mousePos)
     highlightObjectsAtMousePos(boardTiles, mousePos);
 
     game->getGLWidget()->updateGL();
+
+    return false;
+}
+
+void Board::resetBoardState(BoardObjectState s)
+{
+    BoardState state;
+
+#define CREATE_RESET_STATE_FOR(objs, sto) if(1) { \
+    for(int i = 0; i < objs.size(); i++) { \
+        s.index = i; \
+        state.sto.append(s); } }
+
+    CREATE_RESET_STATE_FOR(boardTiles, tileStates);
+    CREATE_RESET_STATE_FOR(crossroads, crossroadStates);
+    CREATE_RESET_STATE_FOR(roadways, roadwayStates);
+
+    updateBoardState(state);
 }
 
 void Board::updateBoardState(BoardState &newState)
@@ -137,28 +153,30 @@ void Board::updateBoardState(BoardState &newState)
     {
         bool done = true;
 
+#define UPDATE_GLOBJECT_STATE(obj, state) if(1) { \
+    obj->setIsSelectable(s.selectable); \
+    obj->setIsEnabled(s.enabled); \
+    done = false; }
+
         if(newState.tileStates.size() >= max)
         {
             s = newState.tileStates.at(i);
-            done = false;
+            HexTile *h = boardTiles.at(s.index);
+            UPDATE_GLOBJECT_STATE(h, s);
         }
 
         if(newState.roadwayStates.size() >= max)
         {
             s = newState.roadwayStates.at(i);
             Roadway *r = roadways.at(s.index);
-            r->setIsSelectable(s.selectable);
-            r->setIsEnabled(s.enabled);
-            done = false;
+            UPDATE_GLOBJECT_STATE(r, s);
         }
 
         if(newState.crossroadStates.size() >= max)
         {
             s = newState.crossroadStates.at(i);
             Crossroad *c = crossroads.at(s.index);
-            c->setIsSelectable(s.selectable);
-            c->setIsEnabled(s.enabled);
-            done = false;
+            UPDATE_GLOBJECT_STATE(c, s);
         }
 
         if(!done) max++;

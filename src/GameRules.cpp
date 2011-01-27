@@ -19,20 +19,92 @@
  */
 
 #include "GameRules.h"
+#include "Crossroad.h"
+#include "HexTile.h"
+#include "Roadway.h"
 #include "Game.h"
-
-// these are the standard rules
-// all additional rulesets must inherit from this class
 
 GameRules::GameRules(Game *_game)
     : GameObject(_game)
 {
+    isRuleChainWaiting = false;
+
+    REGISTER_RULE(ruleUserActionBuildSettlement);
+    REGISTER_RULE(ruleBuildSettlement);
+    REGISTER_RULE(ruleCanBuildSettlement);
+    REGISTER_RULE(ruleSelectCrossroad);
+    REGISTER_RULE(ruleCanSelectCrossroad);
+    REGISTER_RULE(ruleSelectRoadway);
+    REGISTER_RULE(ruleCanSelectRoadway);
+
     initActions();
 }
 
 GameRules::~GameRules()
 {
     while(!actions.isEmpty()) delete actions.takeFirst();
+}
+
+void GameRules::registerRule(QString name, GameRule rule)
+{
+    // consider registering a rule twice an error
+    Q_ASSERT(!rules.contains(name));
+    rules.insert(name, rule);
+
+    qDebug() << "Rule registered:" << name;
+}
+
+bool GameRules::executeRule(QString name, Player *player)
+{
+    Q_ASSERT(!isRuleChainWaiting);
+
+    qDebug() << "Executing rule:" << name;
+    Q_ASSERT(rules.contains(name));
+
+    GameRule rule = rules.value(name);
+    return (this->*rule.ruleFunc)(rule, player);
+}
+
+void GameRules::suspendRuleChain()
+{
+    Q_ASSERT(!isRuleChainWaiting);
+
+    if(ruleChain.size() > 0)
+    {
+        qDebug() << "Suspending rule chain";
+        RuleChainElement rce;
+        rce.suspend = true;
+        ruleChain.append(rce);
+    }
+}
+
+void GameRules::startRuleChain()
+{
+    Q_ASSERT(ruleChain.size() > 0 && !isRuleChainWaiting);
+    qDebug() << "Starting rule chain";
+
+    continueRuleChain();
+}
+
+void GameRules::continueRuleChain()
+{
+    while(ruleChain.size() > 0)
+    {
+        RuleChainElement rce = ruleChain.pop();
+        isRuleChainWaiting = rce.suspend;
+        if(rce.suspend) break;
+
+        executeRule(rce.name, rce.player);
+    }
+}
+
+void GameRules::cancelCurrentRuleChain()
+{
+    ruleData.clear();
+    ruleChain.clear();
+    isRuleChainWaiting = false;
+
+    game->getBoard()->resetBoardState();
 }
 
 void GameRules::initActions()
@@ -68,5 +140,97 @@ void GameRules::setWinningPoints(unsigned int n)
 {
     Q_ASSERT(n > 0);
     winningPoints = n;
+}
+
+void GameRules::handleSelectedObject(GLGameModel*)
+{
+    Q_ASSERT(ruleChain.size() > 0);
+}
+
+// STANDARD RULES
+
+IMPLEMENT_RULE(ruleUserActionBuildSettlement)
+{
+    RULECHAIN_ADD("ruleBuildSettlement");
+    RULECHAIN_ADD("ruleSelectCrossroad");
+    startRuleChain();
+    return true;
+}
+
+IMPLEMENT_RULE(ruleBuildSettlement)
+{
+    if(!EXECUTE_SUBRULE("ruleCanBuildSettlement"))
+    {
+        qDebug() << "Cannot build settlement!";
+        return false;
+    }
+
+    qDebug() << "BUILD SETTLEMENT";
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanBuildSettlement)
+{
+    return true;
+}
+
+// Lets the user select a crossroad
+IMPLEMENT_RULE(ruleSelectCrossroad)
+{
+    Board *board = game->getBoard();
+    const QList<Crossroad*> crossroads = board->getCrossroads();
+
+    // set all crossroads selectable
+    for(int i = 0; i < crossroads.size(); i++)
+    {
+        ruleData.push(crossroads.at(i));
+        bool selectable = EXECUTE_SUBRULE("ruleCanSelectCrossroad");
+        crossroads.at(i)->setIsSelectable(selectable);
+    }
+
+    board->update();
+    suspendRuleChain();
+
+    return true;
+}
+
+// Check if a crossroad can be selected
+// it cannot be selected if it has only water tiles around
+// since these are the standard rules without seafarers
+IMPLEMENT_RULE(ruleCanSelectCrossroad)
+{
+    Q_ASSERT(ruleData.size() > 0);
+    Crossroad *c = (Crossroad*)ruleData.pop();
+
+    for(int i = 0; i < c->getTiles().size(); i++)
+    {
+        if(c->getTiles().at(i)->getType() != HEXTILE_TYPE_WATER)
+            return true;
+    }
+
+    return false;
+}
+
+IMPLEMENT_RULE(ruleSelectRoadway)
+{
+    Board *board = game->getBoard();
+    QList<Roadway*> roadways = board->getRoadways();
+
+    for(int i = 0; i < roadways.size(); i++)
+    {
+        ruleData.push(roadways.at(i));
+        bool selectable = EXECUTE_SUBRULE("ruleCanSelectRoadway");
+        roadways.at(i)->setIsSelectable(selectable);
+    }
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanSelectRoadway)
+{
+    Q_ASSERT(ruleData.size() > 0);
+    Roadway *r = (Roadway*)ruleData.pop();
+
+    return true;
 }
 

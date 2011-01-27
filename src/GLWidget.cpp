@@ -124,7 +124,9 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
         event->button() & Qt::LeftButton)
     {
         qDebug() << "Mouse pressed" << event->pos();
-        game->getBoard()->onMouseClick(event->pos());
+
+        // route event
+        if(game->getBoard()->handleMouseClick(event->pos())) return;
     }
     else if(event->type() & QEvent::MouseButtonRelease)
     {
@@ -155,7 +157,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     }
     else
     {
-        game->getBoard()->onMouseOver(event->pos());
+        game->getBoard()->handleMouseOver(event->pos());
     }
 
     lastMousePos = event->pos();

@@ -14,6 +14,9 @@ typedef struct _BoardObjectState {
     bool removed;
 } BoardObjectState;
 
+static const BoardObjectState defaultBoardObjectState = {
+    0, 0, false, true, true, false };
+
 class BoardState
 {
 public:

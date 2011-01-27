@@ -27,6 +27,7 @@ Player::Player(Game *_game)
 {
     color = Qt::red;
     name = "unknown";
+    setIsLocal(true);
 }
 
 QList<Resource*>& Player::getResources()
