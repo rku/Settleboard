@@ -71,7 +71,7 @@ void Board::update()
 
 /* returns the glgamemodel objects in objs at 2d mouse position pos*/
 template <typename T>
-const T Board::getObjectsAtMousePos(T objs, QPoint &pos)
+const T Board::getObjectsAtMousePos(T objs, const QPoint &pos)
 {
     QList<GLuint> hits;
     GLWidget *widget = game->getGLWidget();
@@ -92,7 +92,7 @@ const T Board::getObjectsAtMousePos(T objs, QPoint &pos)
 }
 
 template <typename T>
-void Board::highlightObjectsAtMousePos(T objs, QPoint &pos)
+void Board::highlightObjectsAtMousePos(T objs, const QPoint &pos)
 {
     T selObjs;
 
@@ -108,15 +108,51 @@ void Board::highlightObjectsAtMousePos(T objs, QPoint &pos)
             hits.at(i)->setIsHighlighted(true);
 }
 
-bool Board::handleMouseClick(QPoint mousePos)
+GLGameModel *Board::getSelectableObjectAtMousePos(const QPoint &pos)
 {
+    QList<GLGameModel*> selObjs, hits;
+    int max = 1;
+
+#define ADD_SELECTED_OBJECTS(a) if(a.size()>i) {\
+        GLGameModel *obj = dynamic_cast<GLGameModel*>(a.at(i)); \
+        if(obj->getIsSelectable()) selObjs.append(obj); \
+        done = false; }
+
+    for(int i = 0; i < max; i++)
+    {
+        bool done = true;
+
+        ADD_SELECTED_OBJECTS(crossroads);
+        ADD_SELECTED_OBJECTS(roadways);
+        ADD_SELECTED_OBJECTS(boardTiles);
+
+        if(!done) max++;
+    }
+
+    hits = getObjectsAtMousePos(selObjs, pos);
+    return (hits.size()>0) ? hits.at(0) : NULL;
+}
+
+bool Board::handleMouseClick(const QPoint &mousePos)
+{
+    if(game->getRules()->getIsRuleChainWaiting())
+    {
+        GLGameModel *obj = getSelectableObjectAtMousePos(mousePos);
+        if(obj != NULL)
+        {
+            game->getRules()->pushRuleData((void*)&obj);
+            game->getRules()->continueRuleChain();
+        }
+        return true;
+    }
+
     // execute test rule
     game->getRules()->executeRule("ruleUserActionBuildSettlement", game->getPlayers()[0]);
 
     return true;
 }
 
-bool Board::handleMouseOver(QPoint mousePos)
+bool Board::handleMouseOver(const QPoint &mousePos)
 {
     // highlight selectable objects at mousepos
     highlightObjectsAtMousePos(crossroads, mousePos);

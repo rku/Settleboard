@@ -56,16 +56,17 @@ class Board : public GameObject
         void resetBoardState(BoardObjectState s = defaultBoardObjectState);
         void updateBoardState(BoardState&);
 
-        bool handleMouseClick(QPoint mousePos);
-        bool handleMouseOver(QPoint mousePos);
+        bool handleMouseClick(const QPoint &mousePos);
+        bool handleMouseOver(const QPoint &mousePos);
 
         const QList<HexTile*> getBoardTiles() { return boardTiles; }
         const QList<Crossroad*> getCrossroads() { return crossroads; }
         const QList<Roadway*> getRoadways() { return roadways; }
 
     protected:
-        template <typename T> const T getObjectsAtMousePos(T, QPoint&);
-        template <typename T> void highlightObjectsAtMousePos(T, QPoint&);
+        template <typename T> const T getObjectsAtMousePos(T, const QPoint&);
+        template <typename T> void highlightObjectsAtMousePos(T, const QPoint&);
+        GLGameModel *getSelectableObjectAtMousePos(const QPoint &pos);
         Vertex3f getPosForTile(HexTile*, int col, int row);
         Crossroad *getCrossroadNearPosition(Vertex3f, bool create = false);
         Roadway *getRoadwayNear(Vertex3f, Vertex3f, bool create = false);

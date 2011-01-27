@@ -33,6 +33,7 @@ GameRules::GameRules(Game *_game)
     REGISTER_RULE(ruleBuildSettlement);
     REGISTER_RULE(ruleCanBuildSettlement);
     REGISTER_RULE(ruleSelectCrossroad);
+    REGISTER_RULE(ruleCrossroadSelected);
     REGISTER_RULE(ruleCanSelectCrossroad);
     REGISTER_RULE(ruleSelectRoadway);
     REGISTER_RULE(ruleCanSelectRoadway);
@@ -107,6 +108,11 @@ void GameRules::cancelCurrentRuleChain()
     game->getBoard()->resetBoardState();
 }
 
+void GameRules::pushRuleData(void *pointer)
+{
+    ruleData.push(pointer);
+}
+
 void GameRules::initActions()
 {
     tradeAct = new QAction(tr("Trade"), this);
@@ -151,9 +157,14 @@ void GameRules::handleSelectedObject(GLGameModel*)
 
 IMPLEMENT_RULE(ruleUserActionBuildSettlement)
 {
-    RULECHAIN_ADD("ruleBuildSettlement");
-    RULECHAIN_ADD("ruleSelectCrossroad");
-    startRuleChain();
+    if(player.getIsLocal())
+    {
+        RULECHAIN_ADD("ruleBuildSettlement");
+        RULECHAIN_ADD("ruleCrossroadSelected");
+        RULECHAIN_ADD("ruleSelectCrossroad");
+        startRuleChain();
+    }
+
     return true;
 }
 
@@ -191,6 +202,12 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
     board->update();
     suspendRuleChain();
 
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCrossroadSelected)
+{
+    game->getBoard()->resetBoardState();
     return true;
 }
 

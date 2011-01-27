@@ -25,6 +25,7 @@
 #include <QAction>
 #include <QList>
 #include <QStack>
+#include <QLinkedList>
 
 #include "GameObject.h"
 
@@ -73,6 +74,7 @@ class GameRules : public QObject, public GameObject
 
         void handleSelectedObject(GLGameModel*);
 
+        void pushRuleData(void*);
         QList<QAction*> getActions();
         unsigned int getWinningPoints();
         void setWinningPoints(unsigned int);
@@ -86,6 +88,7 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleBuildSettlement);
         DECLARE_RULE(ruleCanBuildSettlement);
         DECLARE_RULE(ruleSelectCrossroad);
+        DECLARE_RULE(ruleCrossroadSelected);
         DECLARE_RULE(ruleCanSelectCrossroad);
         DECLARE_RULE(ruleSelectRoadway);
         DECLARE_RULE(ruleCanSelectRoadway);

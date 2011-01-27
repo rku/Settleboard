@@ -37,7 +37,7 @@ class GLGameModel : public GameObject
         ~GLGameModel();
 
         void load(QString filename, QColor objColor = Qt::white);
-        void draw();
+        virtual void draw();
 
         void setName(QString s) { name = s; }
         QString getName() { return name; }
