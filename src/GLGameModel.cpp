@@ -27,7 +27,7 @@
 #include "OBJGLLoader.h"
 
 GLGameModel::GLGameModel(Game *_game)
-    : game(_game)
+    : GameObject(_game)
 {
     created = false;
 
@@ -43,6 +43,10 @@ GLGameModel::GLGameModel(Game *_game)
     angleZ = 0.0f;
 
     color = Qt::gray;
+    setIsHighlighted(false);
+    setIsSelectable(false);
+    setIsVisible(true);
+    setIsEnabled(true);
 }
 
 GLGameModel::~GLGameModel()

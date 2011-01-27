@@ -23,11 +23,12 @@
 
 #include <QtGui>
 
+#include "GameObject.h"
 #include "ui_prefsform.h"
 
 class Game;
 
-class PrefsForm : public QDialog
+class PrefsForm : public QDialog, GameObject
 {
     Q_OBJECT
 
@@ -35,8 +36,6 @@ class PrefsForm : public QDialog
         PrefsForm(Game*,QWidget *parent = 0);
 
     private:
-        Game *game;
-
         Ui::PrefsForm ui;
 };
 

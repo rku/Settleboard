@@ -1,8 +1,9 @@
 
 #include "Game.h"
+#include "Player.h"
 #include "Roadway.h"
 
-Roadway::Roadway(Game *_game, Vertex3f a, Vertex3f b) : game(_game)
+Roadway::Roadway(Game *_game, Vertex3f a, Vertex3f b) : GLGameModel(_game)
 {
     setVertices(a,b);
 
@@ -32,21 +33,16 @@ void Roadway::createSelectionRect()
     glEndList();
 }
 
-void Roadway::drawSelectionRect()
-{
-    glPushMatrix();
-    game->getGLWidget()->qglColor(Qt::red); // FIXME: use player's color
-    glLineWidth(3.5f);
-    glCallList(selectionRectListID);
-    glPopMatrix();
-}
-
 void Roadway::draw()
 {
+    Player *p = game->getPlayers().at(0);
+    QColor color = (getIsSelectable()) ? p->getColor() : Qt::black;
+    float width = (getIsSelectable()) ? 5.0f : 2.0f;
+
     // draw roadway lines
     glPushMatrix();
-    game->getGLWidget()->qglColor(Qt::black);
-    glLineWidth(2.0f);
+    game->getGLWidget()->qglColor((getIsHighlighted()) ? color.lighter() : color);
+    glLineWidth(width);
     glCallList(selectionRectListID);
     glPopMatrix();
 

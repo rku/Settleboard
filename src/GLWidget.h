@@ -23,11 +23,13 @@
 
 #include <QGLWidget>
 
+#include "GameObject.h"
+
 #define GL_SELBUF_SIZE      512
 
 class Game;
 
-class GLWidget : public QGLWidget
+class GLWidget : public QGLWidget, GameObject
 {
     Q_OBJECT
 
@@ -56,7 +58,6 @@ class GLWidget : public QGLWidget
     private:
         void updateCameraPos();
 
-        Game *game;
         GLdouble cameraAngleX;
         GLdouble cameraAngleY;
         GLdouble cameraDistance;

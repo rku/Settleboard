@@ -24,7 +24,7 @@
 #include <QtOpenGL>
 #include <QList>
 
-class Game;
+#include "GameObject.h"
 
 struct Texture {
     QString name;
@@ -33,7 +33,7 @@ struct Texture {
     unsigned int height;
 };
 
-class TextureManager
+class TextureManager : public GameObject
 {
     public:
         TextureManager(Game*);
@@ -43,7 +43,6 @@ class TextureManager
         const Texture& getTexture(const QString&);
 
     private:
-        Game *game;
         QList<Texture> textures;
         QString texturePath;
 

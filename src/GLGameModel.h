@@ -22,18 +22,16 @@
 #define GLGAMEMODEL_H
 
 #include <QtOpenGL>
-#include <QObject>
 #include <QVector>
 
+#include "GameObject.h"
 #include "GLTypes.h"
 
 class OBJGLLoader;
 class Game;
 
-class GLGameModel : public QObject
+class GLGameModel : public GameObject
 {
-    Q_OBJECT
-
     public:
         GLGameModel(Game*);
         ~GLGameModel();
@@ -89,6 +87,15 @@ class GLGameModel : public QObject
         bool getVertexGroupWithName(QString,VertexGroup&);
         QList<Vertex3f> getVerticesOfGroupWithName(QString);
 
+        void setIsHighlighted(bool b) { isHighlighted = b; }
+        bool getIsHighlighted() { return isHighlighted; }
+        void setIsSelectable(bool b) { isSelectable = b; }
+        bool getIsSelectable() { return isSelectable; }
+        void setIsVisible(bool b) { isVisible = b; }
+        bool getIsVisible() { return isVisible; }
+        void setIsEnabled(bool b) { isEnabled = b; }
+        bool getIsEnabled() { return isEnabled; }
+
     protected:
         void create();
         void createBorder();
@@ -96,7 +103,6 @@ class GLGameModel : public QObject
 
         GLuint displayListID;
         GLuint borderDisplayListID;
-        Game *game;
         bool created;
         QString name;
         QVector<Vertex3f> vertices;
@@ -112,6 +118,10 @@ class GLGameModel : public QObject
         GLfloat angleY;
         GLfloat angleZ;
         QColor color;
+        bool isHighlighted;
+        bool isSelectable;
+        bool isVisible;
+        bool isEnabled;
 };
 
 #endif /* GLGAMEMODEL_H */

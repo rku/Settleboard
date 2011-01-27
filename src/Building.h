@@ -21,15 +21,16 @@
 #ifndef BUILDING_H
 #define BUILDING_H
 
+#include "GLGameModel.h"
+
 class Game;
 
-class Building
+class Building : GLGameModel
 {
     public:
         Building(Game*);
 
     private:
-        Game *game;
 };
 
 #endif

@@ -18,8 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "HexTile.h"
 #include "Game.h"
+#include "Crossroad.h"
+#include "Roadway.h"
+#include "HexTile.h"
 
 HexTile::HexTile(Game *_game)
     : GLGameModel(_game)
@@ -88,6 +90,18 @@ void HexTile::draw()
 unsigned int HexTile::getType()
 {
     return type;
+}
+
+void HexTile::addCrossroad(Crossroad *crossroad)
+{
+    Q_ASSERT(crossroads.size() < 6);
+    if(!crossroads.contains(crossroad)) crossroads.append(crossroad);
+}
+
+void HexTile::addRoadway(Roadway *roadway)
+{
+    Q_ASSERT(roadways.size() < 6);
+    if(!roadways.contains(roadway)) roadways.append(roadway);
 }
 
 Vertex3f HexTile::getCenterVertex()

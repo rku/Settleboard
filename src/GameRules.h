@@ -24,15 +24,37 @@
 #include <QObject>
 #include <QAction>
 #include <QList>
+#include <QStack>
+
+#include "GameObject.h"
 
 class Game;
+class Player;
 
-class GameRules : public QObject 
+typedef struct _gameRule {
+    void* check_func;
+    void* cancel_func;
+    void* select_func;
+    void* finish_func;
+} GameRule;
+
+#define REGISTER_GAMERULE(name, check_f, cancel_f, select_f, finish_f) \
+    if(1) { \
+        GameRule rule; \
+        rule.check_func = check_f; \
+        rule.cancel_func = cancel_f; \
+        rule.select_func = select_f; \
+        rule.finish_func = finish_f; \
+        game->getGameRules()->registerRule(name, rule); \
+    }
+
+class GameRules : public QObject, public GameObject
 {
     Q_OBJECT
 
     public:
         GameRules(Game*);
+        ~GameRules();
 
         void initActions();
 
@@ -41,8 +63,9 @@ class GameRules : public QObject
         void setWinningPoints(unsigned int);
 
     protected:
-        Game *game;
         QList<QAction*> actions;
+        QStack<QString> ruleExecutionStack;
+        QMap<QString, GameRule> rules;
         unsigned int winningPoints;
         QAction *tradeAct;
         QAction *buildSettlementAct;

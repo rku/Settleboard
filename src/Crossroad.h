@@ -9,14 +9,13 @@ class HexTile;
 class Game;
 class Roadway;
 
-class Crossroad
+class Crossroad : public GLGameModel
 {
     public:
         Crossroad(Game*, Vertex3f);
         ~Crossroad();
 
         void draw();
-        void drawSelectionCircle();
 
         Vertex3f getVertex() { return vertex; }
         void setVertex(Vertex3f v) { vertex = v; }
@@ -30,18 +29,15 @@ class Crossroad
         const QList<Roadway*> getRoadways() { return roadways; }
         void addRoadway(Roadway*);
 
-        void setIsHighlighted(bool b) { isHighlighted = b; }
-
     private:
         void createSelectionCircle();
+        void drawSelectionCircle();
 
-        Game *game;
         GLuint selectionCircleListID;
         Vertex3f vertex;
         QList<HexTile*> tiles;
         QList<Crossroad*> neighbours;
         QList<Roadway*> roadways;
-        bool isHighlighted;
 };
 
 #endif

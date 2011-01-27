@@ -24,6 +24,7 @@
 #include <QtOpenGL>
 #include <QList>
 
+#include "GameObject.h"
 #include "HexTile.h"
 #include "NumberChip.h"
 #include "GLTypes.h"
@@ -31,15 +32,16 @@
 class Game;
 class Crossroad;
 class Roadway;
+class BoardState;
 
-#define BOARD_MAX_TILES     512 
+#define BOARD_MAX_TILES                 512 
 
-#define BOARD_STATE_NORMAL          0x00
-#define BOARD_STATE_SET_BUILDING    0x01
-#define BOARD_STATE_SET_ROAD        0x02
-#define BOARD_STATE_ROLL            0x04
+#define BOARD_STATE_NORMAL              0x00
+#define BOARD_STATE_SELECT_CROSSROAD    0x01
+#define BOARD_STATE_SELECT_ROADWAY      0x02
+#define BOARD_STATE_SELECT_HEXTILE      0x04
 
-class Board
+class Board : public GameObject
 {
     public:
         Board(Game*);
@@ -50,16 +52,18 @@ class Board
         bool loadFromFile(const QString&);
         bool loadByName(const QString&);
 
+        void updateBoardState(BoardState&);
+
+        void onMouseClick(QPoint mousePos);
         void onMouseOver(QPoint mousePos);
 
     protected:
-        const QList<HexTile*> getTilesAtMousePos(QPoint&);
-        const QList<Crossroad*> getCrossroadsAtMousePos(QPoint&);
+        template <typename T> const T getObjectsAtMousePos(T, QPoint&);
+        template <typename T> void highlightObjectsAtMousePos(T, QPoint&);
         Vertex3f getPosForTile(HexTile*, int col, int row);
         Crossroad *getCrossroadNearPosition(Vertex3f, bool create = false);
         Roadway *getRoadwayNear(Vertex3f, Vertex3f, bool create = false);
 
-        Game *game;
         QList<HexTile*> boardTiles;
         QList<NumberChip*> numberChips;
         unsigned int width;

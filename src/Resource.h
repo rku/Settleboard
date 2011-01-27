@@ -23,9 +23,9 @@
 
 #include <QtGui>
 
-class Game;
+#include "GameObject.h"
 
-class Resource
+class Resource : public GameObject
 {
     public:
         // Resource(game,name,initamount=0)
@@ -39,7 +39,6 @@ class Resource
         unsigned int getAmount() { return amount; } 
 
     private:
-        Game *game;
         QString name;
         unsigned int amount;
 };

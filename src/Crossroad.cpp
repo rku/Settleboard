@@ -6,7 +6,7 @@
 #include "Player.h"
 #include "Crossroad.h"
 
-Crossroad::Crossroad(Game *_game, Vertex3f v) : game(_game)
+Crossroad::Crossroad(Game *_game, Vertex3f v) : GLGameModel(_game)
 {
     selectionCircleListID = glGenLists(1);
     createSelectionCircle();
@@ -47,21 +47,28 @@ void Crossroad::drawSelectionCircle()
     QColor color = game->getPlayers().at(0)->getColor();
 
     glPushMatrix();
-    widget->qglColor((isHighlighted) ? color.lighter() : color); // FIXME: use player's color
-    glTranslatef(vertex.x, vertex.y + 0.03f, vertex.z);
+    widget->qglColor((isHighlighted) ? color.lighter() : color);
+    glTranslatef(vertex.x, vertex.y + 0.05f, vertex.z);
     glCallList(selectionCircleListID);
     glPopMatrix();
 }
 
 void Crossroad::draw()
 {
+    if(getIsSelectable()) drawSelectionCircle();
+
     // draw buildings...
 }
 
 void Crossroad::addTile(HexTile *tile)
 {
     Q_ASSERT(tiles.size() < 3);
-    if(!tiles.contains(tile)) tiles.append(tile);
+
+    if(!tiles.contains(tile))
+    {
+        tiles.append(tile);
+        tile->addCrossroad(this);
+    }
 }
 
 void Crossroad::addNeighbour(Crossroad *neighbour)
@@ -73,6 +80,11 @@ void Crossroad::addNeighbour(Crossroad *neighbour)
 void Crossroad::addRoadway(Roadway *roadway)
 {
     Q_ASSERT(roadways.size() < 3);
-    if(!roadways.contains(roadway)) roadways.append(roadway);
+
+    if(!roadways.contains(roadway))
+    {
+        roadways.append(roadway);
+        roadway->addCrossroad(this);
+    }
 }
 

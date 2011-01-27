@@ -19,7 +19,7 @@
  */
 
 #ifndef GAME_H
-#define GAME_H
+#define GAME_H 1
 
 #include "Board.h"
 #include "GLWidget.h"

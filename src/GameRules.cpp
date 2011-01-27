@@ -25,9 +25,14 @@
 // all additional rulesets must inherit from this class
 
 GameRules::GameRules(Game *_game)
-    : game(_game)
+    : GameObject(_game)
 {
     initActions();
+}
+
+GameRules::~GameRules()
+{
+    while(!actions.isEmpty()) delete actions.takeFirst();
 }
 
 void GameRules::initActions()

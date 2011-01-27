@@ -18,11 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Building.h"
 #include "Game.h"
+#include "Building.h"
 
 Building::Building(Game *_game)
-    : game(_game)
+    : GLGameModel(_game)
 {
 }
 

@@ -21,7 +21,7 @@
 #include "TextureManager.h"
 #include "Game.h"
 
-TextureManager::TextureManager(Game *_game) : game(_game)
+TextureManager::TextureManager(Game *_game) : GameObject(_game)
 {
     texturePath     = "Data/Textures/";
 }

@@ -26,6 +26,8 @@
 #include "GLGameModel.h"
 
 class Game;
+class Crossroad;
+class Roadway;
 
 #define HEXTILE_TYPE_WOOD   0x00 
 #define HEXTILE_TYPE_WATER  0x01
@@ -41,19 +43,28 @@ class HexTile : public GLGameModel
     public:
         HexTile(Game*);
         ~HexTile();
+
         void setType(const unsigned int);
         unsigned int getType();
         void setFixedPosition(bool b) { fixedPosition = b; }
         bool hasFixedPosition() { return fixedPosition; }
         void draw();
+
         Vertex3f getCenterVertex();
         QList<Vertex3f> getCornerVertices();
+
+        void addCrossroad(Crossroad*);
+        const QList<Crossroad*>& getCrossroads() { return crossroads; }
+        void addRoadway(Roadway*);
+        const QList<Roadway*>& getRoadways() { return roadways; }
 
     private:
         bool isPort;
         bool fixedPosition;
         int number;
         unsigned int type;
+        QList<Crossroad*> crossroads;
+        QList<Roadway*> roadways;
 };
 
 #endif /* HEX_TILE_H */

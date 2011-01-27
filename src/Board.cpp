@@ -21,15 +21,14 @@
 #include "Board.h"
 #include "Game.h"
 #include "Crossroad.h"
+#include "BoardState.h"
 #include "Roadway.h"
 
 #include <math.h>
 
-static GLGameModel *robber = NULL;
-
-Board::Board(Game *_game) : game(_game)
+Board::Board(Game *_game) : GameObject(_game)
 {
-    state               = BOARD_STATE_SET_BUILDING;
+    state               = BOARD_STATE_SELECT_CROSSROAD;
     boardFilesPath      = "Data/Boards/";
     boardFilesSuffix    = ".rsm";
 }
@@ -52,97 +51,120 @@ void Board::render()
     for(int i = 0; i < boardTiles.size(); ++i)
         boardTiles.at(i)->draw();
 
-    // render every single tile
-    if(state == BOARD_STATE_NORMAL)
-    {
-        for(int i = 0; i < crossroads.size(); ++i)
-            crossroads.at(i)->draw();
-
-        for(int i = 0; i < roadways.size(); ++i)
-            roadways.at(i)->draw();
-    }
-
-    if(state == BOARD_STATE_SET_BUILDING)
-    {
-        for(int i = 0; i < roadways.size(); ++i)
-            roadways.at(i)->draw();
-
-        for(int i = 0; i < crossroads.size(); ++i)
-            crossroads.at(i)->drawSelectionCircle();
-    }
-
-    if(state == BOARD_STATE_SET_ROAD)
-    {
-        for(int i = 0; i < roadways.size(); ++i)
-            roadways.at(i)->drawSelectionRect();
-    }
-
-    if(!robber)
-    {
-        robber = new GLGameModel(game);
-        robber->load("Data/Objects/robber.obj");
-    }
-
-    robber->draw();
-}
-
-const QList<HexTile*> Board::getTilesAtMousePos(QPoint &mousePos)
-{
-    QList<GLuint> hits;
-    GLWidget *widget = game->getGLWidget();
-
-    widget->beginGLSelection(mousePos);
-
-    for(int i = 0; i < boardTiles.size(); ++i)
-    {
-        glLoadName(i);
-        boardTiles.at(i)->draw();
-    }
-
-    hits = widget->endGLSelection();
-
-    QList<HexTile*> tiles;
-    for(int i = 0; i < hits.size(); ++i) tiles.append(boardTiles.at(hits.at(i)));
-    return tiles;
-}
-
-const QList<Crossroad*> Board::getCrossroadsAtMousePos(QPoint &mousePos)
-{
-    QList<GLuint> hits;
-    GLWidget *widget = game->getGLWidget();
-
-    widget->beginGLSelection(mousePos);
-
     for(int i = 0; i < crossroads.size(); ++i)
+        crossroads.at(i)->draw();
+
+    for(int i = 0; i < roadways.size(); ++i)
+        roadways.at(i)->draw();
+
+    GLGameModel *robber = new GLGameModel(game);
+    robber->load("Data/Objects/robber.obj");
+    robber->setColor(Qt::black);
+    robber->draw();
+    delete robber;
+}
+
+/* returns the glgamemodel objects in objs at 2d mouse position pos*/
+template <typename T>
+const T Board::getObjectsAtMousePos(T objs, QPoint &pos)
+{
+    QList<GLuint> hits;
+    GLWidget *widget = game->getGLWidget();
+
+    widget->beginGLSelection(pos);
+
+    for(int i = 0; i < objs.size(); i++)
     {
         glLoadName(i);
-        crossroads.at(i)->drawSelectionCircle();
+        objs.at(i)->draw();
     }
 
     hits = widget->endGLSelection();
 
-    QList<Crossroad*> crs;
-    for(int i = 0; i < hits.size(); ++i) crs.append(crossroads.at(hits.at(i)));
-    return crs;
+    T result;
+    for(int i = 0; i < hits.size(); i++) result.append(objs.at(hits.at(i)));
+    return result;
+}
+
+template <typename T>
+void Board::highlightObjectsAtMousePos(T objs, QPoint &pos)
+{
+    T selObjs;
+
+    for(int i = 0; i < objs.size(); i++)
+    {
+        objs.at(i)->setIsHighlighted(false);
+        if(objs.at(i)->getIsSelectable()) selObjs.append(objs.at(i));
+    }
+
+    T hits = getObjectsAtMousePos(selObjs, pos);
+    if(hits.size())
+        for(int i = 0; i < hits.size(); i++)
+            hits.at(i)->setIsHighlighted(true);
+}
+
+void Board::onMouseClick(QPoint mousePos)
+{
+    BoardState state;
+    BoardObjectState s;
+
+    s.index = 1;
+    s.selectable = true;
+
+    state.crossroadStates.append(s);
+    state.roadwayStates.append(s);
+
+    qDebug() << "updating state...";
+    updateBoardState(state);
 }
 
 void Board::onMouseOver(QPoint mousePos)
 {
-    if(state == BOARD_STATE_SET_BUILDING)
+    // highlight selectable objects at mousepos
+    highlightObjectsAtMousePos(crossroads, mousePos);
+    highlightObjectsAtMousePos(roadways, mousePos);
+    highlightObjectsAtMousePos(boardTiles, mousePos);
+
+    game->getGLWidget()->updateGL();
+}
+
+void Board::updateBoardState(BoardState &newState)
+{
+    int max = 1;
+    BoardObjectState s;
+
+    for(int i = 0; i < max; i++)
     {
-        QList<Crossroad*> crs = getCrossroadsAtMousePos(mousePos);
-        if(crs.size()==1)
+        bool done = true;
+
+        if(newState.tileStates.size() >= max)
         {
-            crs.at(0)->setIsHighlighted(true);
-        }
-        else
-        {
-            for(int i = 0; i < crossroads.size(); i++)
-                crossroads.at(i)->setIsHighlighted(false);
+            s = newState.tileStates.at(i);
+            done = false;
         }
 
-        game->getGLWidget()->updateGL();
+        if(newState.roadwayStates.size() >= max)
+        {
+            s = newState.roadwayStates.at(i);
+            Roadway *r = roadways.at(s.index);
+            r->setIsSelectable(s.selectable);
+            r->setIsEnabled(s.enabled);
+            done = false;
+        }
+
+        if(newState.crossroadStates.size() >= max)
+        {
+            s = newState.crossroadStates.at(i);
+            Crossroad *c = crossroads.at(s.index);
+            c->setIsSelectable(s.selectable);
+            c->setIsEnabled(s.enabled);
+            done = false;
+        }
+
+        if(!done) max++;
     }
+
+    game->getGLWidget()->updateGL();
 }
 
 // load a board from a plain textfile

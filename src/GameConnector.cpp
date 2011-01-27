@@ -21,7 +21,7 @@
 #include "GameConnector.h" 
 
 GameConnector::GameConnector(Game *_game, QWidget *parent)
-    : QDialog(parent), game(_game)
+    : QDialog(parent), GameObject(_game)
 {
     ui.setupUi(this);
 }

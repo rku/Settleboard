@@ -14,6 +14,7 @@ FORMS = src/ui/connectorform.ui \
 
 HEADERS = src/GLWidget.h \
           src/GLTypes.h \
+          src/GameObject.h \
           src/Game.h \
           src/HexTile.h \
           src/NumberChip.h \

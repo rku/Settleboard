@@ -21,18 +21,17 @@
 #ifndef GAMEUI_H
 #define GAMEUI_H
 
+#include "GameObject.h"
+
 class Game;
 
-class GameUI
+class GameUI : public GameObject
 {
     public:
         GameUI(Game*);
         ~GameUI();
 
         void render();
-
-    protected:
-        Game *game;
 };
 
 #endif

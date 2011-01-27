@@ -8,14 +8,13 @@ class HexTile;
 class Game;
 class Crossroad;
 
-class Roadway
+class Roadway : public GLGameModel
 {
     public:
         Roadway(Game*, Vertex3f a, Vertex3f b);
         ~Roadway();
 
         void draw();
-        void drawSelectionRect();
 
         const QList<Vertex3f>& getVertices() { return vertices; }
         void setVertices(Vertex3f a, Vertex3f b);
@@ -32,7 +31,6 @@ class Roadway
     private:
         void createSelectionRect();
 
-        Game *game;
         GLuint selectionRectListID;
         QList<Vertex3f> vertices;
         QList<HexTile*> tiles;

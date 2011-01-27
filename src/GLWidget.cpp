@@ -33,7 +33,7 @@
 #define CAM_FOV                 65.0
 
 GLWidget::GLWidget(Game *_game, QWidget *parent)
-    : QGLWidget(parent), game(_game)
+    : QGLWidget(parent), GameObject(_game)
 {
     cameraAngleX        = 0.0;
     cameraAngleY        = 0.5;
@@ -124,6 +124,7 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
         event->button() & Qt::LeftButton)
     {
         qDebug() << "Mouse pressed" << event->pos();
+        game->getBoard()->onMouseClick(event->pos());
     }
     else if(event->type() & QEvent::MouseButtonRelease)
     {

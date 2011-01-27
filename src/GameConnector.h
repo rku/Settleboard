@@ -23,11 +23,12 @@
 
 #include <QtGui>
 
+#include "GameObject.h"
 #include "ui_connectorform.h"
 
 class Game;
 
-class GameConnector : public QDialog
+class GameConnector : public QDialog, GameObject
 {
     Q_OBJECT
 
@@ -35,8 +36,6 @@ class GameConnector : public QDialog
         GameConnector(Game*,QWidget *parent = 0);
 
     private:
-        Game *game;
-
         Ui::ConnectorForm ui;
 };
 

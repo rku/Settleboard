@@ -21,7 +21,7 @@
 #include "GameUI.h"
 #include "Game.h"
 
-GameUI::GameUI(Game* _game) : game(_game)
+GameUI::GameUI(Game* _game) : GameObject(_game)
 {
 }
 

@@ -22,7 +22,7 @@
 #include "Game.h"
 
 Resource::Resource(Game *_game, const QString _name, const int _initamount)
-    : game(_game), name(_name), amount(_initamount)
+    : GameObject(_game), name(_name), amount(_initamount)
 {
     qDebug() << "Resource" << getName() << "initialized.";
 }

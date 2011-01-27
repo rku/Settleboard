@@ -23,7 +23,7 @@
 #include "Building.h"
 
 Player::Player(Game *_game)
-    : game(_game)
+    : GameObject(_game)
 {
     color = Qt::red;
     name = "unknown";

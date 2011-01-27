@@ -25,11 +25,13 @@
 #include <QList>
 #include <QColor>
 
+#include "GameObject.h"
+
 class Game;
 class Resource;
 class Building;
 
-class Player
+class Player : public GameObject
 {
     public:
         Player(Game*);
@@ -42,7 +44,6 @@ class Player
         QList<Building*> &getBuildings();
 
     private:
-        Game *game;
         QColor color;
         QString name;
         QList<Resource*> resources;
