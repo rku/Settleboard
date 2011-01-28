@@ -197,6 +197,7 @@ IMPLEMENT_RULE(ruleBuildSettlement)
     Q_ASSERT(ruleData.size() > 0);
     Crossroad *cr = (Crossroad*)ruleData.pop();
     Building *bld = new Building(game, player, "settlement");
+    bld->setScale(0.3);
     cr->setBuilding(bld);
 
     return true;

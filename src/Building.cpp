@@ -32,6 +32,5 @@ Building::Building(Game *_game, Player *_player, QString _type)
 
     load(modelPath.arg(type));
     setColor(player->getColor());
-    setScale(0.4f);
 }
 
