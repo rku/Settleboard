@@ -81,6 +81,19 @@ void GLWidget::initializeGL()
         << (char*)glGetString(GL_VENDOR);
     qDebug() << (char*)glGetString(GL_RENDERER);
 
+    // lighting
+    //GLfloat position[] = { 0.0, -1.0, 0.0, 0.0 };
+    //GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
+    //GLfloat lmodel_ambient[] = { 0.1, 0.1, 0.1, 0.0 };
+    //glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
+    //glLightfv(GL_LIGHT0, GL_POSITION, position);
+    //glLightfv(GL_LIGHT0, GL_AMBIENT, white_light);
+    //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+    //glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+
+    //glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHT0);
+
     game->getBoard()->loadByName("StandardSettlers");
     game->getBoard()->generate();
 }

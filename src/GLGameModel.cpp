@@ -85,7 +85,10 @@ void GLGameModel::create()
                 currentTex = 0;
                 glBindTexture(GL_TEXTURE_2D, 0);
                 glDisable(GL_TEXTURE_2D);
+                //glEnable(GL_COLOR_MATERIAL);
+                //glColorMaterial(GL_FRONT, GL_AMBIENT);
                 game->getGLWidget()->qglColor(color);
+                //glDisable(GL_COLOR_MATERIAL);
             }
         }
 
