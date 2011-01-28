@@ -70,7 +70,7 @@ class GameRules : public QObject, public GameObject
         bool executeRule(QString name, Player*);
         bool getIsRuleChainWaiting() { return isRuleChainWaiting; }
         void continueRuleChain();
-        void cancelCurrentRuleChain();
+        void cancelRuleChain();
 
         void handleSelectedObject(GLGameModel*);
 

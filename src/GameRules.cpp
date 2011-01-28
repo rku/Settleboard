@@ -114,15 +114,16 @@ void GameRules::ruleChainFinished()
     ruleChain.clear();
     ruleData.clear();
     isRuleChainWaiting = false;
+    game->getBoard()->resetBoardState();
 }
 
-void GameRules::cancelCurrentRuleChain()
+void GameRules::cancelRuleChain()
 {
     ruleData.clear();
     ruleChain.clear();
     isRuleChainWaiting = false;
 
-    game->getBoard()->resetBoardState();
+    qDebug() << "Rule chain canceled";
 }
 
 void GameRules::pushRuleData(void *pointer)
@@ -230,6 +231,7 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
         return true;
     }
 
+    cancelRuleChain();
     return false;
 }
 
@@ -311,6 +313,7 @@ IMPLEMENT_RULE(ruleSelectRoadway)
         return true;
     }
 
+    cancelRuleChain();
     return false;
 }
 

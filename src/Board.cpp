@@ -374,14 +374,19 @@ void Board::generate()
         QList<Vertex3f> vertices = newTile->getCornerVertices();
         Q_ASSERT(vertices.size() == 6);
         vertices.append(vertices[0]);
+        Crossroad *lastCrossroad = NULL;
         for(int i = 1; i < vertices.size(); i++)
         {
             Crossroad *cr = getCrossroadNearPosition(vertices.at(i-1), true);
             cr->addTile(newTile);
 
+            if(lastCrossroad != NULL) cr->addNeighbour(lastCrossroad);
+
             Roadway *rw = getRoadwayNear(vertices.at(i-1), vertices.at(i), true);
             rw->addTile(newTile);
             rw->addCrossroad(cr);
+
+            lastCrossroad = cr;
         }
 
         // add tile
