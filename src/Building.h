@@ -26,20 +26,29 @@
 class Player;
 class Game;
 class Crossroad;
+class Roadway;
+class HexTile;
 
 class Building : public GLGameModel
 {
     public:
-        Building(Game*, Player*);
+        Building(Game*, Player*, QString _type);
 
-        Player* getPlayer() { return player; }
+        virtual Player* getPlayer() { return player; }
 
-        Crossroad* getCrossroad() { return crossroad; }
+        Crossroad *getCrossroad() { return crossroad; }
         void setCrossroad(Crossroad *c) { crossroad = c; }
+        Roadway *getRoadway() { return roadway; }
+        void setRoadway(Roadway *r) { roadway = r; }
+        HexTile *getTile() { return tile; }
+        void setTile(HexTile *t) { tile = t; }
 
     private:
+        QString type;
         Player *player;
         Crossroad *crossroad;
+        Roadway *roadway;
+        HexTile *tile;
 };
 
 #endif
