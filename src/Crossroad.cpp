@@ -62,29 +62,33 @@ void Crossroad::draw()
 
 void Crossroad::addTile(HexTile *tile)
 {
+    if(tiles.contains(tile)) return;
+
     Q_ASSERT(tiles.size() < 3);
 
-    if(!tiles.contains(tile))
-    {
-        tiles.append(tile);
-        tile->addCrossroad(this);
-    }
+    tiles.append(tile);
+    tile->addCrossroad(this);
 }
 
 void Crossroad::addNeighbour(Crossroad *neighbour)
 {
+    if(neighbours.contains(neighbour)) return;
+
     Q_ASSERT(neighbours.size() < 3);
-    if(!neighbours.contains(neighbour)) neighbours.append(neighbour);
+    neighbours.append(neighbour);
+    neighbour->addNeighbour(this);
 }
 
 void Crossroad::addRoadway(Roadway *roadway)
 {
+    if(roadways.contains(roadway)) return;
+
     Q_ASSERT(roadways.size() < 3);
 
-    if(!roadways.contains(roadway))
-    {
-        roadways.append(roadway);
-        roadway->addCrossroad(this);
-    }
+    for(int i = 0; i < roadways.size(); i++)
+        roadway->addNeighbour(roadways.at(i));
+
+    roadways.append(roadway);
+    roadway->addCrossroad(this);
 }
 

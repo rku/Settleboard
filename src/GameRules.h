@@ -56,7 +56,7 @@ typedef struct _RuleChainElement {
 #define RULECHAIN_ADD(n) if(1) { \
     RuleChainElement _rce; \
     _rce.player = player; _rce.name = n; _rce.suspend = false; \
-    ruleChain.append(_rce); }
+    ruleChain.push(_rce); }
 
 class GameRules : public QObject, public GameObject
 {
@@ -83,6 +83,7 @@ class GameRules : public QObject, public GameObject
         void initActions();
         void startRuleChain();
         void suspendRuleChain();
+        void ruleChainFinished();
         
         DECLARE_RULE(ruleUserActionBuildSettlement);
         DECLARE_RULE(ruleBuildSettlement);
@@ -90,7 +91,11 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleSelectCrossroad);
         DECLARE_RULE(ruleCrossroadSelected);
         DECLARE_RULE(ruleCanSelectCrossroad);
+        DECLARE_RULE(ruleUserActionBuildRoad);
+        DECLARE_RULE(ruleBuildRoad);
+        DECLARE_RULE(ruleCanBuildRoad);
         DECLARE_RULE(ruleSelectRoadway);
+        DECLARE_RULE(ruleRoadwaySelected);
         DECLARE_RULE(ruleCanSelectRoadway);
 
         QList<QAction*> actions;

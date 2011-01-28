@@ -21,6 +21,7 @@
 #include "GameRules.h"
 #include "Crossroad.h"
 #include "HexTile.h"
+#include "Player.h"
 #include "Roadway.h"
 #include "Game.h"
 
@@ -35,7 +36,11 @@ GameRules::GameRules(Game *_game)
     REGISTER_RULE(ruleSelectCrossroad);
     REGISTER_RULE(ruleCrossroadSelected);
     REGISTER_RULE(ruleCanSelectCrossroad);
+    REGISTER_RULE(ruleUserActionBuildRoad);
+    REGISTER_RULE(ruleBuildRoad);
+    REGISTER_RULE(ruleCanBuildRoad);
     REGISTER_RULE(ruleSelectRoadway);
+    REGISTER_RULE(ruleRoadwaySelected);
     REGISTER_RULE(ruleCanSelectRoadway);
 
     initActions();
@@ -97,6 +102,16 @@ void GameRules::continueRuleChain()
 
         executeRule(rce.name, rce.player);
     }
+
+    if(ruleChain.size() == 0) ruleChainFinished();
+}
+
+void GameRules::ruleChainFinished()
+{
+    qDebug() << "Rule chain finished";
+    ruleChain.clear();
+    ruleData.clear();
+    isRuleChainWaiting = false;
 }
 
 void GameRules::cancelCurrentRuleChain()
@@ -157,7 +172,7 @@ void GameRules::handleSelectedObject(GLGameModel*)
 
 IMPLEMENT_RULE(ruleUserActionBuildSettlement)
 {
-    if(player.getIsLocal())
+    if(player->getIsLocal())
     {
         RULECHAIN_ADD("ruleBuildSettlement");
         RULECHAIN_ADD("ruleCrossroadSelected");
@@ -188,6 +203,8 @@ IMPLEMENT_RULE(ruleCanBuildSettlement)
 // Lets the user select a crossroad
 IMPLEMENT_RULE(ruleSelectCrossroad)
 {
+    if(!player->getIsLocal()) return true;
+
     Board *board = game->getBoard();
     const QList<Crossroad*> crossroads = board->getCrossroads();
 
@@ -216,6 +233,8 @@ IMPLEMENT_RULE(ruleCrossroadSelected)
 // since these are the standard rules without seafarers
 IMPLEMENT_RULE(ruleCanSelectCrossroad)
 {
+    if(!player->getIsLocal()) return true;
+
     Q_ASSERT(ruleData.size() > 0);
     Crossroad *c = (Crossroad*)ruleData.pop();
 
@@ -228,8 +247,34 @@ IMPLEMENT_RULE(ruleCanSelectCrossroad)
     return false;
 }
 
+IMPLEMENT_RULE(ruleUserActionBuildRoad)
+{
+    if(player->getIsLocal())
+    {
+        RULECHAIN_ADD("ruleBuildRoad");
+        RULECHAIN_ADD("ruleRoadwaySelected");
+        RULECHAIN_ADD("ruleSelectRoadway");
+        startRuleChain();
+    }
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleBuildRoad)
+{
+    qDebug() << "Build Road";
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanBuildRoad)
+{
+    return true;
+}
+
 IMPLEMENT_RULE(ruleSelectRoadway)
 {
+    if(!player->getIsLocal()) return true;
+
     Board *board = game->getBoard();
     QList<Roadway*> roadways = board->getRoadways();
 
@@ -240,6 +285,15 @@ IMPLEMENT_RULE(ruleSelectRoadway)
         roadways.at(i)->setIsSelectable(selectable);
     }
 
+    board->update();
+    suspendRuleChain();
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleRoadwaySelected)
+{
+    game->getBoard()->resetBoardState();
     return true;
 }
 

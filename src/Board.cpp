@@ -147,7 +147,7 @@ bool Board::handleMouseClick(const QPoint &mousePos)
     }
 
     // execute test rule
-    game->getRules()->executeRule("ruleUserActionBuildSettlement", game->getPlayers()[0]);
+    game->getRules()->executeRule("ruleUserActionBuildRoad", game->getPlayers()[0]);
 
     return true;
 }

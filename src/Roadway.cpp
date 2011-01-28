@@ -1,6 +1,7 @@
 
 #include "Game.h"
 #include "Player.h"
+#include "Crossroad.h"
 #include "Roadway.h"
 
 Roadway::Roadway(Game *_game, Vertex3f a, Vertex3f b) : GLGameModel(_game)
@@ -74,19 +75,28 @@ void Roadway::setVertices(Vertex3f a, Vertex3f b)
 
 void Roadway::addTile(HexTile *tile)
 {
+    if(tiles.contains(tile)) return;
+
     Q_ASSERT(tiles.size() < 2);
-    if(!tiles.contains(tile)) tiles.append(tile);
+    tiles.append(tile);
+    tile->addRoadway(this);
 }
 
 void Roadway::addNeighbour(Roadway *roadway)
 {
+    if(neighbours.contains(roadway)) return;
+
     Q_ASSERT(neighbours.size() < 4);
-    if(!neighbours.contains(roadway)) neighbours.append(roadway);
+    neighbours.append(roadway);
+    roadway->addNeighbour(this);
 }
 
 void Roadway::addCrossroad(Crossroad *crossroad)
 {
+    if(crossroads.contains(crossroad)) return;
+
     Q_ASSERT(crossroads.size() < 2);
-    if(!crossroads.contains(crossroad)) crossroads.append(crossroad);
+    crossroads.append(crossroad);
+    crossroad->addRoadway(this);
 }
 
