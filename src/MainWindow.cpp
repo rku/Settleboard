@@ -31,7 +31,7 @@ MainWindow::MainWindow()
 {
     uiStyle = new UIStyle();
 
-    setWindowTitle(tr("rSettle"));
+    setWindowTitle(tr("Settleboard3D"));
 
     createDialogs();
     createActions();

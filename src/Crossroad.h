@@ -30,8 +30,8 @@ class Crossroad : public GLGameModel
         const QList<Roadway*> getRoadways() { return roadways; }
         void addRoadway(Roadway*);
 
-        bool getHasBuilding() { return (building != NULL); }
-        void setBuilding(Building*);
+        bool getIsPlayerObjectPlaced() { return (playerObject != NULL); }
+        void placePlayerObject(GLGameModel*);
 
     private:
         void createSelectionCircle();
@@ -39,7 +39,7 @@ class Crossroad : public GLGameModel
 
         GLuint selectionCircleListID;
         Vertex3f vertex;
-        Building *building;
+        GLGameModel *playerObject;
         QList<HexTile*> tiles;
         QList<Crossroad*> neighbours;
         QList<Roadway*> roadways;

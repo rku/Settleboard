@@ -198,7 +198,7 @@ IMPLEMENT_RULE(ruleBuildSettlement)
     Crossroad *cr = (Crossroad*)ruleData.pop();
     Building *bld = new Building(game, player, "settlement");
     bld->setScale(0.3);
-    cr->setBuilding(bld);
+    cr->placePlayerObject(bld);
 
     return true;
 }
@@ -252,11 +252,11 @@ IMPLEMENT_RULE(ruleCanSelectCrossroad)
     Q_ASSERT(ruleData.size() > 0);
     Crossroad *c = (Crossroad*)ruleData.pop();
 
-    if(c->getHasBuilding()) return false;
+    if(c->getIsPlayerObjectPlaced()) return false;
 
     for(int i = 0; i < c->getNeighbours().size(); i++)
     {
-        if(c->getNeighbours().at(i)->getHasBuilding()) return false;
+        if(c->getNeighbours().at(i)->getIsPlayerObjectPlaced()) return false;
     }
 
     for(int i = 0; i < c->getTiles().size(); i++)
@@ -283,7 +283,18 @@ IMPLEMENT_RULE(ruleUserActionBuildRoad)
 
 IMPLEMENT_RULE(ruleBuildRoad)
 {
-    qDebug() << "Build Road";
+    if(!EXECUTE_SUBRULE("ruleCanBuildRoad"))
+    {
+        qDebug() << "Cannot build road!";
+        return false;
+    }
+
+    Q_ASSERT(ruleData.size()>0);
+    Roadway *r = (Roadway*)ruleData.pop();
+    Building *road = new Building(game, player, "road");
+    road->setScale(0.3);
+    r->placePlayerObject(road);
+    
     return true;
 }
 
@@ -329,10 +340,17 @@ IMPLEMENT_RULE(ruleCanSelectRoadway)
     Q_ASSERT(ruleData.size() > 0);
     Roadway *r = (Roadway*)ruleData.pop();
     QList<Crossroad*> crossroads = r->getCrossroads();
+    bool canSelect = false;
 
     for(int i = 0; i < crossroads.size(); i++)
     {
-        if(crossroads.at(i)->getHasBuilding()) return true;
+        if(crossroads.at(i)->getIsPlayerObjectPlaced()) canSelect = true;
+    }
+
+    for(int i = 0; i < r->getTiles().size(); i++)
+    {
+        if(r->getTiles().at(i)->getType() != HEXTILE_TYPE_WATER)
+            return canSelect;
     }
 
     return false;

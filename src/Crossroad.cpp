@@ -13,13 +13,13 @@ Crossroad::Crossroad(Game *_game, Vertex3f v) : GLGameModel(_game)
     createSelectionCircle();
 
     setVertex(v);
-    building = NULL;
+    playerObject = NULL;
     setIsHighlighted(false);
 }
 
 Crossroad::~Crossroad()
 {
-    if(getHasBuilding()) delete building;
+    if(getIsPlayerObjectPlaced()) delete playerObject;
     glDeleteLists(selectionCircleListID, 1);
 }
 
@@ -58,9 +58,9 @@ void Crossroad::drawSelectionCircle()
 
 void Crossroad::draw()
 {
-    if(getHasBuilding())
+    if(getIsPlayerObjectPlaced())
     {
-        building->draw();
+        playerObject->draw();
         return;
     }
 
@@ -101,20 +101,14 @@ void Crossroad::addRoadway(Roadway *roadway)
     roadway->addCrossroad(this);
 }
 
-void Crossroad::setBuilding(Building *b)
+void Crossroad::placePlayerObject(GLGameModel *b)
 {
-    if(building != NULL)
-    {
-        delete building;
-        building = NULL;
-    }
+    playerObject = b;
 
-    building = b;
-
-    if(building != NULL)
+    if(playerObject != NULL)
     {
-        qDebug() << "Building" << b << "set for crossroad" << this;
-        building->setPos(vertex);
+        qDebug() << "Player object" << b << "placed at crossroad" << this;
+        playerObject->setPos(vertex);
     }
 }
 

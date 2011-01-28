@@ -14,7 +14,7 @@ class Roadway : public GLGameModel
         Roadway(Game*, Vertex3f a, Vertex3f b);
         ~Roadway();
 
-        void draw();
+        virtual void draw();
 
         const QList<Vertex3f>& getVertices() { return vertices; }
         void setVertices(Vertex3f a, Vertex3f b);
@@ -28,14 +28,19 @@ class Roadway : public GLGameModel
         const QList<Crossroad*>& getCrossroads() { return crossroads; }
         void addCrossroad(Crossroad*);
 
+        bool getIsPlayerObjectPlaced() { return (playerObject != NULL); }
+        void placePlayerObject(GLGameModel*);
+
     private:
         void createSelectionRect();
 
+        Vertex3f centerVertex;
         GLuint selectionRectListID;
         QList<Vertex3f> vertices;
         QList<HexTile*> tiles;
         QList<Roadway*> neighbours;
         QList<Crossroad*> crossroads;
+        GLGameModel *playerObject;
 };
 
 #endif

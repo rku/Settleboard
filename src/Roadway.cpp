@@ -6,6 +6,8 @@
 
 Roadway::Roadway(Game *_game, Vertex3f a, Vertex3f b) : GLGameModel(_game)
 {
+    playerObject = NULL;
+
     setVertices(a,b);
 
     selectionRectListID = glGenLists(1);
@@ -36,6 +38,12 @@ void Roadway::createSelectionRect()
 
 void Roadway::draw()
 {
+    if(getIsPlayerObjectPlaced())
+    {
+        playerObject->draw();
+        return;
+    }
+
     Player *p = game->getPlayers().at(0);
     QColor color = (getIsSelectable()) ? p->getColor() : Qt::black;
     float width = (getIsSelectable()) ? 5.0f : 2.0f;
@@ -46,31 +54,27 @@ void Roadway::draw()
     glLineWidth(width);
     glCallList(selectionRectListID);
     glPopMatrix();
-
-    // draw roads
 }
 
 void Roadway::setVertices(Vertex3f a, Vertex3f b)
 {
-    // a and b are crossroad positions
-    // we shorten the distance by 30% to represent
-    // a roadway between a and b
-
-    // calculate the vector between a and b
-    /*Vertex3f s;
-    s.x = b.x - a.x;
-    s.y = b.y - a.y;
-    s.z = b.z - a.z;
-
-    s.x *= 0.15; s.y *= 0.15; s.z *= 0.15; // shorten it by 15%
-
-    // new points are a + s and b - s
-    a.x += s.x; a.y += s.y; a.z += s.z;
-    b.x -= s.x; b.y -= s.y; b.z -= s.z;*/
-
     // add vertices
     vertices.clear();
     vertices << a << b;
+
+    // calculate center between a and b, where objects
+    // should be placed
+
+    // calculate the vector between a and b
+    Vertex3f ab;
+    ab.x = b.x - a.x;
+    ab.y = b.y - a.y;
+    ab.z = b.z - a.z;
+
+    // coords of centerVertex: vector(0->a) + 0.5*vector(a->b)
+    centerVertex.x = a.x + 0.5 * ab.x;
+    centerVertex.y = a.y + 0.5 * ab.y;
+    centerVertex.z = a.z + 0.5 * ab.z; 
 }
 
 void Roadway::addTile(HexTile *tile)
@@ -98,5 +102,16 @@ void Roadway::addCrossroad(Crossroad *crossroad)
     Q_ASSERT(crossroads.size() < 2);
     crossroads.append(crossroad);
     crossroad->addRoadway(this);
+}
+
+void Roadway::placePlayerObject(GLGameModel *po)
+{
+    playerObject = po;
+
+    if(po != NULL)
+    {
+        po->setPos(centerVertex);
+        // rotate...
+    }
 }
 
