@@ -19,10 +19,13 @@
  */
 
 #include "Game.h"
+#include "Player.h"
 #include "Building.h"
 
-Building::Building(Game *_game)
-    : GLGameModel(_game)
+Building::Building(Game *_game, Player *_player)
+    : GLGameModel(_game), player(_player)
 {
+    load("Data/Objects/settlement.obj", player->getColor());
+    setScale(0.35);
 }
 

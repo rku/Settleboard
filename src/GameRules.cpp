@@ -23,6 +23,7 @@
 #include "HexTile.h"
 #include "Player.h"
 #include "Roadway.h"
+#include "Building.h"
 #include "Game.h"
 
 GameRules::GameRules(Game *_game)
@@ -104,6 +105,7 @@ void GameRules::continueRuleChain()
     }
 
     if(ruleChain.size() == 0) ruleChainFinished();
+    game->getBoard()->update();
 }
 
 void GameRules::ruleChainFinished()
@@ -191,7 +193,11 @@ IMPLEMENT_RULE(ruleBuildSettlement)
         return false;
     }
 
-    qDebug() << "BUILD SETTLEMENT";
+    Q_ASSERT(ruleData.size() > 0);
+    Crossroad *cr = (Crossroad*)ruleData.pop();
+    Building *settlement = new Building(game, player);
+    cr->setBuilding(settlement);
+
     return true;
 }
 
@@ -207,6 +213,7 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
 
     Board *board = game->getBoard();
     const QList<Crossroad*> crossroads = board->getCrossroads();
+    bool selectableObjectFound = false;
 
     // set all crossroads selectable
     for(int i = 0; i < crossroads.size(); i++)
@@ -214,12 +221,16 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
         ruleData.push(crossroads.at(i));
         bool selectable = EXECUTE_SUBRULE("ruleCanSelectCrossroad");
         crossroads.at(i)->setIsSelectable(selectable);
+        if(selectable) selectableObjectFound = true;
     }
 
-    board->update();
-    suspendRuleChain();
+    if(selectableObjectFound)
+    {
+        suspendRuleChain();
+        return true;
+    }
 
-    return true;
+    return false;
 }
 
 IMPLEMENT_RULE(ruleCrossroadSelected)
@@ -237,6 +248,13 @@ IMPLEMENT_RULE(ruleCanSelectCrossroad)
 
     Q_ASSERT(ruleData.size() > 0);
     Crossroad *c = (Crossroad*)ruleData.pop();
+
+    if(c->getHasBuilding()) return false;
+
+    for(int i = 0; i < c->getNeighbours().size(); i++)
+    {
+        if(c->getNeighbours().at(i)->getHasBuilding()) return false;
+    }
 
     for(int i = 0; i < c->getTiles().size(); i++)
     {
@@ -277,18 +295,23 @@ IMPLEMENT_RULE(ruleSelectRoadway)
 
     Board *board = game->getBoard();
     QList<Roadway*> roadways = board->getRoadways();
+    bool selectableObjectFound = false;
 
     for(int i = 0; i < roadways.size(); i++)
     {
         ruleData.push(roadways.at(i));
         bool selectable = EXECUTE_SUBRULE("ruleCanSelectRoadway");
         roadways.at(i)->setIsSelectable(selectable);
+        if(selectable) selectableObjectFound = true;
     }
 
-    board->update();
-    suspendRuleChain();
+    if(selectableObjectFound)
+    {
+        suspendRuleChain();
+        return true;
+    }
 
-    return true;
+    return false;
 }
 
 IMPLEMENT_RULE(ruleRoadwaySelected)
@@ -301,7 +324,13 @@ IMPLEMENT_RULE(ruleCanSelectRoadway)
 {
     Q_ASSERT(ruleData.size() > 0);
     Roadway *r = (Roadway*)ruleData.pop();
+    QList<Crossroad*> crossroads = r->getCrossroads();
 
-    return true;
+    for(int i = 0; i < crossroads.size(); i++)
+    {
+        if(crossroads.at(i)->getHasBuilding()) return true;
+    }
+
+    return false;
 }
 

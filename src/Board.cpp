@@ -60,6 +60,7 @@ void Board::render()
     GLGameModel *robber = new GLGameModel(game);
     robber->load("Data/Objects/robber.obj");
     robber->setColor(Qt::black);
+    robber->setScale(0.7);
     robber->draw();
     delete robber;
 }
@@ -140,14 +141,14 @@ bool Board::handleMouseClick(const QPoint &mousePos)
         GLGameModel *obj = getSelectableObjectAtMousePos(mousePos);
         if(obj != NULL)
         {
-            game->getRules()->pushRuleData((void*)&obj);
+            game->getRules()->pushRuleData((void*)obj);
             game->getRules()->continueRuleChain();
         }
         return true;
     }
 
     // execute test rule
-    game->getRules()->executeRule("ruleUserActionBuildRoad", game->getPlayers()[0]);
+    game->getRules()->executeRule("ruleUserActionBuildSettlement", game->getPlayers()[0]);
 
     return true;
 }

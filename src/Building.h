@@ -23,14 +23,23 @@
 
 #include "GLGameModel.h"
 
+class Player;
 class Game;
+class Crossroad;
 
-class Building : GLGameModel
+class Building : public GLGameModel
 {
     public:
-        Building(Game*);
+        Building(Game*, Player*);
+
+        Player* getPlayer() { return player; }
+
+        Crossroad* getCrossroad() { return crossroad; }
+        void setCrossroad(Crossroad *c) { crossroad = c; }
 
     private:
+        Player *player;
+        Crossroad *crossroad;
 };
 
 #endif

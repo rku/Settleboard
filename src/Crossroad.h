@@ -8,6 +8,7 @@
 class HexTile;
 class Game;
 class Roadway;
+class Building;
 
 class Crossroad : public GLGameModel
 {
@@ -29,12 +30,16 @@ class Crossroad : public GLGameModel
         const QList<Roadway*> getRoadways() { return roadways; }
         void addRoadway(Roadway*);
 
+        bool getHasBuilding() { return (building != NULL); }
+        void setBuilding(Building*);
+
     private:
         void createSelectionCircle();
         void drawSelectionCircle();
 
         GLuint selectionCircleListID;
         Vertex3f vertex;
+        Building *building;
         QList<HexTile*> tiles;
         QList<Crossroad*> neighbours;
         QList<Roadway*> roadways;

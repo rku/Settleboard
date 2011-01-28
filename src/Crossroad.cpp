@@ -5,6 +5,7 @@
 #include "Roadway.h"
 #include "Player.h"
 #include "Crossroad.h"
+#include "Building.h"
 
 Crossroad::Crossroad(Game *_game, Vertex3f v) : GLGameModel(_game)
 {
@@ -12,11 +13,13 @@ Crossroad::Crossroad(Game *_game, Vertex3f v) : GLGameModel(_game)
     createSelectionCircle();
 
     setVertex(v);
+    building = NULL;
     setIsHighlighted(false);
 }
 
 Crossroad::~Crossroad()
 {
+    if(getHasBuilding()) delete building;
     glDeleteLists(selectionCircleListID, 1);
 }
 
@@ -55,9 +58,15 @@ void Crossroad::drawSelectionCircle()
 
 void Crossroad::draw()
 {
-    if(getIsSelectable()) drawSelectionCircle();
+    if(getHasBuilding())
+    {
+        building->draw();
+        return;
+    }
 
-    // draw buildings...
+    // if no building is available on this crossroad and
+    // it is selectable, draw the selection circle
+    if(getIsSelectable()) drawSelectionCircle();
 }
 
 void Crossroad::addTile(HexTile *tile)
@@ -90,5 +99,22 @@ void Crossroad::addRoadway(Roadway *roadway)
 
     roadways.append(roadway);
     roadway->addCrossroad(this);
+}
+
+void Crossroad::setBuilding(Building *b)
+{
+    if(building != NULL)
+    {
+        delete building;
+        building = NULL;
+    }
+
+    building = b;
+
+    if(building != NULL)
+    {
+        qDebug() << "Building" << b << "set for crossroad" << this;
+        building->setPos(vertex);
+    }
 }
 
