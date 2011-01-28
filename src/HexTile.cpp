@@ -26,6 +26,7 @@
 HexTile::HexTile(Game *_game)
     : GLGameModel(_game)
 {
+    setIsLightingEnabled(false);
     setType(HEXTILE_TYPE_WATER);
 }
 

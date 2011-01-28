@@ -43,6 +43,7 @@ GLGameModel::GLGameModel(Game *_game)
     angleZ = 0.0f;
 
     color = Qt::gray;
+    setIsLightingEnabled(true);
     setIsHighlighted(false);
     setIsSelectable(false);
     setIsVisible(true);
@@ -61,6 +62,8 @@ void GLGameModel::create()
     TextureManager *tm = game->getTextureManager();
 
     glNewList(displayListID, GL_COMPILE);
+
+    if(getIsLightingEnabled()) glEnable(GL_LIGHTING);
 
     for(int i = 0; i < glModelFaces.size(); ++i)
     {
@@ -124,6 +127,7 @@ void GLGameModel::create()
         glEnd();
     }
 
+    glDisable(GL_LIGHTING);
     glEndList();
 
     createBorder();

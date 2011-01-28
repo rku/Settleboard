@@ -81,18 +81,11 @@ void GLWidget::initializeGL()
         << (char*)glGetString(GL_VENDOR);
     qDebug() << (char*)glGetString(GL_RENDERER);
 
-    // lighting
-    //GLfloat position[] = { 0.0, -1.0, 0.0, 0.0 };
-    //GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
-    //GLfloat lmodel_ambient[] = { 0.1, 0.1, 0.1, 0.0 };
-    //glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
-    //glLightfv(GL_LIGHT0, GL_POSITION, position);
-    //glLightfv(GL_LIGHT0, GL_AMBIENT, white_light);
-    //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-    //glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+    GLfloat white_color[] = { 0.5, 0.5, 0.5, 1.0 };
+    glLightfv(GL_LIGHT0, GL_AMBIENT, white_color);
 
-    //glEnable(GL_LIGHTING);
-    //glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
 
     game->getBoard()->loadByName("StandardSettlers");
     game->getBoard()->generate();
@@ -116,6 +109,9 @@ void GLWidget::updateCameraPos()
     gluLookAt( 0, 0, cameraDistance,    0, 0, 0, 0, 1, 0);
     gluLookAt( 0, cos(cameraAngleY), sin(cameraAngleY), 0, 0, 0, 0, 1, 0);
     gluLookAt( cos(cameraAngleX), 0, sin(cameraAngleX), 0, 0, 0, 0, 1, 0);
+
+    GLfloat light_position[] = { 0.2, -1.0, 0.5, 0.0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 }
 
 void GLWidget::resizeGL(int width, int height)

@@ -87,6 +87,8 @@ class GLGameModel : public GameObject
         bool getVertexGroupWithName(QString,VertexGroup&);
         QList<Vertex3f> getVerticesOfGroupWithName(QString);
 
+        void setIsLightingEnabled(bool b) { isLightingEnabled = b; }
+        bool getIsLightingEnabled() { return isLightingEnabled; }
         void setIsHighlighted(bool b) { isHighlighted = b; }
         bool getIsHighlighted() { return isHighlighted; }
         void setIsSelectable(bool b) { isSelectable = b; }
@@ -118,6 +120,7 @@ class GLGameModel : public GameObject
         GLfloat angleY;
         GLfloat angleZ;
         QColor color;
+        bool isLightingEnabled;
         bool isHighlighted;
         bool isSelectable;
         bool isVisible;
