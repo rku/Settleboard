@@ -88,9 +88,11 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);
+        DECLARE_RULE(ruleSelectSettlement);
         DECLARE_RULE(ruleUserActionBuildSettlement);
         DECLARE_RULE(ruleBuildSettlement);
         DECLARE_RULE(ruleCanBuildSettlement);
+        DECLARE_RULE(ruleRemoveSettlement);
         DECLARE_RULE(ruleSelectCrossroad);
         DECLARE_RULE(ruleCrossroadSelected);
         DECLARE_RULE(ruleCanSelectCrossroad);

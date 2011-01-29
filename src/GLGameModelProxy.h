@@ -12,6 +12,7 @@ class GLGameModelProxy : public GLGameModel
 
         virtual bool getIsPlayerObjectPlaced()
             { return (playerObject != NULL); }
+        virtual GLGameModel *getPlayerObject() { return playerObject; }
         virtual void placePlayerObject(GLGameModel*);
 
         virtual bool getIsSelectable();

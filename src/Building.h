@@ -36,6 +36,7 @@ class Building : public GLGameModel
 
         virtual Player* getPlayer() { return player; }
 
+        const QString& getType() { return type; }
         Crossroad *getCrossroad() { return crossroad; }
         void setCrossroad(Crossroad *c) { crossroad = c; }
         Roadway *getRoadway() { return roadway; }

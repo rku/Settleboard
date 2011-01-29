@@ -34,9 +34,11 @@ GameRules::GameRules(Game *_game)
     REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
+    REGISTER_RULE(ruleSelectSettlement);
     REGISTER_RULE(ruleUserActionBuildSettlement);
     REGISTER_RULE(ruleBuildSettlement);
     REGISTER_RULE(ruleCanBuildSettlement);
+    REGISTER_RULE(ruleRemoveSettlement);
     REGISTER_RULE(ruleSelectCrossroad);
     REGISTER_RULE(ruleCrossroadSelected);
     REGISTER_RULE(ruleCanSelectCrossroad);
@@ -181,8 +183,7 @@ IMPLEMENT_RULE(ruleUserActionBuildCity)
     if(player->getIsLocal())
     {
         RULECHAIN_ADD("ruleBuildCity");
-        RULECHAIN_ADD("ruleCrossroadSelected");
-        RULECHAIN_ADD("ruleSelectCrossroad");
+        RULECHAIN_ADD("ruleSelectSettlement");
         startRuleChain();
     }
 
@@ -199,6 +200,12 @@ IMPLEMENT_RULE(ruleBuildCity)
 
     Q_ASSERT(ruleData.size() > 0);
     Crossroad *cr = (Crossroad*)ruleData.pop();
+
+    // remove settlement
+    ruleData.push(cr);
+    EXECUTE_SUBRULE("ruleRemoveSettlement");
+
+    // build city
     Building *bld = new Building(game, player, "city");
     bld->setScale(0.4);
     cr->placePlayerObject(bld);
@@ -209,6 +216,38 @@ IMPLEMENT_RULE(ruleBuildCity)
 IMPLEMENT_RULE(ruleCanBuildCity)
 {
     return true;
+}
+
+IMPLEMENT_RULE(ruleSelectSettlement)
+{
+    Board *board = game->getBoard();
+    QList<Crossroad*> crossroads = board->getCrossroads();
+    bool selectableObjectFound = false;
+
+    for(int i = 0; i < crossroads.size(); i++)
+    {
+        Crossroad *c = crossroads.at(i);
+        if(c->getIsPlayerObjectPlaced())
+        {
+            Building *bld = (Building*)c->getPlayerObject();
+            qDebug() << "building" << bld->getType();
+            if(!bld->getType().compare("settlement"))
+            {
+                bld->setIsSelectable(true);
+                selectableObjectFound = true;
+            }
+        }
+    }
+
+    if(selectableObjectFound)
+    {
+        board->setSelectionMode();
+        suspendRuleChain();
+        return true;
+    }
+
+    cancelRuleChain();
+    return false;
 }
 
 IMPLEMENT_RULE(ruleUserActionBuildSettlement)
@@ -243,6 +282,18 @@ IMPLEMENT_RULE(ruleBuildSettlement)
 
 IMPLEMENT_RULE(ruleCanBuildSettlement)
 {
+    return true;
+}
+
+IMPLEMENT_RULE(ruleRemoveSettlement)
+{
+    Q_ASSERT(ruleData.size()>0);
+
+    Crossroad *c = (Crossroad*)ruleData.pop();
+    Building *b = (Building*)c->getPlayerObject();
+    c->placePlayerObject(NULL);
+    delete b;
+
     return true;
 }
 

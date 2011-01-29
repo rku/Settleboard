@@ -152,7 +152,7 @@ void GLGameModel::setupLightingParameters()
 {
     if(getIsEnabled())
     {
-        GLfloat white_color[] = { 0.5, 0.5, 0.5, 1.0 };
+        GLfloat white_color[] = { 0.4, 0.4, 0.4, 1.0 };
         glLightfv(GL_LIGHT0, GL_AMBIENT, white_color);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, white_color);
     }
