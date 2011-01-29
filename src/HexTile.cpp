@@ -105,25 +105,21 @@ void HexTile::addRoadway(Roadway *roadway)
     if(!roadways.contains(roadway)) roadways.append(roadway);
 }
 
-Vertex3f HexTile::getCenterVertex()
+QVector3D HexTile::getCenterVertex()
 {
-    Vertex3f c;
-    c.x = posX; c.y = posY; c.z = posZ;
-    return c;
+    return QVector3D(posX, posY, posZ);
 }
 
-QList<Vertex3f> HexTile::getCornerVertices()
+QList<QVector3D> HexTile::getCornerVertices()
 {
-    QList<Vertex3f> vertices;
+    QList<QVector3D> vertices;
 
     vertices = getVerticesOfGroupWithName("CORNERS");
     Q_ASSERT(vertices.size() > 0);
 
     for(int i = 0; i < vertices.size(); i++)
     {
-        vertices[i].x += posX;
-        vertices[i].y += posY;
-        vertices[i].z += posZ;
+        vertices[i] += QVector3D(posX, posY, posZ);
     }
 
     return vertices;

@@ -42,9 +42,9 @@ class GLGameModel : public GameObject
         void setName(QString s) { name = s; }
         QString getName() { return name; }
 
-        QVector<Vertex3f>& getVertices() { return vertices; }
-        QVector<Vertex3f>& getVertexNormals() { return vertexNormals; }
-        QVector<Vertex2f>& getTextureCoords() { return textureCoords; }
+        QVector<QVector3D>& getVertices() { return vertices; }
+        QVector<QVector3D>& getVertexNormals() { return vertexNormals; }
+        QVector<QVector2D>& getTextureCoords() { return textureCoords; }
         QList<GLModelFace>& getGLModelFaces() { return glModelFaces; }
 
         void setPosX(GLfloat i) { posX = i; }
@@ -53,7 +53,7 @@ class GLGameModel : public GameObject
         GLfloat getPosY() { return posY; }
         void setPosZ(GLfloat i) { posZ = i; }
         GLfloat getPosZ() { return posZ; }
-        void setPos(Vertex3f v) { setPos(v.x, v.y, v.z); }
+        void setPos(QVector3D v) { setPos(v.x(), v.y(), v.z()); }
         void setPos(GLfloat x, GLfloat y, GLfloat z)
             { setPosX(x); setPosY(y); setPosZ(z); }
 
@@ -85,7 +85,7 @@ class GLGameModel : public GameObject
         GLfloat getDepth();
 
         bool getVertexGroupWithName(QString,VertexGroup&);
-        QList<Vertex3f> getVerticesOfGroupWithName(QString);
+        QList<QVector3D> getVerticesOfGroupWithName(QString);
 
         void setIsLightingEnabled(bool b) { isLightingEnabled = b; }
         bool getIsLightingEnabled() { return isLightingEnabled; }
@@ -107,10 +107,10 @@ class GLGameModel : public GameObject
         GLuint borderDisplayListID;
         bool created;
         QString name;
-        QVector<Vertex3f> vertices;
-        QVector<Vertex3f> vertexNormals;
+        QVector<QVector3D> vertices;
+        QVector<QVector3D> vertexNormals;
         QList<VertexGroup> vertexGroups;
-        QVector<Vertex2f> textureCoords;
+        QVector<QVector2D> textureCoords;
         QList<GLModelFace> glModelFaces;
         GLfloat posX;
         GLfloat posY;

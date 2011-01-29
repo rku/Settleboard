@@ -290,25 +290,23 @@ bool Board::loadByName(const QString &name)
     return loadFromFile(path);
 }
 
-Vertex3f Board::getPosForTile(HexTile *tile, int col, int row)
+QVector3D Board::getPosForTile(HexTile *tile, int col, int row)
 {
-    Vertex3f pos;
     float w = tile->getWidth();
     float d = tile->getDepth() - 0.6f;
 
     // center - boardwidth/2 + tilewidth*col
-    pos.x = 0 - ( width * (w/2) ) + (col * w) + (row % 2) * (w/2);
-    pos.y = 0.0f;
-    // center - boardheight/2 - tiledepth/2 + row*tiledepth
-    pos.z = (d/2) - ( height * (d/2) ) + (row * d);
-
-    return pos;
+    return QVector3D(
+        0 - ( width * (w/2) ) + (col * w) + (row % 2) * (w/2),
+        0.0f,
+        // center - boardheight/2 - tiledepth/2 + row*tiledepth
+        (d/2) - ( height * (d/2) ) + (row * d));
 }
 
 void Board::generate()
 {
     int row = 0, col = -1;
-    Vertex3f pos;
+    QVector3D pos;
 
     // discard old board
     freeObjects();
@@ -370,10 +368,10 @@ void Board::generate()
 
         // set position
         pos = getPosForTile(newTile, col, row);
-        newTile->setPos(pos.x, pos.y, pos.z);
+        newTile->setPos(pos);
 
         // setup crossroads and roadways
-        QList<Vertex3f> vertices = newTile->getCornerVertices();
+        QList<QVector3D> vertices = newTile->getCornerVertices();
         Q_ASSERT(vertices.size() == 6);
         vertices.append(vertices[0]);
         Crossroad *lastCrossroad = NULL;
@@ -400,15 +398,14 @@ void Board::generate()
         "and" << boardTiles.size() << "tiles";
 }
 
-Crossroad *Board::getCrossroadNearPosition(Vertex3f pos, bool create)
+Crossroad *Board::getCrossroadNearPosition(QVector3D pos, bool create)
 {
     for(int i = 0; i < crossroads.size(); i++)
     {
         Crossroad *a = crossroads.at(i);
-        Vertex3f v = a->getVertex();
+        QVector3D v = a->getVertex();
 
-        v.x -= pos.x; v.y -= pos.y; v.z -= pos.z;
-        if(qAbs(v.x) < 0.1f && qAbs(v.y) < 0.1f && qAbs(v.z) < 0.1f) return a;
+        if(qAbs((v - pos).length()) < 0.1) return a;
     }
 
     // not found
@@ -423,17 +420,17 @@ Crossroad *Board::getCrossroadNearPosition(Vertex3f pos, bool create)
     return c;
 }
 
-Roadway *Board::getRoadwayNear(Vertex3f a, Vertex3f b, bool create)
+Roadway *Board::getRoadwayNear(QVector3D a, QVector3D b, bool create)
 {
     for(int i = 0; i < roadways.size(); i++)
     {
         Roadway *r = roadways.at(i);
-        Vertex3f ra = r->getVertices().at(0);
-        Vertex3f rb = r->getVertices().at(1);
+        QVector3D ra = r->getVertices().at(0);
+        QVector3D rb = r->getVertices().at(1);
 
 #define COMP_ROADWAY_VECS(c,d) if(1) { \
-    if(qAbs(a.x-c.x) + qAbs(a.y-c.y) + qAbs(a.z-c.z) + \
-        qAbs(b.x-d.x) + qAbs(b.y-d.y) + qAbs(b.z-d.z) < 0.5f) return r; }
+    if(qAbs((a - c).length()) + \
+        qAbs((b - d).length()) < 0.2) return r; }
 
         COMP_ROADWAY_VECS(ra, rb);
         COMP_ROADWAY_VECS(rb, ra);

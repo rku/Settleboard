@@ -13,13 +13,13 @@ class Building;
 class Crossroad : public GLGameModel
 {
     public:
-        Crossroad(Game*, Vertex3f);
+        Crossroad(Game*, QVector3D);
         ~Crossroad();
 
         void draw();
 
-        Vertex3f getVertex() { return vertex; }
-        void setVertex(Vertex3f v) { vertex = v; }
+        QVector3D getVertex() { return vertex; }
+        void setVertex(QVector3D v) { vertex = v; }
 
         const QList<HexTile*> getTiles() { return tiles; }
         void addTile(HexTile*);
@@ -38,7 +38,7 @@ class Crossroad : public GLGameModel
         void drawSelectionCircle();
 
         GLuint selectionCircleListID;
-        Vertex3f vertex;
+        QVector3D vertex;
         GLGameModel *playerObject;
         QList<HexTile*> tiles;
         QList<Crossroad*> neighbours;

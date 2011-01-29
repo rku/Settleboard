@@ -11,13 +11,13 @@ class Crossroad;
 class Roadway : public GLGameModel
 {
     public:
-        Roadway(Game*, Vertex3f a, Vertex3f b);
+        Roadway(Game*, QVector3D a, QVector3D b);
         ~Roadway();
 
         virtual void draw();
 
-        const QList<Vertex3f>& getVertices() { return vertices; }
-        void setVertices(Vertex3f a, Vertex3f b);
+        const QList<QVector3D>& getVertices() { return vertices; }
+        void setVertices(QVector3D a, QVector3D b);
 
         const QList<HexTile*>& getTiles() { return tiles; }
         void addTile(HexTile*);
@@ -34,9 +34,10 @@ class Roadway : public GLGameModel
     private:
         void createSelectionRect();
 
-        Vertex3f centerVertex;
+        QVector3D centerVertex;
+        float roadwayAngle;
         GLuint selectionRectListID;
-        QList<Vertex3f> vertices;
+        QList<QVector3D> vertices;
         QList<HexTile*> tiles;
         QList<Roadway*> neighbours;
         QList<Crossroad*> crossroads;

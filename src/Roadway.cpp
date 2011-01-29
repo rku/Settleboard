@@ -4,7 +4,7 @@
 #include "Crossroad.h"
 #include "Roadway.h"
 
-Roadway::Roadway(Game *_game, Vertex3f a, Vertex3f b) : GLGameModel(_game)
+Roadway::Roadway(Game *_game, QVector3D a, QVector3D b) : GLGameModel(_game)
 {
     playerObject = NULL;
 
@@ -27,9 +27,9 @@ void Roadway::createSelectionRect()
 
     glBegin(GL_LINES);
 
-    Vertex3f a = vertices[0], b = vertices[1];
-    glVertex3f(a.x, a.y, a.z);
-    glVertex3f(b.x, b.y, b.z);
+    QVector3D a = vertices[0], b = vertices[1];
+    glVertex3f(a.x(), a.y(), a.z());
+    glVertex3f(b.x(), b.y(), b.z());
 
     glEnd();
 
@@ -56,7 +56,7 @@ void Roadway::draw()
     glPopMatrix();
 }
 
-void Roadway::setVertices(Vertex3f a, Vertex3f b)
+void Roadway::setVertices(QVector3D a, QVector3D b)
 {
     // add vertices
     vertices.clear();
@@ -66,15 +66,16 @@ void Roadway::setVertices(Vertex3f a, Vertex3f b)
     // should be placed
 
     // calculate the vector between a and b
-    Vertex3f ab;
-    ab.x = b.x - a.x;
-    ab.y = b.y - a.y;
-    ab.z = b.z - a.z;
+    QVector3D ab = b - a;
 
     // coords of centerVertex: vector(0->a) + 0.5*vector(a->b)
-    centerVertex.x = a.x + 0.5 * ab.x;
-    centerVertex.y = a.y + 0.5 * ab.y;
-    centerVertex.z = a.z + 0.5 * ab.z; 
+    centerVertex = a + 0.5 * ab;
+
+    // calculate angle to x-y plane in degrees
+    /*QVector3D v_ab(ab.x(), ab.y, ab.z), v_ab_proj(ab.x, ab.y, 0.0);
+    v_ab.normalize(); v_ab_proj.normalize();
+    roadwayAngle = (360.0/(2 * M_PI)) * qAcos(
+        qAbs(QVector3D::dotProduct(v_ab, v_ab_proj)));*/
 }
 
 void Roadway::addTile(HexTile *tile)
@@ -111,7 +112,7 @@ void Roadway::placePlayerObject(GLGameModel *po)
     if(po != NULL)
     {
         po->setPos(centerVertex);
-        // rotate...
+        po->setAngleY(roadwayAngle);
     }
 }
 

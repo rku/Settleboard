@@ -107,30 +107,26 @@ OBJ *OBJGLLoader::load(QString filename)
         // vertex data
         else if(!parts.at(0).isEmpty() && parts.at(0).at(0) == 'v')
         {
-            Vertex3f v;
+            QVector3D v3d;
 
-            if(parts.size() > 1)
-                v.x = parts.at(1).toFloat();
-            if(parts.size() > 2)
-                v.y = parts.at(2).toFloat();
             if(parts.size() > 3)
-                v.z = parts.at(3).toFloat();
+                v3d = QVector3D(parts.at(1).toFloat(),
+                    parts.at(2).toFloat(), parts.at(3).toFloat());
 
             if(parts.at(0).size() == 1)
             {
-                GLfloat tm = qMax( v.x, qMax( v.y, v.z ));
+                GLfloat tm = qMax( v3d.x(), qMax( v3d.y(), v3d.z() ));
                 if(tm > vMax) vMax = tm; // track max vertex for scaling
 
-                obj.vertices.append(v);
+                obj.vertices.append(v3d);
             }
             else switch(parts.at(0).at(1).toAscii())
             {
                 case 't':
-                    Vertex2f v2; v2.x = v.x; v2.y = v.y;
-                    obj.textureCoords.append(v2);
+                    obj.textureCoords.append(QVector2D(v3d));
                     break;
                 case 'n':
-                    obj.vertexNormals.append(v);
+                    obj.vertexNormals.append(v3d);
                     break;
                 default:
                     qDebug() << "Unknown vertex data:" << line;
@@ -185,10 +181,8 @@ OBJ *OBJGLLoader::load(QString filename)
         qDebug() << "Scaling model by factor" << (1 / vMax);
         for(int i = 0; i < obj.vertices.size(); i++)
         {
-            Vertex3f v = obj.vertices.at(i);
-            v.x /= vMax;
-            v.y /= vMax;
-            v.z /= vMax;
+            QVector3D v = obj.vertices.at(i);
+            v /= vMax;
             obj.vertices.replace(i, v);
         }
     }

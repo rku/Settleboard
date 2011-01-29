@@ -7,7 +7,7 @@
 #include "Crossroad.h"
 #include "Building.h"
 
-Crossroad::Crossroad(Game *_game, Vertex3f v) : GLGameModel(_game)
+Crossroad::Crossroad(Game *_game, QVector3D v) : GLGameModel(_game)
 {
     selectionCircleListID = glGenLists(1);
     createSelectionCircle();
@@ -51,7 +51,7 @@ void Crossroad::drawSelectionCircle()
 
     glPushMatrix();
     widget->qglColor((isHighlighted) ? color.lighter() : color);
-    glTranslatef(vertex.x, vertex.y + 0.05f, vertex.z);
+    glTranslatef(vertex.x(), vertex.y() + 0.05f, vertex.z());
     glCallList(selectionCircleListID);
     glPopMatrix();
 }

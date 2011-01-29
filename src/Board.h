@@ -67,9 +67,9 @@ class Board : public GameObject
         template <typename T> const T getObjectsAtMousePos(T, const QPoint&);
         template <typename T> void highlightObjectsAtMousePos(T, const QPoint&);
         GLGameModel *getSelectableObjectAtMousePos(const QPoint &pos);
-        Vertex3f getPosForTile(HexTile*, int col, int row);
-        Crossroad *getCrossroadNearPosition(Vertex3f, bool create = false);
-        Roadway *getRoadwayNear(Vertex3f, Vertex3f, bool create = false);
+        QVector3D getPosForTile(HexTile*, int col, int row);
+        Crossroad *getCrossroadNearPosition(QVector3D, bool create = false);
+        Roadway *getRoadwayNear(QVector3D, QVector3D, bool create = false);
 
         QList<HexTile*> boardTiles;
         QList<NumberChip*> numberChips;

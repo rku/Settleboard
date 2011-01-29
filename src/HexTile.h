@@ -50,8 +50,8 @@ class HexTile : public GLGameModel
         bool hasFixedPosition() { return fixedPosition; }
         void draw();
 
-        Vertex3f getCenterVertex();
-        QList<Vertex3f> getCornerVertices();
+        QVector3D getCenterVertex();
+        QList<QVector3D> getCornerVertices();
 
         void addCrossroad(Crossroad*);
         const QList<Crossroad*>& getCrossroads() { return crossroads; }

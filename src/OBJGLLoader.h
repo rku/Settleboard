@@ -34,10 +34,10 @@
 
 typedef struct _OBJ {
     QString name;
-    QVector<Vertex3f> vertices;
-    QVector<Vertex3f> vertexNormals;
+    QVector<QVector3D> vertices;
+    QVector<QVector3D> vertexNormals;
     QList<VertexGroup> vertexGroups;
-    QVector<Vertex2f> textureCoords;
+    QVector<QVector2D> textureCoords;
     QList<GLModelFace> glModelFaces;
 } OBJ;
 

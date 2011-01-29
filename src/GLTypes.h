@@ -23,16 +23,16 @@
 
 #include <QtOpenGL>
 
-typedef struct _Vertex3f {
+/*typedef struct _Vertex3f {
     GLfloat x;
     GLfloat y;
     GLfloat z;
-} Vertex3f;
+} Vertex3f;*/
 
-typedef struct _Vertex2f {
+/*typedef struct _Vertex2f {
     GLfloat x;
     GLfloat y;
-} Vertex2f;
+} Vertex2f;*/
 
 typedef struct _GLModelFace {
     QString texFilename;
