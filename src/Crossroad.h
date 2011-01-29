@@ -19,7 +19,7 @@ class Crossroad : public GLGameModel
         void draw();
 
         QVector3D getVertex() { return vertex; }
-        void setVertex(QVector3D v) { vertex = v; }
+        void setVertex(QVector3D);
 
         const QList<HexTile*> getTiles() { return tiles; }
         void addTile(HexTile*);
@@ -39,6 +39,7 @@ class Crossroad : public GLGameModel
 
         GLuint selectionCircleListID;
         QVector3D vertex;
+        qreal angleToOrigin;
         GLGameModel *playerObject;
         QList<HexTile*> tiles;
         QList<Crossroad*> neighbours;

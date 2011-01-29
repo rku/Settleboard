@@ -72,14 +72,6 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
 
     // coords of centerVertex: vector(0->a) + 0.5*vector(a->b)
     centerVertex = a + 0.5 * ab;
-
-    // calculate angle to the positive z-axis in degrees
-    if(!ab.isNull())
-    {
-        qreal cos = ab.normalized().z();
-        roadwayAngle = (360.0 / (2*M_PI)) * qAcos(cos);
-    }
-    else roadwayAngle = 0.0;
 }
 
 void Roadway::addTile(HexTile *tile)
@@ -115,7 +107,7 @@ void Roadway::placePlayerObject(GLGameModel *po)
 
     if(po != NULL)
     {
-        po->setAngleY(roadwayAngle);
+        po->pointInDirection(vertexB - vertexA);
         po->setPos(centerVertex);
     }
 }

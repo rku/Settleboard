@@ -31,6 +31,9 @@ GameRules::GameRules(Game *_game)
 {
     isRuleChainWaiting = false;
 
+    REGISTER_RULE(ruleUserActionBuildCity);
+    REGISTER_RULE(ruleBuildCity);
+    REGISTER_RULE(ruleCanBuildCity);
     REGISTER_RULE(ruleUserActionBuildSettlement);
     REGISTER_RULE(ruleBuildSettlement);
     REGISTER_RULE(ruleCanBuildSettlement);
@@ -172,6 +175,41 @@ void GameRules::handleSelectedObject(GLGameModel*)
 }
 
 // STANDARD RULES
+
+IMPLEMENT_RULE(ruleUserActionBuildCity)
+{
+    if(player->getIsLocal())
+    {
+        RULECHAIN_ADD("ruleBuildCity");
+        RULECHAIN_ADD("ruleCrossroadSelected");
+        RULECHAIN_ADD("ruleSelectCrossroad");
+        startRuleChain();
+    }
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleBuildCity)
+{
+    if(!EXECUTE_SUBRULE("ruleCanBuildCity"))
+    {
+        qDebug() << "Cannot build city!";
+        return false;
+    }
+
+    Q_ASSERT(ruleData.size() > 0);
+    Crossroad *cr = (Crossroad*)ruleData.pop();
+    Building *bld = new Building(game, player, "city");
+    bld->setScale(0.4);
+    cr->placePlayerObject(bld);
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanBuildCity)
+{
+    return true;
+}
 
 IMPLEMENT_RULE(ruleUserActionBuildSettlement)
 {
@@ -346,8 +384,6 @@ IMPLEMENT_RULE(ruleCanSelectRoadway)
     {
         if(crossroads.at(i)->getIsPlayerObjectPlaced()) canSelect = true;
     }
-
-    return true;
 
     for(int i = 0; i < r->getTiles().size(); i++)
     {

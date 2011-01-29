@@ -47,15 +47,15 @@ class GLGameModel : public GameObject
         QVector<QVector2D>& getTextureCoords() { return textureCoords; }
         QList<GLModelFace>& getGLModelFaces() { return glModelFaces; }
 
-        void setPosX(GLfloat i) { posX = i; }
-        GLfloat getPosX() { return posX; }
-        void setPosY(GLfloat i) { posY = i; }
-        GLfloat getPosY() { return posY; }
-        void setPosZ(GLfloat i) { posZ = i; }
-        GLfloat getPosZ() { return posZ; }
-        void setPos(QVector3D v) { setPos(v.x(), v.y(), v.z()); }
+        void setPosX(GLfloat i) { pos.setX(i); }
+        GLfloat getPosX() { return pos.x(); }
+        void setPosY(GLfloat i) { pos.setY(i); }
+        GLfloat getPosY() { return pos.y(); }
+        void setPosZ(GLfloat i) { pos.setZ(i); }
+        GLfloat getPosZ() { return pos.z(); }
+        void setPos(QVector3D v) { pos = v; }
         void setPos(GLfloat x, GLfloat y, GLfloat z)
-            { setPosX(x); setPosY(y); setPosZ(z); }
+            { pos = QVector3D(x, y, z); }
 
         void setScale(GLfloat i) { scale = i; }
         GLfloat getScale() { return scale; }
@@ -67,6 +67,9 @@ class GLGameModel : public GameObject
         void setAngleZ(GLfloat);
         GLfloat getAngleZ() { return angleZ; }
 
+        void pointToVertex(QVector3D);
+        void pointInDirection(QVector3D);
+
         QColor getColor() { return color; }
         void setColor(QColor c) { color = c; }
 
@@ -74,9 +77,9 @@ class GLGameModel : public GameObject
         void rotateY(GLfloat i) { setAngleY(angleY + i); }
         void rotateZ(GLfloat i) { setAngleZ(angleZ + i); }
 
-        void moveX(GLfloat i) { setPosX(posX + i); }
-        void moveY(GLfloat i) { setPosY(posY + i); }
-        void moveZ(GLfloat i) { setPosZ(posZ + i); }
+        void moveX(GLfloat i) { setPosX(pos.x() + i); }
+        void moveY(GLfloat i) { setPosY(pos.y() + i); }
+        void moveZ(GLfloat i) { setPosZ(pos.z() + i); }
         void move(GLfloat x, GLfloat y, GLfloat z)
             { moveX(x); moveY(y); moveZ(z); }
 
@@ -112,9 +115,7 @@ class GLGameModel : public GameObject
         QList<VertexGroup> vertexGroups;
         QVector<QVector2D> textureCoords;
         QList<GLModelFace> glModelFaces;
-        GLfloat posX;
-        GLfloat posY;
-        GLfloat posZ;
+        QVector3D pos;
         GLfloat scale;
         GLfloat angleX;
         GLfloat angleY;

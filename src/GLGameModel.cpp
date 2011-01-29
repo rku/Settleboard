@@ -34,9 +34,7 @@ GLGameModel::GLGameModel(Game *_game)
     displayListID = glGenLists(1);
     borderDisplayListID = glGenLists(1);
 
-    posX   = posY 
-           = posZ 
-           = 0.0f;
+    pos    = QVector3D(0.0, 0.0, 0.0); 
     scale  = 1.0f;
     angleX = 0.0f;
     angleY = 0.0f;
@@ -182,9 +180,31 @@ void GLGameModel::setAngleZ(GLfloat i)
     if(angleZ > 360.0f) angleZ -= 360.0f;
 }
 
+void GLGameModel::pointToVertex(QVector3D vertex)
+{
+    // rotate the object to point to vertex
+    pointInDirection( vertex - pos );
+}
+
+void GLGameModel::pointInDirection(QVector3D d)
+{
+    if(d.isNull())
+    {
+        setAngleY(0.0);
+        return;
+    }
+
+    // roate the object to point in direction
+    // we only rotate in the x-z plane
+    qreal cos_y = d.normalized().z();
+    setAngleY(360.0 * qAcos(cos_y) / (2*M_PI));
+
+    //qDebug() << "pointing to" << d << "with angles" << angleX << angleY << angleZ;
+}
+
 void GLGameModel::transform()
 {
-    glTranslatef(posX, posY, posZ);
+    glTranslatef(pos.x(), pos.y(), pos.z());
 
     glRotatef(angleX, 1.0, 0.0, 0.0);
     glRotatef(angleY, 0.0, 1.0, 0.0);

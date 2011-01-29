@@ -107,7 +107,7 @@ void HexTile::addRoadway(Roadway *roadway)
 
 QVector3D HexTile::getCenterVertex()
 {
-    return QVector3D(posX, posY, posZ);
+    return pos;
 }
 
 QList<QVector3D> HexTile::getCornerVertices()
@@ -119,7 +119,7 @@ QList<QVector3D> HexTile::getCornerVertices()
 
     for(int i = 0; i < vertices.size(); i++)
     {
-        vertices[i] += QVector3D(posX, posY, posZ);
+        vertices[i] += pos;
     }
 
     return vertices;

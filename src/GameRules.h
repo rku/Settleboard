@@ -85,6 +85,9 @@ class GameRules : public QObject, public GameObject
         void suspendRuleChain();
         void ruleChainFinished();
         
+        DECLARE_RULE(ruleUserActionBuildCity);
+        DECLARE_RULE(ruleBuildCity);
+        DECLARE_RULE(ruleCanBuildCity);
         DECLARE_RULE(ruleUserActionBuildSettlement);
         DECLARE_RULE(ruleBuildSettlement);
         DECLARE_RULE(ruleCanBuildSettlement);

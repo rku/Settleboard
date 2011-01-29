@@ -23,6 +23,11 @@ Crossroad::~Crossroad()
     glDeleteLists(selectionCircleListID, 1);
 }
 
+void Crossroad::setVertex(QVector3D v)
+{
+    vertex = v;
+}
+
 void Crossroad::createSelectionCircle()
 {
     // create a circle of n triangles
@@ -107,8 +112,8 @@ void Crossroad::placePlayerObject(GLGameModel *b)
 
     if(playerObject != NULL)
     {
-        qDebug() << "Player object" << b << "placed at crossroad" << this;
         playerObject->setPos(vertex);
+        playerObject->pointToVertex(QVector3D(0.0, vertex.y(), 0.0));
     }
 }
 

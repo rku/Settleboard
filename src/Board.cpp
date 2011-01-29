@@ -148,9 +148,7 @@ bool Board::handleMouseClick(const QPoint &mousePos)
     }
 
     // execute test rule
-    game->getRules()->pushRuleData((void*)crossroads.at(19));
-    game->getRules()->executeRule("ruleBuildSettlement", game->getPlayers()[0]);
-    game->getRules()->executeRule("ruleUserActionBuildRoad", game->getPlayers()[0]);
+    game->getRules()->executeRule("ruleUserActionBuildCity", game->getPlayers()[0]);
 
     return true;
 }

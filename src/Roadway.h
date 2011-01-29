@@ -38,7 +38,6 @@ class Roadway : public GLGameModel
         QVector3D centerVertex;
         QVector3D vertexA;
         QVector3D vertexB;
-        float roadwayAngle;
         GLuint selectionRectListID;
         QList<HexTile*> tiles;
         QList<Roadway*> neighbours;
