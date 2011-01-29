@@ -207,7 +207,7 @@ IMPLEMENT_RULE(ruleBuildCity)
 
     // build city
     Building *bld = new Building(game, player, "city");
-    bld->setScale(0.4);
+    bld->setScale(0.6);
     cr->placePlayerObject(bld);
 
     return true;
