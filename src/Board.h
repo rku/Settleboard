@@ -53,6 +53,7 @@ class Board : public GameObject
         bool loadFromFile(const QString&);
         bool loadByName(const QString&);
 
+        void setSelectionMode();
         void resetBoardState(BoardObjectState s = defaultBoardObjectState);
         void updateBoardState(BoardState&);
 

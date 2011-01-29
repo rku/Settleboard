@@ -4,7 +4,8 @@
 #include "Crossroad.h"
 #include "Roadway.h"
 
-Roadway::Roadway(Game *_game, QVector3D a, QVector3D b) : GLGameModel(_game)
+Roadway::Roadway(Game *_game, QVector3D a, QVector3D b)
+    : GLGameModelProxy(_game)
 {
     playerObject = NULL;
 

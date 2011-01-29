@@ -266,6 +266,7 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
 
     if(selectableObjectFound)
     {
+        board->setSelectionMode();
         suspendRuleChain();
         return true;
     }
@@ -359,6 +360,7 @@ IMPLEMENT_RULE(ruleSelectRoadway)
 
     if(selectableObjectFound)
     {
+        board->setSelectionMode();
         suspendRuleChain();
         return true;
     }

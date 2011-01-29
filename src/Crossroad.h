@@ -2,7 +2,7 @@
 #ifndef CROSSROAD_H
 #define CROSSROAD_H 1
 
-#include "GLGameModel.h"
+#include "GLGameModelProxy.h"
 #include "GLTypes.h"
 
 class HexTile;
@@ -10,13 +10,13 @@ class Game;
 class Roadway;
 class Building;
 
-class Crossroad : public GLGameModel
+class Crossroad : public GLGameModelProxy
 {
     public:
         Crossroad(Game*, QVector3D);
         ~Crossroad();
 
-        void draw();
+        virtual void draw();
 
         QVector3D getVertex() { return vertex; }
         void setVertex(QVector3D);
@@ -30,7 +30,6 @@ class Crossroad : public GLGameModel
         const QList<Roadway*> getRoadways() { return roadways; }
         void addRoadway(Roadway*);
 
-        bool getIsPlayerObjectPlaced() { return (playerObject != NULL); }
         void placePlayerObject(GLGameModel*);
 
     private:
@@ -40,7 +39,6 @@ class Crossroad : public GLGameModel
         GLuint selectionCircleListID;
         QVector3D vertex;
         qreal angleToOrigin;
-        GLGameModel *playerObject;
         QList<HexTile*> tiles;
         QList<Crossroad*> neighbours;
         QList<Roadway*> roadways;

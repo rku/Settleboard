@@ -90,21 +90,23 @@ class GLGameModel : public GameObject
         bool getVertexGroupWithName(QString,VertexGroup&);
         QList<QVector3D> getVerticesOfGroupWithName(QString);
 
-        void setIsLightingEnabled(bool b) { isLightingEnabled = b; }
-        bool getIsLightingEnabled() { return isLightingEnabled; }
-        void setIsHighlighted(bool b) { isHighlighted = b; }
-        bool getIsHighlighted() { return isHighlighted; }
-        void setIsSelectable(bool b) { isSelectable = b; }
-        bool getIsSelectable() { return isSelectable; }
-        void setIsVisible(bool b) { isVisible = b; }
-        bool getIsVisible() { return isVisible; }
-        void setIsEnabled(bool b) { isEnabled = b; }
-        bool getIsEnabled() { return isEnabled; }
+        virtual void setIsLightingEnabled(bool b) { isLightingEnabled = b; }
+        virtual bool getIsLightingEnabled() { return isLightingEnabled; }
+        virtual void setIsHighlighted(bool b) { isHighlighted = b; }
+        virtual bool getIsHighlighted() { return isHighlighted; }
+        virtual void setIsSelectable(bool b) { isSelectable = b; }
+        virtual bool getIsSelectable() { return isSelectable; }
+        virtual void setIsVisible(bool b) { isVisible = b; }
+        virtual bool getIsVisible() { return isVisible; }
+        virtual void setIsEnabled(bool b) { isEnabled = b; }
+        virtual bool getIsEnabled() { return isEnabled; }
 
     protected:
         void create();
         void createBorder();
         void transform();
+        void highlight();
+        void setupLightingParameters();
 
         GLuint displayListID;
         GLuint borderDisplayListID;

@@ -23,7 +23,7 @@
 
 #include <QtOpenGL>
 
-#include "GLGameModel.h"
+#include "GLGameModelProxy.h"
 
 class Game;
 class Crossroad;
@@ -38,7 +38,7 @@ class Roadway;
 #define HEXTILE_TYPE_CLAY   0x06
 #define HEXTILE_TYPE_GOLD   0x07
 
-class HexTile : public GLGameModel
+class HexTile : public GLGameModelProxy
 {
     public:
         HexTile(Game*);

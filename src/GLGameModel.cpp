@@ -86,10 +86,7 @@ void GLGameModel::create()
                 currentTex = 0;
                 glBindTexture(GL_TEXTURE_2D, 0);
                 glDisable(GL_TEXTURE_2D);
-                //glEnable(GL_COLOR_MATERIAL);
-                //glColorMaterial(GL_FRONT, GL_AMBIENT);
                 game->getGLWidget()->qglColor(color);
-                //glDisable(GL_COLOR_MATERIAL);
             }
         }
 
@@ -151,13 +148,52 @@ void GLGameModel::createBorder()
 {
 }
 
+void GLGameModel::setupLightingParameters()
+{
+    if(getIsEnabled())
+    {
+        GLfloat white_color[] = { 0.5, 0.5, 0.5, 1.0 };
+        glLightfv(GL_LIGHT0, GL_AMBIENT, white_color);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, white_color);
+    }
+    else
+    {
+        GLfloat gray_color[] = { 0.2, 0.2, 0.2, 1.0 };
+        glLightfv(GL_LIGHT0, GL_AMBIENT, gray_color);
+        GLfloat black_color[] = { 0.0, 0.0 , 0.0, 1.0 };
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, black_color);
+        glEnable(GL_LIGHTING);
+    }
+}
+
+void GLGameModel::highlight()
+{
+    GLfloat light_position[] = { (float)pos.x(), (float)pos.y() + 6.0, (float)pos.z() };
+    GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat spot_direction[] = { 0.0, -1.0, 0.0 };
+
+    glLightfv(GL_LIGHT1, GL_AMBIENT, light_specular);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT1, GL_POSITION, light_position);
+
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
+    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
+    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
+
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHTING);
+}
+
 void GLGameModel::draw()
 {
     if(!created) create();
 
     glPushMatrix();
     transform();
+    if(getIsHighlighted()) highlight();
+    setupLightingParameters();
     glCallList(displayListID);
+    glDisable(GL_LIGHT1);
     glFinish();
     glPopMatrix();
 }

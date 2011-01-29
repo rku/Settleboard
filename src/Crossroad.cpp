@@ -7,7 +7,8 @@
 #include "Crossroad.h"
 #include "Building.h"
 
-Crossroad::Crossroad(Game *_game, QVector3D v) : GLGameModel(_game)
+Crossroad::Crossroad(Game *_game, QVector3D v)
+    : GLGameModelProxy(_game)
 {
     selectionCircleListID = glGenLists(1);
     createSelectionCircle();

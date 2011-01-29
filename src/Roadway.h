@@ -2,13 +2,15 @@
 #ifndef ROADWAY_H
 #define ROADWAY_H 1
 
+#include "GLGameModelProxy.h"
+
 #include "GLTypes.h"
 
 class HexTile;
 class Game;
 class Crossroad;
 
-class Roadway : public GLGameModel
+class Roadway : public GLGameModelProxy
 {
     public:
         Roadway(Game*, QVector3D a, QVector3D b);
@@ -29,7 +31,6 @@ class Roadway : public GLGameModel
         const QList<Crossroad*>& getCrossroads() { return crossroads; }
         void addCrossroad(Crossroad*);
 
-        bool getIsPlayerObjectPlaced() { return (playerObject != NULL); }
         void placePlayerObject(GLGameModel*);
 
     private:
@@ -42,7 +43,6 @@ class Roadway : public GLGameModel
         QList<HexTile*> tiles;
         QList<Roadway*> neighbours;
         QList<Crossroad*> crossroads;
-        GLGameModel *playerObject;
 };
 
 #endif

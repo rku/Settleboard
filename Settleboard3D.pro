@@ -21,6 +21,7 @@ HEADERS = src/GLWidget.h \
           src/MainWindow.h \
           src/TextureManager.h \
           src/GLGameModel.h \
+          src/GLGameModelProxy.h \
           src/Board.h \
           src/UIStyle.h \
           src/GameUI.h \
@@ -42,6 +43,7 @@ SOURCES = src/GLWidget.cpp \
           src/MainWindow.cpp \
           src/TextureManager.cpp \
           src/GLGameModel.cpp \
+          src/GLGameModelProxy.cpp \
           src/Board.cpp\
           src/UISTyle.cpp \
           src/GameUI.cpp \

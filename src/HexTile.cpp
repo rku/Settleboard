@@ -24,7 +24,7 @@
 #include "HexTile.h"
 
 HexTile::HexTile(Game *_game)
-    : GLGameModel(_game)
+    : GLGameModelProxy(_game)
 {
     setIsLightingEnabled(false);
     setType(HEXTILE_TYPE_WATER);

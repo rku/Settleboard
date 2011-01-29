@@ -165,6 +165,27 @@ bool Board::handleMouseOver(const QPoint &mousePos)
     return false;
 }
 
+void Board::setSelectionMode()
+{
+    int max = 1;
+
+    // disable all board objects except the selectable ones
+    for(int i = 0; i < max; i++)
+    {
+        bool done = true;
+
+#define DISABLE_NONSELECTABLE_OBJECT_OF(a) \
+    if(a.size() > i) { \
+        a.at(i)->setIsEnabled(a.at(i)->getIsSelectable()); done = false; }
+
+        DISABLE_NONSELECTABLE_OBJECT_OF(crossroads);
+        DISABLE_NONSELECTABLE_OBJECT_OF(roadways);
+        DISABLE_NONSELECTABLE_OBJECT_OF(boardTiles);
+
+        if(!done) max++;
+    }
+}
+
 void Board::resetBoardState(BoardObjectState s)
 {
     BoardState state;

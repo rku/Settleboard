@@ -82,7 +82,11 @@ void GLWidget::initializeGL()
     qDebug() << (char*)glGetString(GL_RENDERER);
 
     GLfloat white_color[] = { 0.5, 0.5, 0.5, 1.0 };
+    //GLfloat black_color[] = { 0.0, 0.0, 0.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_AMBIENT, white_color);
+    //glLightfv(GL_LIGHT0, GL_DIFFUSE, black_color);
+    //glLightfv(GL_LIGHT0, GL_SPECULAR, black_color);
+    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SINGLE_COLOR);
 
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
