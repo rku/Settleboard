@@ -347,6 +347,8 @@ IMPLEMENT_RULE(ruleCanSelectRoadway)
         if(crossroads.at(i)->getIsPlayerObjectPlaced()) canSelect = true;
     }
 
+    return true;
+
     for(int i = 0; i < r->getTiles().size(); i++)
     {
         if(r->getTiles().at(i)->getType() != HEXTILE_TYPE_WATER)

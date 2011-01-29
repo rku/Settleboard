@@ -27,9 +27,8 @@ void Roadway::createSelectionRect()
 
     glBegin(GL_LINES);
 
-    QVector3D a = vertices[0], b = vertices[1];
-    glVertex3f(a.x(), a.y(), a.z());
-    glVertex3f(b.x(), b.y(), b.z());
+    glVertex3f(vertexA.x(), vertexA.y(), vertexA.z());
+    glVertex3f(vertexB.x(), vertexB.y(), vertexB.z());
 
     glEnd();
 
@@ -58,9 +57,12 @@ void Roadway::draw()
 
 void Roadway::setVertices(QVector3D a, QVector3D b)
 {
+    // always start with the vector having the lowest x value
+    if(b.x() < a.x()) qSwap(a,b); 
+
     // add vertices
-    vertices.clear();
-    vertices << a << b;
+    vertexA = a;
+    vertexB = b;
 
     // calculate center between a and b, where objects
     // should be placed
@@ -71,11 +73,13 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
     // coords of centerVertex: vector(0->a) + 0.5*vector(a->b)
     centerVertex = a + 0.5 * ab;
 
-    // calculate angle to x-y plane in degrees
-    /*QVector3D v_ab(ab.x(), ab.y, ab.z), v_ab_proj(ab.x, ab.y, 0.0);
-    v_ab.normalize(); v_ab_proj.normalize();
-    roadwayAngle = (360.0/(2 * M_PI)) * qAcos(
-        qAbs(QVector3D::dotProduct(v_ab, v_ab_proj)));*/
+    // calculate angle to the positive z-axis in degrees
+    if(!ab.isNull())
+    {
+        qreal cos = ab.normalized().z();
+        roadwayAngle = (360.0 / (2*M_PI)) * qAcos(cos);
+    }
+    else roadwayAngle = 0.0;
 }
 
 void Roadway::addTile(HexTile *tile)
@@ -111,8 +115,8 @@ void Roadway::placePlayerObject(GLGameModel *po)
 
     if(po != NULL)
     {
-        po->setPos(centerVertex);
         po->setAngleY(roadwayAngle);
+        po->setPos(centerVertex);
     }
 }
 

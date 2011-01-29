@@ -16,7 +16,8 @@ class Roadway : public GLGameModel
 
         virtual void draw();
 
-        const QList<QVector3D>& getVertices() { return vertices; }
+        const QVector3D& getVertexA() { return vertexA; }
+        const QVector3D& getVertexB() { return vertexB; }
         void setVertices(QVector3D a, QVector3D b);
 
         const QList<HexTile*>& getTiles() { return tiles; }
@@ -35,9 +36,10 @@ class Roadway : public GLGameModel
         void createSelectionRect();
 
         QVector3D centerVertex;
+        QVector3D vertexA;
+        QVector3D vertexB;
         float roadwayAngle;
         GLuint selectionRectListID;
-        QList<QVector3D> vertices;
         QList<HexTile*> tiles;
         QList<Roadway*> neighbours;
         QList<Crossroad*> crossroads;

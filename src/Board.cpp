@@ -425,8 +425,8 @@ Roadway *Board::getRoadwayNear(QVector3D a, QVector3D b, bool create)
     for(int i = 0; i < roadways.size(); i++)
     {
         Roadway *r = roadways.at(i);
-        QVector3D ra = r->getVertices().at(0);
-        QVector3D rb = r->getVertices().at(1);
+        QVector3D ra = r->getVertexA();
+        QVector3D rb = r->getVertexB();
 
 #define COMP_ROADWAY_VECS(c,d) if(1) { \
     if(qAbs((a - c).length()) + \
