@@ -24,11 +24,11 @@
 #include "FileManager.h"
 #include "PlayerObject.h"
 
-PlayerObject::PlayerObject(Game *_game, Player *_player, QString _type)
-    : GLGameModel(_game), type(_type), player(_player)
+PlayerObject::PlayerObject(Game *_game, Player *_owner, QString _type)
+    : GLGameModel(_game), type(_type), owner(_owner)
 {
     load(FileManager::getPathOfResource("Objects", type, "obj"));
-    setColor(player->getColor());
+    setColor(owner->getColor());
 
     baseObject = NULL;
 }

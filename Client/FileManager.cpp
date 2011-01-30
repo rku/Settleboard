@@ -1,10 +1,6 @@
 
 #include "FileManager.h"
 
-FileManager::FileManager()
-{
-}
-
 const QString FileManager::getPathOfResource(const QString &group,
         const QString &name, const QString &type)
 {

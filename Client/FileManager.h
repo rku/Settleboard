@@ -7,8 +7,6 @@
 class FileManager
 {
     public:
-    FileManager();
-
     static const QString getPathOfResource(const QString &group,
         const QString &name, const QString &type);
     static const QString getPathOfResource(const QString &group,

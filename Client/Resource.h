@@ -31,7 +31,6 @@ class Resource : public GameObject
         // Resource(game,name,initamount=0)
         Resource(Game*, const QString name, const int _initamount = 0);
 
-        void setName(const QString _name) { name = _name; }
         const QString& getName() { return name; }
 
         unsigned int add(const unsigned int n);

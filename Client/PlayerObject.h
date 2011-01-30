@@ -35,7 +35,7 @@ class PlayerObject : public GLGameModel
     public:
         PlayerObject(Game*, Player*, QString _type);
 
-        virtual Player* getPlayer() { return player; }
+        virtual Player* getOwner() { return owner; }
 
         const QString& getType() { return type; }
         GLGameModelProxy *getBaseObject() { return baseObject; }
@@ -45,7 +45,7 @@ class PlayerObject : public GLGameModel
 
     private:
         QString type;
-        Player *player;
+        Player *owner;
         GLGameModelProxy *baseObject;
         HexTile *tile;
 };
