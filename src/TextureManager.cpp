@@ -59,8 +59,10 @@ const Texture& TextureManager::loadTexture(const QString& filename)
     // some generic default texture parameters
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+#ifdef GL_MIRRORED_REPEAT
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+#endif
 
     tex = QGLWidget::convertToGLFormat(QImage(filepath));
 

@@ -87,7 +87,9 @@ void GLWidget::initializeGL()
     //glLightfv(GL_LIGHT0, GL_AMBIENT, white_color);
     //glLightfv(GL_LIGHT0, GL_DIFFUSE, black_color);
     //glLightfv(GL_LIGHT0, GL_SPECULAR, black_color);
+#ifdef GL_LIGHT_MODEL_COLOR_CONTROL
     glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SINGLE_COLOR);
+#endif
 
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);

@@ -203,14 +203,16 @@ IMPLEMENT_RULE(ruleBuildCity)
 
     // remove settlement
     ruleData.push(cr);
-    EXECUTE_SUBRULE("ruleRemoveSettlement");
+    if(EXECUTE_SUBRULE("ruleRemoveSettlement"))
+    {
+        // build city
+        Building *bld = new Building(game, player, "city");
+        bld->setScale(0.7);
+        cr->placePlayerObject(bld);
+        return true;
+    }
 
-    // build city
-    Building *bld = new Building(game, player, "city");
-    bld->setScale(0.6);
-    cr->placePlayerObject(bld);
-
-    return true;
+    return false;
 }
 
 IMPLEMENT_RULE(ruleCanBuildCity)
