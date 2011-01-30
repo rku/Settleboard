@@ -366,10 +366,10 @@ void Board::generate()
             case 'x':
                 newTile->setType(HEXTILE_TYPE_WATER);
                 break;
-            case 'E': // weed
+            case 'E': // wheat
                 newTile->setFixedPosition(true);
             case 'e':
-                newTile->setType(HEXTILE_TYPE_WEED);
+                newTile->setType(HEXTILE_TYPE_WHEAT);
                 break;
             case 'S': // sheep
                 newTile->setFixedPosition(true);

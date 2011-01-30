@@ -31,7 +31,7 @@ class Roadway;
 
 #define HEXTILE_TYPE_WOOD   0x00 
 #define HEXTILE_TYPE_WATER  0x01
-#define HEXTILE_TYPE_WEED   0x02
+#define HEXTILE_TYPE_WHEAT  0x02
 #define HEXTILE_TYPE_SHEEP  0x03
 #define HEXTILE_TYPE_DESERT 0x04
 #define HEXTILE_TYPE_ORE    0x05

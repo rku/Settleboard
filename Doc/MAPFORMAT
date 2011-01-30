@@ -18,7 +18,7 @@ A character describing a tile can be one of:
   C - Clay Tile
   W - Wood Tile
   S - Sheep Tile
-  E - Weed Tile
+  E - Wheat Tile
   G - Gold Tile
   D - Desert Tile
 

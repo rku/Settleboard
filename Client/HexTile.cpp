@@ -58,8 +58,8 @@ void HexTile::setType(const unsigned int _type)
             modelName = "HexTile_Sheep";
             color.setRgb(208,241,206,255);
             break;
-        case HEXTILE_TYPE_WEED:
-            modelName = "HexTile_Weed";
+        case HEXTILE_TYPE_WHEAT:
+            modelName = "HexTile_Wheat";
             color.setRgb(237,239,97,255); 
             break;
         case HEXTILE_TYPE_ORE:
