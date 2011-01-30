@@ -30,13 +30,7 @@ Player::Player(Game *_game)
     setIsLocal(true);
 }
 
-QList<Resource*>& Player::getResources()
+Player::~Player()
 {
-    return resources;
-}
-
-QList<PlayerObject*>& Player::getPlayerObjects()
-{
-    return objects;
 }
 

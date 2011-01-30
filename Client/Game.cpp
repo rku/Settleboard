@@ -21,6 +21,7 @@
 #include "Game.h"
 #include "GameUI.h"
 #include "Player.h"
+#include "Bank.h"
 #include "OBJGLLoader.h"
 
 Game::Game()
@@ -31,10 +32,12 @@ Game::Game()
     board = new Board(this);
     objGLLoader = new OBJGLLoader();
     players.append(new Player(this));
+    bank = new Bank();
 }
 
 Game::~Game()
 {
+    delete bank;
     delete objGLLoader;
     delete board;
     delete rules;

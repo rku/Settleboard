@@ -24,7 +24,9 @@
 #include <QString>
 #include <QList>
 #include <QColor>
+#include <QMap>
 
+#include "GameCardStack.h"
 #include "GameObject.h"
 
 class Game;
@@ -35,6 +37,7 @@ class Player : public GameObject
 {
     public:
         Player(Game*);
+        ~Player();
 
         const QColor &getColor() { return color; }
         void setColor(QColor c) { color = c; }
@@ -42,15 +45,21 @@ class Player : public GameObject
         void setName(QString n) { name = n; }
         bool getIsLocal() { return isLocal; }
         void setIsLocal(bool b) { isLocal = b; }
-        QList<Resource*> &getResources();
-        QList<PlayerObject*> &getPlayerObjects();
 
-    private:
+        void addCard(QString &name, uint amount = 1);
+        bool getHasCard(QString &name, uint amount = 1);
+        void removeCard(QString &name, uint amount = 1);
+        const GameCardStack &getCards() { return cards; }
+        void addObjectOfType(QString name);
+        void removeObjectOfType(QString name);
+        const QMap<QString, PlayerObject*> &getObjects() { return objects; }
+
+    protected:
         QColor color;
         QString name;
         bool isLocal;
-        QList<Resource*> resources;
-        QList<PlayerObject*> objects;
+        GameCardStack cards;
+        QMap<QString, PlayerObject*> objects;
 };
 
 #endif

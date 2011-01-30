@@ -24,6 +24,7 @@
 #include "Player.h"
 #include "Roadway.h"
 #include "PlayerObject.h"
+#include "Bank.h"
 #include "Game.h"
 
 GameRules::GameRules(Game *_game)
@@ -31,21 +32,27 @@ GameRules::GameRules(Game *_game)
 {
     isRuleChainWaiting = false;
 
+    REGISTER_RULE(ruleInitGameCards);
+
     REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
+
     REGISTER_RULE(ruleSelectSettlement);
     REGISTER_RULE(ruleSettlementSelected);
     REGISTER_RULE(ruleUserActionBuildSettlement);
     REGISTER_RULE(ruleBuildSettlement);
     REGISTER_RULE(ruleCanBuildSettlement);
     REGISTER_RULE(ruleRemoveSettlement);
+
     REGISTER_RULE(ruleSelectCrossroad);
     REGISTER_RULE(ruleCrossroadSelected);
     REGISTER_RULE(ruleCanSelectCrossroad);
+
     REGISTER_RULE(ruleUserActionBuildRoad);
     REGISTER_RULE(ruleBuildRoad);
     REGISTER_RULE(ruleCanBuildRoad);
+
     REGISTER_RULE(ruleSelectRoadway);
     REGISTER_RULE(ruleRoadwaySelected);
     REGISTER_RULE(ruleCanSelectRoadway);
@@ -169,6 +176,33 @@ void GameRules::setWinningPoints(unsigned int n)
 }
 
 // STANDARD RULES
+
+IMPLEMENT_RULE(ruleInitGameCards)
+{
+    Bank *bank = game->getBank();
+
+    // resources
+    bank->registerCardStack("Wheat");
+    bank->registerCardStack("Sheep");
+    bank->registerCardStack("Ore");
+    bank->registerCardStack("Lumber");
+
+    bank->registerCard("Wheat",  GameCard("Resource", "Wheat",  "Wheat" ), 20);
+    bank->registerCard("Sheep",  GameCard("Resource", "Sheep",  "Sheep" ), 20);
+    bank->registerCard("Ore",    GameCard("Resource", "Ore",    "Ore"   ), 20);
+    bank->registerCard("Lumber", GameCard("Resource", "Lumber", "Lumber"), 20);
+
+    // development cards
+    bank->registerCardStack("Development");
+    bank->registerCard("Development", GameCard("Development", "Knight",
+        "If you play this card, you can steal a card from another player.",
+        "rulePlayKnightCard"), 10);
+    bank->registerCard("Development", GameCard("Development", "Build Road",
+        "Playing this card will allow you to place two roads for free.",
+        "rulePlayBuildRoadCard"), 4);
+
+    return true;
+}
 
 IMPLEMENT_RULE(ruleUserActionBuildCity)
 {

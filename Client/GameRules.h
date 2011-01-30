@@ -82,21 +82,27 @@ class GameRules : public QObject, public GameObject
         void suspendRuleChain();
         void ruleChainFinished();
         
+        DECLARE_RULE(ruleInitGameCards);
+
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);
+
         DECLARE_RULE(ruleSelectSettlement);
         DECLARE_RULE(ruleSettlementSelected);
         DECLARE_RULE(ruleUserActionBuildSettlement);
         DECLARE_RULE(ruleBuildSettlement);
         DECLARE_RULE(ruleCanBuildSettlement);
         DECLARE_RULE(ruleRemoveSettlement);
+
         DECLARE_RULE(ruleSelectCrossroad);
         DECLARE_RULE(ruleCrossroadSelected);
         DECLARE_RULE(ruleCanSelectCrossroad);
+
         DECLARE_RULE(ruleUserActionBuildRoad);
         DECLARE_RULE(ruleBuildRoad);
         DECLARE_RULE(ruleCanBuildRoad);
+
         DECLARE_RULE(ruleSelectRoadway);
         DECLARE_RULE(ruleRoadwaySelected);
         DECLARE_RULE(ruleCanSelectRoadway);

@@ -29,6 +29,7 @@
 class GameUI;
 class Player;
 class OBJGLLoader;
+class Bank;
 
 class Game
 {
@@ -49,6 +50,7 @@ class Game
         Board *getBoard() { return board; }
         OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
         const QList<Player*>& getPlayers() { return players; }
+        Bank *getBank() { return bank; }
 
     protected:
         GLWidget *glWidget;
@@ -58,6 +60,7 @@ class Game
         Board *board;
         OBJGLLoader *objGLLoader;
         QList<Player*> players;
+        Bank *bank;
 };
 
 #endif

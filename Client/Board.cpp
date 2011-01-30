@@ -146,14 +146,7 @@ bool Board::handleMouseClick(const QPoint &mousePos)
     }
 
     // execute test rule
-    for(int i = 20; i < 35; i+=4)
-    {
-        selectedObject = crossroads.at(i);
-        game->getRules()->executeRule("ruleCrossroadSelected", game->getPlayers()[0]);
-        game->getRules()->executeRule("ruleBuildSettlement", game->getPlayers()[0]);
-        selectedObject = NULL;
-    }
-    game->getRules()->executeRule("ruleUserActionBuildCity", game->getPlayers()[0]);
+    game->getRules()->executeRule("ruleInitGameCards", game->getPlayers()[0]);
     return true;
 }
 
