@@ -28,10 +28,11 @@
 
 Board::Board(Game *_game) : GameObject(_game)
 {
-    selectedObject      = NULL;
-    state               = BOARD_STATE_SELECT_CROSSROAD;
-    boardFilesPath      = "Data/Boards/";
-    boardFilesSuffix    = ".rsm";
+    isSelectionModeActive   = false;
+    selectedObject          = NULL;
+    state                   = BOARD_STATE_SELECT_CROSSROAD;
+    boardFilesPath          = "Data/Boards/";
+    boardFilesSuffix        = ".rsm";
 }
 
 Board::~Board()
@@ -146,13 +147,14 @@ bool Board::handleMouseClick(const QPoint &mousePos)
     }
 
     // execute test rule
-    for(int i = 15; i < 25; i+=3)
+    for(int i = 20; i < 35; i+=4)
     {
-        game->getRules()->pushRuleData((void*)crossroads.at(i));
+        selectedObject = crossroads.at(i);
+        game->getRules()->executeRule("ruleCrossroadSelected", game->getPlayers()[0]);
         game->getRules()->executeRule("ruleBuildSettlement", game->getPlayers()[0]);
+        selectedObject = NULL;
     }
     game->getRules()->executeRule("ruleUserActionBuildCity", game->getPlayers()[0]);
-
     return true;
 }
 
@@ -204,15 +206,7 @@ void Board::endSelectionMode()
 
     if(game->getRules()->getIsRuleChainWaiting())
     {
-        if(selectedObject != NULL)
-        {
-            game->getRules()->pushRuleData((void*)selectedObject);
-            game->getRules()->continueRuleChain();
-        }
-        else
-        {
-            game->getRules()->cancelRuleChain();
-        }
+        game->getRules()->continueRuleChain();
     }
 
     selectedObject = NULL;

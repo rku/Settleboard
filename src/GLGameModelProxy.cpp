@@ -1,6 +1,7 @@
 
 #include "Game.h"
 #include "Player.h"
+#include "PlayerObject.h"
 #include "GLGameModelProxy.h"
 
 GLGameModelProxy::GLGameModelProxy(Game *_game) : GLGameModel(_game)
@@ -12,9 +13,11 @@ GLGameModelProxy::~GLGameModelProxy()
 {
 }
 
-void GLGameModelProxy::placePlayerObject(GLGameModel *po)
+void GLGameModelProxy::placePlayerObject(PlayerObject *po)
 {
     playerObject = po;
+
+    if(playerObject != NULL) playerObject->setBaseObject(this);
 }
 
 bool GLGameModelProxy::getIsSelectable()

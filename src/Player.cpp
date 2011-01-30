@@ -20,7 +20,7 @@
 
 #include "Player.h"
 #include "Resource.h"
-#include "Building.h"
+#include "PlayerObject.h"
 
 Player::Player(Game *_game)
     : GameObject(_game)
@@ -35,8 +35,8 @@ QList<Resource*>& Player::getResources()
     return resources;
 }
 
-QList<Building*>& Player::getBuildings()
+QList<PlayerObject*>& Player::getPlayerObjects()
 {
-    return buildings;
+    return objects;
 }
 

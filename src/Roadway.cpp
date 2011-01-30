@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "Crossroad.h"
+#include "PlayerObject.h"
 #include "Roadway.h"
 
 Roadway::Roadway(Game *_game, QVector3D a, QVector3D b)
@@ -102,14 +103,14 @@ void Roadway::addCrossroad(Crossroad *crossroad)
     crossroad->addRoadway(this);
 }
 
-void Roadway::placePlayerObject(GLGameModel *po)
+void Roadway::placePlayerObject(PlayerObject *p)
 {
-    playerObject = po;
+    GLGameModelProxy::placePlayerObject(p);
 
-    if(po != NULL)
+    if(playerObject != NULL)
     {
-        po->pointInDirection(vertexB - vertexA);
-        po->setPos(centerVertex);
+        playerObject->pointInDirection(vertexB - vertexA);
+        playerObject->setPos(centerVertex);
     }
 }
 

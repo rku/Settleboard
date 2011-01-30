@@ -4,6 +4,8 @@
 
 #include "GLGameModel.h"
 
+class PlayerObject;
+
 class GLGameModelProxy : public GLGameModel
 {
     public:
@@ -12,8 +14,8 @@ class GLGameModelProxy : public GLGameModel
 
         virtual bool getIsPlayerObjectPlaced()
             { return (playerObject != NULL); }
-        virtual GLGameModel *getPlayerObject() { return playerObject; }
-        virtual void placePlayerObject(GLGameModel*);
+        virtual PlayerObject *getPlayerObject() { return playerObject; }
+        virtual void placePlayerObject(PlayerObject*);
 
         virtual bool getIsSelectable();
         virtual void setIsSelectable(bool);
@@ -21,7 +23,7 @@ class GLGameModelProxy : public GLGameModel
         virtual void setIsEnabled(bool);
 
     protected:
-        GLGameModel *playerObject;
+        PlayerObject *playerObject;
 };
 
 #endif

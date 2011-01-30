@@ -20,17 +20,18 @@
 
 #include "Game.h"
 #include "Player.h"
-#include "Crossroad.h"
-#include "Roadway.h"
-#include "HexTile.h"
-#include "Building.h"
+#include "GLGameModelProxy.h"
+#include "PlayerObject.h"
 
-Building::Building(Game *_game, Player *_player, QString _type)
+PlayerObject::PlayerObject(Game *_game, Player *_player, QString _type)
     : GLGameModel(_game), type(_type), player(_player)
+      
 {
     QString modelPath("Data/Objects/%1.obj");
 
     load(modelPath.arg(type));
     setColor(player->getColor());
+
+    baseObject = NULL;
 }
 

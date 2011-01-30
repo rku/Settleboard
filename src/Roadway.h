@@ -9,6 +9,7 @@
 class HexTile;
 class Game;
 class Crossroad;
+class PlayerObject;
 
 class Roadway : public GLGameModelProxy
 {
@@ -31,7 +32,7 @@ class Roadway : public GLGameModelProxy
         const QList<Crossroad*>& getCrossroads() { return crossroads; }
         void addCrossroad(Crossroad*);
 
-        void placePlayerObject(GLGameModel*);
+        void placePlayerObject(PlayerObject*);
 
     private:
         void createSelectionRect();

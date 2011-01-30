@@ -63,6 +63,7 @@ class Board : public GameObject
         void setSelectionMode();
         void endSelectionMode();
         bool getIsSelectionModeActive() { return isSelectionModeActive; }
+        bool getHasSelectedObject() { return (selectedObject != NULL); }
         GLGameModel *getSelectedObject() { return selectedObject; }
         void setSelectedObject(GLGameModel*);
 

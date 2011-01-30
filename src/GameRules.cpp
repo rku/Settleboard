@@ -23,7 +23,7 @@
 #include "HexTile.h"
 #include "Player.h"
 #include "Roadway.h"
-#include "Building.h"
+#include "PlayerObject.h"
 #include "Game.h"
 
 GameRules::GameRules(Game *_game)
@@ -35,6 +35,7 @@ GameRules::GameRules(Game *_game)
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
     REGISTER_RULE(ruleSelectSettlement);
+    REGISTER_RULE(ruleSettlementSelected);
     REGISTER_RULE(ruleUserActionBuildSettlement);
     REGISTER_RULE(ruleBuildSettlement);
     REGISTER_RULE(ruleCanBuildSettlement);
@@ -106,7 +107,8 @@ void GameRules::continueRuleChain()
         isRuleChainWaiting = rce.suspend;
         if(rce.suspend) break;
 
-        executeRule(rce.name, rce.player);
+        // cancel rule, if a rule fails
+        if(!executeRule(rce.name, rce.player)) cancelRuleChain();
     }
 
     if(ruleChain.size() == 0) ruleChainFinished();
@@ -129,11 +131,6 @@ void GameRules::cancelRuleChain()
     isRuleChainWaiting = false;
 
     qDebug() << "Rule chain canceled";
-}
-
-void GameRules::pushRuleData(void *pointer)
-{
-    ruleData.push(pointer);
 }
 
 void GameRules::initActions()
@@ -171,11 +168,6 @@ void GameRules::setWinningPoints(unsigned int n)
     winningPoints = n;
 }
 
-void GameRules::handleSelectedObject(GLGameModel*)
-{
-    Q_ASSERT(ruleChain.size() > 0);
-}
-
 // STANDARD RULES
 
 IMPLEMENT_RULE(ruleUserActionBuildCity)
@@ -183,6 +175,7 @@ IMPLEMENT_RULE(ruleUserActionBuildCity)
     if(player->getIsLocal())
     {
         RULECHAIN_ADD("ruleBuildCity");
+        RULECHAIN_ADD("ruleSettlementSelected");
         RULECHAIN_ADD("ruleSelectSettlement");
         startRuleChain();
     }
@@ -198,15 +191,16 @@ IMPLEMENT_RULE(ruleBuildCity)
         return false;
     }
 
-    Q_ASSERT(ruleData.size() > 0);
-    Crossroad *cr = (Crossroad*)ruleData.pop();
+    Q_ASSERT(ruleData.contains("Crossroad"));
+    Crossroad *cr = (Crossroad*)ruleData.take("Crossroad");
 
     // remove settlement
-    ruleData.push(cr);
+    Q_ASSERT(cr->getIsPlayerObjectPlaced());
+    ruleData.insert("Settlement", cr->getPlayerObject());
     if(EXECUTE_SUBRULE("ruleRemoveSettlement"))
     {
         // build city
-        Building *bld = new Building(game, player, "city");
+        PlayerObject *bld = new PlayerObject(game, player, "city");
         bld->setScale(0.7);
         cr->placePlayerObject(bld);
         return true;
@@ -231,7 +225,7 @@ IMPLEMENT_RULE(ruleSelectSettlement)
         Crossroad *c = crossroads.at(i);
         if(c->getIsPlayerObjectPlaced())
         {
-            Building *bld = (Building*)c->getPlayerObject();
+            PlayerObject *bld = (PlayerObject*)c->getPlayerObject();
             qDebug() << "building" << bld->getType();
             if(!bld->getType().compare("settlement"))
             {
@@ -248,7 +242,19 @@ IMPLEMENT_RULE(ruleSelectSettlement)
         return true;
     }
 
-    cancelRuleChain();
+    return false;
+}
+
+IMPLEMENT_RULE(ruleSettlementSelected)
+{
+    Board *board = game->getBoard();
+
+    if(board->getHasSelectedObject())
+    {
+        ruleData.insert("Crossroad", board->getSelectedObject());
+        return true;
+    }
+
     return false;
 }
 
@@ -273,9 +279,9 @@ IMPLEMENT_RULE(ruleBuildSettlement)
         return false;
     }
 
-    Q_ASSERT(ruleData.size() > 0);
-    Crossroad *cr = (Crossroad*)ruleData.pop();
-    Building *bld = new Building(game, player, "settlement");
+    Q_ASSERT(ruleData.contains("Crossroad"));
+    Crossroad *cr = (Crossroad*)ruleData.take("Crossroad");
+    PlayerObject *bld = new PlayerObject(game, player, "settlement");
     bld->setScale(0.3);
     cr->placePlayerObject(bld);
 
@@ -289,11 +295,8 @@ IMPLEMENT_RULE(ruleCanBuildSettlement)
 
 IMPLEMENT_RULE(ruleRemoveSettlement)
 {
-    Q_ASSERT(ruleData.size()>0);
-
-    Crossroad *c = (Crossroad*)ruleData.pop();
-    Building *b = (Building*)c->getPlayerObject();
-    c->placePlayerObject(NULL);
+    Q_ASSERT(ruleData.contains("Settlement"));
+    PlayerObject *b = (PlayerObject*)ruleData.take("Settlement");
     delete b;
 
     return true;
@@ -311,7 +314,7 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
     // set all crossroads selectable
     for(int i = 0; i < crossroads.size(); i++)
     {
-        ruleData.push(crossroads.at(i));
+        ruleData.insert("Crossroad", crossroads.at(i));
         bool selectable = EXECUTE_SUBRULE("ruleCanSelectCrossroad");
         crossroads.at(i)->setIsSelectable(selectable);
         if(selectable) selectableObjectFound = true;
@@ -324,14 +327,20 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
         return true;
     }
 
-    cancelRuleChain();
     return false;
 }
 
 IMPLEMENT_RULE(ruleCrossroadSelected)
 {
-    game->getBoard()->resetBoardState();
-    return true;
+    Board *board = game->getBoard();
+
+    if(board->getHasSelectedObject())
+    {
+        ruleData.insert("Crossroad", board->getSelectedObject());
+        return true;
+    }
+
+    return false;
 }
 
 // Check if a crossroad can be selected
@@ -341,8 +350,8 @@ IMPLEMENT_RULE(ruleCanSelectCrossroad)
 {
     if(!player->getIsLocal()) return true;
 
-    Q_ASSERT(ruleData.size() > 0);
-    Crossroad *c = (Crossroad*)ruleData.pop();
+    Q_ASSERT(ruleData.contains("Crossroad"));
+    Crossroad *c = (Crossroad*)ruleData.take("Crossroad");
 
     if(c->getIsPlayerObjectPlaced()) return false;
 
@@ -381,9 +390,9 @@ IMPLEMENT_RULE(ruleBuildRoad)
         return false;
     }
 
-    Q_ASSERT(ruleData.size()>0);
-    Roadway *r = (Roadway*)ruleData.pop();
-    Building *road = new Building(game, player, "road");
+    Q_ASSERT(ruleData.contains("Roadway"));
+    Roadway *r = (Roadway*)ruleData.take("Roadway");
+    PlayerObject *road = new PlayerObject(game, player, "road");
     road->setScale(0.3);
     r->placePlayerObject(road);
     
@@ -405,7 +414,7 @@ IMPLEMENT_RULE(ruleSelectRoadway)
 
     for(int i = 0; i < roadways.size(); i++)
     {
-        ruleData.push(roadways.at(i));
+        ruleData.insert("Roadway", roadways.at(i));
         bool selectable = EXECUTE_SUBRULE("ruleCanSelectRoadway");
         roadways.at(i)->setIsSelectable(selectable);
         if(selectable) selectableObjectFound = true;
@@ -418,20 +427,26 @@ IMPLEMENT_RULE(ruleSelectRoadway)
         return true;
     }
 
-    cancelRuleChain();
     return false;
 }
 
 IMPLEMENT_RULE(ruleRoadwaySelected)
 {
-    game->getBoard()->resetBoardState();
-    return true;
+    Board *board = game->getBoard();
+
+    if(board->getHasSelectedObject())
+    {
+        ruleData.insert("Roadway", board->getSelectedObject());
+        return true;
+    }
+
+    return false;
 }
 
 IMPLEMENT_RULE(ruleCanSelectRoadway)
 {
-    Q_ASSERT(ruleData.size() > 0);
-    Roadway *r = (Roadway*)ruleData.pop();
+    Q_ASSERT(ruleData.contains("Roadway"));
+    Roadway *r = (Roadway*)ruleData.take("Roadway");
     QList<Crossroad*> crossroads = r->getCrossroads();
     bool canSelect = false;
 

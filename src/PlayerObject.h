@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BUILDING_H
-#define BUILDING_H
+#ifndef PLAYEROBJECT_H
+#define PLAYEROBJECT_H
 
 #include "GLGameModel.h"
 
@@ -28,27 +28,25 @@ class Game;
 class Crossroad;
 class Roadway;
 class HexTile;
+class GLGameModelProxy;
 
-class Building : public GLGameModel
+class PlayerObject : public GLGameModel
 {
     public:
-        Building(Game*, Player*, QString _type);
+        PlayerObject(Game*, Player*, QString _type);
 
         virtual Player* getPlayer() { return player; }
 
         const QString& getType() { return type; }
-        Crossroad *getCrossroad() { return crossroad; }
-        void setCrossroad(Crossroad *c) { crossroad = c; }
-        Roadway *getRoadway() { return roadway; }
-        void setRoadway(Roadway *r) { roadway = r; }
+        GLGameModelProxy *getBaseObject() { return baseObject; }
+        void setBaseObject(GLGameModelProxy *c) { baseObject = c; }
         HexTile *getTile() { return tile; }
         void setTile(HexTile *t) { tile = t; }
 
     private:
         QString type;
         Player *player;
-        Crossroad *crossroad;
-        Roadway *roadway;
+        GLGameModelProxy *baseObject;
         HexTile *tile;
 };
 

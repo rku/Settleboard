@@ -4,8 +4,8 @@
 #include "Game.h"
 #include "Roadway.h"
 #include "Player.h"
+#include "PlayerObject.h"
 #include "Crossroad.h"
-#include "Building.h"
 
 Crossroad::Crossroad(Game *_game, QVector3D v)
     : GLGameModelProxy(_game)
@@ -107,9 +107,9 @@ void Crossroad::addRoadway(Roadway *roadway)
     roadway->addCrossroad(this);
 }
 
-void Crossroad::placePlayerObject(GLGameModel *b)
+void Crossroad::placePlayerObject(PlayerObject *p)
 {
-    playerObject = b;
+    GLGameModelProxy::placePlayerObject(p);
 
     if(playerObject != NULL)
     {

@@ -72,9 +72,6 @@ class GameRules : public QObject, public GameObject
         void continueRuleChain();
         void cancelRuleChain();
 
-        void handleSelectedObject(GLGameModel*);
-
-        void pushRuleData(void*);
         QList<QAction*> getActions();
         unsigned int getWinningPoints();
         void setWinningPoints(unsigned int);
@@ -89,6 +86,7 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);
         DECLARE_RULE(ruleSelectSettlement);
+        DECLARE_RULE(ruleSettlementSelected);
         DECLARE_RULE(ruleUserActionBuildSettlement);
         DECLARE_RULE(ruleBuildSettlement);
         DECLARE_RULE(ruleCanBuildSettlement);
@@ -104,7 +102,7 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleCanSelectRoadway);
 
         QList<QAction*> actions;
-        QStack<void*> ruleData;
+        QMap<QString, void*> ruleData;
         QStack<RuleChainElement> ruleChain;
         bool isRuleChainWaiting;
         QMap<QString, GameRule> rules;

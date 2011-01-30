@@ -29,7 +29,7 @@
 
 class Game;
 class Resource;
-class Building;
+class PlayerObject;
 
 class Player : public GameObject
 {
@@ -43,14 +43,14 @@ class Player : public GameObject
         bool getIsLocal() { return isLocal; }
         void setIsLocal(bool b) { isLocal = b; }
         QList<Resource*> &getResources();
-        QList<Building*> &getBuildings();
+        QList<PlayerObject*> &getPlayerObjects();
 
     private:
         QColor color;
         QString name;
         bool isLocal;
         QList<Resource*> resources;
-        QList<Building*> buildings;
+        QList<PlayerObject*> objects;
 };
 
 #endif
