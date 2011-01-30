@@ -200,7 +200,7 @@ IMPLEMENT_RULE(ruleBuildCity)
     if(EXECUTE_SUBRULE("ruleRemoveSettlement"))
     {
         // build city
-        PlayerObject *bld = new PlayerObject(game, player, "city");
+        PlayerObject *bld = new PlayerObject(game, player, "City");
         bld->setScale(0.7);
         cr->placePlayerObject(bld);
         return true;
@@ -226,8 +226,7 @@ IMPLEMENT_RULE(ruleSelectSettlement)
         if(c->getIsPlayerObjectPlaced())
         {
             PlayerObject *bld = (PlayerObject*)c->getPlayerObject();
-            qDebug() << "building" << bld->getType();
-            if(!bld->getType().compare("settlement"))
+            if(!bld->getType().compare("Settlement"))
             {
                 bld->setIsSelectable(true);
                 selectableObjectFound = true;
@@ -281,7 +280,7 @@ IMPLEMENT_RULE(ruleBuildSettlement)
 
     Q_ASSERT(ruleData.contains("Crossroad"));
     Crossroad *cr = (Crossroad*)ruleData.take("Crossroad");
-    PlayerObject *bld = new PlayerObject(game, player, "settlement");
+    PlayerObject *bld = new PlayerObject(game, player, "Settlement");
     bld->setScale(0.3);
     cr->placePlayerObject(bld);
 
@@ -392,7 +391,7 @@ IMPLEMENT_RULE(ruleBuildRoad)
 
     Q_ASSERT(ruleData.contains("Roadway"));
     Roadway *r = (Roadway*)ruleData.take("Roadway");
-    PlayerObject *road = new PlayerObject(game, player, "road");
+    PlayerObject *road = new PlayerObject(game, player, "Road");
     road->setScale(0.3);
     r->placePlayerObject(road);
     

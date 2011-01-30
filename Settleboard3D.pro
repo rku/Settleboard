@@ -16,6 +16,7 @@ HEADERS = src/GLWidget.h \
           src/GLTypes.h \
           src/GameObject.h \
           src/Game.h \
+          src/FileManager.h \
           src/HexTile.h \
           src/NumberChip.h \
           src/MainWindow.h \
@@ -37,6 +38,7 @@ HEADERS = src/GLWidget.h \
 
 SOURCES = src/GLWidget.cpp \
           src/Game.cpp \
+          src/FileManager.cpp \
           src/HexTile.cpp \
           src/NumberChip.cpp \
           src/main.cpp \

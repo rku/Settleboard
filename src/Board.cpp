@@ -22,6 +22,7 @@
 #include "Game.h"
 #include "Crossroad.h"
 #include "BoardState.h"
+#include "FileManager.h"
 #include "Roadway.h"
 
 #include <math.h>
@@ -31,8 +32,6 @@ Board::Board(Game *_game) : GameObject(_game)
     isSelectionModeActive   = false;
     selectedObject          = NULL;
     state                   = BOARD_STATE_SELECT_CROSSROAD;
-    boardFilesPath          = "Data/Boards/";
-    boardFilesSuffix        = ".rsm";
 }
 
 Board::~Board()
@@ -60,7 +59,7 @@ void Board::render()
         roadways.at(i)->draw();
 
     GLGameModel *robber = new GLGameModel(game);
-    robber->load("Data/Objects/robber.obj");
+    robber->load(FileManager::getPathOfResource("Objects", "Robber", "obj"));
     robber->setColor(Qt::black);
     robber->setScale(0.7);
     robber->draw();
@@ -332,12 +331,7 @@ bool Board::loadFromFile(const QString& filename)
 
 bool Board::loadByName(const QString &name)
 {
-    QString path = QString(name);
-
-    path.insert(0, boardFilesPath);
-    path.append(boardFilesSuffix);
-
-    return loadFromFile(path);
+    return loadFromFile(FileManager::getPathOfResource("Maps", name, "rsm"));
 }
 
 QVector3D Board::getPosForTile(HexTile *tile, int col, int row)

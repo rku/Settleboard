@@ -21,6 +21,7 @@
 #include "Game.h"
 #include "Crossroad.h"
 #include "Roadway.h"
+#include "FileManager.h"
 #include "HexTile.h"
 
 HexTile::HexTile(Game *_game)
@@ -37,41 +38,40 @@ HexTile::~HexTile()
 void HexTile::setType(const unsigned int _type)
 {
     QColor color;
-    QString model("Data/Objects/%1.obj");
     QString modelName;
 
     switch(_type)
     {
         case HEXTILE_TYPE_WATER:
-            modelName = "hextile_water";
+            modelName = "HexTile_Water";
             color.setRgb(22,73,142,255);
             break;
         case HEXTILE_TYPE_DESERT:
-            modelName = "hextile_desert";
+            modelName = "HexTile_Desert";
             color.setRgb(225,130,7,255);
             break;
         case HEXTILE_TYPE_WOOD:
-            modelName = "hextile_wood";
+            modelName = "HexTile_Wood";
             color.setRgb(27,150,11,255);
             break;
         case HEXTILE_TYPE_SHEEP:
-            modelName = "hextile_sheep";
+            modelName = "HexTile_Sheep";
             color.setRgb(208,241,206,255);
             break;
         case HEXTILE_TYPE_WEED:
-            modelName = "hextile_weed";
+            modelName = "HexTile_Weed";
             color.setRgb(237,239,97,255); 
             break;
         case HEXTILE_TYPE_ORE:
-            modelName = "hextile_ore";
+            modelName = "HexTile_Ore";
             color.setRgb(106,112,124,255);
             break;
         case HEXTILE_TYPE_GOLD:
-            modelName = "hextile_gold"; 
+            modelName = "HexTile_Gold"; 
             color.setRgb(222,224,35,255);
             break;
         case HEXTILE_TYPE_CLAY:
-            modelName = "hextile_clay";
+            modelName = "HexTile_Clay";
             color.setRgb(231,126,33,255);
             break;
         default:
@@ -80,7 +80,7 @@ void HexTile::setType(const unsigned int _type)
     }
 
     type = _type;
-    load(model.arg(modelName), color);
+    load(FileManager::getPathOfResource("Objects", modelName, "obj"), color);
 }
 
 void HexTile::draw()

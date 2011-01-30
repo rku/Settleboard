@@ -19,11 +19,11 @@
  */
 
 #include "TextureManager.h"
+#include "FileManager.h"
 #include "Game.h"
 
 TextureManager::TextureManager(Game *_game) : GameObject(_game)
 {
-    texturePath     = "Data/Textures/";
 }
 
 TextureManager::~TextureManager()
@@ -44,7 +44,7 @@ const Texture& TextureManager::loadTexture(const QString& filename)
     QImage tex;
     QString filepath;
 
-    filepath = QString("%1/%2").arg(texturePath).arg(filename);
+    filepath = FileManager::getPathOfResource("Textures", filename);
 
     newTex.name   = filename;
     newTex.width  = 0;

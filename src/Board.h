@@ -91,8 +91,6 @@ class Board : public GameObject
         QList<Roadway*> roadways;
         QString name;
         QString author;
-        QString boardFilesPath;
-        QString boardFilesSuffix;
 };
 
 #endif

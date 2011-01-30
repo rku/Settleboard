@@ -44,7 +44,6 @@ class TextureManager : public GameObject
 
     private:
         QList<Texture> textures;
-        QString texturePath;
 
         const Texture& loadTexture(const QString&);
 };
