@@ -280,6 +280,8 @@ IMPLEMENT_RULE(ruleBuildSettlement)
 
     Q_ASSERT(ruleData.contains("Crossroad"));
     Crossroad *cr = (Crossroad*)ruleData.take("Crossroad");
+
+    Q_ASSERT(!cr->getIsPlayerObjectPlaced());
     PlayerObject *bld = new PlayerObject(game, player, "Settlement");
     bld->setScale(0.3);
     cr->placePlayerObject(bld);
