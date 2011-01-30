@@ -28,6 +28,7 @@
 
 Board::Board(Game *_game) : GameObject(_game)
 {
+    selectedObject      = NULL;
     state               = BOARD_STATE_SELECT_CROSSROAD;
     boardFilesPath      = "Data/Boards/";
     boardFilesSuffix    = ".rsm";
@@ -136,14 +137,11 @@ GLGameModel *Board::getSelectableObjectAtMousePos(const QPoint &pos)
 
 bool Board::handleMouseClick(const QPoint &mousePos)
 {
-    if(game->getRules()->getIsRuleChainWaiting())
+    if(getIsSelectionModeActive())
     {
         GLGameModel *obj = getSelectableObjectAtMousePos(mousePos);
-        if(obj != NULL)
-        {
-            game->getRules()->pushRuleData((void*)obj);
-            game->getRules()->continueRuleChain();
-        }
+        setSelectedObject(obj);
+        endSelectionMode();
         return true;
     }
 
@@ -172,6 +170,9 @@ bool Board::handleMouseOver(const QPoint &mousePos)
 
 void Board::setSelectionMode()
 {
+    Q_ASSERT(!getIsSelectionModeActive());
+    Q_ASSERT(selectedObject == NULL);
+
     int max = 1;
 
     // disable all board objects except the selectable ones
@@ -189,6 +190,37 @@ void Board::setSelectionMode()
 
         if(!done) max++;
     }
+
+    selectedObject = NULL;
+    isSelectionModeActive = true;
+}
+
+void Board::endSelectionMode()
+{
+    Q_ASSERT(getIsSelectionModeActive());
+
+    isSelectionModeActive = false;
+    resetBoardState();
+
+    if(game->getRules()->getIsRuleChainWaiting())
+    {
+        if(selectedObject != NULL)
+        {
+            game->getRules()->pushRuleData((void*)selectedObject);
+            game->getRules()->continueRuleChain();
+        }
+        else
+        {
+            game->getRules()->cancelRuleChain();
+        }
+    }
+
+    selectedObject = NULL;
+}
+
+void Board::setSelectedObject(GLGameModel *gm)
+{
+    selectedObject = gm;
 }
 
 void Board::resetBoardState(BoardObjectState s)

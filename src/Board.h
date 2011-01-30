@@ -53,12 +53,18 @@ class Board : public GameObject
         bool loadFromFile(const QString&);
         bool loadByName(const QString&);
 
-        void setSelectionMode();
         void resetBoardState(BoardObjectState s = defaultBoardObjectState);
         void updateBoardState(BoardState&);
 
         bool handleMouseClick(const QPoint &mousePos);
         bool handleMouseOver(const QPoint &mousePos);
+
+        // selection
+        void setSelectionMode();
+        void endSelectionMode();
+        bool getIsSelectionModeActive() { return isSelectionModeActive; }
+        GLGameModel *getSelectedObject() { return selectedObject; }
+        void setSelectedObject(GLGameModel*);
 
         const QList<HexTile*> getBoardTiles() { return boardTiles; }
         const QList<Crossroad*> getCrossroads() { return crossroads; }
@@ -78,6 +84,8 @@ class Board : public GameObject
         unsigned int height;
         unsigned int state;
         char tileData[BOARD_MAX_TILES];
+        bool isSelectionModeActive;
+        GLGameModel *selectedObject;
         QList<Crossroad*> crossroads;
         QList<Roadway*> roadways;
         QString name;
