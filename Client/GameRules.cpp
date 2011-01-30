@@ -186,11 +186,13 @@ IMPLEMENT_RULE(ruleInitGameCards)
     bank->registerCardStack("Sheep");
     bank->registerCardStack("Ore");
     bank->registerCardStack("Lumber");
+    bank->registerCardStack("Clay");
 
     bank->registerCard("Wheat",  GameCard("Resource", "Wheat",  "Wheat" ), 20);
     bank->registerCard("Sheep",  GameCard("Resource", "Sheep",  "Sheep" ), 20);
     bank->registerCard("Ore",    GameCard("Resource", "Ore",    "Ore"   ), 20);
     bank->registerCard("Lumber", GameCard("Resource", "Lumber", "Lumber"), 20);
+    bank->registerCard("Clay",   GameCard("Resource", "Clay",   "Clay"  ), 20);
 
     // development cards
     bank->registerCardStack("Development");
