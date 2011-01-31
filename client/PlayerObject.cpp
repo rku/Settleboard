@@ -27,7 +27,7 @@
 PlayerObject::PlayerObject(Game *_game, Player *_owner, QString _type)
     : GLGameModel(_game), type(_type), owner(_owner)
 {
-    load(FileManager::getPathOfResource("Objects", type, "obj"));
+    load(FileManager::getPathOfGLObject(type));
     setColor(owner->getColor());
 
     baseObject = NULL;

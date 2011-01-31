@@ -58,6 +58,7 @@ GameRules::GameRules(Game *_game)
 
     REGISTER_RULE(ruleSelectCrossroad);
     REGISTER_RULE(ruleCrossroadSelected);
+    REGISTER_RULE(ruleRequiredCrossroadSelected);
     REGISTER_RULE(ruleCanSelectCrossroad);
 
     REGISTER_RULE(ruleUserActionBuildRoad);
@@ -65,7 +66,9 @@ GameRules::GameRules(Game *_game)
     REGISTER_RULE(ruleCanBuildRoad);
 
     REGISTER_RULE(ruleSelectRoadway);
+    REGISTER_RULE(ruleSelectRoadwayAtCrossroad);
     REGISTER_RULE(ruleRoadwaySelected);
+    REGISTER_RULE(ruleRequiredRoadwayAtCrossroadSelected);
     REGISTER_RULE(ruleCanSelectRoadway);
 
     initActions();
@@ -204,10 +207,10 @@ IMPLEMENT_RULE(ruleInitGame)
 IMPLEMENT_RULE(ruleInitialPlacement1)
 {
     RULECHAIN_ADD(ruleSelectCrossroad);
-    RULECHAIN_ADD(ruleCrossroadSelected);
+    RULECHAIN_ADD(ruleRequiredCrossroadSelected);
     RULECHAIN_ADD(ruleBuildSettlement);
-    RULECHAIN_ADD(ruleSelectRoadway);
-    RULECHAIN_ADD(ruleRoadwaySelected);
+    RULECHAIN_ADD(ruleSelectRoadwayAtCrossroad);
+    RULECHAIN_ADD(ruleRequiredRoadwayAtCrossroadSelected);
     RULECHAIN_ADD(ruleBuildRoad);
     startRuleChain();
 
@@ -217,11 +220,11 @@ IMPLEMENT_RULE(ruleInitialPlacement1)
 IMPLEMENT_RULE(ruleInitialPlacement2)
 {
     RULECHAIN_ADD(ruleSelectCrossroad);
-    RULECHAIN_ADD(ruleCrossroadSelected);
+    RULECHAIN_ADD(ruleRequiredCrossroadSelected);
     RULECHAIN_ADD(ruleDrawInitialResourceCards);
     RULECHAIN_ADD(ruleBuildSettlement);
-    RULECHAIN_ADD(ruleSelectRoadway);
-    RULECHAIN_ADD(ruleRoadwaySelected);
+    RULECHAIN_ADD(ruleSelectRoadwayAtCrossroad);
+    RULECHAIN_ADD(ruleRequiredRoadwayAtCrossroadSelected);
     RULECHAIN_ADD(ruleBuildRoad);
 
     startRuleChain();
@@ -455,7 +458,7 @@ IMPLEMENT_RULE(ruleBuildSettlement)
 {
     RULEDATA_REQUIRE("Crossroad");
 
-    Crossroad *cr = (Crossroad*)RULEDATA_POP_POINTER("Crossroad");
+    Crossroad *cr = (Crossroad*)RULEDATA_READ_POINTER("Crossroad");
 
     Q_ASSERT(!cr->getIsPlayerObjectPlaced());
     PlayerObject *bld = player->getUnplacedObjectOfType("Settlement");
@@ -523,6 +526,21 @@ IMPLEMENT_RULE(ruleCrossroadSelected)
     }
 
     return false;
+}
+
+// this rule reruns the selection process if no crossroad
+// has been selected
+IMPLEMENT_RULE(ruleRequiredCrossroadSelected)
+{
+    if(!EXECUTE_SUBRULE(ruleCrossroadSelected))
+    {
+        RULECHAIN_ADD_TOP(ruleRequiredCrossroadSelected);
+        RULECHAIN_ADD_TOP(ruleSelectCrossroad);
+        startRuleChain();
+        return true;
+    }
+
+    return true;
 }
 
 // Check if a crossroad can be selected
@@ -610,6 +628,32 @@ IMPLEMENT_RULE(ruleSelectRoadway)
     return false;
 }
 
+IMPLEMENT_RULE(ruleSelectRoadwayAtCrossroad)
+{
+    RULEDATA_REQUIRE("Crossroad");
+    Crossroad *cr = (Crossroad*)RULEDATA_READ_POINTER("Crossroad");
+    QList<Roadway*> roadways = cr->getRoadways();
+    bool selectableObjectFound = false;
+    Board *board = game->getBoard();
+
+    for(int i = 0; i < roadways.size(); i++)
+    {
+        RULEDATA_PUSH_POINTER("Roadway", roadways.at(i));
+        bool selectable = EXECUTE_SUBRULE(ruleCanSelectRoadway);
+        roadways.at(i)->setIsSelectable(selectable);
+        if(selectable) selectableObjectFound = true;
+    }
+
+    if(selectableObjectFound)
+    {
+        board->setSelectionMode();
+        suspendRuleChain();
+        return true;
+    }
+
+    return false;
+}
+
 IMPLEMENT_RULE(ruleRoadwaySelected)
 {
     Board *board = game->getBoard();
@@ -621,6 +665,21 @@ IMPLEMENT_RULE(ruleRoadwaySelected)
     }
 
     return false;
+}
+
+// this rule reruns the selection process if no valid road
+// has been selected, this is used while placing initial objects
+IMPLEMENT_RULE(ruleRequiredRoadwayAtCrossroadSelected)
+{
+    if(!EXECUTE_SUBRULE(ruleRoadwaySelected))
+    {
+        RULECHAIN_ADD_TOP(ruleRequiredRoadwayAtCrossroadSelected);
+        RULECHAIN_ADD_TOP(ruleSelectRoadwayAtCrossroad);
+        startRuleChain();
+        return true;
+    }
+
+    return true;
 }
 
 IMPLEMENT_RULE(ruleCanSelectRoadway)

@@ -7,6 +7,9 @@
 class FileManager
 {
     public:
+    static const QString getPathOfMap(const QString &name);
+    static const QString getPathOfTexture(const QString &name);
+    static const QString getPathOfGLObject(const QString &name);
     static const QString getPathOfResource(const QString &group,
         const QString &name, const QString &type);
     static const QString getPathOfResource(const QString &group,

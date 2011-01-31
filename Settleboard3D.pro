@@ -1,66 +1,66 @@
 
 CONFIG += debug
 TEMPLATE = app
-DEPENDPATH += . Client
-INCLUDEPATH += . Client
-MOC_DIR = Build/
-OBJECTS_DIR = Build/
-UI_DIR = Build/
-RCC_DIR = Build/
+DEPENDPATH += . client
+INCLUDEPATH += . client
+MOC_DIR = build/
+OBJECTS_DIR = build/
+UI_DIR = build/
+RCC_DIR = build/
 QT += network opengl
 
-FORMS = Client/ui/connectorform.ui \
-        Client/ui/prefsform.ui
+FORMS = client/ui/connectorform.ui \
+        client/ui/prefsform.ui
 
-HEADERS = Client/GLWidget.h \
-          Client/GLTypes.h \
-          Client/GameObject.h \
-          Client/Game.h \
-          Client/FileManager.h \
-          Client/HexTile.h \
-          Client/NumberChip.h \
-          Client/MainWindow.h \
-          Client/TextureManager.h \
-          Client/GLGameModel.h \
-          Client/GLGameModelProxy.h \
-          Client/Board.h \
-          Client/UIStyle.h \
-          Client/GameUI.h \
-          Client/Resource.h \
-          Client/GameRules.h \
-          Client/GameConnector.h \
-          Client/PrefsForm.h \
-          Client/Player.h \
-          Client/PlayerObject.h \
-          Client/OBJGLLoader.h \
-          Client/Crossroad.h \
-          Client/Roadway.h \
-          Client/GameCard.h \
-          Client/GameCardStack.h \
-          Client/Bank.h
+HEADERS = client/GLWidget.h \
+          client/GLTypes.h \
+          client/GameObject.h \
+          client/Game.h \
+          client/FileManager.h \
+          client/HexTile.h \
+          client/NumberChip.h \
+          client/MainWindow.h \
+          client/TextureManager.h \
+          client/GLGameModel.h \
+          client/GLGameModelProxy.h \
+          client/Board.h \
+          client/UIStyle.h \
+          client/GameUI.h \
+          client/Resource.h \
+          client/GameRules.h \
+          client/GameConnector.h \
+          client/PrefsForm.h \
+          client/Player.h \
+          client/PlayerObject.h \
+          client/OBJGLLoader.h \
+          client/Crossroad.h \
+          client/Roadway.h \
+          client/GameCard.h \
+          client/GameCardStack.h \
+          client/Bank.h
 
-SOURCES = Client/GLWidget.cpp \
-          Client/Game.cpp \
-          Client/FileManager.cpp \
-          Client/HexTile.cpp \
-          Client/NumberChip.cpp \
-          Client/main.cpp \
-          Client/MainWindow.cpp \
-          Client/TextureManager.cpp \
-          Client/GLGameModel.cpp \
-          Client/GLGameModelProxy.cpp \
-          Client/Board.cpp\
-          Client/UISTyle.cpp \
-          Client/GameUI.cpp \
-          Client/Resource.cpp \
-          Client/GameRules.cpp \
-          Client/GameConnector.cpp \
-          Client/PrefsForm.cpp \
-          Client/Player.cpp \
-          Client/PlayerObject.cpp \
-          Client/OBJGLLoader.cpp \
-          Client/Crossroad.cpp \
-          Client/Roadway.cpp \
-          Client/Bank.cpp \
-          Client/GameCardStack.cpp
+SOURCES = client/GLWidget.cpp \
+          client/Game.cpp \
+          client/FileManager.cpp \
+          client/HexTile.cpp \
+          client/NumberChip.cpp \
+          client/main.cpp \
+          client/MainWindow.cpp \
+          client/TextureManager.cpp \
+          client/GLGameModel.cpp \
+          client/GLGameModelProxy.cpp \
+          client/Board.cpp\
+          client/UISTyle.cpp \
+          client/GameUI.cpp \
+          client/Resource.cpp \
+          client/GameRules.cpp \
+          client/GameConnector.cpp \
+          client/PrefsForm.cpp \
+          client/Player.cpp \
+          client/PlayerObject.cpp \
+          client/OBJGLLoader.cpp \
+          client/Crossroad.cpp \
+          client/Roadway.cpp \
+          client/Bank.cpp \
+          client/GameCardStack.cpp
 

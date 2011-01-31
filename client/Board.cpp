@@ -59,7 +59,7 @@ void Board::render()
         roadways.at(i)->draw();
 
     GLGameModel *robber = new GLGameModel(game);
-    robber->load(FileManager::getPathOfResource("Objects", "Robber", "obj"));
+    robber->load(FileManager::getPathOfGLObject("Robber"));
     robber->setColor(Qt::black);
     robber->setScale(0.7);
     robber->draw();
@@ -322,7 +322,7 @@ bool Board::loadFromFile(const QString& filename)
 
 bool Board::loadByName(const QString &name)
 {
-    return loadFromFile(FileManager::getPathOfResource("Maps", name, "rsm"));
+    return loadFromFile(FileManager::getPathOfMap(name));
 }
 
 QVector3D Board::getPosForTile(HexTile *tile, int col, int row)

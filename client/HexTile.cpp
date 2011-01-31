@@ -80,7 +80,7 @@ void HexTile::setType(const unsigned int _type)
     }
 
     type = _type;
-    load(FileManager::getPathOfResource("Objects", modelName, "obj"), color);
+    load(FileManager::getPathOfGLObject(modelName), color);
 }
 
 void HexTile::draw()

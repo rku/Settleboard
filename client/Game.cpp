@@ -26,9 +26,6 @@
 
 Game::Game()
 {
-    localPlayerIndex = 0;
-    activePlayerIndex = 0;
-
     textureManager = new TextureManager(this);
     ui = new GameUI(this);
     rules = new GameRules(this);
@@ -52,23 +49,5 @@ void Game::render()
 {
     board->render();
     ui->render();
-}
-
-Player* Game::getNextPlayer()
-{
-    Q_ASSERT(players.size() > 0);
-
-    int newI = activePlayerIndex + 1;
-    if(newI >= players.size()) newI = 0;
-    return players.at(newI);
-}
-
-Player* Game::getPreviousPlayer()
-{
-    Q_ASSERT(players.size() > 0);
-
-    int newI = activePlayerIndex + 1;
-    if(newI < 0) newI = players.size() - 1;
-    return players.at(newI);
 }
 

@@ -1,6 +1,21 @@
 
 #include "FileManager.h"
 
+const QString FileManager::getPathOfMap(const QString &name)
+{
+    return getPathOfResource("Maps", name, "rsm");
+}
+
+const QString FileManager::getPathOfTexture(const QString &name)
+{
+    return getPathOfResource("Textures", name, "obj");
+}
+
+const QString FileManager::getPathOfGLObject(const QString &name)
+{
+    return getPathOfResource("Objects", name, "obj");
+}
+
 const QString FileManager::getPathOfResource(const QString &group,
         const QString &name, const QString &type)
 {

@@ -70,6 +70,10 @@ typedef struct _RuleDataElement {
     RuleChainElement _rce; \
     _rce.player = p; _rce.name = #n; _rce.suspend = false; \
     ruleChain.append(_rce); }
+#define RULECHAIN_ADD_TOP(n) if(1) { \
+    RuleChainElement _rce; \
+    _rce.player = player; _rce.name = #n; _rce.suspend = false; \
+    ruleChain.insert(ruleChain.begin(), _rce); }
 
 #define RULEDATA_REQUIRE(n) Q_ASSERT(ruleData.contains(n));
 #define RULEDATA_PUSH_INT(n, i) \
@@ -93,11 +97,11 @@ typedef struct _RuleDataElement {
         RuleDataElement _re = { 0, 0, false, NULL, s }; \
         ruleData.insertMulti(n, _re); }
 
-#define RULEDATA_POP_INT(n)     ruleData.take(n).intValue
-#define RULEDATA_POP_UINT(n)    ruleData.take(n).uintValue
-#define RULEDATA_POP_BOOL(n)    ruleData.take(n).boolValue
-#define RULEDATA_POP_POINTER(n) ruleData.take(n).pointerValue
-#define RULEDATA_POP_STRING(n)  ruleData.take(n).stringValue
+#define RULEDATA_POP_INT(n)      ruleData.take(n).intValue
+#define RULEDATA_POP_UINT(n)     ruleData.take(n).uintValue
+#define RULEDATA_POP_BOOL(n)     ruleData.take(n).boolValue
+#define RULEDATA_POP_POINTER(n)  ruleData.take(n).pointerValue
+#define RULEDATA_POP_STRING(n)   ruleData.take(n).stringValue
 #define RULEDATA_READ_INT(n)     ruleData.value(n).intValue
 #define RULEDATA_READ_UINT(n)    ruleData.value(n).uintValue
 #define RULEDATA_READ_BOOL(n)    ruleData.value(n).boolValue
@@ -155,6 +159,7 @@ class GameRules : public QObject, public GameObject
 
         DECLARE_RULE(ruleSelectCrossroad);
         DECLARE_RULE(ruleCrossroadSelected);
+        DECLARE_RULE(ruleRequiredCrossroadSelected);
         DECLARE_RULE(ruleCanSelectCrossroad);
 
         DECLARE_RULE(ruleUserActionBuildRoad);
@@ -162,14 +167,15 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleCanBuildRoad);
 
         DECLARE_RULE(ruleSelectRoadway);
+        DECLARE_RULE(ruleSelectRoadwayAtCrossroad);
         DECLARE_RULE(ruleRoadwaySelected);
+        DECLARE_RULE(ruleRequiredRoadwayAtCrossroadSelected);
         DECLARE_RULE(ruleCanSelectRoadway);
 
         QList<QAction*> actions;
         QMap<QString, RuleDataElement> ruleData;
         QList<RuleChainElement> ruleChain;
         bool isRuleChainWaiting;
-        uint ruleChainNesting;
         QMap<QString, GameRule> rules;
         unsigned int winningPoints;
         QAction *tradeAct;
