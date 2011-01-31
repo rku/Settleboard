@@ -35,9 +35,13 @@ GameRules::GameRules(Game *_game)
     REGISTER_RULE(ruleInitGame);
     REGISTER_RULE(ruleInitPlayers);
     REGISTER_RULE(ruleInitGameCards);
+    REGISTER_RULE(ruleInitialPlacement);
     REGISTER_RULE(ruleInitialPlacement1);
     REGISTER_RULE(ruleInitialPlacement2);
     REGISTER_RULE(ruleDrawInitialResourceCards);
+
+    REGISTER_RULE(ruleBeginTurn);
+    REGISTER_RULE(ruleEndTurn);
 
     REGISTER_RULE(ruleDrawCardsFromBankStack);
 
@@ -101,7 +105,7 @@ void GameRules::suspendRuleChain()
         qDebug() << "Suspending rule chain";
         RuleChainElement rce;
         rce.suspend = true;
-        ruleChain.push(rce);
+        ruleChain.insert(ruleChain.begin(), rce);
     }
 }
 
@@ -115,10 +119,9 @@ void GameRules::startRuleChain()
 
 void GameRules::continueRuleChain()
 {
-    qDebug() << "cont";
     while(ruleChain.size() > 0)
     {
-        RuleChainElement rce = ruleChain.pop();
+        RuleChainElement rce = ruleChain.takeFirst();
         isRuleChainWaiting = rce.suspend;
         if(rce.suspend) break;
 
@@ -188,9 +191,11 @@ void GameRules::setWinningPoints(unsigned int n)
 
 IMPLEMENT_RULE(ruleInitGame)
 {
-    RULECHAIN_ADD(ruleInitialPlacement2);
-    RULECHAIN_ADD(ruleInitPlayers);
+    player = game->getPlayers()[0];
+
     RULECHAIN_ADD(ruleInitGameCards);
+    RULECHAIN_ADD(ruleInitPlayers);
+    RULECHAIN_ADD(ruleInitialPlacement);
     startRuleChain();
 
     return true;
@@ -198,14 +203,12 @@ IMPLEMENT_RULE(ruleInitGame)
 
 IMPLEMENT_RULE(ruleInitialPlacement1)
 {
-    player = game->getPlayers()[0];
-
-    RULECHAIN_ADD(ruleBuildRoad);
-    RULECHAIN_ADD(ruleRoadwaySelected);
-    RULECHAIN_ADD(ruleSelectRoadway);
-    RULECHAIN_ADD(ruleBuildSettlement);
-    RULECHAIN_ADD(ruleCrossroadSelected);
     RULECHAIN_ADD(ruleSelectCrossroad);
+    RULECHAIN_ADD(ruleCrossroadSelected);
+    RULECHAIN_ADD(ruleBuildSettlement);
+    RULECHAIN_ADD(ruleSelectRoadway);
+    RULECHAIN_ADD(ruleRoadwaySelected);
+    RULECHAIN_ADD(ruleBuildRoad);
     startRuleChain();
 
     return true;
@@ -213,17 +216,43 @@ IMPLEMENT_RULE(ruleInitialPlacement1)
 
 IMPLEMENT_RULE(ruleInitialPlacement2)
 {
-    player = game->getPlayers()[0];
-
-    RULECHAIN_ADD(ruleBuildRoad);
-    RULECHAIN_ADD(ruleRoadwaySelected);
-    RULECHAIN_ADD(ruleSelectRoadway);
-    RULECHAIN_ADD(ruleBuildSettlement);
-    RULECHAIN_ADD(ruleDrawInitialResourceCards);
-    RULECHAIN_ADD(ruleCrossroadSelected);
     RULECHAIN_ADD(ruleSelectCrossroad);
+    RULECHAIN_ADD(ruleCrossroadSelected);
+    RULECHAIN_ADD(ruleDrawInitialResourceCards);
+    RULECHAIN_ADD(ruleBuildSettlement);
+    RULECHAIN_ADD(ruleSelectRoadway);
+    RULECHAIN_ADD(ruleRoadwaySelected);
+    RULECHAIN_ADD(ruleBuildRoad);
+
     startRuleChain();
 
+    return true;
+}
+
+IMPLEMENT_RULE(ruleInitialPlacement)
+{
+    QList<Player*> players = game->getPlayers();
+    QListIterator<Player*> i(players);
+
+    while(i.hasNext())
+        RULECHAIN_ADD_WITH_PLAYER(ruleInitialPlacement1, i.next());
+
+    i.toBack();
+
+    while(i.hasPrevious())
+        RULECHAIN_ADD_WITH_PLAYER(ruleInitialPlacement2, i.previous());
+
+    startRuleChain();
+    return true;
+}
+
+IMPLEMENT_RULE(ruleBeginTurn)
+{
+    return true;
+}
+
+IMPLEMENT_RULE(ruleEndTurn)
+{
     return true;
 }
 
@@ -327,10 +356,11 @@ IMPLEMENT_RULE(ruleUserActionBuildCity)
 {
     if(player->getIsLocal())
     {
-        RULECHAIN_ADD(ruleBuildCity);
-        RULECHAIN_ADD(ruleSettlementSelected);
-        RULECHAIN_ADD(ruleSelectSettlement);
         RULECHAIN_ADD(ruleCanBuildCity);
+        RULECHAIN_ADD(ruleSelectSettlement);
+        RULECHAIN_ADD(ruleSettlementSelected);
+        RULECHAIN_ADD(ruleBuildCity);
+        
         startRuleChain();
     }
 
@@ -410,10 +440,11 @@ IMPLEMENT_RULE(ruleUserActionBuildSettlement)
 {
     if(player->getIsLocal())
     {
-        RULECHAIN_ADD(ruleBuildSettlement);
-        RULECHAIN_ADD(ruleCrossroadSelected);
-        RULECHAIN_ADD(ruleSelectCrossroad);
         RULECHAIN_ADD(ruleCanBuildSettlement);
+        RULECHAIN_ADD(ruleSelectCrossroad);
+        RULECHAIN_ADD(ruleCrossroadSelected);
+        RULECHAIN_ADD(ruleBuildSettlement);
+
         startRuleChain();
     }
 
@@ -525,10 +556,11 @@ IMPLEMENT_RULE(ruleUserActionBuildRoad)
 {
     if(player->getIsLocal())
     {
-        RULECHAIN_ADD(ruleBuildRoad);
-        RULECHAIN_ADD(ruleRoadwaySelected);
-        RULECHAIN_ADD(ruleSelectRoadway);
         RULECHAIN_ADD(ruleCanBuildRoad);
+        RULECHAIN_ADD(ruleSelectRoadway);
+        RULECHAIN_ADD(ruleRoadwaySelected);
+        RULECHAIN_ADD(ruleBuildRoad);
+
         startRuleChain();
     }
 

@@ -51,6 +51,21 @@ uint Player::getNumberOfObjectsOfType(QString type)
     return objects.count(type);
 }
 
+uint Player::getNumberOfPlacedObjectsOfType(QString type)
+{
+    uint num = 0;
+
+    Q_ASSERT(objects.contains(type));
+    QList<PlayerObject*> objs = objects.values(type);
+
+    for(int i = 0; i < objs.size(); i++)
+    {
+        if(objs.at(i)->getIsPlaced()) num++;
+    }
+
+    return num;
+}
+
 uint Player::getNumberOfUnplacedObjectsOfType(QString type)
 {
     uint num = 0;

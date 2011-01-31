@@ -49,7 +49,17 @@ class Game
         GameUI *getUI() { return ui; }
         Board *getBoard() { return board; }
         OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
+
         const QList<Player*>& getPlayers() { return players; }
+        Player *getActivePlayer() { return players.at(activePlayerIndex); }
+        Player *getLocalPlayer() { return players.at(localPlayerIndex); }
+        void setActivePlayer(Player *p) { activePlayerIndex = players.indexOf(p); }
+        void setLocalPlayer(Player *p) { localPlayerIndex = players.indexOf(p); }
+        void setActivePlayerIndex(uint i) { activePlayerIndex = i; }
+        void setLocalPlayerIndex(uint i) { localPlayerIndex = i; }
+        Player *getNextPlayer();
+        Player *getPreviousPlayer();
+
         Bank *getBank() { return bank; }
 
     protected:
@@ -60,6 +70,10 @@ class Game
         Board *board;
         OBJGLLoader *objGLLoader;
         QList<Player*> players;
+        Player *activePlayer;
+        Player *localPlayer;
+        uint activePlayerIndex;
+        uint localPlayerIndex;
         Bank *bank;
 };
 

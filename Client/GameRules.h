@@ -61,10 +61,15 @@ typedef struct _RuleDataElement {
 #define DECLARE_RULE(a) bool a(GameRule, Player*);
 #define IMPLEMENT_RULE(a) bool GameRules::a(GameRule rule, Player *player)
 #define EXECUTE_SUBRULE(n) executeRule(#n, player)
+#define EXECUTE_SUBRULE_FOR_PLAYER(n,p) executeRule(#n, p)
 #define RULECHAIN_ADD(n) if(1) { \
     RuleChainElement _rce; \
     _rce.player = player; _rce.name = #n; _rce.suspend = false; \
-    ruleChain.push(_rce); }
+    ruleChain.append(_rce); }
+#define RULECHAIN_ADD_WITH_PLAYER(n, p) if(1) { \
+    RuleChainElement _rce; \
+    _rce.player = p; _rce.name = #n; _rce.suspend = false; \
+    ruleChain.append(_rce); }
 
 #define RULEDATA_REQUIRE(n) Q_ASSERT(ruleData.contains(n));
 #define RULEDATA_PUSH_INT(n, i) \
@@ -127,9 +132,13 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleInitGame);
         DECLARE_RULE(ruleInitPlayers);
         DECLARE_RULE(ruleInitGameCards);
+        DECLARE_RULE(ruleInitialPlacement);
         DECLARE_RULE(ruleInitialPlacement1);
         DECLARE_RULE(ruleInitialPlacement2);
         DECLARE_RULE(ruleDrawInitialResourceCards);
+
+        DECLARE_RULE(ruleBeginTurn);
+        DECLARE_RULE(ruleEndTurn);
 
         DECLARE_RULE(ruleDrawCardsFromBankStack);
 
@@ -158,7 +167,7 @@ class GameRules : public QObject, public GameObject
 
         QList<QAction*> actions;
         QMap<QString, RuleDataElement> ruleData;
-        QStack<RuleChainElement> ruleChain;
+        QList<RuleChainElement> ruleChain;
         bool isRuleChainWaiting;
         uint ruleChainNesting;
         QMap<QString, GameRule> rules;

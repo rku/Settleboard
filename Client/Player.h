@@ -50,6 +50,7 @@ class Player : public GameObject
 
         void addObjectOfType(QString type);
         uint getNumberOfObjectsOfType(QString type);
+        uint getNumberOfPlacedObjectsOfType(QString type);
         uint getNumberOfUnplacedObjectsOfType(QString type);
         PlayerObject *getUnplacedObjectOfType(QString type);
         const QList<PlayerObject*> getObjectsOfType(QString type);
