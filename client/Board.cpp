@@ -140,12 +140,17 @@ bool Board::handleMouseClick(const QPoint &mousePos)
     if(getIsSelectionModeActive())
     {
         GLGameModel *obj = getSelectableObjectAtMousePos(mousePos);
-        setSelectedObject(obj);
-        endSelectionMode();
-        return true;
+        if(obj != NULL)
+        {
+            setSelectedObject(obj);
+            endSelectionMode();
+            return true;
+        }
     }
 
-    game->getRules()->executeRule("ruleInitGame", NULL);
+    // TEST:
+    else game->getRules()->executeRule("ruleInitGame", NULL);
+
     return true;
 }
 

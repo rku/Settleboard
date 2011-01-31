@@ -159,7 +159,6 @@ class GameRules : public QObject, public GameObject
 
         DECLARE_RULE(ruleSelectCrossroad);
         DECLARE_RULE(ruleCrossroadSelected);
-        DECLARE_RULE(ruleRequiredCrossroadSelected);
         DECLARE_RULE(ruleCanSelectCrossroad);
 
         DECLARE_RULE(ruleUserActionBuildRoad);
@@ -169,7 +168,6 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleSelectRoadway);
         DECLARE_RULE(ruleSelectRoadwayAtCrossroad);
         DECLARE_RULE(ruleRoadwaySelected);
-        DECLARE_RULE(ruleRequiredRoadwayAtCrossroadSelected);
         DECLARE_RULE(ruleCanSelectRoadway);
 
         QList<QAction*> actions;

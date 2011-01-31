@@ -58,7 +58,6 @@ GameRules::GameRules(Game *_game)
 
     REGISTER_RULE(ruleSelectCrossroad);
     REGISTER_RULE(ruleCrossroadSelected);
-    REGISTER_RULE(ruleRequiredCrossroadSelected);
     REGISTER_RULE(ruleCanSelectCrossroad);
 
     REGISTER_RULE(ruleUserActionBuildRoad);
@@ -68,7 +67,6 @@ GameRules::GameRules(Game *_game)
     REGISTER_RULE(ruleSelectRoadway);
     REGISTER_RULE(ruleSelectRoadwayAtCrossroad);
     REGISTER_RULE(ruleRoadwaySelected);
-    REGISTER_RULE(ruleRequiredRoadwayAtCrossroadSelected);
     REGISTER_RULE(ruleCanSelectRoadway);
 
     initActions();
@@ -207,10 +205,10 @@ IMPLEMENT_RULE(ruleInitGame)
 IMPLEMENT_RULE(ruleInitialPlacement1)
 {
     RULECHAIN_ADD(ruleSelectCrossroad);
-    RULECHAIN_ADD(ruleRequiredCrossroadSelected);
+    RULECHAIN_ADD(ruleCrossroadSelected);
     RULECHAIN_ADD(ruleBuildSettlement);
     RULECHAIN_ADD(ruleSelectRoadwayAtCrossroad);
-    RULECHAIN_ADD(ruleRequiredRoadwayAtCrossroadSelected);
+    RULECHAIN_ADD(ruleRoadwaySelected);
     RULECHAIN_ADD(ruleBuildRoad);
     startRuleChain();
 
@@ -220,11 +218,11 @@ IMPLEMENT_RULE(ruleInitialPlacement1)
 IMPLEMENT_RULE(ruleInitialPlacement2)
 {
     RULECHAIN_ADD(ruleSelectCrossroad);
-    RULECHAIN_ADD(ruleRequiredCrossroadSelected);
+    RULECHAIN_ADD(ruleCrossroadSelected);
     RULECHAIN_ADD(ruleDrawInitialResourceCards);
     RULECHAIN_ADD(ruleBuildSettlement);
     RULECHAIN_ADD(ruleSelectRoadwayAtCrossroad);
-    RULECHAIN_ADD(ruleRequiredRoadwayAtCrossroadSelected);
+    RULECHAIN_ADD(ruleRoadwaySelected);
     RULECHAIN_ADD(ruleBuildRoad);
 
     startRuleChain();
@@ -528,21 +526,6 @@ IMPLEMENT_RULE(ruleCrossroadSelected)
     return false;
 }
 
-// this rule reruns the selection process if no crossroad
-// has been selected
-IMPLEMENT_RULE(ruleRequiredCrossroadSelected)
-{
-    if(!EXECUTE_SUBRULE(ruleCrossroadSelected))
-    {
-        RULECHAIN_ADD_TOP(ruleRequiredCrossroadSelected);
-        RULECHAIN_ADD_TOP(ruleSelectCrossroad);
-        startRuleChain();
-        return true;
-    }
-
-    return true;
-}
-
 // Check if a crossroad can be selected
 // it cannot be selected if it has only water tiles around
 // since these are the standard rules without seafarers
@@ -665,21 +648,6 @@ IMPLEMENT_RULE(ruleRoadwaySelected)
     }
 
     return false;
-}
-
-// this rule reruns the selection process if no valid road
-// has been selected, this is used while placing initial objects
-IMPLEMENT_RULE(ruleRequiredRoadwayAtCrossroadSelected)
-{
-    if(!EXECUTE_SUBRULE(ruleRoadwaySelected))
-    {
-        RULECHAIN_ADD_TOP(ruleRequiredRoadwayAtCrossroadSelected);
-        RULECHAIN_ADD_TOP(ruleSelectRoadwayAtCrossroad);
-        startRuleChain();
-        return true;
-    }
-
-    return true;
 }
 
 IMPLEMENT_RULE(ruleCanSelectRoadway)
