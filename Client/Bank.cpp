@@ -35,3 +35,9 @@ void Bank::registerCard(QString stack, GameCard card, uint totalAmount)
     qDebug() << "Created" << totalAmount << card.name << "cards for" << stack;
 }
 
+GameCardStack* Bank::getCardStack(QString stack)
+{
+    Q_ASSERT(cardStacks.contains(stack));
+    return cardStacks[stack];
+}
+

@@ -44,6 +44,14 @@ typedef struct _RuleChainElement {
     bool suspend;
 } RuleChainElement;
 
+typedef struct _RuleDataElement {
+    uint uintValue;
+    int intValue;
+    bool boolValue;
+    void *pointerValue;
+    QString stringValue;
+} RuleDataElement;
+
 #define REGISTER_RULE(func) \
     if(1) { \
         GameRule rule; \
@@ -52,11 +60,45 @@ typedef struct _RuleChainElement {
     }
 #define DECLARE_RULE(a) bool a(GameRule, Player*);
 #define IMPLEMENT_RULE(a) bool GameRules::a(GameRule rule, Player *player)
-#define EXECUTE_SUBRULE(n) executeRule(n, player)
+#define EXECUTE_SUBRULE(n) executeRule(#n, player)
 #define RULECHAIN_ADD(n) if(1) { \
     RuleChainElement _rce; \
-    _rce.player = player; _rce.name = n; _rce.suspend = false; \
+    _rce.player = player; _rce.name = #n; _rce.suspend = false; \
     ruleChain.push(_rce); }
+
+#define RULEDATA_REQUIRE(n) Q_ASSERT(ruleData.contains(n));
+#define RULEDATA_PUSH_INT(n, i) \
+    if(1) { \
+        RuleDataElement _re = { 0, i, false, NULL, QString() }; \
+        ruleData.insertMulti(n, _re); }
+#define RULEDATA_PUSH_UINT(n, i) \
+    if(1) { \
+        RuleDataElement _re = { i, 0, false, NULL, QString() }; \
+        ruleData.insertMulti(n, _re); }
+#define RULEDATA_PUSH_BOOL(n, b) \
+    if(1) { \
+        RuleDataElement _re = { 0, 0, b, NULL, QString() }; \
+        ruleData.insertMulti(n, _re); }
+#define RULEDATA_PUSH_POINTER(n, p) \
+    if(1) { \
+        RuleDataElement _re = { 0, 0, false, p, QString() }; \
+        ruleData.insertMulti(n, _re); }
+#define RULEDATA_PUSH_STRING(n, s) \
+    if(1) { \
+        RuleDataElement _re = { 0, 0, false, NULL, s }; \
+        ruleData.insertMulti(n, _re); }
+
+#define RULEDATA_POP_INT(n)     ruleData.take(n).intValue
+#define RULEDATA_POP_UINT(n)    ruleData.take(n).uintValue
+#define RULEDATA_POP_BOOL(n)    ruleData.take(n).boolValue
+#define RULEDATA_POP_POINTER(n) ruleData.take(n).pointerValue
+#define RULEDATA_POP_STRING(n)  ruleData.take(n).stringValue
+#define RULEDATA_READ_INT(n)     ruleData.value(n).intValue
+#define RULEDATA_READ_UINT(n)    ruleData.value(n).uintValue
+#define RULEDATA_READ_BOOL(n)    ruleData.value(n).boolValue
+#define RULEDATA_READ_POINTER(n) ruleData.value(n).pointerValue
+#define RULEDATA_READ_STRING(n)  ruleData.value(n).stringValue
+
 
 class GameRules : public QObject, public GameObject
 {
@@ -82,7 +124,14 @@ class GameRules : public QObject, public GameObject
         void suspendRuleChain();
         void ruleChainFinished();
         
+        DECLARE_RULE(ruleInitGame);
+        DECLARE_RULE(ruleInitPlayers);
         DECLARE_RULE(ruleInitGameCards);
+        DECLARE_RULE(ruleInitialPlacement1);
+        DECLARE_RULE(ruleInitialPlacement2);
+        DECLARE_RULE(ruleDrawInitialResourceCards);
+
+        DECLARE_RULE(ruleDrawCardsFromBankStack);
 
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
@@ -108,9 +157,10 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleCanSelectRoadway);
 
         QList<QAction*> actions;
-        QMap<QString, void*> ruleData;
+        QMap<QString, RuleDataElement> ruleData;
         QStack<RuleChainElement> ruleChain;
         bool isRuleChainWaiting;
+        uint ruleChainNesting;
         QMap<QString, GameRule> rules;
         unsigned int winningPoints;
         QAction *tradeAct;

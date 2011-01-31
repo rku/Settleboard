@@ -21,14 +21,34 @@ void GameCardStack::shuffle()
 {
 }
 
-bool GameCardStack::moveFirstCardsToStack(GameCardStack *dStack, uint amount)
+bool GameCardStack::drawFirstCards(GameCardStack *toStack, uint amount)
 {
     for(uint i = 0; i < amount; i++)
     {
         if(cards.isEmpty()) return false;
-        dStack->addCard(cards.takeFirst());
+        toStack->addCard(cards.takeFirst());
     }
 
     return true;
+}
+
+uint GameCardStack::getNumberOfCards(QString type)
+{
+    uint num = 0;
+
+    for(int i = 0; i < cards.size(); i++)
+        if(cards.at(0)->type == type) num++;
+
+    return num;
+}
+
+uint GameCardStack::getNumberOfCards(QString type, QString name)
+{
+    uint num = 0;
+
+    for(int i = 0; i < cards.size(); i++)
+        if(cards.at(0)->type == type && cards.at(0)->name == name) num++;
+
+    return num;
 }
 

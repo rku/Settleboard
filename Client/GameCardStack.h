@@ -15,8 +15,10 @@ class GameCardStack
 
         void addCard(GameCard*);
         void shuffle();
-        bool moveFirstCardsToStack(GameCardStack*, uint amount = 1);
+        bool drawFirstCards(GameCardStack *toStack, uint amount = 1);
         uint getNumberOfCards() { return cards.size(); }
+        uint getNumberOfCards(QString type);
+        uint getNumberOfCards(QString type, QString name);
 
     protected:
         QList<GameCard*> cards;

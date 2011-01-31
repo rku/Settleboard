@@ -17,6 +17,7 @@ class Bank
 
         void registerCardStack(QString stack);
         void registerCard(QString stack, GameCard, uint totalAmount);
+        GameCardStack *getCardStack(QString stack);
 
     protected:
         QMap<QString, GameCardStack*> cardStacks;

@@ -145,8 +145,7 @@ bool Board::handleMouseClick(const QPoint &mousePos)
         return true;
     }
 
-    // execute test rule
-    game->getRules()->executeRule("ruleInitGameCards", game->getPlayers()[0]);
+    game->getRules()->executeRule("ruleInitGame", NULL);
     return true;
 }
 
@@ -165,7 +164,6 @@ bool Board::handleMouseOver(const QPoint &mousePos)
 void Board::setSelectionMode()
 {
     Q_ASSERT(!getIsSelectionModeActive());
-    Q_ASSERT(selectedObject == NULL);
 
     int max = 1;
 

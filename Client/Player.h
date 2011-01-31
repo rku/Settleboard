@@ -46,12 +46,13 @@ class Player : public GameObject
         bool getIsLocal() { return isLocal; }
         void setIsLocal(bool b) { isLocal = b; }
 
-        void addCard(QString &name, uint amount = 1);
-        bool getHasCard(QString &name, uint amount = 1);
-        void removeCard(QString &name, uint amount = 1);
-        const GameCardStack &getCards() { return cards; }
-        void addObjectOfType(QString name);
-        void removeObjectOfType(QString name);
+        GameCardStack *getCardStack() { return &cards; }
+
+        void addObjectOfType(QString type);
+        uint getNumberOfObjectsOfType(QString type);
+        uint getNumberOfUnplacedObjectsOfType(QString type);
+        PlayerObject *getUnplacedObjectOfType(QString type);
+        const QList<PlayerObject*> getObjectsOfType(QString type);
         const QMap<QString, PlayerObject*> &getObjects() { return objects; }
 
     protected:

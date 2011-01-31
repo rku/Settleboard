@@ -40,6 +40,7 @@ class PlayerObject : public GLGameModel
         const QString& getType() { return type; }
         GLGameModelProxy *getBaseObject() { return baseObject; }
         void setBaseObject(GLGameModelProxy *c) { baseObject = c; }
+        bool getIsPlaced() { return (baseObject != NULL); }
         HexTile *getTile() { return tile; }
         void setTile(HexTile *t) { tile = t; }
 

@@ -32,5 +32,56 @@ Player::Player(Game *_game)
 
 Player::~Player()
 {
+    while(!objects.isEmpty()) delete objects.take(objects.keys()[0]);
+}
+
+void Player::addObjectOfType(QString type)
+{
+    PlayerObject *newObj = new PlayerObject(game, this, type);
+
+    Q_ASSERT(newObj != NULL);
+    objects.insertMulti(type, newObj);
+
+    qDebug() << "Added" << type << "object to player" << name;
+}
+
+uint Player::getNumberOfObjectsOfType(QString type)
+{
+    Q_ASSERT(objects.contains(type));
+    return objects.count(type);
+}
+
+uint Player::getNumberOfUnplacedObjectsOfType(QString type)
+{
+    uint num = 0;
+
+    Q_ASSERT(objects.contains(type));
+    QList<PlayerObject*> objs = objects.values(type);
+
+    for(int i = 0; i < objs.size(); i++)
+    {
+        if(!objs.at(i)->getIsPlaced()) num++;
+    }
+
+    return num;
+}
+
+PlayerObject *Player::getUnplacedObjectOfType(QString type)
+{
+    Q_ASSERT(objects.contains(type));
+    QList<PlayerObject*> objs = objects.values(type);
+
+    for(int i = 0; i < objs.size(); i++)
+    {
+        if(!objs.at(i)->getIsPlaced()) return objs.at(i);
+    }
+
+    return NULL;
+}
+
+const QList<PlayerObject*> Player::getObjectsOfType(QString type)
+{
+    Q_ASSERT(objects.contains(type));
+    return objects.values(type);
 }
 
