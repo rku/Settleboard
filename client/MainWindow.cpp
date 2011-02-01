@@ -27,6 +27,8 @@
 #include "GameConnector.h"
 #include "PrefsForm.h"
 
+#include "ui_chatwidgetform.h"
+
 MainWindow::MainWindow()
 {
     uiStyle = new UIStyle();
@@ -45,6 +47,8 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
     delete controlPanel;
+    delete chatPanel;
+    delete gameInfoPanel;
 }
 
 void MainWindow::initGame()
@@ -125,12 +129,33 @@ void MainWindow::createToolBars()
 
 void MainWindow::createDockWidgets()
 {
-    controlPanel = new QDockWidget("Control Panel", this);
-    controlPanel->setAllowedAreas(Qt::BottomDockWidgetArea);
-    controlPanel->setMinimumHeight(150);
-    controlPanel->setTitleBarWidget(0);
-    controlPanel->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
-    addDockWidget(Qt::BottomDockWidgetArea, controlPanel);
+    controlPanel = new QDockWidget("Controls", this);
+    controlPanel->setAllowedAreas(Qt::NoDockWidgetArea);
+    controlPanel->setMinimumHeight(40);
+    controlPanel->setMaximumHeight(40);
+    controlPanel->setFloating(true);
+    controlPanel->setFeatures(QDockWidget::DockWidgetMovable
+        | QDockWidget::DockWidgetFloatable);
+    addDockWidget(Qt::NoDockWidgetArea, controlPanel);
+
+    gameInfoPanel = new QDockWidget("Game Info", this);
+    gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea);
+    gameInfoPanel->setMinimumHeight(150);
+    gameInfoPanel->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
+
+    chatPanel = new QDockWidget("Chat", this);
+    chatPanel->setAllowedAreas(Qt::RightDockWidgetArea);
+    chatPanel->setMinimumHeight(150);
+    chatPanel->setMinimumWidth(300);
+    chatPanel->setMaximumWidth(500);
+    chatPanel->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    addDockWidget(Qt::RightDockWidgetArea, chatPanel);
+
+    QWidget *widget = new QWidget;
+    Ui::ChatWidgetForm ui;
+    ui.setupUi(widget);
+    chatPanel->setWidget(widget);
 }
 
 void MainWindow::createStatusBar()

@@ -10,7 +10,9 @@ RCC_DIR = build/
 QT += network opengl
 
 FORMS = client/ui/connectorform.ui \
-        client/ui/prefsform.ui
+        client/ui/prefsform.ui \
+        client/ui/tradeform.ui \
+        client/ui/chatwidgetform.ui
 
 HEADERS = client/GLWidget.h \
           client/GLTypes.h \
