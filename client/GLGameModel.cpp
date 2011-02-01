@@ -158,7 +158,7 @@ void GLGameModel::setupLightingParameters()
     }
     else
     {
-        GLfloat gray_color[] = { 0.2, 0.2, 0.2, 1.0 };
+        GLfloat gray_color[] = { 0.5, 0.5, 0.5, 1.0 };
         glLightfv(GL_LIGHT0, GL_AMBIENT, gray_color);
         GLfloat black_color[] = { 0.0, 0.0 , 0.0, 1.0 };
         glLightfv(GL_LIGHT0, GL_DIFFUSE, black_color);

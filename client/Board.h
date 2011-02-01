@@ -23,6 +23,7 @@
 
 #include <QtOpenGL>
 #include <QList>
+#include <QPainter>
 
 #include "GameObject.h"
 #include "HexTile.h"

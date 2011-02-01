@@ -22,7 +22,7 @@
 #include <QtOpenGL>
 
 #include "GLWidget.h"
-
+#include "GameUI.h"
 #include "Game.h"
 
 #define CAM_X_ROT_DELTA         0.006

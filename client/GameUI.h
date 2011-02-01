@@ -21,6 +21,8 @@
 #ifndef GAMEUI_H
 #define GAMEUI_H
 
+#include <QPainter>
+
 #include "GameObject.h"
 
 class Game;
@@ -32,6 +34,9 @@ class GameUI : public GameObject
         ~GameUI();
 
         void render();
+
+    protected:
+        void renderUserActionFrame();
 };
 
 #endif

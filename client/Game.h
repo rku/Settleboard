@@ -42,6 +42,9 @@ class Game
         void setGLWidget(GLWidget *w) { glWidget = w; }
         GLWidget* getGLWidget() { return glWidget; }
 
+        void setMainWindow(QMainWindow *w) { mainWindow = w; }
+        QMainWindow* getMainWindow() { return mainWindow; }
+
         void setRules(GameRules *r) { rules = r; }
         GameRules* getRules() { return rules; }
 
@@ -55,6 +58,7 @@ class Game
         Bank *getBank() { return bank; }
 
     protected:
+        QMainWindow *mainWindow;
         GLWidget *glWidget;
         GameRules *rules;
         TextureManager *textureManager;

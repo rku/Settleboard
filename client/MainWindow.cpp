@@ -42,6 +42,12 @@ MainWindow::MainWindow()
     initGame();
 }
 
+MainWindow::~MainWindow()
+{
+    /*delete controlPanel;
+    delete gamePanel;*/
+}
+
 void MainWindow::initGame()
 {
     GLWidget *glWidget;
@@ -50,6 +56,7 @@ void MainWindow::initGame()
     glWidget = new GLWidget(game);
     setCentralWidget(glWidget);
     game->setGLWidget(glWidget);
+    game->setMainWindow(this);
 }
 
 void MainWindow::newGame()
@@ -119,6 +126,21 @@ void MainWindow::createToolBars()
 
 void MainWindow::createDockWidgets()
 {
+    /*controlPanel = new QDockWidget("Control Panel", this);
+    controlPanel->setAllowedAreas(Qt::BottomDockWidgetArea);
+    controlPanel->setMinimumHeight(150);
+    controlPanel->setTitleBarWidget(0);
+    controlPanel->setFeatures(QDockWidget::DockWidgetFloatable |
+        QDockWidget::DockWidgetMovable);
+    addDockWidget(Qt::BottomDockWidgetArea, controlPanel);
+
+    gamePanel = new QDockWidget("Game Panel", this);
+    gamePanel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    gamePanel->setMinimumWidth(200);
+    gamePanel->setTitleBarWidget(0);
+    gamePanel->setFeatures(QDockWidget::DockWidgetFloatable |
+        QDockWidget::DockWidgetMovable);
+    addDockWidget(Qt::LeftDockWidgetArea, gamePanel);*/
 }
 
 void MainWindow::createStatusBar()

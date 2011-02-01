@@ -19,6 +19,7 @@
  */
 
 #include "GameUI.h"
+#include "GLWidget.h"
 #include "Game.h"
 
 GameUI::GameUI(Game* _game) : GameObject(_game)
@@ -26,6 +27,10 @@ GameUI::GameUI(Game* _game) : GameObject(_game)
 }
 
 GameUI::~GameUI()
+{
+}
+
+void GameUI::renderUserActionFrame()
 {
 }
 

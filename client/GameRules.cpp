@@ -254,7 +254,18 @@ IMPLEMENT_RULE(ruleBeginTurn)
 
 IMPLEMENT_RULE(ruleEndTurn)
 {
-    return true;
+    QList<Player*> players = game->getPlayers();
+    QList<Player*>::iterator i;
+    Q_ASSERT(players.contains(player));
+
+    i += players.indexOf(player) + 1;
+
+    if(i == players.end())
+    { player = players.at(0); }
+    else
+    { player = *i; }
+
+    return EXECUTE_SUBRULE(ruleBeginTurn);
 }
 
 IMPLEMENT_RULE(ruleDrawInitialResourceCards)

@@ -36,6 +36,7 @@ class MainWindow : public QMainWindow
 
     public:
         MainWindow();
+        ~MainWindow();
 
         void initGame();
         void newGame();
@@ -53,6 +54,8 @@ class MainWindow : public QMainWindow
         void createDockWidgets();
         void createStatusBar();
 
+        QDockWidget *controlPanel;
+        QDockWidget *gamePanel;
         Game *game;
         GLWidget *glWidget;
         GameConnector *gameConnector;
