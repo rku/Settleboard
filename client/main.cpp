@@ -19,12 +19,33 @@
  */
 
 #include <QApplication>
+#include <QFile>
+#include <QTextStream>
+#include <QtDebug>
 
+#include "FileManager.h"
 #include "MainWindow.h"
+
+// Load stylesheet from file
+void loadStyleSheet()
+{
+    QFile data(FileManager::getPathOfStyleSheet("Default"));
+    QString style;
+
+    if(data.open(QFile::ReadOnly))
+    {
+        QTextStream styleIn(&data);
+        style = styleIn.readAll();
+        data.close();
+        qApp->setStyleSheet(style);
+    }
+    else qDebug() << "Cannot load stylesheet" << data.fileName();
+}
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    loadStyleSheet();
     MainWindow mainWindow;
     mainWindow.show();
     return app.exec();
