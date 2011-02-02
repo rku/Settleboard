@@ -54,7 +54,7 @@ class MainWindow : public QMainWindow
         void createDockWidgets();
         void createStatusBar();
 
-        QDockWidget *controlPanel;
+        QDockWidget *playerPanel;
         QDockWidget *chatPanel;
         QDockWidget *gameInfoPanel;
         Game *game;

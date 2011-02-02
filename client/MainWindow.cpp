@@ -46,7 +46,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-    delete controlPanel;
+    delete playerPanel;
     delete chatPanel;
     delete gameInfoPanel;
 }
@@ -129,27 +129,25 @@ void MainWindow::createToolBars()
 
 void MainWindow::createDockWidgets()
 {
-    controlPanel = new QDockWidget("Controls", this);
-    controlPanel->setAllowedAreas(Qt::NoDockWidgetArea);
-    controlPanel->setMinimumHeight(40);
-    controlPanel->setMaximumHeight(40);
-    controlPanel->setFloating(true);
-    controlPanel->setFeatures(QDockWidget::DockWidgetMovable
-        | QDockWidget::DockWidgetFloatable);
-    addDockWidget(Qt::NoDockWidgetArea, controlPanel);
+    playerPanel = new QDockWidget("Player", this);
+    playerPanel->setMinimumHeight(150);
+    playerPanel->setMaximumHeight(150);
+    playerPanel->setFixedWidth(150);
+    playerPanel->setFloating(false);
+    playerPanel->setFeatures(QDockWidget::DockWidgetMovable);
+    addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
 
     gameInfoPanel = new QDockWidget("Game Info", this);
-    gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea);
+    //gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea);
     gameInfoPanel->setMinimumHeight(150);
-    gameInfoPanel->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    gameInfoPanel->setFeatures(QDockWidget::DockWidgetMovable);
     addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
 
     chatPanel = new QDockWidget("Chat", this);
-    chatPanel->setAllowedAreas(Qt::RightDockWidgetArea);
     chatPanel->setMinimumHeight(150);
-    chatPanel->setMinimumWidth(300);
-    chatPanel->setMaximumWidth(500);
-    chatPanel->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    chatPanel->setMinimumWidth(150);
+    chatPanel->setMaximumWidth(400);
+    //chatPanel->setFeatures(QDockWidget::DockWidgetMovable);
     addDockWidget(Qt::RightDockWidgetArea, chatPanel);
 
     QWidget *widget = new QWidget;
