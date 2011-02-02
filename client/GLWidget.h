@@ -37,6 +37,9 @@ class GLWidget : public QGLWidget, GameObject
         GLWidget(Game *_game, QWidget *parent = 0);
         ~GLWidget();
 
+        void begin2DMode();
+        void end2DMode();
+
         QSize minimumSizeHint() const;
         QSize sizeHint() const;
         void beginGLSelection(QPoint);

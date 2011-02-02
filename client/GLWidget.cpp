@@ -113,6 +113,25 @@ void GLWidget::paintGL()
 
     game->render();
 }
+    
+void GLWidget::begin2DMode()
+{
+    glMatrixMode( GL_PROJECTION );
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho( 0.0, width(), 0.0, height(), -1.0, 1.0 );
+    glMatrixMode( GL_MODELVIEW );
+    glPushMatrix();
+    glLoadIdentity();
+}
+
+void GLWidget::end2DMode()
+{
+    glMatrixMode( GL_PROJECTION );
+    glPopMatrix();
+    glMatrixMode( GL_MODELVIEW );
+    glPopMatrix();
+}
 
 void GLWidget::updateCameraPos()
 {

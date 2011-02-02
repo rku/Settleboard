@@ -1,21 +1,19 @@
 
 QGLWidget {
-    background: #808080;
 }
 
 QMainWindow, QDockWidget {
-    color: black;
+    color: #101010;
 }
 
 QStatusBar {
-    background: #afafaf;
 }
 
 QTextEdit, QLineEdit {
-    background: white;
+    background: #dfdfdf;
     color: black;
     border-style: outset;
-    border-color: black;
+    border-color: #5f5f5f;
     border-width: 2px;
     border-radius: 5px;
 }

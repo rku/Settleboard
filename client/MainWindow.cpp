@@ -27,8 +27,6 @@
 #include "GameConnector.h"
 #include "PrefsForm.h"
 
-#include "ui_chatwidgetform.h"
-
 MainWindow::MainWindow()
 {
     uiStyle = new UIStyle();
@@ -49,6 +47,7 @@ MainWindow::~MainWindow()
     delete playerPanel;
     delete chatPanel;
     delete gameInfoPanel;
+    delete controlPanel;
 }
 
 void MainWindow::initGame()
@@ -129,36 +128,42 @@ void MainWindow::createToolBars()
 
 void MainWindow::createDockWidgets()
 {
+    setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+    setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+    setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
     playerPanel = new QDockWidget("Player", this);
-    playerPanel->setMinimumHeight(150);
-    playerPanel->setMaximumHeight(150);
-    playerPanel->setFixedWidth(150);
+    playerPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    playerPanel->setFixedWidth(200);
     playerPanel->setFloating(false);
     playerPanel->setFeatures(QDockWidget::DockWidgetMovable);
     addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
 
     gameInfoPanel = new QDockWidget("Game Info", this);
-    //gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea);
+    gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     gameInfoPanel->setMinimumHeight(150);
     gameInfoPanel->setFeatures(QDockWidget::DockWidgetMovable);
     addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
 
     chatPanel = new QDockWidget("Chat", this);
+    chatPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     chatPanel->setMinimumHeight(150);
     chatPanel->setMinimumWidth(150);
     chatPanel->setMaximumWidth(400);
-    //chatPanel->setFeatures(QDockWidget::DockWidgetMovable);
+    chatPanel->setFeatures(QDockWidget::DockWidgetMovable);
     addDockWidget(Qt::RightDockWidgetArea, chatPanel);
 
-    QWidget *widget = new QWidget;
-    Ui::ChatWidgetForm ui;
-    ui.setupUi(widget);
-    chatPanel->setWidget(widget);
+    controlPanel = new QDockWidget("", this);
+    controlPanel->setFixedHeight(60);
+    controlPanel->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
+    controlPanel->setAllowedAreas(Qt::BottomDockWidgetArea);
+    addDockWidget(Qt::BottomDockWidgetArea, controlPanel);
 }
 
 void MainWindow::createStatusBar()
 {
-    statusBar();
+    //statusBar();
 }
 
 void MainWindow::showConnector()

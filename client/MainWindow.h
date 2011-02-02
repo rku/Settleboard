@@ -57,6 +57,7 @@ class MainWindow : public QMainWindow
         QDockWidget *playerPanel;
         QDockWidget *chatPanel;
         QDockWidget *gameInfoPanel;
+        QDockWidget *controlPanel;
         Game *game;
         GLWidget *glWidget;
         GameConnector *gameConnector;
