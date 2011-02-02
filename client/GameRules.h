@@ -146,6 +146,10 @@ class GameRules : public QObject, public GameObject
 
         DECLARE_RULE(ruleDrawCardsFromBankStack);
 
+        DECLARE_RULE(ruleInitPlayerPanel);
+        DECLARE_RULE(ruleUpdatePlayerPanel);
+        DECLARE_RULE(ruleUpdateInterface);
+
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);

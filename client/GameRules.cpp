@@ -47,6 +47,10 @@ GameRules::GameRules(Game *_game)
 
     REGISTER_RULE(ruleDrawCardsFromBankStack);
 
+    REGISTER_RULE(ruleInitPlayerPanel);
+    REGISTER_RULE(ruleUpdatePlayerPanel);
+    REGISTER_RULE(ruleUpdateInterface);
+
     REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
@@ -198,6 +202,7 @@ IMPLEMENT_RULE(ruleInitGame)
 
     RULECHAIN_ADD(ruleInitGameCards);
     RULECHAIN_ADD(ruleInitPlayers);
+    RULECHAIN_ADD(ruleInitPlayerPanel);
     RULECHAIN_ADD(ruleInitialPlacement);
     startRuleChain();
 
@@ -314,7 +319,9 @@ IMPLEMENT_RULE(ruleDrawCardsFromBankStack)
     qDebug() << "Player" << player->getName() << "draws" << amount
         << "cards from bank stack" << stackName;
 
-    return stack->drawFirstCards(player->getCardStack(), amount);
+    bool r = stack->drawFirstCards(player->getCardStack(), amount);
+    EXECUTE_SUBRULE(ruleUpdateInterface);
+    return r;
 }
 
 IMPLEMENT_RULE(ruleInitPlayers)
@@ -363,12 +370,54 @@ IMPLEMENT_RULE(ruleInitGameCards)
         "rulePlayBuildRoadCard"), 4);
     bank->getCardStack("Development")->shuffle();
 
-    game->getMainWindow()->getPlayerPanel()->registerPlayerInfo("Roads");
-    game->getMainWindow()->getPlayerPanel()->registerPlayerInfo("Settlements");
-    game->getMainWindow()->getPlayerPanel()->registerPlayerInfo("Cities");
+    return true;
+}
 
-    game->getMainWindow()->getPlayerPanel()->updatePlayerInfo(player, "Roads", 20);
+IMPLEMENT_RULE(ruleInitPlayerPanel)
+{
+    PlayerPanel *panel = game->getMainWindow()->getPlayerPanel();
 
+    panel->clear();
+    panel->registerPlayerInfo("Roads");
+    panel->registerPlayerInfo("Settlements");
+    panel->registerPlayerInfo("Cities");
+    panel->registerPlayerInfo("Wheat");
+    panel->registerPlayerInfo("Clay");
+    panel->registerPlayerInfo("Ore");
+    panel->registerPlayerInfo("Sheep");
+    panel->registerPlayerInfo("Lumber");
+
+    EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
+    return true;
+}
+
+IMPLEMENT_RULE(ruleUpdatePlayerPanel)
+{
+    PlayerPanel *panel = game->getMainWindow()->getPlayerPanel();
+
+#define PP_UPDATE_OBJ(t,i) if(1) { \
+    uint n = player->getNumberOfUnplacedObjectsOfType(t); \
+    panel->updatePlayerInfo(player, i, n); }
+#define PP_UPDATE_RES(t) if(1) { \
+    uint n = player->getCardStack()->getNumberOfCards("Resource", t); \
+    panel->updatePlayerInfo(player, t, n); }
+
+    PP_UPDATE_OBJ("Road", "Roads");
+    PP_UPDATE_OBJ("Settlement", "Settlements");
+    PP_UPDATE_OBJ("City", "Cities");
+
+    PP_UPDATE_RES("Wheat");
+    PP_UPDATE_RES("Clay");
+    PP_UPDATE_RES("Ore");
+    PP_UPDATE_RES("Sheep");
+    PP_UPDATE_RES("Lumber");
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleUpdateInterface)
+{
+    EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
     return true;
 }
 
@@ -402,6 +451,8 @@ IMPLEMENT_RULE(ruleBuildCity)
         PlayerObject *bld = player->getUnplacedObjectOfType("City");
         bld->setScale(0.7);
         cr->placePlayerObject(bld);
+
+        EXECUTE_SUBRULE(ruleUpdateInterface);
         return true;
     }
 
@@ -482,6 +533,7 @@ IMPLEMENT_RULE(ruleBuildSettlement)
     bld->setScale(0.3);
     cr->placePlayerObject(bld);
 
+    EXECUTE_SUBRULE(ruleUpdateInterface);
     return true;
 }
 
@@ -592,10 +644,11 @@ IMPLEMENT_RULE(ruleBuildRoad)
     RULEDATA_REQUIRE("Roadway");
 
     Roadway *r = (Roadway*)RULEDATA_POP_POINTER("Roadway");
-    PlayerObject *road = new PlayerObject(game, player, "Road");
+    PlayerObject *road = player->getUnplacedObjectOfType("Road");
     road->setScale(0.3);
     r->placePlayerObject(road);
     
+    EXECUTE_SUBRULE(ruleUpdateInterface);
     return true;
 }
 

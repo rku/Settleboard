@@ -47,7 +47,7 @@ uint GameCardStack::getNumberOfCards(QString type, QString name)
     uint num = 0;
 
     for(int i = 0; i < cards.size(); i++)
-        if(cards.at(0)->type == type && cards.at(0)->name == name) num++;
+        if(cards.at(i)->type == type && cards.at(i)->name == name) num++;
 
     return num;
 }
