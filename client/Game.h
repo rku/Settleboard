@@ -30,6 +30,7 @@ class GameUI;
 class Player;
 class OBJGLLoader;
 class Bank;
+class MainWindow;
 
 class Game
 {
@@ -42,8 +43,8 @@ class Game
         void setGLWidget(GLWidget *w) { glWidget = w; }
         GLWidget* getGLWidget() { return glWidget; }
 
-        void setMainWindow(QMainWindow *w) { mainWindow = w; }
-        QMainWindow* getMainWindow() { return mainWindow; }
+        void setMainWindow(MainWindow *w) { mainWindow = w; }
+        MainWindow* getMainWindow() { return mainWindow; }
 
         void setRules(GameRules *r) { rules = r; }
         GameRules* getRules() { return rules; }
@@ -58,7 +59,7 @@ class Game
         Bank *getBank() { return bank; }
 
     protected:
-        QMainWindow *mainWindow;
+        MainWindow *mainWindow;
         GLWidget *glWidget;
         GameRules *rules;
         TextureManager *textureManager;

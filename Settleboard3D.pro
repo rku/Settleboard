@@ -38,7 +38,9 @@ HEADERS = client/GLWidget.h \
           client/Roadway.h \
           client/GameCard.h \
           client/GameCardStack.h \
-          client/Bank.h
+          client/Bank.h \
+          client/ControlPanel.h \
+          client/PlayerPanel.h
 
 SOURCES = client/GLWidget.cpp \
           client/Game.cpp \
@@ -63,5 +65,7 @@ SOURCES = client/GLWidget.cpp \
           client/Crossroad.cpp \
           client/Roadway.cpp \
           client/Bank.cpp \
-          client/GameCardStack.cpp
+          client/GameCardStack.cpp \
+          client/ControlPanel.cpp \
+          client/PlayerPanel.cpp
 

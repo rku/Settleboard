@@ -23,12 +23,15 @@
 
 #include <QMainWindow>
 #include <QWidget>
+#include <QDockWidget>
 
 class GLWidget;
 class GameConnector;
 class PrefsForm;
 class UIStyle;
 class Game;
+class ControlPanel;
+class PlayerPanel;
 
 class MainWindow : public QMainWindow
 {
@@ -40,6 +43,11 @@ class MainWindow : public QMainWindow
 
         void initGame();
         void newGame();
+
+        ControlPanel *getControlPanel()
+            { return (ControlPanel*)controlPanel->widget(); }
+        PlayerPanel *getPlayerPanel()
+            { return (PlayerPanel*)playerPanel->widget(); }
 
     private slots:
         void showConnector();

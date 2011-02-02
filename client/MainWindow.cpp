@@ -26,6 +26,8 @@
 #include "Game.h"
 #include "GameConnector.h"
 #include "PrefsForm.h"
+#include "ControlPanel.h"
+#include "PlayerPanel.h"
 
 MainWindow::MainWindow()
 {
@@ -138,6 +140,7 @@ void MainWindow::createDockWidgets()
     playerPanel->setFixedWidth(200);
     playerPanel->setFloating(false);
     playerPanel->setFeatures(QDockWidget::DockWidgetMovable);
+    playerPanel->setWidget(new PlayerPanel(this));
     addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
 
     gameInfoPanel = new QDockWidget("Game Info", this);
@@ -156,9 +159,12 @@ void MainWindow::createDockWidgets()
 
     controlPanel = new QDockWidget("", this);
     controlPanel->setFixedHeight(60);
+    controlPanel->setMaximumHeight(60);
+    controlPanel->setMinimumHeight(60);
     controlPanel->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
     controlPanel->setAllowedAreas(Qt::BottomDockWidgetArea);
     addDockWidget(Qt::BottomDockWidgetArea, controlPanel);
+    controlPanel->setWidget(new ControlPanel(this));
 }
 
 void MainWindow::createStatusBar()

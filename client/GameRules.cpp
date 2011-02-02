@@ -25,6 +25,8 @@
 #include "Roadway.h"
 #include "PlayerObject.h"
 #include "Bank.h"
+#include "MainWindow.h"
+#include "PlayerPanel.h"
 #include "Game.h"
 
 GameRules::GameRules(Game *_game)
@@ -360,6 +362,12 @@ IMPLEMENT_RULE(ruleInitGameCards)
         "Playing this card will allow you to place two roads for free.",
         "rulePlayBuildRoadCard"), 4);
     bank->getCardStack("Development")->shuffle();
+
+    game->getMainWindow()->getPlayerPanel()->registerPlayerInfo("Roads");
+    game->getMainWindow()->getPlayerPanel()->registerPlayerInfo("Settlements");
+    game->getMainWindow()->getPlayerPanel()->registerPlayerInfo("Cities");
+
+    game->getMainWindow()->getPlayerPanel()->updatePlayerInfo(player, "Roads", 20);
 
     return true;
 }
