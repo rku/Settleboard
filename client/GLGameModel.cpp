@@ -56,7 +56,7 @@ GLGameModel::~GLGameModel()
 
 void GLGameModel::create()
 {
-    GLuint currentTex = -1;
+    GLuint currentTex = 65535;
     TextureManager *tm = game->getTextureManager();
 
     glNewList(displayListID, GL_COMPILE);
