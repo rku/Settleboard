@@ -32,6 +32,7 @@ class UIStyle;
 class Game;
 class ControlPanel;
 class PlayerPanel;
+class ChatPanel;
 
 class MainWindow : public QMainWindow
 {
@@ -48,6 +49,8 @@ class MainWindow : public QMainWindow
             { return (ControlPanel*)controlPanel->widget(); }
         PlayerPanel *getPlayerPanel()
             { return (PlayerPanel*)playerPanel->widget(); }
+        ChatPanel* getChatPanel()
+            { return (ChatPanel*)chatPanel->widget(); }
 
     private slots:
         void showConnector();

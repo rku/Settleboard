@@ -1,5 +1,6 @@
 
 #include "Player.h"
+#include "FileManager.h"
 #include "PlayerPanel.h"
 
 PlayerPanel::PlayerPanel(QWidget *parent) : QWidget(parent)
@@ -13,76 +14,70 @@ PlayerPanel::~PlayerPanel()
 {
 }
 
-void PlayerPanel::registerPlayerInfo(QString infoName)
+QGroupBox* PlayerPanel::getPlayerBox(Player *player)
 {
-    Q_ASSERT(!playerInfos.contains(infoName));
-    playerInfos.append(infoName);
+    if(playerBoxes.contains(player)) return playerBoxes.value(player);
 
-    updatePlayerInfos();
+    // create a new one
+    QGroupBox *box = new QGroupBox(player->getName(), this);
+    QString color = QString("::title { color: %1; }");
+    box->setStyleSheet(color.arg(player->getColor().name()));
+
+    QVBoxLayout *l = (QVBoxLayout*)layout();
+    Q_ASSERT(l->count() > 0); // we expect at least a stretcher
+    l->insertWidget(l->count() - 1, box);
+    box->setLayout(new QGridLayout());
+    playerBoxes.insert(player, box);
+
+    return box;
 }
 
-void PlayerPanel::updatePlayerInfo(Player *player, QString infoName, uint value)
+void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
+    const QString description, const QString iconFile)
 {
-    Q_ASSERT(playerInfos.contains(infoName));
+    QGroupBox *box = getPlayerBox(player);
+    QGridLayout *gl = (QGridLayout*)box->layout();
 
-    QGroupBox *playerBox = NULL;
-    QVBoxLayout *layout = (QVBoxLayout*)this->layout();
-    QGridLayout *boxLayout;
+    // the grid always has one row, even if there's nothing inside
+    int rows = (gl->itemAt(0) != NULL) ? gl->rowCount() : 0;
 
-    for(int i = 0; i < playerBoxes.size(); i++)
-    {
-        if(playerBoxes.at(i)->title() == player->getName())
-        {
-            playerBox = playerBoxes.at(i);
-            break;
-        }
-    }
+    // add new row for the registered info value
+    QPixmap icon(FileManager::getPathOfImage(iconFile));
+    QLabel *textLabel = new QLabel(description, box);
+    QLabel *iconLabel = new QLabel(box);
+    if(!icon.isNull()) iconLabel->setPixmap(icon.scaledToHeight(12));
+    QLabel *valueLabel = new QLabel("0", box);
 
-    if(playerBox == NULL)
-    {
-        playerBox = new QGroupBox(player->getName(), this);
-        playerBox->setLayout(new QGridLayout());
-        playerBoxes.append(playerBox);
-        updatePlayerInfos();
-        layout->insertWidget(0, playerBox);
-    }
+    gl->addWidget(iconLabel,  rows, 0, Qt::AlignLeft);
+    gl->addWidget(textLabel,  rows, 1, Qt::AlignLeft);
+    gl->addWidget(valueLabel, rows, 2, Qt::AlignRight);
 
-    boxLayout = (QGridLayout*)playerBox->layout();
-    // remember: the last item is the stretch item!
-    int row = playerInfos.indexOf(infoName);
-    if(row >= 0)
-    {
-        QLayoutItem *item = boxLayout->itemAtPosition(row, 1);
-        Q_ASSERT(item != NULL);
-        ((QLabel*)item->widget())->setText(QString("%1").arg(value));
-    }
+    playerInfos.insertMulti(player, infoName);
 }
 
-void PlayerPanel::updatePlayerInfos()
+void PlayerPanel::updatePlayerInfo(Player *player, const QString infoName, int value)
 {
-    for(int i = 0; i < playerBoxes.size(); i++)
-    {
-        QGroupBox *box = playerBoxes.at(i);
-        QGridLayout *layout = (QGridLayout*)box->layout();
-        int rows = (layout->itemAt(0)!=NULL) ? layout->rowCount() : 0;
-        int diff = playerInfos.size() - rows;
+    QGroupBox *box = getPlayerBox(player);
+    QGridLayout *gl = (QGridLayout*)box->layout();
 
-        for(; diff > 0; diff--)
-        {
-            QLabel *descLabel = new QLabel(playerInfos.at(rows) + ":", box);
-            QLabel *valueLabel = new QLabel("0", box);
-            layout->addWidget(descLabel, rows, 0, Qt::AlignLeft);
-            layout->addWidget(valueLabel, rows, 1, Qt::AlignRight);
-            rows++;
-        }
-    }
+    // insert objects info
+    Q_ASSERT(playerInfos.contains(player));
+    Q_ASSERT(playerInfos.values(player).contains(infoName));
+
+    QList<QString> values = playerInfos.values(player);
+    int row = values.size() - values.indexOf(infoName) - 1;
+    Q_ASSERT(gl->itemAtPosition(row, 2) != NULL);
+    QLabel *label = (QLabel*)gl->itemAtPosition(row, 2)->widget();
+    label->setText(QString("%1").arg(value));
 }
 
 void PlayerPanel::clear()
 {
+    playerInfos.clear();
+
     while(!playerBoxes.isEmpty())
     {
-        QGroupBox *box = playerBoxes.takeFirst();
+        QGroupBox *box = playerBoxes.take(playerBoxes.keys().at(0));
 
         layout()->removeWidget(box);
         delete box;

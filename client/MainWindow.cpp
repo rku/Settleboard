@@ -28,6 +28,7 @@
 #include "PrefsForm.h"
 #include "ControlPanel.h"
 #include "PlayerPanel.h"
+#include "ChatPanel.h"
 
 MainWindow::MainWindow()
 {
@@ -135,12 +136,12 @@ void MainWindow::createDockWidgets()
     setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-    playerPanel = new QDockWidget("Player", this);
+    playerPanel = new QDockWidget("", this);
     playerPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     playerPanel->setFixedWidth(200);
     playerPanel->setFloating(false);
     playerPanel->setFeatures(QDockWidget::DockWidgetMovable);
-    playerPanel->setWidget(new PlayerPanel(this));
+    playerPanel->setWidget(new PlayerPanel(playerPanel));
     addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
 
     gameInfoPanel = new QDockWidget("Game Info", this);
@@ -155,6 +156,7 @@ void MainWindow::createDockWidgets()
     chatPanel->setMinimumWidth(150);
     chatPanel->setMaximumWidth(400);
     chatPanel->setFeatures(QDockWidget::DockWidgetMovable);
+    chatPanel->setWidget(new ChatPanel(chatPanel));
     addDockWidget(Qt::RightDockWidgetArea, chatPanel);
 
     controlPanel = new QDockWidget("", this);
@@ -164,7 +166,7 @@ void MainWindow::createDockWidgets()
     controlPanel->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
     controlPanel->setAllowedAreas(Qt::BottomDockWidgetArea);
     addDockWidget(Qt::BottomDockWidgetArea, controlPanel);
-    controlPanel->setWidget(new ControlPanel(this));
+    controlPanel->setWidget(new ControlPanel(controlPanel));
 }
 
 void MainWindow::createStatusBar()

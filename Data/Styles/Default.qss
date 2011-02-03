@@ -1,17 +1,23 @@
 
 QGLWidget {
+    background: black;
 }
 
 QMainWindow, QDockWidget {
-    color: #101010;
+    color: white;
+    background: black;
+}
+
+QDockWidget::title {
 }
 
 PlayerPanel QGroupBox {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #E0E0E0, stop: 1 #A9A9A9);
+                                      stop: 0 #0e0e0e, stop: 1 #3a3a3a);
     border: 2px solid gray;
     border-radius: 5px;
     margin-top: 1ex;
+    color: white
  }
 
 PlayerPanel QGroupBox::title {
@@ -23,6 +29,7 @@ PlayerPanel QGroupBox::title {
 }
 
 PlayerPanel QGroupBox QLabel {
+    color: white;
     font-size: 12px;
 }
 
@@ -30,10 +37,10 @@ QStatusBar {
 }
 
 QTextEdit, QLineEdit {
-    background: #dfdfdf;
-    color: black;
+    background: #050505;
+    color: gray;
     border-style: outset;
-    border-color: #5f5f5f;
+    border-color: #3f3f3f;
     border-width: 2px;
     border-radius: 5px;
 }

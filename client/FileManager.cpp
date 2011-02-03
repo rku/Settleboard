@@ -1,6 +1,11 @@
 
 #include "FileManager.h"
 
+const QString FileManager::getPathOfImage(const QString &filename)
+{
+    return getPathOfResource("Images", filename);
+}
+
 const QString FileManager::getPathOfStyleSheet(const QString &name)
 {
     return getPathOfResource("Styles", name, "qss");

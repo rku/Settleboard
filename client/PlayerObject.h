@@ -49,6 +49,7 @@ class PlayerObject : public GLGameModel
         Player *owner;
         GLGameModelProxy *baseObject;
         HexTile *tile;
+        QPixmap *icon;
 };
 
 #endif

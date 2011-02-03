@@ -354,20 +354,16 @@ IMPLEMENT_RULE(ruleInitGameCards)
     bank->registerCardStack("Lumber");
     bank->registerCardStack("Clay");
 
-    bank->registerCard("Wheat",  GameCard("Resource", "Wheat",  "Wheat" ), 20);
-    bank->registerCard("Sheep",  GameCard("Resource", "Sheep",  "Sheep" ), 20);
-    bank->registerCard("Ore",    GameCard("Resource", "Ore",    "Ore"   ), 20);
-    bank->registerCard("Lumber", GameCard("Resource", "Lumber", "Lumber"), 20);
-    bank->registerCard("Clay",   GameCard("Resource", "Clay",   "Clay"  ), 20);
+    bank->registerCard("Wheat",  GAMECARD_WHEAT,  20);
+    bank->registerCard("Sheep",  GAMECARD_SHEEP,  20);
+    bank->registerCard("Ore",    GAMECARD_ORE,    20);
+    bank->registerCard("Lumber", GAMECARD_LUMBER, 20);
+    bank->registerCard("Clay",   GAMECARD_CLAY,   20);
 
     // development cards
     bank->registerCardStack("Development");
-    bank->registerCard("Development", GameCard("Development", "Knight",
-        "If you play this card, you can steal a card from another player.",
-        "rulePlayKnightCard"), 10);
-    bank->registerCard("Development", GameCard("Development", "Build Road",
-        "Playing this card will allow you to place two roads for free.",
-        "rulePlayBuildRoadCard"), 4);
+    bank->registerCard("Development", GAMECARD_KNIGHT, 10);
+    bank->registerCard("Development", GAMECARD_BUILD_ROAD, 4);
     bank->getCardStack("Development")->shuffle();
 
     return true;
@@ -376,18 +372,37 @@ IMPLEMENT_RULE(ruleInitGameCards)
 IMPLEMENT_RULE(ruleInitPlayerPanel)
 {
     PlayerPanel *panel = game->getMainWindow()->getPlayerPanel();
+    QList<Player*> players = game->getPlayers();
+    QList<Player*>::iterator i;
 
-    panel->clear();
-    panel->registerPlayerInfo("Roads");
-    panel->registerPlayerInfo("Settlements");
-    panel->registerPlayerInfo("Cities");
-    panel->registerPlayerInfo("Wheat");
-    panel->registerPlayerInfo("Clay");
-    panel->registerPlayerInfo("Ore");
-    panel->registerPlayerInfo("Sheep");
-    panel->registerPlayerInfo("Lumber");
+    Q_ASSERT(players.size() > 0);
 
-    EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
+    for(i = players.begin(); i != players.end(); ++i)
+    {
+        panel->registerPlayerInfo(*i, "Roads", "Available Roads", "Road.png");
+        panel->registerPlayerInfo(*i, "Settlements", "Available Settlements",
+            "Settlement.png");
+        panel->registerPlayerInfo(*i, "Cities", "Available Cities", "City.png");
+        panel->registerPlayerInfo(*i, "DevelopmentCards", "Development Cards",
+            "DevelopmentCard.png");
+
+        if(((Player*)*i)->getIsLocal())
+        {
+            panel->registerPlayerInfo(*i, "Wheat", "Wheat", "Wheat.png");
+            panel->registerPlayerInfo(*i, "Lumber", "Lumber", "Lumber.png");
+            panel->registerPlayerInfo(*i, "Sheep", "Sheep", "Sheep.png");
+            panel->registerPlayerInfo(*i, "Ore", "Ore", "Ore.png");
+            panel->registerPlayerInfo(*i, "Clay", "Clay", "Clay.png");
+        }
+        else
+        {
+            panel->registerPlayerInfo(*i, "ResourceCards", "Resource Cards",
+                "Card.png");
+        }
+        
+        EXECUTE_SUBRULE_FOR_PLAYER(ruleUpdatePlayerPanel, *i);
+    }
+
     return true;
 }
 
@@ -395,22 +410,33 @@ IMPLEMENT_RULE(ruleUpdatePlayerPanel)
 {
     PlayerPanel *panel = game->getMainWindow()->getPlayerPanel();
 
-#define PP_UPDATE_OBJ(t,i) if(1) { \
-    uint n = player->getNumberOfUnplacedObjectsOfType(t); \
-    panel->updatePlayerInfo(player, i, n); }
-#define PP_UPDATE_RES(t) if(1) { \
-    uint n = player->getCardStack()->getNumberOfCards("Resource", t); \
-    panel->updatePlayerInfo(player, t, n); }
+    panel->updatePlayerInfo(player, "Roads",
+        player->getNumberOfUnplacedObjectsOfType("Road"));
+    panel->updatePlayerInfo(player, "Settlements",
+        player->getNumberOfUnplacedObjectsOfType("Settlement"));
+    panel->updatePlayerInfo(player, "Cities",
+        player->getNumberOfUnplacedObjectsOfType("City"));
+    panel->updatePlayerInfo(player, "DevelopmentCards",
+        player->getCardStack()->getNumberOfCards("Development"));
 
-    PP_UPDATE_OBJ("Road", "Roads");
-    PP_UPDATE_OBJ("Settlement", "Settlements");
-    PP_UPDATE_OBJ("City", "Cities");
-
-    PP_UPDATE_RES("Wheat");
-    PP_UPDATE_RES("Clay");
-    PP_UPDATE_RES("Ore");
-    PP_UPDATE_RES("Sheep");
-    PP_UPDATE_RES("Lumber");
+    if(player->getIsLocal())
+    {
+        panel->updatePlayerInfo(player, "Wheat",
+            player->getCardStack()->getNumberOfCards("Resource", "Wheat"));
+        panel->updatePlayerInfo(player, "Lumber",
+            player->getCardStack()->getNumberOfCards("Resource", "Lumber"));
+        panel->updatePlayerInfo(player, "Sheep",
+            player->getCardStack()->getNumberOfCards("Resource", "Sheep"));
+        panel->updatePlayerInfo(player, "Ore",
+            player->getCardStack()->getNumberOfCards("Resource", "Ore"));
+        panel->updatePlayerInfo(player, "Clay",
+            player->getCardStack()->getNumberOfCards("Resource", "Clay"));
+    }
+    else
+    {
+        panel->updatePlayerInfo(player, "ResourceCards",
+            player->getCardStack()->getNumberOfCards("Resource"));
+    }
 
     return true;
 }
@@ -587,10 +613,12 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
 IMPLEMENT_RULE(ruleCrossroadSelected)
 {
     Board *board = game->getBoard();
+    GLGameModel *obj = board->getSelectedObject();
+    Q_ASSERT(obj != NULL);
 
     if(board->getHasSelectedObject())
     {
-        RULEDATA_PUSH_POINTER("Crossroad", board->getSelectedObject());
+        RULEDATA_PUSH_POINTER("Crossroad", obj);
         return true;
     }
 

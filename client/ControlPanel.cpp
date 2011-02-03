@@ -11,6 +11,7 @@ ControlPanel::ControlPanel(QWidget *parent) : QWidget(parent)
 
 ControlPanel::~ControlPanel()
 {
+    clear();
 }
 
 void ControlPanel::registerAction(QAction *action)

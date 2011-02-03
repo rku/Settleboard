@@ -14,16 +14,18 @@ class PlayerPanel : public QWidget
         PlayerPanel(QWidget *parent);
         ~PlayerPanel();
 
-        void registerPlayerInfo(QString infoName);
-        void updatePlayerInfo(Player*, QString infoName, uint value);
-
+        void registerPlayerInfo(Player*,
+                                const QString infoName,
+                                const QString description,
+                                const QString iconFile = QString());
+        void updatePlayerInfo(Player*, const QString infoName, int value);
         void clear();
 
     protected:
-        void updatePlayerInfos();
+        QGroupBox *getPlayerBox(Player*);
 
-        QList<QString> playerInfos;
-        QList<QGroupBox*> playerBoxes;
+        QMap<Player*, QString> playerInfos;
+        QMap<Player*, QGroupBox*> playerBoxes;
 };
 
 #endif
