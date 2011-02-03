@@ -386,10 +386,12 @@ IMPLEMENT_RULE(ruleInitPlayerPanel)
     {
         panel->registerPlayerInfo(*i, "WinningPoints", "Winning Points",
             "WinningPoints.png");
-        panel->registerPlayerInfo(*i, "Roads", "Available Roads", "Road.png");
+        panel->registerPlayerInfo(*i, "Roads", "Available Roads",
+            "Road.png", true);
         panel->registerPlayerInfo(*i, "Settlements", "Available Settlements",
-            "Settlement.png");
-        panel->registerPlayerInfo(*i, "Cities", "Available Cities", "City.png");
+            "Settlement.png", true);
+        panel->registerPlayerInfo(*i, "Cities", "Available Cities",
+            "City.png", true);
         panel->registerPlayerInfo(*i, "DevelopmentCards", "Development Cards",
             "DevelopmentCard.png");
 

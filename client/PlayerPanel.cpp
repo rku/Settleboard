@@ -33,7 +33,7 @@ QGroupBox* PlayerPanel::getPlayerBox(Player *player)
 }
 
 void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
-    const QString description, const QString iconFile)
+    const QString description, const QString iconFile, bool usePlayerColor)
 {
     QGroupBox *box = getPlayerBox(player);
     QGridLayout *gl = (QGridLayout*)box->layout();
@@ -41,11 +41,20 @@ void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
     // the grid always has one row, even if there's nothing inside
     int rows = (gl->itemAt(0) != NULL) ? gl->rowCount() : 0;
 
+    // prepare icon
+    QString iconPath = FileManager::getPathOfImage(iconFile);
+    QImage icon = QImage(iconPath).convertToFormat(QImage::Format_Indexed8);
+    QPixmap pixmap;
+    if(!icon.isNull())
+    {
+        if(usePlayerColor) icon.setColor(0, player->getColor().rgb());
+        pixmap.convertFromImage(icon.scaledToHeight(12));
+    }
+
     // add new row for the registered info value
-    QPixmap icon(FileManager::getPathOfImage(iconFile));
     QLabel *textLabel = new QLabel(description, box);
     QLabel *iconLabel = new QLabel(box);
-    if(!icon.isNull()) iconLabel->setPixmap(icon.scaledToHeight(12));
+    if(!pixmap.isNull()) iconLabel->setPixmap(pixmap);
     QLabel *valueLabel = new QLabel("0", box);
 
     gl->addWidget(iconLabel,  rows, 0, Qt::AlignLeft);

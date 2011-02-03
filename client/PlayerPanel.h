@@ -17,7 +17,8 @@ class PlayerPanel : public QWidget
         void registerPlayerInfo(Player*,
                                 const QString infoName,
                                 const QString description,
-                                const QString iconFile = QString());
+                                const QString iconFile = QString(),
+                                bool usePlayerColor = false);
         void updatePlayerInfo(Player*, const QString infoName, int value);
         void clear();
 
