@@ -12,11 +12,12 @@ class ControlPanel : public QWidget
         ControlPanel(QWidget *parent);
         ~ControlPanel();
 
-        void registerAction(QAction *action);
+        void registerAction(const QString name, QAction *action);
+        void setActionState(const QString name, bool state);
         void clear();
 
     protected:
-        QList<QToolButton*> buttons;
+        QMap<QString, QToolButton*> buttons;
 };
 
 #endif

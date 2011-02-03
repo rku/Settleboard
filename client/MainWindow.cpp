@@ -164,14 +164,14 @@ void MainWindow::createDockWidgets()
     controlPanel->setMaximumHeight(60);
     controlPanel->setMinimumHeight(60);
     controlPanel->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
-    controlPanel->setAllowedAreas(Qt::BottomDockWidgetArea);
-    addDockWidget(Qt::BottomDockWidgetArea, controlPanel);
+    controlPanel->setAllowedAreas(Qt::TopDockWidgetArea);
+    addDockWidget(Qt::TopDockWidgetArea, controlPanel);
     controlPanel->setWidget(new ControlPanel(controlPanel));
 }
 
 void MainWindow::createStatusBar()
 {
-    //statusBar();
+    statusBar();
 }
 
 void MainWindow::showConnector()

@@ -27,6 +27,8 @@
 #include "Bank.h"
 #include "MainWindow.h"
 #include "PlayerPanel.h"
+#include "ControlPanel.h"
+#include "FileManager.h"
 #include "Game.h"
 
 GameRules::GameRules(Game *_game)
@@ -49,6 +51,8 @@ GameRules::GameRules(Game *_game)
 
     REGISTER_RULE(ruleInitPlayerPanel);
     REGISTER_RULE(ruleUpdatePlayerPanel);
+    REGISTER_RULE(ruleInitControlPanel);
+    REGISTER_RULE(ruleUpdateControlPanel);
     REGISTER_RULE(ruleUpdateInterface);
 
     REGISTER_RULE(ruleUserActionBuildCity);
@@ -203,6 +207,7 @@ IMPLEMENT_RULE(ruleInitGame)
     RULECHAIN_ADD(ruleInitGameCards);
     RULECHAIN_ADD(ruleInitPlayers);
     RULECHAIN_ADD(ruleInitPlayerPanel);
+    RULECHAIN_ADD(ruleInitControlPanel);
     RULECHAIN_ADD(ruleInitialPlacement);
     startRuleChain();
 
@@ -379,6 +384,8 @@ IMPLEMENT_RULE(ruleInitPlayerPanel)
 
     for(i = players.begin(); i != players.end(); ++i)
     {
+        panel->registerPlayerInfo(*i, "WinningPoints", "Winning Points",
+            "WinningPoints.png");
         panel->registerPlayerInfo(*i, "Roads", "Available Roads", "Road.png");
         panel->registerPlayerInfo(*i, "Settlements", "Available Settlements",
             "Settlement.png");
@@ -441,9 +448,84 @@ IMPLEMENT_RULE(ruleUpdatePlayerPanel)
     return true;
 }
 
+IMPLEMENT_RULE(ruleInitControlPanel)
+{
+    ControlPanel *panel = game->getMainWindow()->getControlPanel();
+
+    QAction *actionBuildRoad = new QAction(panel);
+    actionBuildRoad->setData(QString("ruleUserActionBuildRoad"));
+    actionBuildRoad->setToolTip("Build Road");
+    actionBuildRoad->setIcon(QIcon(FileManager::getPathOfImage("Road.png")));
+    panel->registerAction("BuildRoad", actionBuildRoad);
+
+    QAction *actionBuildSettlement = new QAction(panel);
+    actionBuildSettlement->setData(QString("ruleUserActionBuildSettlement"));
+    actionBuildSettlement->setToolTip("Build Settlement");
+    actionBuildSettlement->setIcon(QIcon(FileManager::getPathOfImage("Settlement.png")));
+    panel->registerAction("BuildSettlement", actionBuildSettlement);
+
+    QAction *actionBuildCity = new QAction(panel);
+    actionBuildCity->setData(QString("ruleUserActionBuildCity"));
+    actionBuildCity->setToolTip("Build City");
+    actionBuildCity->setIcon(QIcon(FileManager::getPathOfImage("City.png")));
+    panel->registerAction("BuildCity", actionBuildCity);
+
+    QAction *actionShowCards = new QAction(panel);
+    actionShowCards->setData(QString("ruleUserActionShowCards"));
+    actionShowCards->setToolTip("Show my cards");
+    actionShowCards->setIcon(QIcon(FileManager::getPathOfImage("Cards.png")));
+    panel->registerAction("ShowCards", actionShowCards);
+
+    QAction *actionBuyDevCard = new QAction(panel);
+    actionBuyDevCard->setData(QString("ruleUserActionBuyDevelopmentCard"));
+    actionBuyDevCard->setToolTip("Buy Development Card");
+    actionBuyDevCard->setIcon(QIcon(FileManager::getPathOfImage("BuyDevCard.png")));
+    panel->registerAction("BuyDevCard", actionBuyDevCard);
+
+    QAction *actionTrade = new QAction(panel);
+    actionTrade->setData(QString("ruleUserActionTrade"));
+    actionTrade->setToolTip("Trade");
+    actionTrade->setIcon(QIcon(FileManager::getPathOfImage("Trade.png")));
+    panel->registerAction("Trade", actionTrade);
+
+    QAction *actionRollDice = new QAction(panel);
+    actionRollDice->setData(QString("ruleUserActionRollDice"));
+    actionRollDice->setToolTip("Roll Dice");
+    actionRollDice->setIcon(QIcon(FileManager::getPathOfImage("Dice.png")));
+    panel->registerAction("RollDice", actionRollDice);
+
+    QAction *actionEndTurn = new QAction(panel);
+    actionEndTurn->setData(QString("ruleUserActionEndTurn"));
+    actionEndTurn->setToolTip("End Turn");
+    actionEndTurn->setIcon(QIcon(FileManager::getPathOfImage("EndTurn.png")));
+    panel->registerAction("EndTurn", actionEndTurn);
+
+    EXECUTE_SUBRULE(ruleUpdateControlPanel);
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleUpdateControlPanel)
+{
+    if(!player->getIsLocal()) return true;
+
+    ControlPanel *panel = game->getMainWindow()->getControlPanel();
+    panel->setActionState("BuildRoad", false);
+    panel->setActionState("BuildSettlement", false);
+    panel->setActionState("BuildCity", false);
+    panel->setActionState("BuyDevCard", false);
+    panel->setActionState("ShowCards", true);
+    panel->setActionState("Trade", false);
+    panel->setActionState("RollDice", false);
+    panel->setActionState("EndTurn", false);
+
+    return true;
+}
+
 IMPLEMENT_RULE(ruleUpdateInterface)
 {
     EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
+    EXECUTE_SUBRULE(ruleUpdateControlPanel);
     return true;
 }
 
