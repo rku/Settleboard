@@ -93,7 +93,6 @@ void GLWidget::initializeGL()
 #endif
 
     glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
 
     glLoadIdentity();
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);

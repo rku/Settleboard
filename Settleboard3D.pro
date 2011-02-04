@@ -7,7 +7,10 @@ MOC_DIR = build/
 OBJECTS_DIR = build/
 UI_DIR = build/
 RCC_DIR = build/
+TARGET = Settleboard3D
 QT += network opengl
+RCC_DIR = build/
+RESOURCES = client/data/Resources.qrc
 
 FORMS = client/ui/connectorform.ui \
         client/ui/prefsform.ui \
@@ -41,7 +44,8 @@ HEADERS = client/GLWidget.h \
           client/Bank.h \
           client/ControlPanel.h \
           client/PlayerPanel.h \
-          client/ChatPanel.h
+          client/ChatPanel.h \
+          client/GameInfoPanel.h
 
 SOURCES = client/GLWidget.cpp \
           client/Game.cpp \
@@ -69,5 +73,6 @@ SOURCES = client/GLWidget.cpp \
           client/GameCardStack.cpp \
           client/ControlPanel.cpp \
           client/PlayerPanel.cpp \
-          client/ChatPanel.cpp
+          client/ChatPanel.cpp \
+          client/GameInfoPanel.cpp
 

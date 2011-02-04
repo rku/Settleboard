@@ -32,7 +32,8 @@ TextureManager::~TextureManager()
     while(!textures.isEmpty())
     {
         Texture tex = textures.takeFirst();
-        glDeleteTextures(1, &tex.id);
+        game->getGLWidget()->deleteTexture(tex.id);
+        //glDeleteTextures(1, &tex.id);
     }
 }
 
@@ -50,9 +51,11 @@ const Texture& TextureManager::loadTexture(const QString& filename)
     newTex.width  = 0;
     newTex.height = 0;
 
-    glGenTextures(1, &newTex.id);
+    //glGenTextures(1, &newTex.id);
 
-    glBindTexture(GL_TEXTURE_2D, newTex.id);
+    //glBindTexture(GL_TEXTURE_2D, newTex.id);
+    tex = QImage(filepath);
+    newTex.id = game->getGLWidget()->bindTexture(tex);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
@@ -64,7 +67,7 @@ const Texture& TextureManager::loadTexture(const QString& filename)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 #endif
 
-    tex = QGLWidget::convertToGLFormat(QImage(filepath));
+    //tex = QGLWidget::convertToGLFormat(QImage(filepath));
 
     if(!tex.isNull())
     {

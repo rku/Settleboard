@@ -16,7 +16,7 @@ class FileManager
         const QString &name, const QString &type);
     static const QString getPathOfResource(const QString &group,
         const QString &filename);
-    static const QString getResourceRootPath() { return QString("Data"); }
+    static const QString getResourceRootPath() { return QString(":"); }
 };
 
 #endif

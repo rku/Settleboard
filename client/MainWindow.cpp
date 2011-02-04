@@ -29,6 +29,7 @@
 #include "ControlPanel.h"
 #include "PlayerPanel.h"
 #include "ChatPanel.h"
+#include "GameInfoPanel.h"
 
 MainWindow::MainWindow()
 {
@@ -117,16 +118,6 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-    QList<QAction*> actions;
-    GameRules *rules;
-
-    rules = game->getRules();
-    actions = rules->getActions();
-
-    gameToolBar = addToolBar(tr("Game"));
-
-    for(int i=0; i < actions.size(); ++i)
-        gameToolBar->addAction(actions.at(i));
 }
 
 void MainWindow::createDockWidgets()
@@ -147,7 +138,9 @@ void MainWindow::createDockWidgets()
     gameInfoPanel = new QDockWidget("Game Info", this);
     gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     gameInfoPanel->setMinimumHeight(150);
+    gameInfoPanel->setMaximumHeight(150);
     gameInfoPanel->setFeatures(QDockWidget::DockWidgetMovable);
+    gameInfoPanel->setWidget(new GameInfoPanel(gameInfoPanel));
     addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
 
     chatPanel = new QDockWidget("Chat", this);

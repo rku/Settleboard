@@ -71,7 +71,7 @@ void GLGameModel::create()
         if(!face.texFilename.isEmpty())
         {
             GLuint texId = tm->getTextureId(face.texFilename);
-            if(currentTex != texId && currentTex > 0)
+            if(currentTex != texId && currentTex > 0 && currentTex < 65535)
             {
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texId);
@@ -83,6 +83,7 @@ void GLGameModel::create()
         {
             if(currentTex != 0)
             {
+                glEnable(GL_COLOR_MATERIAL);
                 currentTex = 0;
                 glBindTexture(GL_TEXTURE_2D, 0);
                 glDisable(GL_TEXTURE_2D);
