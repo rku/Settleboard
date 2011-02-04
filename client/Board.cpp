@@ -29,9 +29,9 @@
 
 Board::Board(Game *_game) : GameObject(_game)
 {
+    isLoaded                = false;
     isSelectionModeActive   = false;
     selectedObject          = NULL;
-    state                   = BOARD_STATE_SELECT_CROSSROAD;
 }
 
 Board::~Board()
@@ -49,6 +49,8 @@ void Board::freeObjects()
 
 void Board::render()
 {
+    if(!getIsLoaded()) return;
+
     for(int i = 0; i < boardTiles.size(); ++i)
         boardTiles.at(i)->draw();
 
@@ -147,9 +149,6 @@ bool Board::handleMouseClick(const QPoint &mousePos)
             return true;
         }
     }
-
-    // TEST:
-    else game->getRules()->executeRule("ruleInitGame", NULL);
 
     return true;
 }
@@ -319,6 +318,7 @@ bool Board::loadFromFile(const QString& filename)
     }
 
     qDebug() << "Board loaded: " << filename;
+    isLoaded = true;
 
     boardFile.close();
 

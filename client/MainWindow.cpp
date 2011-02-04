@@ -86,6 +86,10 @@ void MainWindow::createActions()
     connectAct->setStatusTip(tr("Connect to a game server."));
     connect(connectAct, SIGNAL(triggered()), this, SLOT(showConnector()));
 
+    startServerAct = new QAction(tr("&Start Server..."), this);
+    startServerAct->setStatusTip(tr("Start a game server."));
+    connect(startServerAct, SIGNAL(triggered()), this, SLOT(startServer()));
+
     quitAct = new QAction(tr("&Quit"), this);
     quitAct->setShortcut(tr("Ctrl-Q"));
     quitAct->setStatusTip(tr("Quit the game."));
@@ -106,6 +110,7 @@ void MainWindow::createMenus()
 
     gameMenu = _menuBar->addMenu(tr("&Game"));
     gameMenu->addAction(connectAct);
+    gameMenu->addAction(startServerAct);
     gameMenu->addSeparator();
     gameMenu->addAction(quitAct);
 

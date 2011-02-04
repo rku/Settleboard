@@ -30,7 +30,6 @@ HEADERS = client/GLWidget.h \
           client/Board.h \
           client/UIStyle.h \
           client/GameUI.h \
-          client/Resource.h \
           client/GameRules.h \
           client/GameConnector.h \
           client/PrefsForm.h \
@@ -60,7 +59,6 @@ SOURCES = client/GLWidget.cpp \
           client/Board.cpp\
           client/UISTyle.cpp \
           client/GameUI.cpp \
-          client/Resource.cpp \
           client/GameRules.cpp \
           client/GameConnector.cpp \
           client/PrefsForm.cpp \

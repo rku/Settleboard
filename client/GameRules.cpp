@@ -584,16 +584,10 @@ IMPLEMENT_RULE(ruleCanBuildCity)
 
 IMPLEMENT_RULE(ruleSelectSettlement)
 {
-    if(!player->getIsLocal())
-    {
-        LOG_PLAYER_MESSAGE(QString("Waiting for %1 to select a settlement.")
-            .arg(player->getName()));
-        return true;
-    }
-
-    Board *board = game->getBoard();
-    QList<Crossroad*> crossroads = board->getCrossroads();
     bool selectableObjectFound = false;
+    Board *board = game->getBoard();
+
+    QList<Crossroad*> crossroads = board->getCrossroads();
 
     for(int i = 0; i < crossroads.size(); i++)
     {
@@ -603,7 +597,7 @@ IMPLEMENT_RULE(ruleSelectSettlement)
             PlayerObject *bld = (PlayerObject*)c->getPlayerObject();
             if(!bld->getType().compare("Settlement"))
             {
-                bld->setIsSelectable(true);
+                if(player->getIsLocal()) bld->setIsSelectable(true);
                 selectableObjectFound = true;
             }
         }
@@ -611,10 +605,10 @@ IMPLEMENT_RULE(ruleSelectSettlement)
 
     if(selectableObjectFound)
     {
-        LOG_SYSTEM_MESSAGE(QString("%1, please select a settlement.").
-            arg(player->getName()))
-        board->setSelectionMode();
+        if(player->getIsLocal()) board->setSelectionMode();
         suspendRuleChain();
+        LOG_SYSTEM_MESSAGE(QString("Waiting for %1 to select a settlement.").
+            arg(player->getName()))
         return true;
     }
 
@@ -687,13 +681,6 @@ IMPLEMENT_RULE(ruleRemoveSettlement)
 // Lets the user select a crossroad
 IMPLEMENT_RULE(ruleSelectCrossroad)
 {
-    if(!player->getIsLocal())
-    {
-        LOG_PLAYER_MESSAGE(QString("Waiting for %1 to select a crossroad")
-            .arg(player->getName()));
-        return true;
-    }
-
     Board *board = game->getBoard();
     const QList<Crossroad*> crossroads = board->getCrossroads();
     bool selectableObjectFound = false;
@@ -703,15 +690,15 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
     {
         RULEDATA_PUSH_POINTER("Crossroad", crossroads.at(i));
         bool selectable = EXECUTE_SUBRULE(ruleCanSelectCrossroad);
-        crossroads.at(i)->setIsSelectable(selectable);
+        if(player->getIsLocal()) crossroads.at(i)->setIsSelectable(selectable);
         if(selectable) selectableObjectFound = true;
     }
 
     if(selectableObjectFound)
     {
-        board->setSelectionMode();
+        if(player->getIsLocal()) board->setSelectionMode();
         suspendRuleChain();
-        LOG_SYSTEM_MESSAGE(QString("%1, please select a crossroad.")
+        LOG_SYSTEM_MESSAGE(QString("Waiting for %1 to select a crossroad.")
             .arg(player->getName()));
         return true;
     }
@@ -797,13 +784,6 @@ IMPLEMENT_RULE(ruleCanBuildRoad)
 
 IMPLEMENT_RULE(ruleSelectRoadway)
 {
-    if(!player->getIsLocal())
-    {
-        LOG_PLAYER_MESSAGE(QString("Waiting for %1 to select a roadway.")
-            .arg(player->getName()));
-        return true;
-    }
-
     Board *board = game->getBoard();
     QList<Roadway*> roadways = board->getRoadways();
     bool selectableObjectFound = false;
@@ -812,15 +792,15 @@ IMPLEMENT_RULE(ruleSelectRoadway)
     {
         RULEDATA_PUSH_POINTER("Roadway", roadways.at(i));
         bool selectable = EXECUTE_SUBRULE(ruleCanSelectRoadway);
-        roadways.at(i)->setIsSelectable(selectable);
+        if(player->getIsLocal()) roadways.at(i)->setIsSelectable(selectable);
         if(selectable) selectableObjectFound = true;
     }
 
     if(selectableObjectFound)
     {
-        board->setSelectionMode();
+        if(player->getIsLocal()) board->setSelectionMode();
         suspendRuleChain();
-        LOG_SYSTEM_MESSAGE(QString("%1, please select a roadway.")
+        LOG_SYSTEM_MESSAGE(QString("Waiting for %1 to select a roadway.")
             .arg(player->getName()));
         return true;
     }

@@ -53,6 +53,7 @@ class Board : public GameObject
         void update();
         bool loadFromFile(const QString&);
         bool loadByName(const QString&);
+        bool getIsLoaded() { return isLoaded; }
 
         void resetBoardState(BoardObjectState s = defaultBoardObjectState);
         void updateBoardState(BoardState&);
@@ -84,9 +85,9 @@ class Board : public GameObject
         QList<NumberChip*> numberChips;
         unsigned int width;
         unsigned int height;
-        unsigned int state;
         char tileData[BOARD_MAX_TILES];
         bool isSelectionModeActive;
+        bool isLoaded;
         GLGameModel *selectedObject;
         QList<Crossroad*> crossroads;
         QList<Roadway*> roadways;

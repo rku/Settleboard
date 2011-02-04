@@ -78,6 +78,7 @@ class MainWindow : public QMainWindow
         QMenu *settingsMenu;
         QMenu *helpMenu;
         QAction *connectAct;
+        QAction *startServerAct;
         QAction *quitAct;
         QAction *prefsAct;
         QAction *aboutAct;

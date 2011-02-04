@@ -96,9 +96,6 @@ void GLWidget::initializeGL()
 
     glLoadIdentity();
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-    game->getBoard()->loadByName("StandardSettlers");
-    game->getBoard()->generate();
 }
 
 void GLWidget::paintGL()

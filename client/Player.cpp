@@ -19,7 +19,6 @@
  */
 
 #include "Player.h"
-#include "Resource.h"
 #include "PlayerObject.h"
 
 Player::Player(Game *_game)

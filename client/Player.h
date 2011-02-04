@@ -30,7 +30,6 @@
 #include "GameObject.h"
 
 class Game;
-class Resource;
 class PlayerObject;
 
 class Player : public GameObject

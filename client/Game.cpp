@@ -33,10 +33,6 @@ Game::Game()
     objGLLoader = new OBJGLLoader();
 
     players.append(new Player(this));
-    Player *p2 = new Player(this);
-    p2->setColor(Qt::blue);
-    p2->setIsLocal(false);
-    players.append(p2);
 
     bank = new Bank();
 }
