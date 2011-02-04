@@ -29,6 +29,7 @@
 #include "ControlPanel.h"
 #include "PlayerPanel.h"
 #include "MessagePanel.h"
+#include "NetworkCore.h"
 #include "GameInfoPanel.h"
 
 MainWindow::MainWindow()
@@ -176,6 +177,12 @@ void MainWindow::showConnector()
 {
     qDebug() << "showConnector()";
     gameConnector->show();
+}
+
+void MainWindow::startServer()
+{
+    game->getNetworkCore()->startServer(1234);
+    setStatusTip("Listening for connections on port 1234.");
 }
 
 void MainWindow::showPrefs()

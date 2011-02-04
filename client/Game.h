@@ -26,11 +26,11 @@
 #include "TextureManager.h"
 #include "GameRules.h"
 
-class GameUI;
 class Player;
 class OBJGLLoader;
 class Bank;
 class MainWindow;
+class NetworkCore;
 
 class Game
 {
@@ -50,7 +50,6 @@ class Game
         GameRules* getRules() { return rules; }
 
         TextureManager *getTextureManager() { return textureManager; }
-        GameUI *getUI() { return ui; }
         Board *getBoard() { return board; }
         OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
 
@@ -58,16 +57,18 @@ class Game
 
         Bank *getBank() { return bank; }
 
+        NetworkCore *getNetworkCore() { return networkCore; }
+
     protected:
         MainWindow *mainWindow;
         GLWidget *glWidget;
         GameRules *rules;
         TextureManager *textureManager;
-        GameUI *ui;
         Board *board;
         OBJGLLoader *objGLLoader;
         QList<Player*> players;
         Bank *bank;
+        NetworkCore *networkCore;
 };
 
 #endif

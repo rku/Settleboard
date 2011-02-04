@@ -19,15 +19,14 @@
  */
 
 #include "Game.h"
-#include "GameUI.h"
 #include "Player.h"
 #include "Bank.h"
+#include "NetworkCore.h"
 #include "OBJGLLoader.h"
 
 Game::Game()
 {
     textureManager = new TextureManager(this);
-    ui = new GameUI(this);
     rules = new GameRules(this);
     board = new Board(this);
     objGLLoader = new OBJGLLoader();
@@ -35,21 +34,21 @@ Game::Game()
     players.append(new Player(this));
 
     bank = new Bank();
+    networkCore = new NetworkCore();
 }
 
 Game::~Game()
 {
+    delete networkCore;
     delete bank;
     delete objGLLoader;
     delete board;
     delete rules;
-    delete ui;
     delete textureManager;
 }
 
 void Game::render()
 {
     board->render();
-    ui->render();
 }
 

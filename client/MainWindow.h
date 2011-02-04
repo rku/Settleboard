@@ -54,6 +54,7 @@ class MainWindow : public QMainWindow
 
     private slots:
         void showConnector();
+        void startServer();
         void showPrefs();
         void showAbout();
 
