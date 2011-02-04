@@ -44,7 +44,7 @@ HEADERS = client/GLWidget.h \
           client/Bank.h \
           client/ControlPanel.h \
           client/PlayerPanel.h \
-          client/ChatPanel.h \
+          client/MessagePanel.h \
           client/GameInfoPanel.h
 
 SOURCES = client/GLWidget.cpp \
@@ -73,6 +73,6 @@ SOURCES = client/GLWidget.cpp \
           client/GameCardStack.cpp \
           client/ControlPanel.cpp \
           client/PlayerPanel.cpp \
-          client/ChatPanel.cpp \
+          client/MessagePanel.cpp \
           client/GameInfoPanel.cpp
 

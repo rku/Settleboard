@@ -52,6 +52,8 @@ typedef struct _RuleDataElement {
     QString stringValue;
 } RuleDataElement;
 
+// a lot of convenience macros
+
 #define REGISTER_RULE(func) \
     if(1) { \
         GameRule rule; \
@@ -108,6 +110,10 @@ typedef struct _RuleDataElement {
 #define RULEDATA_READ_POINTER(n) ruleData.value(n).pointerValue
 #define RULEDATA_READ_STRING(n)  ruleData.value(n).stringValue
 
+#define LOG_PLAYER_MESSAGE(n) \
+    game->getMainWindow()->getMessagePanel()->addLogMessage(player, n);
+#define LOG_SYSTEM_MESSAGE(n) \
+    game->getMainWindow()->getMessagePanel()->addSystemMessage(n);
 
 class GameRules : public QObject, public GameObject
 {

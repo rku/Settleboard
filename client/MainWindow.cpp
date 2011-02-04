@@ -28,7 +28,7 @@
 #include "PrefsForm.h"
 #include "ControlPanel.h"
 #include "PlayerPanel.h"
-#include "ChatPanel.h"
+#include "MessagePanel.h"
 #include "GameInfoPanel.h"
 
 MainWindow::MainWindow()
@@ -49,7 +49,7 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
     delete playerPanel;
-    delete chatPanel;
+    delete messagePanel;
     delete gameInfoPanel;
     delete controlPanel;
 }
@@ -143,14 +143,14 @@ void MainWindow::createDockWidgets()
     gameInfoPanel->setWidget(new GameInfoPanel(gameInfoPanel));
     addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
 
-    chatPanel = new QDockWidget("Chat", this);
-    chatPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    chatPanel->setMinimumHeight(150);
-    chatPanel->setMinimumWidth(150);
-    chatPanel->setMaximumWidth(400);
-    chatPanel->setFeatures(QDockWidget::DockWidgetMovable);
-    chatPanel->setWidget(new ChatPanel(chatPanel));
-    addDockWidget(Qt::RightDockWidgetArea, chatPanel);
+    messagePanel = new QDockWidget("Messages", this);
+    messagePanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    messagePanel->setMinimumHeight(150);
+    messagePanel->setMinimumWidth(150);
+    messagePanel->setMaximumWidth(400);
+    messagePanel->setFeatures(QDockWidget::DockWidgetMovable);
+    messagePanel->setWidget(new MessagePanel(messagePanel));
+    addDockWidget(Qt::RightDockWidgetArea, messagePanel);
 
     controlPanel = new QDockWidget("", this);
     controlPanel->setFixedHeight(60);
