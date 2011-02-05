@@ -3,30 +3,29 @@
 #include "FileManager.h"
 #include "GameInfoPanel.h"
 
-GameInfoPanel::GameInfoPanel(QWidget *parent) : QWidget(parent)
+GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
+    : QDockWidget(parent)
 {
     // setup ui
     QGridLayout *l = new QGridLayout();
+    QWidget *widget = new QWidget(this);
 
-    diceTextLabel = new QLabel("Dice values:", this);
-    dice1PixmapLabel = new QLabel(this);
-    dice2PixmapLabel = new QLabel(this);
-    currentPlayerLabel = new QLabel(this);
+    diceTextLabel = new QLabel("Dice values:", widget);
+    dice1PixmapLabel = new QLabel(widget);
+    dice2PixmapLabel = new QLabel(widget);
+    currentPlayerLabel = new QLabel(widget);
 
     l->addWidget(diceTextLabel, 0, 0, Qt::AlignLeft);
     l->addWidget(dice1PixmapLabel, 0, 1, Qt::AlignRight);
     l->addWidget(dice2PixmapLabel, 0, 2, Qt::AlignRight);
     l->addWidget(currentPlayerLabel, 1, 0, 1, 3, Qt::AlignLeft);
 
-    setLayout(l);
+    widget->setLayout(l);
+    setWidget(widget);
 }
 
 GameInfoPanel::~GameInfoPanel()
 {
-    delete diceTextLabel;
-    delete dice1PixmapLabel;
-    delete dice2PixmapLabel;
-    delete currentPlayerLabel;
 }
 
 void GameInfoPanel::setDiceValues(uint dice1, uint dice2)

@@ -31,6 +31,7 @@
 #include "MessagePanel.h"
 #include "NetworkCore.h"
 #include "GameInfoPanel.h"
+#include "GameLobby.h"
 
 MainWindow::MainWindow()
 {
@@ -41,18 +42,14 @@ MainWindow::MainWindow()
     createDialogs();
     createActions();
     createMenus();
-    createDockWidgets();
     createStatusBar();
+    createDockWidgets();
 
     initGame();
 }
 
 MainWindow::~MainWindow()
 {
-    delete playerPanel;
-    delete messagePanel;
-    delete gameInfoPanel;
-    delete controlPanel;
 }
 
 void MainWindow::initGame()
@@ -132,40 +129,6 @@ void MainWindow::createDockWidgets()
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
-
-    playerPanel = new QDockWidget("", this);
-    playerPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    playerPanel->setFixedWidth(200);
-    playerPanel->setFloating(false);
-    playerPanel->setFeatures(QDockWidget::DockWidgetMovable);
-    playerPanel->setWidget(new PlayerPanel(playerPanel));
-    addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
-
-    gameInfoPanel = new QDockWidget("Game Info", this);
-    gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    gameInfoPanel->setMinimumHeight(150);
-    gameInfoPanel->setMaximumHeight(150);
-    gameInfoPanel->setFeatures(QDockWidget::DockWidgetMovable);
-    gameInfoPanel->setWidget(new GameInfoPanel(gameInfoPanel));
-    addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
-
-    messagePanel = new QDockWidget("Messages", this);
-    messagePanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    messagePanel->setMinimumHeight(150);
-    messagePanel->setMinimumWidth(150);
-    messagePanel->setMaximumWidth(400);
-    messagePanel->setFeatures(QDockWidget::DockWidgetMovable);
-    messagePanel->setWidget(new MessagePanel(messagePanel));
-    addDockWidget(Qt::RightDockWidgetArea, messagePanel);
-
-    controlPanel = new QDockWidget("", this);
-    controlPanel->setFixedHeight(60);
-    controlPanel->setMaximumHeight(60);
-    controlPanel->setMinimumHeight(60);
-    controlPanel->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
-    controlPanel->setAllowedAreas(Qt::TopDockWidgetArea);
-    addDockWidget(Qt::TopDockWidgetArea, controlPanel);
-    controlPanel->setWidget(new ControlPanel(controlPanel));
 }
 
 void MainWindow::createStatusBar()
@@ -181,8 +144,13 @@ void MainWindow::showConnector()
 
 void MainWindow::startServer()
 {
-    game->getNetworkCore()->startServer(1234);
-    setStatusTip("Listening for connections on port 1234.");
+    /*if(game->getNetworkCore()->startServer(1234))
+    {
+        setStatusTip("Listening for connections on port 1234.");
+        //game->getGameLobby()->show();
+    }*/
+
+    game->getRules()->executeRule("ruleInitGame", game->getPlayers()[0]);
 }
 
 void MainWindow::showPrefs()

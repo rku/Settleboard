@@ -29,6 +29,7 @@
 #include "PlayerPanel.h"
 #include "ControlPanel.h"
 #include "MessagePanel.h"
+#include "GameInfoPanel.h"
 #include "FileManager.h"
 #include "Game.h"
 
@@ -50,10 +51,12 @@ GameRules::GameRules(Game *_game)
 
     REGISTER_RULE(ruleDrawCardsFromBankStack);
 
+    REGISTER_RULE(ruleInitDockWidgets);
     REGISTER_RULE(ruleInitPlayerPanel);
     REGISTER_RULE(ruleUpdatePlayerPanel);
     REGISTER_RULE(ruleInitControlPanel);
     REGISTER_RULE(ruleUpdateControlPanel);
+    REGISTER_RULE(ruleGenerateBoard);
     REGISTER_RULE(ruleUpdateInterface);
 
     REGISTER_RULE(ruleUserActionBuildCity);
@@ -207,8 +210,10 @@ IMPLEMENT_RULE(ruleInitGame)
 
     RULECHAIN_ADD(ruleInitGameCards);
     RULECHAIN_ADD(ruleInitPlayers);
+    RULECHAIN_ADD(ruleInitDockWidgets);
     RULECHAIN_ADD(ruleInitPlayerPanel);
     RULECHAIN_ADD(ruleInitControlPanel);
+    RULECHAIN_ADD(ruleGenerateBoard);
     RULECHAIN_ADD(ruleInitialPlacement);
     startRuleChain();
 
@@ -278,7 +283,7 @@ IMPLEMENT_RULE(ruleEndTurn)
     else
     { player = *i; }
 
-    LOG_PLAYER_MESSAGE(QString("%1 finished turn.").arg(player->getName()));
+    LOG_PLAYER_MSG(QString("%1 finished turn.").arg(player->getName()));
 
     return EXECUTE_SUBRULE(ruleBeginTurn);
 }
@@ -330,7 +335,7 @@ IMPLEMENT_RULE(ruleDrawCardsFromBankStack)
     bool r = stack->drawFirstCards(player->getCardStack(), amount);
     EXECUTE_SUBRULE(ruleUpdateInterface);
 
-    LOG_PLAYER_MESSAGE(QString("%1 draws a %2 card from the bank.")
+    LOG_PLAYER_MSG(QString("%1 draws a %2 card from the bank.")
         .arg(player->getName()).arg(stackName));
 
     return r;
@@ -381,9 +386,45 @@ IMPLEMENT_RULE(ruleInitGameCards)
     return true;
 }
 
+IMPLEMENT_RULE(ruleInitDockWidgets)
+{
+    QMainWindow *mainWindow = game->getMainWindow();
+
+    playerPanel = new PlayerPanel("");
+    playerPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    playerPanel->setFixedWidth(200);
+    playerPanel->setFloating(false);
+    playerPanel->setFeatures(QDockWidget::DockWidgetMovable);
+    mainWindow->addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
+
+    gameInfoPanel = new GameInfoPanel("Game Info");
+    gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    gameInfoPanel->setMinimumHeight(150);
+    gameInfoPanel->setMaximumHeight(150);
+    gameInfoPanel->setFeatures(QDockWidget::DockWidgetMovable);
+    mainWindow->addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
+
+    messagePanel = new MessagePanel("Messages");
+    messagePanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    messagePanel->setMinimumHeight(150);
+    messagePanel->setMinimumWidth(150);
+    messagePanel->setMaximumWidth(400);
+    messagePanel->setFeatures(QDockWidget::DockWidgetMovable);
+    mainWindow->addDockWidget(Qt::RightDockWidgetArea, messagePanel);
+
+    controlPanel = new ControlPanel("");
+    controlPanel->setFixedHeight(60);
+    controlPanel->setMaximumHeight(60);
+    controlPanel->setMinimumHeight(60);
+    controlPanel->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
+    controlPanel->setAllowedAreas(Qt::TopDockWidgetArea);
+    mainWindow->addDockWidget(Qt::TopDockWidgetArea, controlPanel);
+
+    return true;
+}
+
 IMPLEMENT_RULE(ruleInitPlayerPanel)
 {
-    PlayerPanel *panel = game->getMainWindow()->getPlayerPanel();
     QList<Player*> players = game->getPlayers();
     QList<Player*>::iterator i;
 
@@ -391,28 +432,28 @@ IMPLEMENT_RULE(ruleInitPlayerPanel)
 
     for(i = players.begin(); i != players.end(); ++i)
     {
-        panel->registerPlayerInfo(*i, "WinningPoints", "Winning Points",
+        playerPanel->registerPlayerInfo(*i, "WinningPoints", "Winning Points",
             "WinningPoints.png");
-        panel->registerPlayerInfo(*i, "Roads", "Available Roads",
+        playerPanel->registerPlayerInfo(*i, "Roads", "Available Roads",
             "Road.png", true);
-        panel->registerPlayerInfo(*i, "Settlements", "Available Settlements",
+        playerPanel->registerPlayerInfo(*i, "Settlements", "Available Settlements",
             "Settlement.png", true);
-        panel->registerPlayerInfo(*i, "Cities", "Available Cities",
+        playerPanel->registerPlayerInfo(*i, "Cities", "Available Cities",
             "City.png", true);
-        panel->registerPlayerInfo(*i, "DevelopmentCards", "Development Cards",
+        playerPanel->registerPlayerInfo(*i, "DevelopmentCards", "Development Cards",
             "DevelopmentCard.png");
 
         if(((Player*)*i)->getIsLocal())
         {
-            panel->registerPlayerInfo(*i, "Wheat", "Wheat", "Wheat.png");
-            panel->registerPlayerInfo(*i, "Lumber", "Lumber", "Lumber.png");
-            panel->registerPlayerInfo(*i, "Sheep", "Sheep", "Sheep.png");
-            panel->registerPlayerInfo(*i, "Ore", "Ore", "Ore.png");
-            panel->registerPlayerInfo(*i, "Clay", "Clay", "Clay.png");
+            playerPanel->registerPlayerInfo(*i, "Wheat", "Wheat", "Wheat.png");
+            playerPanel->registerPlayerInfo(*i, "Lumber", "Lumber", "Lumber.png");
+            playerPanel->registerPlayerInfo(*i, "Sheep", "Sheep", "Sheep.png");
+            playerPanel->registerPlayerInfo(*i, "Ore", "Ore", "Ore.png");
+            playerPanel->registerPlayerInfo(*i, "Clay", "Clay", "Clay.png");
         }
         else
         {
-            panel->registerPlayerInfo(*i, "ResourceCards", "Resource Cards",
+            playerPanel->registerPlayerInfo(*i, "ResourceCards", "Resource Cards",
                 "Card.png");
         }
         
@@ -424,33 +465,31 @@ IMPLEMENT_RULE(ruleInitPlayerPanel)
 
 IMPLEMENT_RULE(ruleUpdatePlayerPanel)
 {
-    PlayerPanel *panel = game->getMainWindow()->getPlayerPanel();
-
-    panel->updatePlayerInfo(player, "Roads",
+    playerPanel->updatePlayerInfo(player, "Roads",
         player->getNumberOfUnplacedObjectsOfType("Road"));
-    panel->updatePlayerInfo(player, "Settlements",
+    playerPanel->updatePlayerInfo(player, "Settlements",
         player->getNumberOfUnplacedObjectsOfType("Settlement"));
-    panel->updatePlayerInfo(player, "Cities",
+    playerPanel->updatePlayerInfo(player, "Cities",
         player->getNumberOfUnplacedObjectsOfType("City"));
-    panel->updatePlayerInfo(player, "DevelopmentCards",
+    playerPanel->updatePlayerInfo(player, "DevelopmentCards",
         player->getCardStack()->getNumberOfCards("Development"));
 
     if(player->getIsLocal())
     {
-        panel->updatePlayerInfo(player, "Wheat",
+        playerPanel->updatePlayerInfo(player, "Wheat",
             player->getCardStack()->getNumberOfCards("Resource", "Wheat"));
-        panel->updatePlayerInfo(player, "Lumber",
+        playerPanel->updatePlayerInfo(player, "Lumber",
             player->getCardStack()->getNumberOfCards("Resource", "Lumber"));
-        panel->updatePlayerInfo(player, "Sheep",
+        playerPanel->updatePlayerInfo(player, "Sheep",
             player->getCardStack()->getNumberOfCards("Resource", "Sheep"));
-        panel->updatePlayerInfo(player, "Ore",
+        playerPanel->updatePlayerInfo(player, "Ore",
             player->getCardStack()->getNumberOfCards("Resource", "Ore"));
-        panel->updatePlayerInfo(player, "Clay",
+        playerPanel->updatePlayerInfo(player, "Clay",
             player->getCardStack()->getNumberOfCards("Resource", "Clay"));
     }
     else
     {
-        panel->updatePlayerInfo(player, "ResourceCards",
+        playerPanel->updatePlayerInfo(player, "ResourceCards",
             player->getCardStack()->getNumberOfCards("Resource"));
     }
 
@@ -459,55 +498,53 @@ IMPLEMENT_RULE(ruleUpdatePlayerPanel)
 
 IMPLEMENT_RULE(ruleInitControlPanel)
 {
-    ControlPanel *panel = game->getMainWindow()->getControlPanel();
-
-    QAction *actionBuildRoad = new QAction(panel);
+    QAction *actionBuildRoad = new QAction(controlPanel);
     actionBuildRoad->setData(QString("ruleUserActionBuildRoad"));
     actionBuildRoad->setToolTip("Build Road");
     actionBuildRoad->setIcon(QIcon(FileManager::getPathOfImage("Road.png")));
-    panel->registerAction("BuildRoad", actionBuildRoad);
+    controlPanel->registerAction("BuildRoad", actionBuildRoad);
 
-    QAction *actionBuildSettlement = new QAction(panel);
+    QAction *actionBuildSettlement = new QAction(controlPanel);
     actionBuildSettlement->setData(QString("ruleUserActionBuildSettlement"));
     actionBuildSettlement->setToolTip("Build Settlement");
     actionBuildSettlement->setIcon(QIcon(FileManager::getPathOfImage("Settlement.png")));
-    panel->registerAction("BuildSettlement", actionBuildSettlement);
+    controlPanel->registerAction("BuildSettlement", actionBuildSettlement);
 
-    QAction *actionBuildCity = new QAction(panel);
+    QAction *actionBuildCity = new QAction(controlPanel);
     actionBuildCity->setData(QString("ruleUserActionBuildCity"));
     actionBuildCity->setToolTip("Build City");
     actionBuildCity->setIcon(QIcon(FileManager::getPathOfImage("City.png")));
-    panel->registerAction("BuildCity", actionBuildCity);
+    controlPanel->registerAction("BuildCity", actionBuildCity);
 
-    QAction *actionShowCards = new QAction(panel);
+    QAction *actionShowCards = new QAction(controlPanel);
     actionShowCards->setData(QString("ruleUserActionShowCards"));
     actionShowCards->setToolTip("Show my cards");
     actionShowCards->setIcon(QIcon(FileManager::getPathOfImage("Cards.png")));
-    panel->registerAction("ShowCards", actionShowCards);
+    controlPanel->registerAction("ShowCards", actionShowCards);
 
-    QAction *actionBuyDevCard = new QAction(panel);
+    QAction *actionBuyDevCard = new QAction(controlPanel);
     actionBuyDevCard->setData(QString("ruleUserActionBuyDevelopmentCard"));
     actionBuyDevCard->setToolTip("Buy Development Card");
     actionBuyDevCard->setIcon(QIcon(FileManager::getPathOfImage("BuyDevCard.png")));
-    panel->registerAction("BuyDevCard", actionBuyDevCard);
+    controlPanel->registerAction("BuyDevCard", actionBuyDevCard);
 
-    QAction *actionTrade = new QAction(panel);
+    QAction *actionTrade = new QAction(controlPanel);
     actionTrade->setData(QString("ruleUserActionTrade"));
     actionTrade->setToolTip("Trade");
     actionTrade->setIcon(QIcon(FileManager::getPathOfImage("Trade.png")));
-    panel->registerAction("Trade", actionTrade);
+    controlPanel->registerAction("Trade", actionTrade);
 
-    QAction *actionRollDice = new QAction(panel);
+    QAction *actionRollDice = new QAction(controlPanel);
     actionRollDice->setData(QString("ruleUserActionRollDice"));
     actionRollDice->setToolTip("Roll Dice");
     actionRollDice->setIcon(QIcon(FileManager::getPathOfImage("Dice.png")));
-    panel->registerAction("RollDice", actionRollDice);
+    controlPanel->registerAction("RollDice", actionRollDice);
 
-    QAction *actionEndTurn = new QAction(panel);
+    QAction *actionEndTurn = new QAction(controlPanel);
     actionEndTurn->setData(QString("ruleUserActionEndTurn"));
     actionEndTurn->setToolTip("End Turn");
     actionEndTurn->setIcon(QIcon(FileManager::getPathOfImage("EndTurn.png")));
-    panel->registerAction("EndTurn", actionEndTurn);
+    controlPanel->registerAction("EndTurn", actionEndTurn);
 
     EXECUTE_SUBRULE(ruleUpdateControlPanel);
 
@@ -518,15 +555,14 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
 {
     if(!player->getIsLocal()) return true;
 
-    ControlPanel *panel = game->getMainWindow()->getControlPanel();
-    panel->setActionState("BuildRoad", false);
-    panel->setActionState("BuildSettlement", false);
-    panel->setActionState("BuildCity", false);
-    panel->setActionState("BuyDevCard", false);
-    panel->setActionState("ShowCards", true);
-    panel->setActionState("Trade", false);
-    panel->setActionState("RollDice", false);
-    panel->setActionState("EndTurn", false);
+    controlPanel->setActionState("BuildRoad", false);
+    controlPanel->setActionState("BuildSettlement", false);
+    controlPanel->setActionState("BuildCity", false);
+    controlPanel->setActionState("BuyDevCard", false);
+    controlPanel->setActionState("ShowCards", true);
+    controlPanel->setActionState("Trade", false);
+    controlPanel->setActionState("RollDice", false);
+    controlPanel->setActionState("EndTurn", false);
 
     return true;
 }
@@ -535,6 +571,14 @@ IMPLEMENT_RULE(ruleUpdateInterface)
 {
     EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
     EXECUTE_SUBRULE(ruleUpdateControlPanel);
+    return true;
+}
+
+IMPLEMENT_RULE(ruleGenerateBoard)
+{
+    game->getBoard()->loadByName("StandardSettlers");
+    game->getBoard()->generate();
+    game->getBoard()->update();
     return true;
 }
 
@@ -570,7 +614,7 @@ IMPLEMENT_RULE(ruleBuildCity)
         cr->placePlayerObject(bld);
 
         EXECUTE_SUBRULE(ruleUpdateInterface);
-        LOG_PLAYER_MESSAGE(QString("%1 built a City.").arg(player->getName()));
+        LOG_PLAYER_MSG(QString("%1 built a City.").arg(player->getName()));
         return true;
     }
 
@@ -607,7 +651,7 @@ IMPLEMENT_RULE(ruleSelectSettlement)
     {
         if(player->getIsLocal()) board->setSelectionMode();
         suspendRuleChain();
-        LOG_SYSTEM_MESSAGE(QString("Waiting for %1 to select a settlement.").
+        LOG_SYSTEM_MSG(QString("Waiting for %1 to select a settlement.").
             arg(player->getName()))
         return true;
     }
@@ -655,7 +699,7 @@ IMPLEMENT_RULE(ruleBuildSettlement)
     cr->placePlayerObject(bld);
 
     EXECUTE_SUBRULE(ruleUpdateInterface);
-    LOG_PLAYER_MESSAGE(QString("%1 built a settlement.").arg(player->getName()));
+    LOG_PLAYER_MSG(QString("%1 built a settlement.").arg(player->getName()));
     return true;
 }
 
@@ -698,7 +742,7 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
     {
         if(player->getIsLocal()) board->setSelectionMode();
         suspendRuleChain();
-        LOG_SYSTEM_MESSAGE(QString("Waiting for %1 to select a crossroad.")
+        LOG_SYSTEM_MSG(QString("Waiting for %1 to select a crossroad.")
             .arg(player->getName()));
         return true;
     }
@@ -773,7 +817,7 @@ IMPLEMENT_RULE(ruleBuildRoad)
     r->placePlayerObject(road);
     
     EXECUTE_SUBRULE(ruleUpdateInterface);
-    LOG_PLAYER_MESSAGE(QString("%1 built a road.").arg(player->getName()));
+    LOG_PLAYER_MSG(QString("%1 built a road.").arg(player->getName()));
     return true;
 }
 
@@ -800,7 +844,7 @@ IMPLEMENT_RULE(ruleSelectRoadway)
     {
         if(player->getIsLocal()) board->setSelectionMode();
         suspendRuleChain();
-        LOG_SYSTEM_MESSAGE(QString("Waiting for %1 to select a roadway.")
+        LOG_SYSTEM_MSG(QString("Waiting for %1 to select a roadway.")
             .arg(player->getName()));
         return true;
     }
@@ -812,7 +856,7 @@ IMPLEMENT_RULE(ruleSelectRoadwayAtCrossroad)
 {
     if(!player->getIsLocal())
     {
-        LOG_PLAYER_MESSAGE(QString("Waiting for %1 to select a roadway.")
+        LOG_PLAYER_MSG(QString("Waiting for %1 to select a roadway.")
             .arg(player->getName()));
         return true;
     }
@@ -835,7 +879,7 @@ IMPLEMENT_RULE(ruleSelectRoadwayAtCrossroad)
     {
         board->setSelectionMode();
         suspendRuleChain();
-        LOG_SYSTEM_MESSAGE(QString("%1, please select a roadway.")
+        LOG_SYSTEM_MSG(QString("%1, please select a roadway.")
             .arg(player->getName()));
         return true;
     }

@@ -6,12 +6,12 @@
 
 class Player;
 
-class GameInfoPanel : public QWidget
+class GameInfoPanel : public QDockWidget
 {
     Q_OBJECT
 
     public:
-        GameInfoPanel(QWidget *parent);
+        GameInfoPanel(const QString &title, QWidget *parent = 0);
         ~GameInfoPanel();
 
         void setDiceValues(uint dice1, uint dice2);

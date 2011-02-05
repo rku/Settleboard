@@ -23,18 +23,19 @@
 #include "Bank.h"
 #include "NetworkCore.h"
 #include "OBJGLLoader.h"
+#include "GameLobby.h"
 
 Game::Game()
 {
     textureManager = new TextureManager(this);
     rules = new GameRules(this);
+    gameLobby = new GameLobby(this);
     board = new Board(this);
     objGLLoader = new OBJGLLoader();
-
-    players.append(new Player(this));
-
     bank = new Bank();
     networkCore = new NetworkCore();
+
+    players.append(new Player(this));
 }
 
 Game::~Game()

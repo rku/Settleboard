@@ -21,6 +21,7 @@
 #ifndef GAMERULES_H
 #define GAMERULES_H
 
+#include <QtGui>
 #include <QObject>
 #include <QAction>
 #include <QList>
@@ -33,6 +34,10 @@ class Game;
 class Player;
 class GameRules;
 class GLGameModel;
+class PlayerPanel;
+class ControlPanel;
+class MessagePanel;
+class GameInfoPanel;
 
 typedef struct _GameRule {
     bool (GameRules::*ruleFunc)(_GameRule,Player*);
@@ -110,10 +115,10 @@ typedef struct _RuleDataElement {
 #define RULEDATA_READ_POINTER(n) ruleData.value(n).pointerValue
 #define RULEDATA_READ_STRING(n)  ruleData.value(n).stringValue
 
-#define LOG_PLAYER_MESSAGE(n) \
-    game->getMainWindow()->getMessagePanel()->addLogMessage(player, n);
-#define LOG_SYSTEM_MESSAGE(n) \
-    game->getMainWindow()->getMessagePanel()->addSystemMessage(n);
+#define LOG_PLAYER_MSG(m) \
+    messagePanel->addLogMessage(player, m)
+#define LOG_SYSTEM_MSG(m) \
+    messagePanel->addSystemMessage(m);
 
 class GameRules : public QObject, public GameObject
 {
@@ -151,11 +156,12 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleEndTurn);
 
         DECLARE_RULE(ruleDrawCardsFromBankStack);
-
+        DECLARE_RULE(ruleInitDockWidgets);
         DECLARE_RULE(ruleInitPlayerPanel);
         DECLARE_RULE(ruleUpdatePlayerPanel);
         DECLARE_RULE(ruleInitControlPanel);
         DECLARE_RULE(ruleUpdateControlPanel);
+        DECLARE_RULE(ruleGenerateBoard);
         DECLARE_RULE(ruleUpdateInterface);
 
         DECLARE_RULE(ruleUserActionBuildCity);
@@ -182,6 +188,10 @@ class GameRules : public QObject, public GameObject
         DECLARE_RULE(ruleRoadwaySelected);
         DECLARE_RULE(ruleCanSelectRoadway);
 
+        PlayerPanel *playerPanel;
+        ControlPanel *controlPanel;
+        GameInfoPanel *gameInfoPanel;
+        MessagePanel *messagePanel;
         QList<QAction*> actions;
         QMap<QString, RuleDataElement> ruleData;
         QList<RuleChainElement> ruleChain;

@@ -53,6 +53,8 @@ void NetworkCore::sendMessage(QTcpSocket *s, const QString msg)
         return;
     }
 
+    qDebug() << "Sending" << msg << "to" << s->peerAddress();
+
     QString m = QString("%1\n").arg(msg);
     s->write(qPrintable(m), m.length());
 }

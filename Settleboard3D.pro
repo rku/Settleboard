@@ -14,7 +14,8 @@ RESOURCES = client/data/Resources.qrc
 
 FORMS = client/ui/connectorform.ui \
         client/ui/prefsform.ui \
-        client/ui/tradeform.ui
+        client/ui/tradeform.ui \
+        client/ui/gamelobbyform.ui
 
 HEADERS = client/GLWidget.h \
           client/GLTypes.h \
@@ -44,7 +45,8 @@ HEADERS = client/GLWidget.h \
           client/PlayerPanel.h \
           client/MessagePanel.h \
           client/GameInfoPanel.h \
-          client/NetworkCore.h
+          client/NetworkCore.h \
+          client/GameLobby.h
 
 SOURCES = client/GLWidget.cpp \
           client/Game.cpp \
@@ -72,5 +74,6 @@ SOURCES = client/GLWidget.cpp \
           client/PlayerPanel.cpp \
           client/MessagePanel.cpp \
           client/GameInfoPanel.cpp \
-          client/NetworkCore.cpp
+          client/NetworkCore.cpp \
+          client/GameLobby.cpp
 

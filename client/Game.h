@@ -31,6 +31,7 @@ class OBJGLLoader;
 class Bank;
 class MainWindow;
 class NetworkCore;
+class GameLobby;
 
 class Game
 {
@@ -49,6 +50,8 @@ class Game
         void setRules(GameRules *r) { rules = r; }
         GameRules* getRules() { return rules; }
 
+        GameLobby* getGameLobby() { return gameLobby; }
+
         TextureManager *getTextureManager() { return textureManager; }
         Board *getBoard() { return board; }
         OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
@@ -63,6 +66,7 @@ class Game
         MainWindow *mainWindow;
         GLWidget *glWidget;
         GameRules *rules;
+        GameLobby *gameLobby;
         TextureManager *textureManager;
         Board *board;
         OBJGLLoader *objGLLoader;

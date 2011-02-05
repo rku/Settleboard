@@ -6,12 +6,12 @@
 
 class Player;
 
-class PlayerPanel : public QWidget
+class PlayerPanel : public QDockWidget
 {
     Q_OBJECT
 
     public:
-        PlayerPanel(QWidget *parent);
+        PlayerPanel(const QString &title, QWidget *parent = 0);
         ~PlayerPanel();
 
         void registerPlayerInfo(Player*,

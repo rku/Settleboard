@@ -30,9 +30,6 @@ class GameConnector;
 class PrefsForm;
 class UIStyle;
 class Game;
-class ControlPanel;
-class PlayerPanel;
-class MessagePanel;
 
 class MainWindow : public QMainWindow
 {
@@ -44,13 +41,6 @@ class MainWindow : public QMainWindow
 
         void initGame();
         void newGame();
-
-        ControlPanel *getControlPanel()
-            { return (ControlPanel*)controlPanel->widget(); }
-        PlayerPanel *getPlayerPanel()
-            { return (PlayerPanel*)playerPanel->widget(); }
-        MessagePanel* getMessagePanel()
-            { return (MessagePanel*)messagePanel->widget(); }
 
     private slots:
         void showConnector();
@@ -66,10 +56,6 @@ class MainWindow : public QMainWindow
         void createDockWidgets();
         void createStatusBar();
 
-        QDockWidget *playerPanel;
-        QDockWidget *messagePanel;
-        QDockWidget *gameInfoPanel;
-        QDockWidget *controlPanel;
         Game *game;
         GLWidget *glWidget;
         GameConnector *gameConnector;

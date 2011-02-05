@@ -6,12 +6,12 @@
 
 class Player;
 
-class MessagePanel : public QWidget
+class MessagePanel : public QDockWidget
 {
     Q_OBJECT
 
     public:
-        MessagePanel(QWidget *parent);
+        MessagePanel(const QString &title, QWidget *parent = 0);
         ~MessagePanel();
 
         void addSystemMessage(const QString msg);

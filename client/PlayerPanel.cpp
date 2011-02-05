@@ -3,11 +3,15 @@
 #include "FileManager.h"
 #include "PlayerPanel.h"
 
-PlayerPanel::PlayerPanel(QWidget *parent) : QWidget(parent)
+PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
+    : QDockWidget(title, parent)
 {
     QVBoxLayout *layout = new QVBoxLayout();
+    QWidget *widget = new QWidget(this);
+
     layout->addStretch();
-    this->setLayout(layout);
+    widget->setLayout(layout);
+    setWidget(widget);
 }
 
 PlayerPanel::~PlayerPanel()
@@ -19,11 +23,11 @@ QGroupBox* PlayerPanel::getPlayerBox(Player *player)
     if(playerBoxes.contains(player)) return playerBoxes.value(player);
 
     // create a new one
-    QGroupBox *box = new QGroupBox(player->getName(), this);
+    QGroupBox *box = new QGroupBox(player->getName(), widget());
     QString color = QString("::title { color: %1; }");
     box->setStyleSheet(color.arg(player->getColor().name()));
 
-    QVBoxLayout *l = (QVBoxLayout*)layout();
+    QVBoxLayout *l = (QVBoxLayout*)widget()->layout();
     Q_ASSERT(l->count() > 0); // we expect at least a stretcher
     l->insertWidget(l->count() - 1, box);
     box->setLayout(new QGridLayout());
@@ -88,7 +92,7 @@ void PlayerPanel::clear()
     {
         QGroupBox *box = playerBoxes.take(playerBoxes.keys().at(0));
 
-        layout()->removeWidget(box);
+        widget()->layout()->removeWidget(box);
         delete box;
     }
 }

@@ -4,12 +4,12 @@
 
 #include <QtGui>
 
-class ControlPanel : public QWidget
+class ControlPanel : public QDockWidget
 {
     Q_OBJECT
 
     public:
-        ControlPanel(QWidget *parent);
+        ControlPanel(const QString &title, QWidget *parent = 0);
         ~ControlPanel();
 
         void registerAction(const QString name, QAction *action);

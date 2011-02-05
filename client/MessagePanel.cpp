@@ -2,24 +2,25 @@
 #include "Player.h"
 #include "MessagePanel.h"
 
-MessagePanel::MessagePanel(QWidget *parent) : QWidget(parent)
+MessagePanel::MessagePanel(const QString &title, QWidget *parent)
+    : QDockWidget(title, parent)
 {
     QVBoxLayout *l = new QVBoxLayout();
+    QWidget *widget = new QWidget(this);
 
-    input = new QLineEdit(this);
-    output = new QTextEdit(this);
+    input = new QLineEdit(widget);
+    output = new QTextEdit(widget);
     output->setReadOnly(true);
 
     l->addWidget(output);
     l->addWidget(input);
 
-    setLayout(l);
+    widget->setLayout(l);
+    setWidget(widget);
 }
 
 MessagePanel::~MessagePanel()
 {
-    delete input;
-    delete output;
 }
 
 void MessagePanel::addSystemMessage(const QString msg)

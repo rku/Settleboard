@@ -1,12 +1,15 @@
 
 #include "ControlPanel.h"
 
-ControlPanel::ControlPanel(QWidget *parent) : QWidget(parent)
+ControlPanel::ControlPanel(const QString &title, QWidget *parent)
+    : QDockWidget(title, parent)
 {
-    QHBoxLayout *l = new QHBoxLayout(this);
+    QHBoxLayout *l = new QHBoxLayout();
+    QWidget *widget = new QWidget(this);
     l->addStretch();
     l->addStretch();
-    setLayout(l);
+    widget->setLayout(l);
+    setWidget(widget);
 }
 
 ControlPanel::~ControlPanel()
@@ -19,7 +22,7 @@ void ControlPanel::registerAction(const QString name, QAction *action)
     Q_ASSERT(!buttons.contains(name));
 
     QToolButton *button = new QToolButton(this);
-    QHBoxLayout *l = (QHBoxLayout*)layout();
+    QHBoxLayout *l = (QHBoxLayout*)widget()->layout();
 
     Q_ASSERT(l->count() >= 2);
 
@@ -44,7 +47,7 @@ void ControlPanel::clear()
     {
         QToolButton *button = buttons.take(buttons.keys().at(0));
 
-        layout()->removeWidget(button);
+        widget()->layout()->removeWidget(button);
         delete button;
     }
 }
