@@ -25,6 +25,7 @@
 #include <QList>
 #include <QColor>
 #include <QMap>
+#include <QTcpSocket>
 
 #include "GameCardStack.h"
 #include "GameObject.h"
@@ -42,8 +43,11 @@ class Player : public GameObject
         void setColor(QColor c) { color = c; }
         const QString &getName() { return name; }
         void setName(QString n) { name = n; }
-        bool getIsLocal() { return isLocal; }
-        void setIsLocal(bool b) { isLocal = b; }
+        QTcpSocket* getSocket() { return socket; }
+        void setSocket(QTcpSocket *s) { socket = s; }
+        bool getIsLocal() { return (socket == NULL); }
+        bool getIsSpectator() { return isSpectator; }
+        void setIsSpectator(bool b) { isSpectator = b; }
 
         GameCardStack *getCardStack() { return &cards; }
 
@@ -56,9 +60,10 @@ class Player : public GameObject
         const QMap<QString, PlayerObject*> &getObjects() { return objects; }
 
     protected:
+        bool isSpectator;
+        QTcpSocket *socket;
         QColor color;
         QString name;
-        bool isLocal;
         GameCardStack cards;
         QMap<QString, PlayerObject*> objects;
 };

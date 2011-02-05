@@ -24,9 +24,10 @@
 Player::Player(Game *_game)
     : GameObject(_game)
 {
+    isSpectator = false;
+    socket = NULL;
     color = Qt::red;
     name = "unknown";
-    setIsLocal(true);
 }
 
 Player::~Player()

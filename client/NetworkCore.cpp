@@ -1,19 +1,22 @@
 
+#include "NetworkPacket.h"
 #include "NetworkCore.h"
 
-NetworkCore::NetworkCore()
+NetworkCore::NetworkCore(Game *_game) : GameObject(_game)
 {
     server = NULL;
+    socket = NULL;
 }
 
 NetworkCore::~NetworkCore()
 {
+    if(socket) delete socket;
     if(server) delete server;
 }
 
 bool NetworkCore::startServer(uint port)
 {
-    if(server && server->isListening()) return true;
+    if(getIsServer() && server->isListening()) return true;
 
     server = new QTcpServer();
     connect(server, SIGNAL(newConnection()), this, SLOT(acceptNewConnection()));
@@ -24,28 +27,31 @@ bool NetworkCore::startServer(uint port)
 
 bool NetworkCore::connectToServer(QString host, uint port)
 {
+    QTcpSocket *socket = new QTcpSocket(this);
+    setupSocket(socket);
+    qDebug() << "Connecting to" << host << "on port" << port;
+    socket->connectToHost(host, port);
+    return true;
 }
 
-void NetworkCore::sendMessage(const QString msg)
+void NetworkCore::connected()
+{
+    QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
+    qDebug() << "Connected to" << s->peerAddress();
+    connections.append(s);
+}
+
+void NetworkCore::sendPacket(const NetworkPacket &packet)
 {
     QList<QTcpSocket*>::iterator i;
 
     for(i = connections.begin(); i != connections.end(); ++i)
     {
-        sendMessage((QTcpSocket*)*i, msg);
+        sendPacket((QTcpSocket*)*i, packet);
     }
 }
 
-void NetworkCore::closeConnection(QTcpSocket *s)
-{
-    Q_ASSERT(connections.contains(s));
-
-    qDebug() << "Removing connection to" << s->peerAddress();
-    s->disconnect();
-    connections.removeAll(s);
-}
-
-void NetworkCore::sendMessage(QTcpSocket *s, const QString msg)
+void NetworkCore::sendPacket(QTcpSocket *s, const NetworkPacket &packet)
 {
     if(s->state() != QAbstractSocket::ConnectedState)
     {
@@ -53,10 +59,8 @@ void NetworkCore::sendMessage(QTcpSocket *s, const QString msg)
         return;
     }
 
-    qDebug() << "Sending" << msg << "to" << s->peerAddress();
-
-    QString m = QString("%1\n").arg(msg);
-    s->write(qPrintable(m), m.length());
+    QDataStream data(s);
+    data << packet;
 }
 
 void NetworkCore::acceptNewConnection()
@@ -66,15 +70,49 @@ void NetworkCore::acceptNewConnection()
 
     qDebug() << "New connection from" << socket->peerAddress();
     connections.append(socket);
-    
-    connect(socket, SIGNAL(disconnected()), this, SLOT(connectionClosed()));
 
-    sendMessage(socket, "INIT");
+    setupSocket(socket);
+
+    NetworkPacket handshakePacket("ruleSendHandshakeRequest");
+    sendPacket(socket, handshakePacket);
+}
+
+void NetworkCore::setupSocket(QTcpSocket *s)
+{
+    connect(s, SIGNAL(disconnected()), this, SLOT(connectionClosed()));
+    connect(s, SIGNAL(readyRead()), this, SLOT(dataAvailable()));
+    connect(s, SIGNAL(connected()), this, SLOT(connected()));
 }
 
 void NetworkCore::connectionClosed()
 {
-    QTcpSocket *s = (QTcpSocket*)sender();
-    closeConnection(s);
+    QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
+    if(s)
+    {
+        qDebug() << "Disconnected from" << s->peerAddress();
+        connections.removeAll(s);
+    }
+}
+
+void NetworkCore::closeConnection(QTcpSocket *s)
+{
+    qDebug() << "Disconnecting from" << s->peerAddress();
+    s->disconnect();
+    connections.removeAll(s);
+}
+
+void NetworkCore::packetReceived(QTcpSocket *s, NetworkPacket &packet)
+{
+    qDebug() << "Network Packet received:" << packet.getPacketRule();
+}
+
+void NetworkCore::dataAvailable()
+{
+    QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
+    NetworkPacket packet;
+    QDataStream data(s);
+
+    data >> packet;
+    packetReceived(s, packet);
 }
 

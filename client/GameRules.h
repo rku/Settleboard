@@ -134,12 +134,7 @@ class GameRules : public QObject, public GameObject
         void continueRuleChain();
         void cancelRuleChain();
 
-        QList<QAction*> getActions();
-        unsigned int getWinningPoints();
-        void setWinningPoints(unsigned int);
-
     protected:
-        void initActions();
         void startRuleChain();
         void suspendRuleChain();
         void ruleChainFinished();
@@ -192,16 +187,10 @@ class GameRules : public QObject, public GameObject
         ControlPanel *controlPanel;
         GameInfoPanel *gameInfoPanel;
         MessagePanel *messagePanel;
-        QList<QAction*> actions;
         QMap<QString, RuleDataElement> ruleData;
         QList<RuleChainElement> ruleChain;
         bool isRuleChainWaiting;
         QMap<QString, GameRule> rules;
-        unsigned int winningPoints;
-        QAction *tradeAct;
-        QAction *buildSettlementAct;
-        QAction *buildCityAct;
-        QAction *buildRoadAct;
 };
 
 #endif

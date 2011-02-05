@@ -138,24 +138,18 @@ void MainWindow::createStatusBar()
 
 void MainWindow::showConnector()
 {
-    qDebug() << "showConnector()";
-    gameConnector->show();
+    //gameConnector->show();
+    game->getNetworkCore()->connectToServer("localhost", 1234);
 }
 
 void MainWindow::startServer()
 {
-    /*if(game->getNetworkCore()->startServer(1234))
-    {
-        setStatusTip("Listening for connections on port 1234.");
-        //game->getGameLobby()->show();
-    }*/
-
-    game->getRules()->executeRule("ruleInitGame", game->getPlayers()[0]);
+    //game->getRules()->executeRule("ruleStartGameServer", NULL);
+    game->getNetworkCore()->startServer(1234);
 }
 
 void MainWindow::showPrefs()
 {
-    qDebug() << "showPrefs()";
     prefsForm->show();
 }
 

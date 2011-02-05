@@ -33,7 +33,7 @@ Game::Game()
     board = new Board(this);
     objGLLoader = new OBJGLLoader();
     bank = new Bank();
-    networkCore = new NetworkCore();
+    networkCore = new NetworkCore(this);
 
     players.append(new Player(this));
 }

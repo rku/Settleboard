@@ -37,6 +37,10 @@ GameRules::GameRules(Game *_game)
     : GameObject(_game)
 {
     isRuleChainWaiting = false;
+    playerPanel = NULL;
+    gameInfoPanel = NULL;
+    messagePanel = NULL;
+    controlPanel = NULL;
 
     REGISTER_RULE(ruleInitGame);
     REGISTER_RULE(ruleInitPlayers);
@@ -82,13 +86,14 @@ GameRules::GameRules(Game *_game)
     REGISTER_RULE(ruleSelectRoadwayAtCrossroad);
     REGISTER_RULE(ruleRoadwaySelected);
     REGISTER_RULE(ruleCanSelectRoadway);
-
-    initActions();
 }
 
 GameRules::~GameRules()
 {
-    while(!actions.isEmpty()) delete actions.takeFirst();
+    if(playerPanel) delete playerPanel;
+    if(gameInfoPanel) delete gameInfoPanel;
+    if(controlPanel) delete controlPanel;
+    if(messagePanel) delete messagePanel;
 }
 
 void GameRules::registerRule(QString name, GameRule rule)
@@ -165,41 +170,6 @@ void GameRules::cancelRuleChain()
     isRuleChainWaiting = false;
 
     qDebug() << "Rule chain canceled";
-}
-
-void GameRules::initActions()
-{
-    tradeAct = new QAction(tr("Trade"), this);
-    tradeAct->setEnabled(false);
-    actions.append(tradeAct);
-
-    buildSettlementAct = new QAction(tr("Build Settlement"), this);
-    buildSettlementAct->setEnabled(false);
-    actions.append(buildSettlementAct);
-
-    buildCityAct = new QAction(tr("Build City"), this);
-    buildCityAct->setEnabled(false);
-    actions.append(buildCityAct);
-
-    buildRoadAct = new QAction(tr("Build Road"), this);
-    buildRoadAct->setEnabled(false);
-    actions.append(buildRoadAct);
-}
-
-QList<QAction*> GameRules::getActions()
-{
-    return actions;
-}
-
-unsigned int GameRules::getWinningPoints()
-{
-    return winningPoints;
-}
-
-void GameRules::setWinningPoints(unsigned int n)
-{
-    Q_ASSERT(n > 0);
-    winningPoints = n;
 }
 
 // STANDARD RULES

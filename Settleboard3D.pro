@@ -46,6 +46,7 @@ HEADERS = client/GLWidget.h \
           client/MessagePanel.h \
           client/GameInfoPanel.h \
           client/NetworkCore.h \
+          client/NetworkPacket.h \
           client/GameLobby.h
 
 SOURCES = client/GLWidget.cpp \
@@ -59,7 +60,7 @@ SOURCES = client/GLWidget.cpp \
           client/GLGameModel.cpp \
           client/GLGameModelProxy.cpp \
           client/Board.cpp\
-          client/UISTyle.cpp \
+          client/UIStyle.cpp \
           client/GameRules.cpp \
           client/GameConnector.cpp \
           client/PrefsForm.cpp \
@@ -75,5 +76,6 @@ SOURCES = client/GLWidget.cpp \
           client/MessagePanel.cpp \
           client/GameInfoPanel.cpp \
           client/NetworkCore.cpp \
+          client/NetworkPacket.cpp \
           client/GameLobby.cpp
 
