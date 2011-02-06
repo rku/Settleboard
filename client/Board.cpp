@@ -157,9 +157,6 @@ void Board::handleMouseClick(QMouseEvent *event)
             return;
         }
     }
-
-    // TEST:
-    else game->getRules()->executeRule("ruleInitGame", game->getPlayers()[0]);
 }
 
 void Board::handleMouseOver(QMouseEvent *event)

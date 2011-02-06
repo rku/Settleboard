@@ -7,6 +7,7 @@
 #include <QMap>
 #include <QByteArray>
 #include <QtDebug>
+#include <QVariant>
 
 #define NETWORK_PACKET_MAGIC    0xCAFE
 #define NETWORK_PACKET_VERSION  0x1
@@ -21,6 +22,7 @@ class NetworkPacket
         bool getIsValid();
         void setRuleName(const QString &name) { ruleName = name; }
         const QString &getRuleName() { return ruleName; }
+        void addData(const QString &identifier, const QVariant&);
 
         friend QDataStream &operator<<(QDataStream&, const NetworkPacket&);
         friend QDataStream &operator>>(QDataStream&, NetworkPacket&);
@@ -28,7 +30,7 @@ class NetworkPacket
     protected:
         quint16 magic;
         uint version;
-        QMap<QString, QByteArray> data;
+        QMap<QString, QVariant> data;
         QString ruleName;
 };
 

@@ -31,6 +31,8 @@
 #include "MessagePanel.h"
 #include "GameInfoPanel.h"
 #include "FileManager.h"
+#include "NetworkPacket.h"
+#include "NetworkCore.h"
 #include "Game.h"
 
 GameRules::GameRules(QObject *parent) : QObject(parent)
@@ -102,7 +104,22 @@ void GameRules::registerRule(QString name, GameRule rule)
 
 bool GameRules::executeRule(QString name, Player *player)
 {
+    NetworkPacket packet(name);
+
+    // if this is a client, send the rule to the server
+    if(!Game::getInstance()->getNetworkCore()->getIsServer())
+    {
+        Game::getInstance()->getNetworkCore()->sendPacket(packet);
+        return false;
+    }
+
+    // we are the server... execute rule and broadcast it
     Q_ASSERT(!isRuleChainWaiting);
+
+    RuleData::iterator i;
+    for(i = ruleData.begin(); i != ruleData.end(); ++i)
+        packet.addData(i.key(), i.value());
+    Game::getInstance()->getNetworkCore()->sendPacket(packet);
 
     qDebug() << "Executing rule:" << name;
     Q_ASSERT(rules.contains(name));

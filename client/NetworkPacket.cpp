@@ -22,6 +22,11 @@ bool NetworkPacket::getIsValid()
             version == NETWORK_PACKET_VERSION);
 }
 
+void NetworkPacket::addData(const QString &identifier, const QVariant &d)
+{
+    data.insert(identifier, d);
+}
+
 QDataStream &operator<<(QDataStream &stream, const NetworkPacket &packet)
 {
     stream << packet.magic;

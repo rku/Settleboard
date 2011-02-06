@@ -2,6 +2,8 @@
 #ifndef CROSSROAD_H
 #define CROSSROAD_H 1
 
+#include <QObject>
+
 #include "GLGameModelProxy.h"
 #include "GLTypes.h"
 
@@ -47,6 +49,22 @@ class Crossroad : public GLGameModelProxy
 };
 
 Q_DECLARE_METATYPE(Crossroad*);
+
+class CrossroadPointer
+{
+    public:
+        CrossroadPointer() {}
+        CrossroadPointer(Crossroad *p) { object = p; }
+        CrossroadPointer(const CrossroadPointer &c) { object = c.object; }
+
+        friend QDataStream &operator<<(QDataStream&, const CrossroadPointer&);
+        friend QDataStream &operator>>(QDataStream&, CrossroadPointer&);
+
+    protected:
+        Crossroad *object;
+};
+
+Q_DECLARE_METATYPE(CrossroadPointer);
 
 #endif
 

@@ -119,3 +119,22 @@ void Crossroad::placePlayerObject(PlayerObject *p)
     }
 }
 
+// QDataStream operators
+
+QDataStream &operator<<(QDataStream &stream, const CrossroadPointer &obj)
+{
+    stream << obj.object->getVertex();
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, CrossroadPointer &obj)
+{
+    QVector3D v;
+
+    stream >> v;
+    // find object with vertex v
+    // obj.object = Game::getInstance()->getBoard()->getCrossroadAtVertex(v);
+
+    return stream;
+}
+

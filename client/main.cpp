@@ -23,6 +23,7 @@
 #include <QTextStream>
 #include <QtDebug>
 
+#include "Crossroad.h"
 #include "FileManager.h"
 #include "MainWindow.h"
 
@@ -42,10 +43,18 @@ void loadStyleSheet()
     else qDebug() << "Cannot load stylesheet" << data.fileName();
 }
 
+void registerMetaTypeOperators()
+{
+    // register stream operators for game types
+    qRegisterMetaType<CrossroadPointer>("CrossroadPointer");
+    qRegisterMetaTypeStreamOperators<CrossroadPointer>("CrossroadPointer");
+}
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    registerMetaTypeOperators();
     loadStyleSheet();
 
     MainWindow mainWindow;

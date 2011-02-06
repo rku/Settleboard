@@ -34,6 +34,7 @@ Game::Game(QObject *parent) : QObject(parent)
     state = PreparingState;
     mainWindow = MainWindow::getInstance();
 
+    // initialize game objects
     glWidget = new GLWidget(mainWindow);
     textureManager = new TextureManager(this);
     rules = new GameRules(this);

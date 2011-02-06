@@ -47,15 +47,6 @@ typedef struct _RuleChainElement {
     bool suspend;
 } RuleChainElement;
 
-typedef struct _RuleDataElement {
-    void *value; // set to the address of the value
-    uint uintValue;
-    int intValue;
-    bool boolValue;
-    void *pointerValue;
-    QString stringValue;
-} RuleDataElement;
-
 // a lot of convenience macros
 
 #define REGISTER_RULE(func) \
