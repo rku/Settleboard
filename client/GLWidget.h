@@ -46,7 +46,9 @@ class GLWidget : public QGLWidget
     public slots:
 
     signals:
+        void render();
         void mousePressed(QMouseEvent*);
+        void mouseOver(QMouseEvent*);
 
     protected:
         void initializeGL();

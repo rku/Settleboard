@@ -28,7 +28,6 @@
 class GLWidget;
 class GameConnector;
 class PrefsForm;
-class UIStyle;
 class Game;
 
 class MainWindow : public QMainWindow
@@ -38,6 +37,8 @@ class MainWindow : public QMainWindow
     public:
         MainWindow();
         ~MainWindow();
+
+        static MainWindow* getInstance();
 
         void initGame();
         void newGame();
@@ -56,11 +57,12 @@ class MainWindow : public QMainWindow
         void createDockWidgets();
         void createStatusBar();
 
+        static MainWindow *instance;
+
         Game *game;
         GLWidget *glWidget;
         GameConnector *gameConnector;
         PrefsForm *prefsForm;
-        UIStyle *uiStyle;
         QMenu *gameMenu;
         QMenu *settingsMenu;
         QMenu *helpMenu;

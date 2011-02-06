@@ -18,19 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Game.h"
 #include "Player.h"
 #include "Bank.h"
 #include "NetworkCore.h"
 #include "OBJGLLoader.h"
+#include "GLWidget.h"
+#include "TextureManager.h"
+#include "GameRules.h"
+#include "MainWindow.h"
+
+#include "Game.h"
 
 Game::Game(QObject *parent) : QObject(parent)
 {
     state = PreparingState;
+    mainWindow = MainWindow::getInstance();
 
+    glWidget = new GLWidget(mainWindow);
     textureManager = new TextureManager(this);
     rules = new GameRules(this);
+
     board = new Board(this);
+    connect(glWidget, SIGNAL(render()),
+        board, SLOT(render()), Qt::DirectConnection);
+    connect(glWidget, SIGNAL(mousePressed(QMouseEvent*)),
+        board, SLOT(handleMousePressed(QMouseEvent*)));
+    connect(glWidget, SIGNAL(mouseOver(QMouseEvent*)),
+        board, SLOT(handleMouseOver(QMouseEvent*)));
+
     objGLLoader = new OBJGLLoader();
     bank = new Bank();
     networkCore = new NetworkCore(this);

@@ -27,6 +27,8 @@
 
 #include "HexTile.h"
 #include "NumberChip.h"
+#include "GameRules.h"
+#include "GLWidget.h"
 #include "GLTypes.h"
 #include "BoardState.h"
 
@@ -49,7 +51,6 @@ class Board : public QObject
         Board(QObject *parent = 0);
         ~Board();
         void freeObjects();
-        void render();
         void generate();
         void update();
         bool loadFromFile(const QString&);
@@ -58,9 +59,6 @@ class Board : public QObject
 
         void resetBoardState(BoardObjectState s = defaultBoardObjectState);
         void updateBoardState(BoardState&);
-
-        bool handleMouseClick(const QPoint &mousePos);
-        bool handleMouseOver(const QPoint &mousePos);
 
         // selection
         void setSelectionMode();
@@ -73,6 +71,11 @@ class Board : public QObject
         const QList<HexTile*> getBoardTiles() { return boardTiles; }
         const QList<Crossroad*> getCrossroads() { return crossroads; }
         const QList<Roadway*> getRoadways() { return roadways; }
+
+    public slots:
+        void render();
+        void handleMouseClick(QMouseEvent*);
+        void handleMouseOver(QMouseEvent*);
 
     protected:
         template <typename T> const T getObjectsAtMousePos(T, const QPoint&);

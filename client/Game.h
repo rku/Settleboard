@@ -22,13 +22,13 @@
 #define GAME_H 1
 
 #include "Board.h"
-#include "GLWidget.h"
-#include "TextureManager.h"
-#include "GameRules.h"
 
 class Player;
+class GLWidget;
 class OBJGLLoader;
 class Bank;
+class GameRules;
+class TextureManager;
 class MainWindow;
 class NetworkCore;
 
@@ -44,23 +44,14 @@ class Game : public QObject
         enum GameState {PreparingState, PlayingState, FinishedState};
         GameState getState() { return state; }
 
-        void setGLWidget(GLWidget *w) { glWidget = w; }
-        GLWidget* getGLWidget() { return glWidget; }
-
-        void setMainWindow(MainWindow *w) { mainWindow = w; }
         MainWindow* getMainWindow() { return mainWindow; }
-
-        void setRules(GameRules *r) { rules = r; }
+        GLWidget* getGLWidget() { return glWidget; }
         GameRules* getRules() { return rules; }
-
         TextureManager *getTextureManager() { return textureManager; }
         Board *getBoard() { return board; }
         OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
-
         const QList<Player*>& getPlayers() { return players; }
-
         Bank *getBank() { return bank; }
-
         NetworkCore *getNetworkCore() { return networkCore; }
 
     protected:

@@ -23,6 +23,7 @@
 #include "Crossroad.h"
 #include "BoardState.h"
 #include "FileManager.h"
+#include "GLWidget.h"
 #include "Roadway.h"
 
 #include <math.h>
@@ -139,11 +140,12 @@ GLGameModel *Board::getSelectableObjectAtMousePos(const QPoint &pos)
     return (hits.size()>0) ? hits.at(0) : NULL;
 }
 
-bool Board::handleMouseClick(const QPoint &mousePos)
+void Board::handleMouseClick(QMouseEvent *event)
 {
-    Game *game = Game::getInstance();
+    if(!isLoaded) return;
 
-    if(!isLoaded) return false;
+    Game *game = Game::getInstance();
+    const QPoint mousePos = event->pos();
 
     if(getIsSelectionModeActive())
     {
@@ -152,19 +154,19 @@ bool Board::handleMouseClick(const QPoint &mousePos)
         {
             setSelectedObject(obj);
             endSelectionMode();
-            return true;
+            return;
         }
     }
 
     // TEST:
     else game->getRules()->executeRule("ruleInitGame", game->getPlayers()[0]);
-
-    return true;
 }
 
-bool Board::handleMouseOver(const QPoint &mousePos)
+void Board::handleMouseOver(QMouseEvent *event)
 {
-    if(!isLoaded) return false;
+    if(!isLoaded) return;
+
+    const QPoint mousePos = event->pos();
 
     // highlight selectable objects at mousepos
     highlightObjectsAtMousePos(crossroads, mousePos);
@@ -173,8 +175,6 @@ bool Board::handleMouseOver(const QPoint &mousePos)
 
     Game *game = Game::getInstance();
     game->getGLWidget()->updateGL();
-
-    return false;
 }
 
 void Board::setSelectionMode()

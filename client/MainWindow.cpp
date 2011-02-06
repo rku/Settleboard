@@ -22,20 +22,16 @@
 
 #include "MainWindow.h"
 #include "GLWidget.h"
-#include "UIStyle.h"
 #include "Game.h"
 #include "GameConnector.h"
 #include "PrefsForm.h"
-#include "ControlPanel.h"
-#include "PlayerPanel.h"
-#include "MessagePanel.h"
+#include "GameRules.h"
 #include "NetworkCore.h"
-#include "GameInfoPanel.h"
-#include "GameLobby.h"
 
 MainWindow::MainWindow()
 {
-    uiStyle = new UIStyle();
+    Q_ASSERT(instance == 0);
+    instance = this;
 
     setWindowTitle(tr("Settleboard3D"));
 
@@ -52,15 +48,16 @@ MainWindow::~MainWindow()
 {
 }
 
+MainWindow* MainWindow::instance = 0;
+MainWindow* MainWindow::getInstance()
+{
+    return instance;
+}
+
 void MainWindow::initGame()
 {
-    GLWidget *glWidget;
-
     game = Game::getInstance();
-    glWidget = new GLWidget(this);
-    game->setGLWidget(glWidget);
-    game->setMainWindow(this);
-    setCentralWidget(glWidget);
+    setCentralWidget(game->getGLWidget());
 }
 
 void MainWindow::newGame()

@@ -23,6 +23,7 @@
 #include <QColor>
 
 #include "GLGameModel.h"
+#include "GLWidget.h"
 #include "Game.h"
 #include "OBJGLLoader.h"
 
