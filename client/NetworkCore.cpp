@@ -4,6 +4,8 @@
 #include "NetworkPacket.h"
 #include "NetworkCore.h"
 
+#include "Crossroad.h"
+
 NetworkCore::NetworkCore(QObject *parent) : QObject(parent)
 {
     server = NULL;
@@ -54,6 +56,10 @@ void NetworkCore::connected()
     QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
     qDebug() << "Connected to" << s->peerAddress();
     connections.append(s);
+
+    NetworkPacket testPacket("ruleInitGame");
+    //testPacket.addData("crossroad", *(new Crossroad(QVector3D(0.0, 0.1, 0.2))));
+    sendPacket(s, testPacket);
 }
 
 void NetworkCore::sendPacket(const NetworkPacket &packet)

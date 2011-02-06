@@ -48,6 +48,7 @@ typedef struct _RuleChainElement {
 } RuleChainElement;
 
 typedef struct _RuleDataElement {
+    void *value; // set to the address of the value
     uint uintValue;
     int intValue;
     bool boolValue;
@@ -81,44 +82,16 @@ typedef struct _RuleDataElement {
     ruleChain.insert(ruleChain.begin(), _rce); }
 
 #define RULEDATA_REQUIRE(n) Q_ASSERT(ruleData.contains(n));
-#define RULEDATA_PUSH_INT(n, i) \
-    if(1) { \
-        RuleDataElement _re = { 0, i, false, NULL, QString() }; \
-        ruleData.insertMulti(n, _re); }
-#define RULEDATA_PUSH_UINT(n, i) \
-    if(1) { \
-        RuleDataElement _re = { i, 0, false, NULL, QString() }; \
-        ruleData.insertMulti(n, _re); }
-#define RULEDATA_PUSH_BOOL(n, b) \
-    if(1) { \
-        RuleDataElement _re = { 0, 0, b, NULL, QString() }; \
-        ruleData.insertMulti(n, _re); }
-#define RULEDATA_PUSH_POINTER(n, p) \
-    if(1) { \
-        RuleDataElement _re = { 0, 0, false, p, QString() }; \
-        ruleData.insertMulti(n, _re); }
-#define RULEDATA_PUSH_STRING(n, s) \
-    if(1) { \
-        RuleDataElement _re = { 0, 0, false, NULL, s }; \
-        ruleData.insertMulti(n, _re); }
-
-#define RULEDATA_POP_INT(n)      ruleData.take(n).intValue
-#define RULEDATA_POP_UINT(n)     ruleData.take(n).uintValue
-#define RULEDATA_POP_BOOL(n)     ruleData.take(n).boolValue
-#define RULEDATA_POP_POINTER(n)  ruleData.take(n).pointerValue
-#define RULEDATA_POP_STRING(n)   ruleData.take(n).stringValue
-#define RULEDATA_READ_INT(n)     ruleData.value(n).intValue
-#define RULEDATA_READ_UINT(n)    ruleData.value(n).uintValue
-#define RULEDATA_READ_BOOL(n)    ruleData.value(n).boolValue
-#define RULEDATA_READ_POINTER(n) ruleData.value(n).pointerValue
-#define RULEDATA_READ_STRING(n)  ruleData.value(n).stringValue
+#define RULEDATA_PUSH(n, i) ruleData.insertMulti(n, qVariantFromValue(i))
+#define RULEDATA_POP(n)     ruleData.take(n)
+#define RULEDATA_READ(n)    ruleData.value(n)
 
 #define LOG_PLAYER_MSG(m) \
     messagePanel->addLogMessage(player, m)
 #define LOG_SYSTEM_MSG(m) \
     messagePanel->addSystemMessage(m);
 
-typedef QMap<QString, RuleDataElement> RuleData;
+typedef QMap<QString, QVariant> RuleData;
 typedef QList<RuleChainElement> RuleChain;
 
 class GameRules : public QObject

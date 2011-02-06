@@ -13,12 +13,14 @@ GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
     diceTextLabel = new QLabel("Dice values:", widget);
     dice1PixmapLabel = new QLabel(widget);
     dice2PixmapLabel = new QLabel(widget);
-    currentPlayerLabel = new QLabel(widget);
+    currentPlayerLabel = new QLabel("No player", widget);
 
     l->addWidget(diceTextLabel, 0, 0, Qt::AlignLeft);
     l->addWidget(dice1PixmapLabel, 0, 1, Qt::AlignRight);
     l->addWidget(dice2PixmapLabel, 0, 2, Qt::AlignRight);
     l->addWidget(currentPlayerLabel, 1, 0, 1, 3, Qt::AlignLeft);
+
+    l->setRowStretch(2, 1);
 
     widget->setLayout(l);
     setWidget(widget);

@@ -8,6 +8,10 @@ QMainWindow, QDockWidget {
     background: black;
 }
 
+QDockWidget QLabel {
+    color: white;
+}
+
 QDockWidget::title {
 }
 

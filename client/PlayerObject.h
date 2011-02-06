@@ -54,5 +54,7 @@ class PlayerObject : public GLGameModel
         QPixmap *icon;
 };
 
+Q_DECLARE_METATYPE(PlayerObject*);
+
 #endif
 

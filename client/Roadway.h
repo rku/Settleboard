@@ -48,5 +48,7 @@ class Roadway : public GLGameModelProxy
         QList<Crossroad*> crossroads;
 };
 
+Q_DECLARE_METATYPE(Roadway*);
+
 #endif
 

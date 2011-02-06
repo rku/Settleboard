@@ -26,7 +26,7 @@ Player::Player(QTcpSocket *_socket, QObject *parent)
 {
     isSpectator = false;
     color = Qt::red;
-    name = "unknown";
+    name = "Unnamed";
 }
 
 Player::~Player()
