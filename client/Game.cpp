@@ -42,7 +42,7 @@ Game::Game(QObject *parent) : QObject(parent)
     connect(glWidget, SIGNAL(render()),
         board, SLOT(render()), Qt::DirectConnection);
     connect(glWidget, SIGNAL(mousePressed(QMouseEvent*)),
-        board, SLOT(handleMousePressed(QMouseEvent*)));
+        board, SLOT(handleMouseClick(QMouseEvent*)));
     connect(glWidget, SIGNAL(mouseOver(QMouseEvent*)),
         board, SLOT(handleMouseOver(QMouseEvent*)));
 
