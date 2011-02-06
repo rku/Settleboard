@@ -28,15 +28,16 @@
 #include <QTcpSocket>
 
 #include "GameCardStack.h"
-#include "GameObject.h"
 
 class Game;
 class PlayerObject;
 
-class Player : public GameObject
+class Player : public QObject
 {
+    Q_OBJECT
+
     public:
-        Player(Game*);
+        Player(QTcpSocket* = NULL, QObject *parent = 0);
         ~Player();
 
         const QColor &getColor() { return color; }

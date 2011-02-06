@@ -23,18 +23,16 @@
 
 #include <QGLWidget>
 
-#include "GameObject.h"
-
 #define GL_SELBUF_SIZE      512
 
-class Game;
+class Board;
 
-class GLWidget : public QGLWidget, GameObject
+class GLWidget : public QGLWidget
 {
     Q_OBJECT
 
     public:
-        GLWidget(Game *_game, QWidget *parent = 0);
+        GLWidget(QWidget *parent = 0);
         ~GLWidget();
 
         void begin2DMode();
@@ -48,6 +46,7 @@ class GLWidget : public QGLWidget, GameObject
     public slots:
 
     signals:
+        void mousePressed(QMouseEvent*);
 
     protected:
         void initializeGL();

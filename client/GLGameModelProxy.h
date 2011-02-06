@@ -8,8 +8,10 @@ class PlayerObject;
 
 class GLGameModelProxy : public GLGameModel
 {
+    Q_OBJECT
+
     public:
-        GLGameModelProxy(Game*);
+        GLGameModelProxy(QObject *parent = 0);
         ~GLGameModelProxy();
 
         virtual bool getIsPlayerObjectPlaced()

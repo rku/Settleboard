@@ -7,8 +7,8 @@
 #include "PlayerObject.h"
 #include "Crossroad.h"
 
-Crossroad::Crossroad(Game *_game, QVector3D v)
-    : GLGameModelProxy(_game)
+Crossroad::Crossroad(QVector3D v, QObject *parent)
+    : GLGameModelProxy(parent)
 {
     selectionCircleListID = glGenLists(1);
     createSelectionCircle();
@@ -52,6 +52,7 @@ void Crossroad::createSelectionCircle()
 
 void Crossroad::drawSelectionCircle()
 {
+    Game *game = Game::getInstance();
     QGLWidget *widget = game->getGLWidget();
     QColor color = game->getPlayers().at(0)->getColor();
 

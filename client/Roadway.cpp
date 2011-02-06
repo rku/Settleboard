@@ -5,8 +5,8 @@
 #include "PlayerObject.h"
 #include "Roadway.h"
 
-Roadway::Roadway(Game *_game, QVector3D a, QVector3D b)
-    : GLGameModelProxy(_game)
+Roadway::Roadway(QVector3D a, QVector3D b, QObject *parent)
+    : GLGameModelProxy(parent)
 {
     playerObject = NULL;
 
@@ -45,6 +45,7 @@ void Roadway::draw()
         return;
     }
 
+    Game *game = Game::getInstance();
     Player *p = game->getPlayers().at(0);
     QColor color = (getIsSelectable()) ? p->getColor() : Qt::black;
     float width = (getIsSelectable()) ? 5.0f : 2.0f;

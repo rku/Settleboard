@@ -6,21 +6,27 @@ NetworkPacket::NetworkPacket()
 {
 }
 
-NetworkPacket::NetworkPacket(const QString &packetRule)
+NetworkPacket::NetworkPacket(const QString &rule)
     : magic(NETWORK_PACKET_MAGIC), version(NETWORK_PACKET_VERSION)
 {
-    setPacketRule(packetRule);
+    setRuleName(rule);
 }
 
 NetworkPacket::~NetworkPacket()
 {
 }
 
+bool NetworkPacket::getIsValid()
+{
+    return (magic   == NETWORK_PACKET_MAGIC &&
+            version == NETWORK_PACKET_VERSION);
+}
+
 QDataStream &operator<<(QDataStream &stream, const NetworkPacket &packet)
 {
     stream << packet.magic;
     stream << packet.version;
-    stream << packet.packetRule;
+    stream << packet.ruleName;
     stream << packet.data;
     return stream;
 }
@@ -40,7 +46,7 @@ QDataStream &operator>>(QDataStream &stream, NetworkPacket &packet)
         qDebug() << "Invalid packet version number!";
     }
 
-    stream >> packet.packetRule;
+    stream >> packet.ruleName;
     stream >> packet.data;
     return stream;
 }

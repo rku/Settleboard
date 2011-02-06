@@ -32,8 +32,10 @@ class GLGameModelProxy;
 
 class PlayerObject : public GLGameModel
 {
+    Q_OBJECT
+
     public:
-        PlayerObject(Game*, Player*, QString _type);
+        PlayerObject(Player*, QString _type, QObject *parent);
 
         virtual Player* getOwner() { return owner; }
 

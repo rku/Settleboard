@@ -28,8 +28,6 @@
 #include <QStack>
 #include <QLinkedList>
 
-#include "GameObject.h"
-
 class Game;
 class Player;
 class GameRules;
@@ -40,7 +38,7 @@ class MessagePanel;
 class GameInfoPanel;
 
 typedef struct _GameRule {
-    bool (GameRules::*ruleFunc)(_GameRule,Player*);
+    bool (GameRules::*ruleFunc)(Game*,Player*);
 } GameRule;
 
 typedef struct _RuleChainElement {
@@ -65,8 +63,8 @@ typedef struct _RuleDataElement {
         rule.ruleFunc = &GameRules::func; \
         registerRule(#func, rule); \
     }
-#define DECLARE_RULE(a) bool a(GameRule, Player*);
-#define IMPLEMENT_RULE(a) bool GameRules::a(GameRule rule, Player *player)
+#define DECLARE_RULE(a) bool a(Game*, Player*);
+#define IMPLEMENT_RULE(a) bool GameRules::a(Game *game, Player *player)
 #define EXECUTE_SUBRULE(n) executeRule(#n, player)
 #define EXECUTE_SUBRULE_FOR_PLAYER(n,p) executeRule(#n, p)
 #define RULECHAIN_ADD(n) if(1) { \
@@ -120,12 +118,15 @@ typedef struct _RuleDataElement {
 #define LOG_SYSTEM_MSG(m) \
     messagePanel->addSystemMessage(m);
 
-class GameRules : public QObject, public GameObject
+typedef QMap<QString, RuleDataElement> RuleData;
+typedef QList<RuleChainElement> RuleChain;
+
+class GameRules : public QObject
 {
     Q_OBJECT
 
     public:
-        GameRules(Game*);
+        GameRules(QObject *parent = 0);
         ~GameRules();
 
         void registerRule(QString name, GameRule);
@@ -138,7 +139,8 @@ class GameRules : public QObject, public GameObject
         void startRuleChain();
         void suspendRuleChain();
         void ruleChainFinished();
-        
+        void sendCurrentRule();
+
         DECLARE_RULE(ruleInitGame);
         DECLARE_RULE(ruleInitPlayers);
         DECLARE_RULE(ruleInitGameCards);
@@ -187,8 +189,10 @@ class GameRules : public QObject, public GameObject
         ControlPanel *controlPanel;
         GameInfoPanel *gameInfoPanel;
         MessagePanel *messagePanel;
-        QMap<QString, RuleDataElement> ruleData;
-        QList<RuleChainElement> ruleChain;
+        RuleData ruleData;
+        RuleChain ruleChain;
+        QStack<RuleData> ruleDataStack;
+        QStack<RuleChain> ruleChainStack;
         bool isRuleChainWaiting;
         QMap<QString, GameRule> rules;
 };

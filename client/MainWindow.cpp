@@ -56,11 +56,11 @@ void MainWindow::initGame()
 {
     GLWidget *glWidget;
 
-    game = new Game();
-    glWidget = new GLWidget(game);
-    setCentralWidget(glWidget);
+    game = Game::getInstance();
+    glWidget = new GLWidget(this);
     game->setGLWidget(glWidget);
     game->setMainWindow(this);
+    setCentralWidget(glWidget);
 }
 
 void MainWindow::newGame()
@@ -70,10 +70,10 @@ void MainWindow::newGame()
 
 void MainWindow::createDialogs()
 {
-    gameConnector = new GameConnector(game, this);
+    gameConnector = new GameConnector(this);
     gameConnector->setModal(true);
 
-    prefsForm = new PrefsForm(game, this);
+    prefsForm = new PrefsForm(this);
     prefsForm->setModal(true);
 }
 
@@ -146,6 +146,7 @@ void MainWindow::startServer()
 {
     //game->getRules()->executeRule("ruleStartGameServer", NULL);
     game->getNetworkCore()->startServer(1234);
+    game->getRules()->executeRule("ruleInitGame", game->getPlayers()[0]);
 }
 
 void MainWindow::showPrefs()

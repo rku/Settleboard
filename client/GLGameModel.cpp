@@ -26,8 +26,7 @@
 #include "Game.h"
 #include "OBJGLLoader.h"
 
-GLGameModel::GLGameModel(Game *_game)
-    : GameObject(_game)
+GLGameModel::GLGameModel(QObject *parent) : QObject(parent)
 {
     created = false;
 
@@ -57,7 +56,7 @@ GLGameModel::~GLGameModel()
 void GLGameModel::create()
 {
     GLuint currentTex = 65535;
-    TextureManager *tm = game->getTextureManager();
+    TextureManager *tm = Game::getInstance()->getTextureManager();
 
     glNewList(displayListID, GL_COMPILE);
 
@@ -75,7 +74,7 @@ void GLGameModel::create()
             {
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texId);
-                game->getGLWidget()->qglColor(Qt::white);
+                Game::getInstance()->getGLWidget()->qglColor(Qt::white);
                 currentTex = texId;
             }
         }
@@ -87,7 +86,7 @@ void GLGameModel::create()
                 currentTex = 0;
                 glBindTexture(GL_TEXTURE_2D, 0);
                 glDisable(GL_TEXTURE_2D);
-                game->getGLWidget()->qglColor(color);
+                Game::getInstance()->getGLWidget()->qglColor(color);
             }
         }
 
@@ -133,6 +132,7 @@ void GLGameModel::create()
 
 void GLGameModel::load(QString filename, QColor objColor)
 {
+    Game *game = Game::getInstance();
     OBJGLLoader *loader = game->getOBJGLLoader();
     OBJ *obj = loader->load(filename);
 

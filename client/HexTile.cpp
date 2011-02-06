@@ -24,8 +24,7 @@
 #include "FileManager.h"
 #include "HexTile.h"
 
-HexTile::HexTile(Game *_game)
-    : GLGameModelProxy(_game)
+HexTile::HexTile(QObject *parent) : GLGameModelProxy(parent)
 {
     setIsLightingEnabled(false);
     setType(HEXTILE_TYPE_WATER);

@@ -33,8 +33,7 @@
 #include "FileManager.h"
 #include "Game.h"
 
-GameRules::GameRules(Game *_game)
-    : GameObject(_game)
+GameRules::GameRules(QObject *parent) : QObject(parent)
 {
     isRuleChainWaiting = false;
     playerPanel = NULL;
@@ -90,10 +89,6 @@ GameRules::GameRules(Game *_game)
 
 GameRules::~GameRules()
 {
-    if(playerPanel) delete playerPanel;
-    if(gameInfoPanel) delete gameInfoPanel;
-    if(controlPanel) delete controlPanel;
-    if(messagePanel) delete messagePanel;
 }
 
 void GameRules::registerRule(QString name, GameRule rule)
@@ -113,7 +108,7 @@ bool GameRules::executeRule(QString name, Player *player)
     Q_ASSERT(rules.contains(name));
 
     GameRule rule = rules.value(name);
-    return (this->*rule.ruleFunc)(rule, player);
+    return (this->*rule.ruleFunc)(Game::getInstance(), player);
 }
 
 void GameRules::suspendRuleChain()
@@ -151,7 +146,7 @@ void GameRules::continueRuleChain()
     }
 
     if(ruleChain.size() == 0) ruleChainFinished();
-    game->getBoard()->update();
+    Game::getInstance()->getBoard()->update();
 }
 
 void GameRules::ruleChainFinished()
@@ -160,7 +155,7 @@ void GameRules::ruleChainFinished()
     ruleChain.clear();
     ruleData.clear();
     isRuleChainWaiting = false;
-    game->getBoard()->resetBoardState();
+    Game::getInstance()->getBoard()->resetBoardState();
 }
 
 void GameRules::cancelRuleChain()
@@ -360,21 +355,21 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
 {
     QMainWindow *mainWindow = game->getMainWindow();
 
-    playerPanel = new PlayerPanel("");
+    playerPanel = new PlayerPanel("", mainWindow);
     playerPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     playerPanel->setFixedWidth(200);
     playerPanel->setFloating(false);
     playerPanel->setFeatures(QDockWidget::DockWidgetMovable);
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
 
-    gameInfoPanel = new GameInfoPanel("Game Info");
+    gameInfoPanel = new GameInfoPanel("Game Info", mainWindow);
     gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     gameInfoPanel->setMinimumHeight(150);
     gameInfoPanel->setMaximumHeight(150);
     gameInfoPanel->setFeatures(QDockWidget::DockWidgetMovable);
     mainWindow->addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
 
-    messagePanel = new MessagePanel("Messages");
+    messagePanel = new MessagePanel("Messages", mainWindow);
     messagePanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     messagePanel->setMinimumHeight(150);
     messagePanel->setMinimumWidth(150);
@@ -382,7 +377,7 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
     messagePanel->setFeatures(QDockWidget::DockWidgetMovable);
     mainWindow->addDockWidget(Qt::RightDockWidgetArea, messagePanel);
 
-    controlPanel = new ControlPanel("");
+    controlPanel = new ControlPanel("", mainWindow);
     controlPanel->setFixedHeight(60);
     controlPanel->setMaximumHeight(60);
     controlPanel->setMinimumHeight(60);

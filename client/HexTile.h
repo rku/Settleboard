@@ -40,8 +40,10 @@ class Roadway;
 
 class HexTile : public GLGameModelProxy
 {
+    Q_OBJECT
+
     public:
-        HexTile(Game*);
+        HexTile(QObject *parent = 0);
         ~HexTile();
 
         void setType(const unsigned int);

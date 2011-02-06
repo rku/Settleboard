@@ -21,8 +21,7 @@
 #include "NumberChip.h"
 #include "Game.h"
 
-NumberChip::NumberChip(Game *_game)
-    : GLGameModel(_game)
+NumberChip::NumberChip(QObject *parent) : GLGameModel(parent)
 {
     number = 1;
 }

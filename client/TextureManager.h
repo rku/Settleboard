@@ -24,8 +24,6 @@
 #include <QtOpenGL>
 #include <QList>
 
-#include "GameObject.h"
-
 struct Texture {
     QString name;
     GLuint id;
@@ -33,10 +31,12 @@ struct Texture {
     unsigned int height;
 };
 
-class TextureManager : public GameObject
+class TextureManager : public QObject
 {
+    Q_OBJECT
+
     public:
-        TextureManager(Game*);
+        TextureManager(QObject *parent = 0);
         ~TextureManager();
 
         GLuint getTextureId(const QString&);

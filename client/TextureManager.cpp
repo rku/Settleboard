@@ -22,7 +22,7 @@
 #include "FileManager.h"
 #include "Game.h"
 
-TextureManager::TextureManager(Game *_game) : GameObject(_game)
+TextureManager::TextureManager(QObject *parent) : QObject(parent)
 {
 }
 
@@ -32,7 +32,7 @@ TextureManager::~TextureManager()
     while(!textures.isEmpty())
     {
         Texture tex = textures.takeFirst();
-        game->getGLWidget()->deleteTexture(tex.id);
+        Game::getInstance()->getGLWidget()->deleteTexture(tex.id);
         //glDeleteTextures(1, &tex.id);
     }
 }
@@ -55,7 +55,7 @@ const Texture& TextureManager::loadTexture(const QString& filename)
 
     //glBindTexture(GL_TEXTURE_2D, newTex.id);
     tex = QImage(filepath);
-    newTex.id = game->getGLWidget()->bindTexture(tex);
+    newTex.id = Game::getInstance()->getGLWidget()->bindTexture(tex);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 

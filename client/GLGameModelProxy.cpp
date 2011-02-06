@@ -4,7 +4,7 @@
 #include "PlayerObject.h"
 #include "GLGameModelProxy.h"
 
-GLGameModelProxy::GLGameModelProxy(Game *_game) : GLGameModel(_game)
+GLGameModelProxy::GLGameModelProxy(QObject *parent) : GLGameModel(parent)
 {
     playerObject = NULL;
 }

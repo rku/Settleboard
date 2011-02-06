@@ -4,7 +4,8 @@
 
 #include <QString>
 #include <QDataStream>
-#include <QByteArray>
+#include <QMap>
+#include <QVariant>
 #include <QtDebug>
 
 #define NETWORK_PACKET_MAGIC    0xCAFE
@@ -14,11 +15,13 @@ class NetworkPacket
 {
     public:
         NetworkPacket();
-        NetworkPacket(const QString &packetRule);
+        NetworkPacket(const QString &rule);
         ~NetworkPacket();
 
-        void setPacketRule(const QString &ruleName) { packetRule = ruleName; }
-        const QString &getPacketRule() { return packetRule; }
+        bool getIsValid();
+        void setRuleName(const QString &name) { ruleName = name; }
+        const QString &getRuleName() { return ruleName; }
+        void addData(const QString &identifier, QVariant &data);
 
         friend QDataStream &operator<<(QDataStream&, const NetworkPacket&);
         friend QDataStream &operator>>(QDataStream&, NetworkPacket&);
@@ -26,8 +29,8 @@ class NetworkPacket
     protected:
         quint16 magic;
         uint version;
-        QByteArray data;
-        QString packetRule;
+        QMap<QString, QVariant> data;
+        QString ruleName;
 };
 
 #endif

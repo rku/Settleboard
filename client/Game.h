@@ -31,15 +31,18 @@ class OBJGLLoader;
 class Bank;
 class MainWindow;
 class NetworkCore;
-class GameLobby;
 
-class Game
+class Game : public QObject
 {
+    Q_OBJECT
+
     public:
-        Game();
         ~Game();
 
-        void render();
+        static Game* getInstance();
+
+        enum GameState {PreparingState, PlayingState, FinishedState};
+        GameState getState() { return state; }
 
         void setGLWidget(GLWidget *w) { glWidget = w; }
         GLWidget* getGLWidget() { return glWidget; }
@@ -49,8 +52,6 @@ class Game
 
         void setRules(GameRules *r) { rules = r; }
         GameRules* getRules() { return rules; }
-
-        GameLobby* getGameLobby() { return gameLobby; }
 
         TextureManager *getTextureManager() { return textureManager; }
         Board *getBoard() { return board; }
@@ -63,10 +64,12 @@ class Game
         NetworkCore *getNetworkCore() { return networkCore; }
 
     protected:
+        Game(QObject *parent = 0);
+
+        GameState state;
         MainWindow *mainWindow;
         GLWidget *glWidget;
         GameRules *rules;
-        GameLobby *gameLobby;
         TextureManager *textureManager;
         Board *board;
         OBJGLLoader *objGLLoader;

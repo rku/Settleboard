@@ -27,7 +27,7 @@
 
 #include <math.h>
 
-Board::Board(Game *_game) : GameObject(_game)
+Board::Board(QObject *parent) : QObject(parent)
 {
     isLoaded                = false;
     isSelectionModeActive   = false;
@@ -60,7 +60,7 @@ void Board::render()
     for(int i = 0; i < roadways.size(); ++i)
         roadways.at(i)->draw();
 
-    GLGameModel *robber = new GLGameModel(game);
+    GLGameModel *robber = new GLGameModel();
     robber->load(FileManager::getPathOfGLObject("Robber"));
     robber->setColor(Qt::black);
     robber->setScale(0.7);
@@ -70,6 +70,7 @@ void Board::render()
 
 void Board::update()
 {
+    Game *game = Game::getInstance();
     game->getGLWidget()->updateGL();
 }
 
@@ -78,6 +79,7 @@ template <typename T>
 const T Board::getObjectsAtMousePos(T objs, const QPoint &pos)
 {
     QList<GLuint> hits;
+    Game *game = Game::getInstance();
     GLWidget *widget = game->getGLWidget();
 
     widget->beginGLSelection(pos);
@@ -139,6 +141,10 @@ GLGameModel *Board::getSelectableObjectAtMousePos(const QPoint &pos)
 
 bool Board::handleMouseClick(const QPoint &mousePos)
 {
+    Game *game = Game::getInstance();
+
+    if(!isLoaded) return false;
+
     if(getIsSelectionModeActive())
     {
         GLGameModel *obj = getSelectableObjectAtMousePos(mousePos);
@@ -150,16 +156,22 @@ bool Board::handleMouseClick(const QPoint &mousePos)
         }
     }
 
+    // TEST:
+    else game->getRules()->executeRule("ruleInitGame", game->getPlayers()[0]);
+
     return true;
 }
 
 bool Board::handleMouseOver(const QPoint &mousePos)
 {
+    if(!isLoaded) return false;
+
     // highlight selectable objects at mousepos
     highlightObjectsAtMousePos(crossroads, mousePos);
     highlightObjectsAtMousePos(roadways, mousePos);
     highlightObjectsAtMousePos(boardTiles, mousePos);
 
+    Game *game = Game::getInstance();
     game->getGLWidget()->updateGL();
 
     return false;
@@ -167,6 +179,7 @@ bool Board::handleMouseOver(const QPoint &mousePos)
 
 void Board::setSelectionMode()
 {
+    Q_ASSERT(isLoaded);
     Q_ASSERT(!getIsSelectionModeActive());
 
     int max = 1;
@@ -198,6 +211,7 @@ void Board::endSelectionMode()
     isSelectionModeActive = false;
     resetBoardState();
 
+    Game *game = Game::getInstance();
     if(game->getRules()->getIsRuleChainWaiting())
     {
         game->getRules()->continueRuleChain();
@@ -213,6 +227,8 @@ void Board::setSelectedObject(GLGameModel *gm)
 
 void Board::resetBoardState(BoardObjectState s)
 {
+    Q_ASSERT(isLoaded);
+
     BoardState state;
 
 #define CREATE_RESET_STATE_FOR(objs, sto) if(1) { \
@@ -229,8 +245,11 @@ void Board::resetBoardState(BoardObjectState s)
 
 void Board::updateBoardState(BoardState &newState)
 {
+    Q_ASSERT(isLoaded);
+
     int max = 1;
     BoardObjectState s;
+    Game *game = Game::getInstance();
 
     for(int i = 0; i < max; i++)
     {
@@ -353,7 +372,7 @@ void Board::generate()
 
     for(char *p = tileData; row < (int)height && *p; p++)
     {
-        HexTile *newTile = new HexTile(game);
+        HexTile *newTile = new HexTile(this);
 
         col++;
         if(col >= (int)width)
@@ -453,7 +472,7 @@ Crossroad *Board::getCrossroadNearPosition(QVector3D pos, bool create)
 
     if(create)
     {
-        c = new Crossroad(game, pos);
+        c = new Crossroad(pos, this);
         crossroads.append(c);
     }
 
@@ -480,7 +499,7 @@ Roadway *Board::getRoadwayNear(QVector3D a, QVector3D b, bool create)
 
     if(create)
     {
-        newR = new Roadway(game, a, b);
+        newR = new Roadway(a, b, this);
         roadways.append(newR);
     }
 

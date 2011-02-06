@@ -13,8 +13,10 @@ class PlayerObject;
 
 class Roadway : public GLGameModelProxy
 {
+    Q_OBJECT
+
     public:
-        Roadway(Game*, QVector3D a, QVector3D b);
+        Roadway(QVector3D a, QVector3D b, QObject *parent = 0);
         ~Roadway();
 
         virtual void draw();

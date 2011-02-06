@@ -20,8 +20,7 @@
 
 #include "PrefsForm.h" 
 
-PrefsForm::PrefsForm(Game *_game, QWidget *parent)
-    : QDialog(parent), GameObject(_game)
+PrefsForm::PrefsForm(QWidget *parent) : QDialog(parent)
 {
     ui.setupUi(this);
 }

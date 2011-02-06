@@ -12,8 +12,10 @@ class PlayerObject;
 
 class Crossroad : public GLGameModelProxy
 {
+    Q_OBJECT
+
     public:
-        Crossroad(Game*, QVector3D);
+        Crossroad(QVector3D, QObject *parent = 0);
         ~Crossroad();
 
         virtual void draw();

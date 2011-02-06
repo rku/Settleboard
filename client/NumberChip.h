@@ -30,8 +30,10 @@ class Game;
 
 class NumberChip : public GLGameModel
 {
+    Q_OBJECT
+
     public:
-        NumberChip(Game*);
+        NumberChip(QObject *parent = 0);
         ~NumberChip();
         void create();
 

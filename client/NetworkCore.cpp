@@ -1,8 +1,10 @@
 
+#include "Game.h"
+#include "Player.h"
 #include "NetworkPacket.h"
 #include "NetworkCore.h"
 
-NetworkCore::NetworkCore(Game *_game) : GameObject(_game)
+NetworkCore::NetworkCore(QObject *parent) : QObject(parent)
 {
     server = NULL;
     socket = NULL;
@@ -12,6 +14,19 @@ NetworkCore::~NetworkCore()
 {
     if(socket) delete socket;
     if(server) delete server;
+}
+
+Player* NetworkCore::getPlayerForSocket(QTcpSocket *s)
+{
+    QList<Player*> players = Game::getInstance()->getPlayers();
+    QList<Player*>::iterator i;
+
+    for(i = players.begin(); i != players.end(); ++i)
+    {
+        if((*i)->getSocket() == s) return *i;
+    }
+
+    return NULL;
 }
 
 bool NetworkCore::startServer(uint port)
@@ -72,9 +87,6 @@ void NetworkCore::acceptNewConnection()
     connections.append(socket);
 
     setupSocket(socket);
-
-    NetworkPacket handshakePacket("ruleSendHandshakeRequest");
-    sendPacket(socket, handshakePacket);
 }
 
 void NetworkCore::setupSocket(QTcpSocket *s)
@@ -86,8 +98,7 @@ void NetworkCore::setupSocket(QTcpSocket *s)
 
 void NetworkCore::connectionClosed()
 {
-    QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
-    if(s)
+    if(QTcpSocket *s = qobject_cast<QTcpSocket*>(sender()))
     {
         qDebug() << "Disconnected from" << s->peerAddress();
         connections.removeAll(s);
@@ -103,7 +114,17 @@ void NetworkCore::closeConnection(QTcpSocket *s)
 
 void NetworkCore::packetReceived(QTcpSocket *s, NetworkPacket &packet)
 {
-    qDebug() << "Network Packet received:" << packet.getPacketRule();
+    // drop the connection if the hosts sent an invalid packet
+    if(!packet.getIsValid())
+    {
+        qDebug() << "Invalid packet received from" << s->peerAddress();
+        s->disconnectFromHost();
+        return;
+    }
+
+    Player *player = getPlayerForSocket(s);
+    qDebug() << "Received rule" << s->peerAddress() << packet.getRuleName();
+    Game::getInstance()->getRules()->executeRule(packet.getRuleName(), player);
 }
 
 void NetworkCore::dataAvailable()

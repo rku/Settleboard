@@ -6,16 +6,15 @@
 #include <QTcpSocket>
 #include <QTcpServer>
 
-#include "GameObject.h"
-
 class NetworkPacket;
+class Player;
 
-class NetworkCore : public QObject, public GameObject
+class NetworkCore : public QObject
 {
     Q_OBJECT
 
     public:
-        NetworkCore(Game*);
+        NetworkCore(QObject *parent = 0);
         ~NetworkCore();
 
         bool startServer(uint port);
@@ -32,6 +31,7 @@ class NetworkCore : public QObject, public GameObject
         void connected();
 
     protected:
+        Player* getPlayerForSocket(QTcpSocket *s);
         void setupSocket(QTcpSocket*);
         void packetReceived(QTcpSocket*, NetworkPacket&);
 

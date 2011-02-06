@@ -23,19 +23,20 @@
 #include "Bank.h"
 #include "NetworkCore.h"
 #include "OBJGLLoader.h"
-#include "GameLobby.h"
 
-Game::Game()
+Game::Game(QObject *parent) : QObject(parent)
 {
+    state = PreparingState;
+
     textureManager = new TextureManager(this);
     rules = new GameRules(this);
-    gameLobby = new GameLobby(this);
     board = new Board(this);
     objGLLoader = new OBJGLLoader();
     bank = new Bank();
     networkCore = new NetworkCore(this);
 
-    players.append(new Player(this));
+    // append test player
+    players.append(new Player(NULL, this));
 }
 
 Game::~Game()
@@ -48,8 +49,11 @@ Game::~Game()
     delete textureManager;
 }
 
-void Game::render()
+Game* Game::getInstance()
 {
-    board->render();
+    static Game *instance = NULL;
+
+    if(instance == NULL) instance = new Game();
+    return instance;
 }
 

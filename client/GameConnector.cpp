@@ -20,8 +20,7 @@
 
 #include "GameConnector.h" 
 
-GameConnector::GameConnector(Game *_game, QWidget *parent)
-    : QDialog(parent), GameObject(_game)
+GameConnector::GameConnector(QWidget *parent) : QDialog(parent)
 {
     ui.setupUi(this);
 }

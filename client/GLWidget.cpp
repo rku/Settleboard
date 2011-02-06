@@ -23,6 +23,7 @@
 
 #include "GLWidget.h"
 #include "Game.h"
+#include "Board.h"
 
 #define CAM_X_ROT_DELTA         0.006
 #define CAM_Y_ROT_DELTA         0.002
@@ -31,8 +32,7 @@
 #define CAM_MIN_Y_ANGLE         0.1 
 #define CAM_FOV                 65.0
 
-GLWidget::GLWidget(Game *_game, QWidget *parent)
-    : QGLWidget(parent), GameObject(_game)
+GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent)
 {
     cameraAngleX        = 0.0;
     cameraAngleY        = 0.5;
@@ -48,7 +48,6 @@ GLWidget::GLWidget(Game *_game, QWidget *parent)
 
 GLWidget::~GLWidget()
 {
-    delete game;
 }
 
 QSize GLWidget::minimumSizeHint() const
@@ -106,7 +105,7 @@ void GLWidget::paintGL()
 
     updateCameraPos();
 
-    game->render();
+    Game::getInstance()->getBoard()->render();
 }
     
 void GLWidget::begin2DMode()
@@ -150,6 +149,8 @@ void GLWidget::resizeGL(int width, int height)
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
+    Board *board = Game::getInstance()->getBoard();
+
     // reset last mouse position
     if(event->type() & QEvent::MouseButtonPress &&
         event->button() & Qt::LeftButton)
@@ -157,7 +158,9 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
         qDebug() << "Mouse pressed" << event->pos();
 
         // route event
-        if(game->getBoard()->handleMouseClick(event->pos())) return;
+        if(board->handleMouseClick(event->pos())) return;
+
+        emit mousePressed(event);
     }
     else if(event->type() & QEvent::MouseButtonRelease)
     {
@@ -168,6 +171,8 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
+    Board *board = Game::getInstance()->getBoard();
+
     if(lastMousePos.isNull()) lastMousePos = event->pos();
 
     // rotate the board
@@ -188,7 +193,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     }
     else
     {
-        game->getBoard()->handleMouseOver(event->pos());
+        board->handleMouseOver(event->pos());
     }
 
     lastMousePos = event->pos();

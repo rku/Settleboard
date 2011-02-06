@@ -24,16 +24,17 @@
 #include <QtOpenGL>
 #include <QVector>
 
-#include "GameObject.h"
 #include "GLTypes.h"
 
 class OBJGLLoader;
 class Game;
 
-class GLGameModel : public GameObject
+class GLGameModel : public QObject
 {
+    Q_OBJECT
+
     public:
-        GLGameModel(Game*);
+        GLGameModel(QObject *parent = 0);
         ~GLGameModel();
 
         void load(QString filename, QColor objColor = Qt::white);

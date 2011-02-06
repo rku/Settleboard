@@ -21,11 +21,10 @@
 #include "Player.h"
 #include "PlayerObject.h"
 
-Player::Player(Game *_game)
-    : GameObject(_game)
+Player::Player(QTcpSocket *_socket, QObject *parent)
+    : QObject(parent), socket(_socket)
 {
     isSpectator = false;
-    socket = NULL;
     color = Qt::red;
     name = "unknown";
 }
@@ -37,7 +36,7 @@ Player::~Player()
 
 void Player::addObjectOfType(QString type)
 {
-    PlayerObject *newObj = new PlayerObject(game, this, type);
+    PlayerObject *newObj = new PlayerObject(this, type, this);
 
     Q_ASSERT(newObj != NULL);
     objects.insertMulti(type, newObj);

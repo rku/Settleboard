@@ -19,7 +19,6 @@ FORMS = client/ui/connectorform.ui \
 
 HEADERS = client/GLWidget.h \
           client/GLTypes.h \
-          client/GameObject.h \
           client/Game.h \
           client/FileManager.h \
           client/HexTile.h \

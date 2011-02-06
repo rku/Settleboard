@@ -25,7 +25,6 @@
 #include <QList>
 #include <QPainter>
 
-#include "GameObject.h"
 #include "HexTile.h"
 #include "NumberChip.h"
 #include "GLTypes.h"
@@ -42,10 +41,12 @@ class Roadway;
 #define BOARD_STATE_SELECT_ROADWAY      0x02
 #define BOARD_STATE_SELECT_HEXTILE      0x04
 
-class Board : public GameObject
+class Board : public QObject
 {
+    Q_OBJECT
+
     public:
-        Board(Game*);
+        Board(QObject *parent = 0);
         ~Board();
         void freeObjects();
         void render();
