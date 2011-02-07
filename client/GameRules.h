@@ -27,6 +27,7 @@
 #include <QList>
 #include <QStack>
 #include <QLinkedList>
+#include <QVariant>
 
 class Game;
 class Player;
@@ -36,6 +37,7 @@ class PlayerPanel;
 class ControlPanel;
 class MessagePanel;
 class GameInfoPanel;
+class NetworkPacket;
 
 typedef struct _GameRule {
     bool (GameRules::*ruleFunc)(Game*,Player*);
@@ -100,6 +102,8 @@ class GameRules : public QObject
         void cancelRuleChain();
 
     protected:
+        void packRuleDataToNetworkPacket(NetworkPacket&);
+        void unpackRuleDataFromNetworkPacket(NetworkPacket&);
         void startRuleChain();
         void suspendRuleChain();
         void ruleChainFinished();

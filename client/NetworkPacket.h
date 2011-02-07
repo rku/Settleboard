@@ -23,6 +23,7 @@ class NetworkPacket
         void setRuleName(const QString &name) { ruleName = name; }
         const QString &getRuleName() { return ruleName; }
         void addData(const QString &identifier, const QVariant&);
+        const QMap<QString, QVariant>& getData() { return data; }
 
         friend QDataStream &operator<<(QDataStream&, const NetworkPacket&);
         friend QDataStream &operator>>(QDataStream&, NetworkPacket&);

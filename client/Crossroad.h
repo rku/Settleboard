@@ -56,6 +56,7 @@ class CrossroadPtr
         CrossroadPtr() {}
         CrossroadPtr(Crossroad *p) { object = p; }
         CrossroadPtr(const CrossroadPtr &c) { object = c.object; }
+        Crossroad *getObject() { return object; }
 
         friend QDataStream &operator<<(QDataStream&, const CrossroadPtr&);
         friend QDataStream &operator>>(QDataStream&, CrossroadPtr&);

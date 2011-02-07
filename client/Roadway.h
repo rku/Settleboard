@@ -56,6 +56,7 @@ class RoadwayPtr
         RoadwayPtr() {}
         RoadwayPtr(Roadway *p) { object = p; }
         RoadwayPtr(const RoadwayPtr &c) { object = c.object; }
+        Roadway *getObject() { return object; }
 
         friend QDataStream &operator<<(QDataStream&, const RoadwayPtr&);
         friend QDataStream &operator>>(QDataStream&, RoadwayPtr&);

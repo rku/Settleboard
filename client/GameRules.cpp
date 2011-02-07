@@ -102,6 +102,51 @@ void GameRules::registerRule(QString name, GameRule rule)
     qDebug() << "Rule registered:" << name;
 }
 
+void GameRules::packRuleDataToNetworkPacket(NetworkPacket &packet)
+{
+    RuleData::iterator i;
+
+    for(i = ruleData.begin(); i != ruleData.end(); ++i)
+    {
+        QVariant v = i.value();
+        QVariant::Type type = i.value().type();
+
+        if(type == QVariant::nameToType("Crossroad*"))
+        { v = qVariantFromValue(CrossroadPtr(i.value().value<Crossroad*>())); }
+
+        if(type == QVariant::nameToType("Roadway*"))
+        { v = qVariantFromValue(RoadwayPtr(i.value().value<Roadway*>())); }
+
+        if(type == QVariant::nameToType("PlayerObject*"))
+        { v = qVariantFromValue(PlayerObjectPtr(i.value().value<PlayerObject*>())); }
+
+        packet.addData(i.key(), v);
+    }
+}
+
+void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
+{
+    const QMap<QString, QVariant> data = packet.getData();
+    QMap<QString, QVariant>::const_iterator i;
+
+    for(i = data.begin(); i != data.end(); ++i)
+    {
+        QVariant v = i.value();
+        QVariant::Type type = i.value().type();
+
+        if(type == QVariant::nameToType("CrossroadPtr"))
+        { v = qVariantFromValue(i.value().value<CrossroadPtr>().getObject()); }
+
+        if(type == QVariant::nameToType("RoadwayPtr"))
+        { v = qVariantFromValue(i.value().value<RoadwayPtr>().getObject()); }
+
+        if(type == QVariant::nameToType("PlayerObjectPtr"))
+        { v = qVariantFromValue(i.value().value<PlayerObjectPtr>().getObject()); }
+
+        ruleData.insertMulti(i.key(), v);
+    }
+}
+
 bool GameRules::executeRule(QString name, Player *player)
 {
     NetworkPacket packet(name);
@@ -116,9 +161,7 @@ bool GameRules::executeRule(QString name, Player *player)
     // we are the server... execute rule and broadcast it
     Q_ASSERT(!isRuleChainWaiting);
 
-    RuleData::iterator i;
-    for(i = ruleData.begin(); i != ruleData.end(); ++i)
-        packet.addData(i.key(), i.value());
+    packRuleDataToNetworkPacket(packet);
     Game::getInstance()->getNetworkCore()->sendPacket(packet);
 
     qDebug() << "Executing rule:" << name;

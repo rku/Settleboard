@@ -62,6 +62,7 @@ class PlayerObjectPtr
         PlayerObjectPtr() {}
         PlayerObjectPtr(PlayerObject *p) { object = p; }
         PlayerObjectPtr(const PlayerObjectPtr &c) { object = c.object; }
+        PlayerObject *getObject() { return object; }
 
         friend QDataStream &operator<<(QDataStream&, const PlayerObjectPtr&);
         friend QDataStream &operator>>(QDataStream&, PlayerObjectPtr&);
