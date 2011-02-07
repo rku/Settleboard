@@ -36,6 +36,7 @@ class NetworkCore : public QObject
         void packetReceived(QTcpSocket*, NetworkPacket&);
 
         QList<QTcpSocket*> connections;
+        QMap<QTcpSocket*, quint32> pendingBlockSizes;
         QTcpServer *server;
         QTcpSocket *socket;
 };

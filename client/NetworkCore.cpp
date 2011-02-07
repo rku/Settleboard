@@ -55,9 +55,6 @@ void NetworkCore::connected()
     QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
     qDebug() << "Connected to" << s->peerAddress();
     connections.append(s);
-
-    NetworkPacket test("ruleInitGame");
-    sendPacket(s,test);
 }
 
 void NetworkCore::sendPacket(const NetworkPacket &packet)
@@ -72,14 +69,15 @@ void NetworkCore::sendPacket(const NetworkPacket &packet)
 
 void NetworkCore::sendPacket(QTcpSocket *s, const NetworkPacket &packet)
 {
-    if(s->state() != QAbstractSocket::ConnectedState)
-    {
-        closeConnection(s);
-        return;
-    }
+    QByteArray block;
+    QDataStream data(&block, QIODevice::WriteOnly);
 
-    QDataStream data(s);
+    data << (quint32)0;
     data << packet;
+    data.device()->seek(0);
+    data << (quint32)(block.size() - sizeof(quint32));
+
+    s->write(block);
 }
 
 void NetworkCore::acceptNewConnection()
@@ -91,6 +89,8 @@ void NetworkCore::acceptNewConnection()
     connections.append(socket);
 
     setupSocket(socket);
+    Game::getInstance()->getRules()->executeRule("ruleInitGame",
+        Game::getInstance()->getPlayers()[0]);
 }
 
 void NetworkCore::setupSocket(QTcpSocket *s)
@@ -128,16 +128,38 @@ void NetworkCore::packetReceived(QTcpSocket *s, NetworkPacket &packet)
 
     Player *player = getPlayerForSocket(s);
     qDebug() << "Received rule" << s->peerAddress() << packet.getRuleName();
-    Game::getInstance()->getRules()->executeRule(packet.getRuleName(), player);
+    Game::getInstance()->getRules()->executeRuleFromNetwork(packet, player);
 }
 
 void NetworkCore::dataAvailable()
 {
     QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
-    NetworkPacket packet;
     QDataStream data(s);
 
-    data >> packet;
-    packetReceived(s, packet);
+    while(s->bytesAvailable() > 0)
+    {
+        quint32 blockSize = 0;
+
+        if(pendingBlockSizes.contains(s))
+            blockSize = pendingBlockSizes.value(s);
+
+        if(blockSize == 0)
+        {
+            if(s->bytesAvailable() < (int)sizeof(quint32)) return;
+            data >> blockSize;
+        }
+
+        if(s->bytesAvailable() < blockSize)
+        {
+            qDebug() << "Waiting for" << blockSize << "bytes from remote";
+            pendingBlockSizes.insert(s, blockSize);
+            return;
+        }
+
+        NetworkPacket packet;
+        data >> packet;
+        packetReceived(s, packet);
+        pendingBlockSizes.remove(s);
+    }
 }
 

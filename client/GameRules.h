@@ -96,6 +96,7 @@ class GameRules : public QObject
         ~GameRules();
 
         void registerRule(QString name, GameRule);
+        bool executeRuleFromNetwork(NetworkPacket&, Player*);
         bool executeRule(QString name, Player*);
         bool getIsRuleChainWaiting() { return isRuleChainWaiting; }
         void continueRuleChain();

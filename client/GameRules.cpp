@@ -129,6 +129,8 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
     const QMap<QString, QVariant> data = packet.getData();
     QMap<QString, QVariant>::const_iterator i;
 
+    ruleData.clear();
+
     for(i = data.begin(); i != data.end(); ++i)
     {
         QVariant v = i.value();
@@ -145,6 +147,18 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
 
         ruleData.insertMulti(i.key(), v);
     }
+}
+
+bool GameRules::executeRuleFromNetwork(NetworkPacket &packet, Player *player)
+{
+    unpackRuleDataFromNetworkPacket(packet);
+
+    QString name = packet.getRuleName();
+    qDebug() << "Executing rule from network:" << name;
+    Q_ASSERT(rules.contains(name));
+
+    GameRule rule = rules.value(name);
+    return (this->*rule.ruleFunc)(Game::getInstance(), player);
 }
 
 bool GameRules::executeRule(QString name, Player *player)
@@ -186,14 +200,19 @@ void GameRules::suspendRuleChain()
 
 void GameRules::startRuleChain()
 {
-    Q_ASSERT(ruleChain.size() > 0 && !isRuleChainWaiting);
-    qDebug() << "Starting rule chain";
+    if(Game::getInstance()->getNetworkCore()->getIsServer())
+    {
+        Q_ASSERT(ruleChain.size() > 0 && !isRuleChainWaiting);
+        qDebug() << "Starting rule chain";
 
-    continueRuleChain();
+        continueRuleChain();
+    }
 }
 
 void GameRules::continueRuleChain()
 {
+    if(!Game::getInstance()->getNetworkCore()->getIsServer()) return;
+
     while(ruleChain.size() > 0)
     {
         RuleChainElement rce = ruleChain.takeFirst();
