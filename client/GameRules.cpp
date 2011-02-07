@@ -151,6 +151,8 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
 
 bool GameRules::executeRuleFromNetwork(NetworkPacket &packet, Player *player)
 {
+    Q_ASSERT(player != NULL);
+
     unpackRuleDataFromNetworkPacket(packet);
 
     QString name = packet.getRuleName();
@@ -163,6 +165,8 @@ bool GameRules::executeRuleFromNetwork(NetworkPacket &packet, Player *player)
 
 bool GameRules::executeRule(QString name, Player *player)
 {
+    Q_ASSERT(player != NULL);
+
     NetworkPacket packet(name);
 
     // if this is a client, send the rule to the server
