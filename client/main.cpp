@@ -62,6 +62,10 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    app.setApplicationName("Settleboard3D");
+    app.setApplicationVersion("0.0.1.beta");
+    app.setOrganizationDomain("bitkanal.net");
+
     registerMetaTypeOperators();
     loadStyleSheet();
 
