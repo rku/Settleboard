@@ -133,7 +133,7 @@ QDataStream &operator>>(QDataStream &stream, CrossroadPtr &obj)
 
     stream >> v;
     // find object with vertex v
-    // obj.object = Game::getInstance()->getBoard()->getCrossroadAtVertex(v);
+    obj.object = Game::getInstance()->getBoard()->getCrossroadAtVertex(v);
 
     return stream;
 }

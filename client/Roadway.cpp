@@ -132,7 +132,7 @@ QDataStream &operator>>(QDataStream &stream, RoadwayPtr &obj)
     stream >> v2;
 
     // find object with vertices v1/v2 
-    // obj.object = Game::getInstance()->getBoard()->getRoadwayWithVertices(v1, v2);
+    obj.object = Game::getInstance()->getBoard()->getRoadwayWithVertices(v1, v2);
 
     return stream;
 }

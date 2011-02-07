@@ -222,6 +222,37 @@ void Board::setSelectedObject(GLGameModel *gm)
     selectedObject = gm;
 }
 
+Crossroad* Board::getCrossroadAtVertex(const QVector3D &v)
+{
+    QList<Crossroad*>::iterator i;
+
+    for(i = crossroads.begin(); i != crossroads.end(); ++i)
+    {
+        if((*i)->getVertex() == v) return *i;
+    }
+
+    return NULL;
+}
+
+Roadway* Board::getRoadwayWithVertices(const QVector3D &vA, const QVector3D &vB)
+{
+    QList<Roadway*>::iterator i;
+
+    for(i = roadways.begin(); i != roadways.end(); ++i)
+    {
+        if((*i)->getVertexA() == vA && (*i)->getVertexB() == vB) return *i;
+    }
+
+    return NULL;
+}
+
+PlayerObject* Board::getPlayerObjectAtVertex(const QString &type, const QVector3D &v)
+{
+    Q_ASSERT(0);
+    return NULL;
+}
+
+
 void Board::resetBoardState(BoardObjectState s)
 {
     Q_ASSERT(isLoaded);
