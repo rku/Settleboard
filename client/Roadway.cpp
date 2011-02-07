@@ -115,3 +115,25 @@ void Roadway::placePlayerObject(PlayerObject *p)
     }
 }
 
+// QDataStream operators
+
+QDataStream &operator<<(QDataStream &stream, const RoadwayPtr &obj)
+{
+    stream << obj.object->getVertexA();
+    stream << obj.object->getVertexB();
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, RoadwayPtr &obj)
+{
+    QVector3D v1, v2;
+
+    stream >> v1;
+    stream >> v2;
+
+    // find object with vertices v1/v2 
+    // obj.object = Game::getInstance()->getBoard()->getRoadwayWithVertices(v1, v2);
+
+    return stream;
+}
+

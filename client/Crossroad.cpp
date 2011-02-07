@@ -121,13 +121,13 @@ void Crossroad::placePlayerObject(PlayerObject *p)
 
 // QDataStream operators
 
-QDataStream &operator<<(QDataStream &stream, const CrossroadPointer &obj)
+QDataStream &operator<<(QDataStream &stream, const CrossroadPtr &obj)
 {
     stream << obj.object->getVertex();
     return stream;
 }
 
-QDataStream &operator>>(QDataStream &stream, CrossroadPointer &obj)
+QDataStream &operator>>(QDataStream &stream, CrossroadPtr &obj)
 {
     QVector3D v;
 

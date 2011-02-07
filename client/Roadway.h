@@ -50,5 +50,21 @@ class Roadway : public GLGameModelProxy
 
 Q_DECLARE_METATYPE(Roadway*);
 
+class RoadwayPtr
+{
+    public:
+        RoadwayPtr() {}
+        RoadwayPtr(Roadway *p) { object = p; }
+        RoadwayPtr(const RoadwayPtr &c) { object = c.object; }
+
+        friend QDataStream &operator<<(QDataStream&, const RoadwayPtr&);
+        friend QDataStream &operator>>(QDataStream&, RoadwayPtr&);
+
+    protected:
+        Roadway *object;
+};
+
+Q_DECLARE_METATYPE(RoadwayPtr);
+
 #endif
 

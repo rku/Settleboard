@@ -50,21 +50,21 @@ class Crossroad : public GLGameModelProxy
 
 Q_DECLARE_METATYPE(Crossroad*);
 
-class CrossroadPointer
+class CrossroadPtr
 {
     public:
-        CrossroadPointer() {}
-        CrossroadPointer(Crossroad *p) { object = p; }
-        CrossroadPointer(const CrossroadPointer &c) { object = c.object; }
+        CrossroadPtr() {}
+        CrossroadPtr(Crossroad *p) { object = p; }
+        CrossroadPtr(const CrossroadPtr &c) { object = c.object; }
 
-        friend QDataStream &operator<<(QDataStream&, const CrossroadPointer&);
-        friend QDataStream &operator>>(QDataStream&, CrossroadPointer&);
+        friend QDataStream &operator<<(QDataStream&, const CrossroadPtr&);
+        friend QDataStream &operator>>(QDataStream&, CrossroadPtr&);
 
     protected:
         Crossroad *object;
 };
 
-Q_DECLARE_METATYPE(CrossroadPointer);
+Q_DECLARE_METATYPE(CrossroadPtr);
 
 #endif
 

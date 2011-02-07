@@ -24,6 +24,8 @@
 #include <QtDebug>
 
 #include "Crossroad.h"
+#include "Roadway.h"
+#include "PlayerObject.h"
 #include "FileManager.h"
 #include "MainWindow.h"
 
@@ -46,8 +48,14 @@ void loadStyleSheet()
 void registerMetaTypeOperators()
 {
     // register stream operators for game types
-    qRegisterMetaType<CrossroadPointer>("CrossroadPointer");
-    qRegisterMetaTypeStreamOperators<CrossroadPointer>("CrossroadPointer");
+    qRegisterMetaType<CrossroadPtr>("CrossroadPtr");
+    qRegisterMetaTypeStreamOperators<CrossroadPtr>("CrossroadPtr");
+
+    qRegisterMetaType<RoadwayPtr>("RoadwayPtr");
+    qRegisterMetaTypeStreamOperators<RoadwayPtr>("RoadwayPtr");
+
+    qRegisterMetaType<PlayerObjectPtr>("PlayerObjectPtr");
+    qRegisterMetaTypeStreamOperators<PlayerObjectPtr>("PlayerObjectPtr");
 }
 
 int main(int argc, char *argv[])

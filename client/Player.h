@@ -69,7 +69,5 @@ class Player : public QObject
         QMap<QString, PlayerObject*> objects;
 };
 
-Q_DECLARE_METATYPE(Player*);
-
 #endif
 
