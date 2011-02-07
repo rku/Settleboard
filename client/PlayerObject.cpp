@@ -37,6 +37,7 @@ PlayerObject::PlayerObject(Player *_owner, QString _type, QObject *parent)
 
 QDataStream &operator<<(QDataStream &stream, const PlayerObjectPtr &obj)
 {
+    stream << obj.object->getType();
     stream << obj.object->getPos();
     return stream;
 }
@@ -44,7 +45,9 @@ QDataStream &operator<<(QDataStream &stream, const PlayerObjectPtr &obj)
 QDataStream &operator>>(QDataStream &stream, PlayerObjectPtr &obj)
 {
     QVector3D v;
+    QString type;
 
+    stream >> type;
     stream >> v;
     // find object with vertex v
     // obj.object = Game::getInstance()->getBoard()->getPlayerObjectAtVertex(v);
