@@ -33,6 +33,7 @@
 #include "FileManager.h"
 #include "NetworkPacket.h"
 #include "NetworkCore.h"
+#include "GameLobby.h"
 #include "Game.h"
 
 GameRules::GameRules(QObject *parent) : QObject(parent)
@@ -42,8 +43,11 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     gameInfoPanel = NULL;
     messagePanel = NULL;
     controlPanel = NULL;
+    gameLobby = new GameLobby(MainWindow::getInstance());
 
+    REGISTER_RULE(ruleStartServer);
     REGISTER_RULE(ruleJoinGame);
+    REGISTER_RULE(rulePlayerJoinedGame);
 
     REGISTER_RULE(ruleInitGame);
     REGISTER_RULE(ruleInitPlayers);
@@ -93,6 +97,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
 
 GameRules::~GameRules()
 {
+    delete gameLobby;
 }
 
 void GameRules::registerRule(QString name, GameRule rule)
@@ -171,7 +176,8 @@ bool GameRules::executeRule(QString name)
 {
     Q_ASSERT(rules.contains(name));
 
-    if(GAME->getNetworkCore()->getIsServer())
+    if(!GAME->getNetworkCore()->getHasConnection() ||
+        GAME->getNetworkCore()->getIsServer())
     {
         // we are the server, execute it
         executeRule(name, GAME->getLocalPlayer());
@@ -179,6 +185,7 @@ bool GameRules::executeRule(QString name)
     else
     {
         // send the rule to the server
+        qDebug() << "Sending rule" << name << "to server";
         NetworkPacket packet(name, GAME->getLocalPlayer());
         GAME->getNetworkCore()->sendPacket(packet);
     }
@@ -278,8 +285,52 @@ void GameRules::pushRuleData(const QString &identifier, QVariant data)
 
 // STANDARD RULES
 
+IMPLEMENT_RULE(ruleStartServer)
+{
+    GAME->getNetworkCore()->startServer(1234);
+    GAME->setState(Game::PreparingState);
+    gameLobby->show();
+}
+
 IMPLEMENT_RULE(ruleJoinGame)
 {
+    SERVER_ONLY_RULE
+
+    Q_ASSERT(player != GAME->getLocalPlayer());
+    Q_ASSERT(!GAME->getPlayers().contains(player));
+
+    // check if a player with that name exists
+    QList<Player*> players = GAME->getPlayers();
+    QList<Player*>::iterator i;
+    for(i = players.begin(); i != players.end(); ++i)
+    {
+        if((*i)->getName() == player->getName())
+        {
+            executeRule("rulePlayerNameExists", player);
+            return false;
+        }
+    }
+
+    executeRule("rulePlayerJoinedGame", player);
+    return true;
+}
+
+IMPLEMENT_RULE(rulePlayerJoinedGame)
+{
+    if(player != GAME->getLocalPlayer())
+    {
+        Q_ASSERT(!GAME->getPlayers().contains(player));
+        GAME->getPlayers().append(player);
+    }
+    else
+    {
+        GAME->setState(Game::PreparingState);
+        gameLobby->show();
+    }
+
+    qDebug() << "Player joined game" << player->getName();
+
+    return true;
 }
 
 IMPLEMENT_RULE(ruleInitGame)

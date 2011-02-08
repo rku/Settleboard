@@ -26,6 +26,7 @@
 #include <QColor>
 #include <QMap>
 #include <QTcpSocket>
+#include <QUuid>
 
 #include "GameCardStack.h"
 
@@ -40,6 +41,8 @@ class Player : public QObject
         Player(QObject *parent = 0);
         ~Player();
 
+        void setId(QString _id) { id = _id; }
+        const QString getId() { return id.toString(); }
         const QColor &getColor() { return color; }
         void setColor(QColor c) { color = c; }
         const QString &getName() { return name; }
@@ -60,6 +63,7 @@ class Player : public QObject
         const QMap<QString, PlayerObject*> &getObjects() { return objects; }
 
     protected:
+        QUuid id;
         bool isLocal;
         bool isSpectator;
         QColor color;

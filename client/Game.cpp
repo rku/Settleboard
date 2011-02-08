@@ -31,7 +31,7 @@
 
 Game::Game(QObject *parent) : QObject(parent)
 {
-    state = PreparingState;
+    state = NoGameState;
     mainWindow = MainWindow::getInstance();
 
     // initialize game objects
@@ -54,6 +54,7 @@ Game::Game(QObject *parent) : QObject(parent)
     // append local player
     localPlayer = new Player(this);
     players.append(localPlayer);
+    qDebug() << "Local player is" << localPlayer->getName();
 }
 
 Game::~Game()

@@ -26,6 +26,7 @@ Player::Player(QObject *parent) : QObject(parent)
 {
     isSpectator = false;
     color = Qt::red;
+    id = QUuid::createUuid();
 
     qsrand(time(NULL));
     name = QString("Player%1").arg(qrand());
@@ -105,6 +106,7 @@ const QList<PlayerObject*> Player::getObjectsOfType(QString type)
 
 QDataStream &operator<<(QDataStream &stream, const PlayerPtr &obj)
 {
+    stream << obj.object->getId();
     stream << obj.object->getName();
     stream << obj.object->getColor();
     return stream;
@@ -112,9 +114,10 @@ QDataStream &operator<<(QDataStream &stream, const PlayerPtr &obj)
 
 QDataStream &operator>>(QDataStream &stream, PlayerPtr &obj)
 {
-    QString name;
+    QString id, name;
     QColor color;
 
+    stream >> id;
     stream >> name;
     stream >> color;
 
@@ -127,14 +130,22 @@ QDataStream &operator>>(QDataStream &stream, PlayerPtr &obj)
     for(i = players.begin(); i != players.end(); ++i)
     {
         Player *p = *i;
-        if(p->getName() == name && p->getColor() == color)
+        if(p->getId() == id)
         {
             obj.object = *i;
             break;
         }
     }
 
-    Q_ASSERT(obj.object != NULL);
+    // create new one
+    if(obj.object == NULL)
+    {
+        obj.object = new Player();
+        obj.object->setId(id);
+        obj.object->setName(name);
+        obj.object->setColor(color);
+    }
+
     return stream;
 }
 

@@ -43,7 +43,8 @@ class Game : public QObject
 
         static Game* getInstance();
 
-        enum GameState {PreparingState, PlayingState, FinishedState};
+        enum GameState {NoGameState, PreparingState, PlayingState, FinishedState};
+        void setState(GameState st) { state = st; }
         GameState getState() { return state; }
 
         MainWindow* getMainWindow() { return mainWindow; }

@@ -141,9 +141,7 @@ void MainWindow::showConnector()
 
 void MainWindow::startServer()
 {
-    //game->getRules()->executeRule("ruleStartGameServer", NULL);
-    game->getNetworkCore()->startServer(1234);
-    //game->getRules()->executeRule("ruleInitGame", game->getPlayers()[0]);
+    game->getRules()->executeRule("ruleStartServer");
 }
 
 void MainWindow::showPrefs()

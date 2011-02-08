@@ -39,6 +39,7 @@ class ControlPanel;
 class MessagePanel;
 class GameInfoPanel;
 class NetworkPacket;
+class GameLobby;
 
 typedef struct _GameRule {
     bool (GameRules::*ruleFunc)(Game*,Player*);
@@ -58,6 +59,11 @@ typedef struct _RuleChainElement {
         rule.ruleFunc = &GameRules::func; \
         registerRule(#func, rule); \
     }
+
+#define SERVER_ONLY_RULE \
+    if(!GAME->getNetworkCore()->getIsServer()) { \
+        qDebug() << "Skipping server-only rule"; return true; }
+
 #define DECLARE_RULE(a) bool a(Game*, Player*);
 #define IMPLEMENT_RULE(a) bool GameRules::a(Game *game, Player *player)
 #define EXECUTE_SUBRULE(n) executeSubRule(#n, player)
@@ -118,7 +124,9 @@ class GameRules : public QObject
         void suspendRuleChain();
         void ruleChainFinished();
 
+        DECLARE_RULE(ruleStartServer);
         DECLARE_RULE(ruleJoinGame);
+        DECLARE_RULE(rulePlayerJoinedGame);
 
         DECLARE_RULE(ruleInitGame);
         DECLARE_RULE(ruleInitPlayers);
@@ -164,6 +172,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleRoadwaySelected);
         DECLARE_RULE(ruleCanSelectRoadway);
 
+        GameLobby *gameLobby;
         PlayerPanel *playerPanel;
         ControlPanel *controlPanel;
         GameInfoPanel *gameInfoPanel;

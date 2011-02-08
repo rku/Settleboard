@@ -19,6 +19,7 @@ class NetworkCore : public QObject
 
         bool startServer(uint port);
         bool getIsServer() { return (server != NULL); }
+        bool getHasConnection() { return (connections.size()>0); }
         bool connectToServer(QString host, uint port);
         void closeConnection(QTcpSocket*);
         void sendPacket(const NetworkPacket&);
