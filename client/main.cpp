@@ -26,6 +26,7 @@
 #include "Crossroad.h"
 #include "Roadway.h"
 #include "PlayerObject.h"
+#include "Player.h"
 #include "FileManager.h"
 #include "MainWindow.h"
 
@@ -56,6 +57,9 @@ void registerMetaTypeOperators()
 
     qRegisterMetaType<PlayerObjectPtr>("PlayerObjectPtr");
     qRegisterMetaTypeStreamOperators<PlayerObjectPtr>("PlayerObjectPtr");
+
+    qRegisterMetaType<PlayerPtr>("PlayerPtr");
+    qRegisterMetaTypeStreamOperators<PlayerPtr>("PlayerPtr");
 }
 
 int main(int argc, char *argv[])

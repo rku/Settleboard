@@ -45,14 +45,13 @@ void Roadway::draw()
         return;
     }
 
-    Game *game = Game::getInstance();
-    Player *p = game->getPlayers().at(0);
+    Player *p = GAME->getPlayers().at(0);
     QColor color = (getIsSelectable()) ? p->getColor() : Qt::black;
     float width = (getIsSelectable()) ? 5.0f : 2.0f;
 
     // draw roadway lines
     glPushMatrix();
-    game->getGLWidget()->qglColor((getIsHighlighted()) ? color.lighter() : color);
+    GAME->getGLWidget()->qglColor((getIsHighlighted()) ? color.lighter() : color);
     glLineWidth(width);
     glCallList(selectionRectListID);
     glPopMatrix();
@@ -132,7 +131,7 @@ QDataStream &operator>>(QDataStream &stream, RoadwayPtr &obj)
     stream >> v2;
 
     // find object with vertices v1/v2 
-    obj.object = Game::getInstance()->getBoard()->getRoadwayWithVertices(v1, v2);
+    obj.object = GAME->getBoard()->getRoadwayWithVertices(v1, v2);
 
     return stream;
 }

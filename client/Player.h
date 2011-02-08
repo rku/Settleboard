@@ -37,18 +37,17 @@ class Player : public QObject
     Q_OBJECT
 
     public:
-        Player(QTcpSocket* = NULL, QObject *parent = 0);
+        Player(QObject *parent = 0);
         ~Player();
 
         const QColor &getColor() { return color; }
         void setColor(QColor c) { color = c; }
         const QString &getName() { return name; }
         void setName(QString n) { name = n; }
-        QTcpSocket* getSocket() { return socket; }
-        void setSocket(QTcpSocket *s) { socket = s; }
-        bool getIsLocal() { return (socket == NULL); }
-        bool getIsSpectator() { return isSpectator; }
+        void setIsLocal(bool b) { isLocal = b; }
+        bool getIsLocal() { return isLocal; }
         void setIsSpectator(bool b) { isSpectator = b; }
+        bool getIsSpectator() { return isSpectator; }
 
         GameCardStack *getCardStack() { return &cards; }
 
@@ -61,13 +60,32 @@ class Player : public QObject
         const QMap<QString, PlayerObject*> &getObjects() { return objects; }
 
     protected:
+        bool isLocal;
         bool isSpectator;
-        QTcpSocket *socket;
         QColor color;
         QString name;
         GameCardStack cards;
         QMap<QString, PlayerObject*> objects;
 };
+
+Q_DECLARE_METATYPE(Player*);
+
+class PlayerPtr
+{
+    public:
+        PlayerPtr() : object(NULL) {}
+        PlayerPtr(Player *p) { object = p; }
+        PlayerPtr(const PlayerPtr &c) { object = c.object; }
+        Player *getObject() { return object; }
+
+        friend QDataStream &operator<<(QDataStream&, const PlayerPtr&);
+        friend QDataStream &operator>>(QDataStream&, PlayerPtr&);
+
+    protected:
+        Player *object;
+};
+
+Q_DECLARE_METATYPE(PlayerPtr);
 
 #endif
 

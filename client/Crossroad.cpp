@@ -52,9 +52,8 @@ void Crossroad::createSelectionCircle()
 
 void Crossroad::drawSelectionCircle()
 {
-    Game *game = Game::getInstance();
-    QGLWidget *widget = game->getGLWidget();
-    QColor color = game->getPlayers().at(0)->getColor();
+    QGLWidget *widget = GAME->getGLWidget();
+    QColor color = GAME->getPlayers().at(0)->getColor();
 
     glPushMatrix();
     widget->qglColor((isHighlighted) ? color.lighter() : color);
@@ -133,7 +132,7 @@ QDataStream &operator>>(QDataStream &stream, CrossroadPtr &obj)
 
     stream >> v;
     // find object with vertex v
-    obj.object = Game::getInstance()->getBoard()->getCrossroadAtVertex(v);
+    obj.object = GAME->getBoard()->getCrossroadAtVertex(v);
 
     return stream;
 }

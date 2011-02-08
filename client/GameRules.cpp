@@ -43,6 +43,8 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     messagePanel = NULL;
     controlPanel = NULL;
 
+    REGISTER_RULE(ruleJoinGame);
+
     REGISTER_RULE(ruleInitGame);
     REGISTER_RULE(ruleInitPlayers);
     REGISTER_RULE(ruleInitGameCards);
@@ -149,8 +151,11 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
     }
 }
 
-bool GameRules::executeRuleFromNetwork(NetworkPacket &packet, Player *player)
+bool GameRules::executeRuleFromNetwork(NetworkPacket &packet)
 {
+    Q_ASSERT(!isRuleChainWaiting);
+
+    Player *player = packet.getPlayer();
     Q_ASSERT(player != NULL);
 
     unpackRuleDataFromNetworkPacket(packet);
@@ -159,34 +164,55 @@ bool GameRules::executeRuleFromNetwork(NetworkPacket &packet, Player *player)
     qDebug() << "Executing rule from network:" << name;
     Q_ASSERT(rules.contains(name));
 
+    return executeRule(name, player);
+}
+
+bool GameRules::executeRule(QString name)
+{
+    Q_ASSERT(rules.contains(name));
+
+    if(GAME->getNetworkCore()->getIsServer())
+    {
+        // we are the server, execute it
+        executeRule(name, GAME->getLocalPlayer());
+    }
+    else
+    {
+        // send the rule to the server
+        NetworkPacket packet(name, GAME->getLocalPlayer());
+        GAME->getNetworkCore()->sendPacket(packet);
+    }
+
+    return true;
+}
+
+bool GameRules::executeSubRule(QString name, Player *player)
+{
+    Q_ASSERT(player != NULL);
+    Q_ASSERT(!isRuleChainWaiting);
+    Q_ASSERT(rules.contains(name));
+
+    qDebug() << "Executing nested rule" << name << player->getName();
     GameRule rule = rules.value(name);
-    return (this->*rule.ruleFunc)(Game::getInstance(), player);
+    return (this->*rule.ruleFunc)(GAME, player);
 }
 
 bool GameRules::executeRule(QString name, Player *player)
 {
-    Q_ASSERT(player != NULL);
-
-    NetworkPacket packet(name);
-
-    // if this is a client, send the rule to the server
-    if(!Game::getInstance()->getNetworkCore()->getIsServer())
-    {
-        Game::getInstance()->getNetworkCore()->sendPacket(packet);
-        return false;
-    }
-
-    // we are the server... execute rule and broadcast it
     Q_ASSERT(!isRuleChainWaiting);
-
-    packRuleDataToNetworkPacket(packet);
-    Game::getInstance()->getNetworkCore()->sendPacket(packet);
-
-    qDebug() << "Executing rule:" << name;
+    Q_ASSERT(player != NULL);
+    qDebug() << "Executing rule:" << name << "for" << player->getName();
     Q_ASSERT(rules.contains(name));
 
+    if(GAME->getNetworkCore()->getIsServer())
+    {
+        // send the rule to the server
+        NetworkPacket packet(name, player);
+        GAME->getNetworkCore()->sendPacket(packet);
+    }
+
     GameRule rule = rules.value(name);
-    return (this->*rule.ruleFunc)(Game::getInstance(), player);
+    return (this->*rule.ruleFunc)(GAME, player);
 }
 
 void GameRules::suspendRuleChain()
@@ -204,19 +230,14 @@ void GameRules::suspendRuleChain()
 
 void GameRules::startRuleChain()
 {
-    if(Game::getInstance()->getNetworkCore()->getIsServer())
-    {
-        Q_ASSERT(ruleChain.size() > 0 && !isRuleChainWaiting);
-        qDebug() << "Starting rule chain";
+    Q_ASSERT(ruleChain.size() > 0 && !isRuleChainWaiting);
+    qDebug() << "Starting rule chain";
 
-        continueRuleChain();
-    }
+    continueRuleChain();
 }
 
 void GameRules::continueRuleChain()
 {
-    if(!Game::getInstance()->getNetworkCore()->getIsServer()) return;
-
     while(ruleChain.size() > 0)
     {
         RuleChainElement rce = ruleChain.takeFirst();
@@ -229,7 +250,7 @@ void GameRules::continueRuleChain()
     }
 
     if(ruleChain.size() == 0) ruleChainFinished();
-    Game::getInstance()->getBoard()->update();
+    GAME->getBoard()->update();
 }
 
 void GameRules::ruleChainFinished()
@@ -238,7 +259,7 @@ void GameRules::ruleChainFinished()
     ruleChain.clear();
     ruleData.clear();
     isRuleChainWaiting = false;
-    Game::getInstance()->getBoard()->resetBoardState();
+    GAME->getBoard()->resetBoardState();
 }
 
 void GameRules::cancelRuleChain()
@@ -250,7 +271,16 @@ void GameRules::cancelRuleChain()
     qDebug() << "Rule chain canceled";
 }
 
+void GameRules::pushRuleData(const QString &identifier, QVariant data)
+{
+    ruleData.insert(identifier, data);
+}
+
 // STANDARD RULES
+
+IMPLEMENT_RULE(ruleJoinGame)
+{
+}
 
 IMPLEMENT_RULE(ruleInitGame)
 {

@@ -71,8 +71,7 @@ void Board::render()
 
 void Board::update()
 {
-    Game *game = Game::getInstance();
-    game->getGLWidget()->updateGL();
+    GAME->getGLWidget()->updateGL();
 }
 
 /* returns the glgamemodel objects in objs at 2d mouse position pos*/
@@ -80,8 +79,7 @@ template <typename T>
 const T Board::getObjectsAtMousePos(T objs, const QPoint &pos)
 {
     QList<GLuint> hits;
-    Game *game = Game::getInstance();
-    GLWidget *widget = game->getGLWidget();
+    GLWidget *widget = GAME->getGLWidget();
 
     widget->beginGLSelection(pos);
 
@@ -144,7 +142,6 @@ void Board::handleMouseClick(QMouseEvent *event)
 {
     if(!isLoaded) return;
 
-    Game *game = Game::getInstance();
     const QPoint mousePos = event->pos();
 
     if(getIsSelectionModeActive())
@@ -170,8 +167,7 @@ void Board::handleMouseOver(QMouseEvent *event)
     highlightObjectsAtMousePos(roadways, mousePos);
     highlightObjectsAtMousePos(boardTiles, mousePos);
 
-    Game *game = Game::getInstance();
-    game->getGLWidget()->updateGL();
+    GAME->getGLWidget()->updateGL();
 }
 
 void Board::setSelectionMode()
@@ -208,11 +204,8 @@ void Board::endSelectionMode()
     isSelectionModeActive = false;
     resetBoardState();
 
-    Game *game = Game::getInstance();
-    if(game->getRules()->getIsRuleChainWaiting())
-    {
-        game->getRules()->continueRuleChain();
-    }
+    if(GAME->getRules()->getIsRuleChainWaiting())
+        GAME->getRules()->continueRuleChain();
 
     selectedObject = NULL;
 }
@@ -277,7 +270,6 @@ void Board::updateBoardState(BoardState &newState)
 
     int max = 1;
     BoardObjectState s;
-    Game *game = Game::getInstance();
 
     for(int i = 0; i < max; i++)
     {
@@ -312,7 +304,7 @@ void Board::updateBoardState(BoardState &newState)
         if(!done) max++;
     }
 
-    game->getGLWidget()->updateGL();
+    GAME->getGLWidget()->updateGL();
 }
 
 // load a board from a plain textfile

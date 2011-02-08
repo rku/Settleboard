@@ -31,12 +31,12 @@ class NetworkCore : public QObject
         void connected();
 
     protected:
-        Player* getPlayerForSocket(QTcpSocket *s);
         void setupSocket(QTcpSocket*);
         void packetReceived(QTcpSocket*, NetworkPacket&);
 
         QList<QTcpSocket*> connections;
         QMap<QTcpSocket*, quint32> pendingBlockSizes;
+        QMap<QTcpSocket*, Player*> players;
         QTcpServer *server;
         QTcpSocket *socket;
 };

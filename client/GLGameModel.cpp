@@ -57,7 +57,7 @@ GLGameModel::~GLGameModel()
 void GLGameModel::create()
 {
     GLuint currentTex = 65535;
-    TextureManager *tm = Game::getInstance()->getTextureManager();
+    TextureManager *tm = GAME->getTextureManager();
 
     glNewList(displayListID, GL_COMPILE);
 
@@ -75,7 +75,7 @@ void GLGameModel::create()
             {
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texId);
-                Game::getInstance()->getGLWidget()->qglColor(Qt::white);
+                GAME->getGLWidget()->qglColor(Qt::white);
                 currentTex = texId;
             }
         }
@@ -87,7 +87,7 @@ void GLGameModel::create()
                 currentTex = 0;
                 glBindTexture(GL_TEXTURE_2D, 0);
                 glDisable(GL_TEXTURE_2D);
-                Game::getInstance()->getGLWidget()->qglColor(color);
+                GAME->getGLWidget()->qglColor(color);
             }
         }
 
@@ -133,8 +133,7 @@ void GLGameModel::create()
 
 void GLGameModel::load(QString filename, QColor objColor)
 {
-    Game *game = Game::getInstance();
-    OBJGLLoader *loader = game->getOBJGLLoader();
+    OBJGLLoader *loader = GAME->getOBJGLLoader();
     OBJ *obj = loader->load(filename);
 
     vertices      = obj->vertices;

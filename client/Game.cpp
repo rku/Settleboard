@@ -51,8 +51,9 @@ Game::Game(QObject *parent) : QObject(parent)
     bank = new Bank();
     networkCore = new NetworkCore(this);
 
-    // append test player
-    players.append(new Player(NULL, this));
+    // append local player
+    localPlayer = new Player(this);
+    players.append(localPlayer);
 }
 
 Game::~Game()

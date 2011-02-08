@@ -28,6 +28,7 @@
 #include <QStack>
 #include <QLinkedList>
 #include <QVariant>
+#include <QTcpSocket>
 
 class Game;
 class Player;
@@ -59,17 +60,20 @@ typedef struct _RuleChainElement {
     }
 #define DECLARE_RULE(a) bool a(Game*, Player*);
 #define IMPLEMENT_RULE(a) bool GameRules::a(Game *game, Player *player)
-#define EXECUTE_SUBRULE(n) executeRule(#n, player)
-#define EXECUTE_SUBRULE_FOR_PLAYER(n,p) executeRule(#n, p)
-#define RULECHAIN_ADD(n) if(1) { \
+#define EXECUTE_SUBRULE(n) executeSubRule(#n, player)
+#define EXECUTE_SUBRULE_FOR_PLAYER(n,p) executeSubRule(#n, p)
+#define RULECHAIN_ADD(n) \
+    if(GAME->getNetworkCore()->getIsServer()) { \
     RuleChainElement _rce; \
     _rce.player = player; _rce.name = #n; _rce.suspend = false; \
     ruleChain.append(_rce); }
-#define RULECHAIN_ADD_WITH_PLAYER(n, p) if(1) { \
+#define RULECHAIN_ADD_WITH_PLAYER(n, p) \
+    if(GAME->getNetworkCore()->getIsServer()) { \
     RuleChainElement _rce; \
     _rce.player = p; _rce.name = #n; _rce.suspend = false; \
     ruleChain.append(_rce); }
-#define RULECHAIN_ADD_TOP(n) if(1) { \
+#define RULECHAIN_ADD_TOP(n) \
+    if(GAME->getNetworkCore()->getIsServer()) { \
     RuleChainElement _rce; \
     _rce.player = player; _rce.name = #n; _rce.suspend = false; \
     ruleChain.insert(ruleChain.begin(), _rce); }
@@ -91,24 +95,30 @@ class GameRules : public QObject
 {
     Q_OBJECT
 
+    friend class NetworkCore;
+
     public:
         GameRules(QObject *parent = 0);
         ~GameRules();
 
-        void registerRule(QString name, GameRule);
-        bool executeRuleFromNetwork(NetworkPacket&, Player*);
-        bool executeRule(QString name, Player*);
+        bool executeRule(QString name);
         bool getIsRuleChainWaiting() { return isRuleChainWaiting; }
         void continueRuleChain();
         void cancelRuleChain();
+        void pushRuleData(const QString &identifier, QVariant);
 
     protected:
+        void registerRule(QString name, GameRule);
+        bool executeRuleFromNetwork(NetworkPacket&);
+        bool executeRule(QString name, Player*);
+        bool executeSubRule(QString name, Player*);
         void packRuleDataToNetworkPacket(NetworkPacket&);
         void unpackRuleDataFromNetworkPacket(NetworkPacket&);
         void startRuleChain();
         void suspendRuleChain();
         void ruleChainFinished();
-        void sendCurrentRule();
+
+        DECLARE_RULE(ruleJoinGame);
 
         DECLARE_RULE(ruleInitGame);
         DECLARE_RULE(ruleInitPlayers);

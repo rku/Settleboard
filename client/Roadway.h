@@ -53,7 +53,7 @@ Q_DECLARE_METATYPE(Roadway*);
 class RoadwayPtr
 {
     public:
-        RoadwayPtr() {}
+        RoadwayPtr() : object(NULL) {}
         RoadwayPtr(Roadway *p) { object = p; }
         RoadwayPtr(const RoadwayPtr &c) { object = c.object; }
         Roadway *getObject() { return object; }

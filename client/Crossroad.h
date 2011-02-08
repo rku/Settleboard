@@ -53,7 +53,7 @@ Q_DECLARE_METATYPE(Crossroad*);
 class CrossroadPtr
 {
     public:
-        CrossroadPtr() {}
+        CrossroadPtr() : object(NULL) {}
         CrossroadPtr(Crossroad *p) { object = p; }
         CrossroadPtr(const CrossroadPtr &c) { object = c.object; }
         Crossroad *getObject() { return object; }

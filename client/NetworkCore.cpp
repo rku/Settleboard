@@ -17,19 +17,6 @@ NetworkCore::~NetworkCore()
     if(server) delete server;
 }
 
-Player* NetworkCore::getPlayerForSocket(QTcpSocket *s)
-{
-    QList<Player*> players = Game::getInstance()->getPlayers();
-    QList<Player*>::iterator i;
-
-    for(i = players.begin(); i != players.end(); ++i)
-    {
-        if((*i)->getSocket() == s) return *i;
-    }
-
-    return NULL;
-}
-
 bool NetworkCore::startServer(uint port)
 {
     if(getIsServer() && server->isListening()) return true;
@@ -55,6 +42,12 @@ void NetworkCore::connected()
     QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
     qDebug() << "Connected to" << s->peerAddress();
     connections.append(s);
+
+    if(!getIsServer())
+    {
+        // join the game
+        GAME->getRules()->executeRule("ruleJoinGame");
+    }
 }
 
 void NetworkCore::sendPacket(const NetworkPacket &packet)
@@ -89,8 +82,6 @@ void NetworkCore::acceptNewConnection()
     connections.append(socket);
 
     setupSocket(socket);
-    Game::getInstance()->getRules()->executeRule("ruleInitGame",
-        Game::getInstance()->getPlayers()[0]);
 }
 
 void NetworkCore::setupSocket(QTcpSocket *s)
@@ -112,7 +103,7 @@ void NetworkCore::connectionClosed()
 void NetworkCore::closeConnection(QTcpSocket *s)
 {
     qDebug() << "Disconnecting from" << s->peerAddress();
-    s->disconnect();
+    s->disconnectFromHost();
     connections.removeAll(s);
 }
 
@@ -126,9 +117,8 @@ void NetworkCore::packetReceived(QTcpSocket *s, NetworkPacket &packet)
         return;
     }
 
-    Player *player = getPlayerForSocket(s);
     qDebug() << "Received rule" << s->peerAddress() << packet.getRuleName();
-    Game::getInstance()->getRules()->executeRuleFromNetwork(packet, player);
+    GAME->getRules()->executeRuleFromNetwork(packet);
 }
 
 void NetworkCore::dataAvailable()

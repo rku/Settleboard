@@ -18,15 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Player.h"
+#include "Game.h"
 #include "PlayerObject.h"
+#include "Player.h"
 
-Player::Player(QTcpSocket *_socket, QObject *parent)
-    : QObject(parent), socket(_socket)
+Player::Player(QObject *parent) : QObject(parent)
 {
     isSpectator = false;
     color = Qt::red;
-    name = "Unnamed";
+
+    qsrand(time(NULL));
+    name = QString("Player%1").arg(qrand());
 }
 
 Player::~Player()
@@ -97,5 +99,42 @@ const QList<PlayerObject*> Player::getObjectsOfType(QString type)
 {
     Q_ASSERT(objects.contains(type));
     return objects.values(type);
+}
+
+// QDataStream operators
+
+QDataStream &operator<<(QDataStream &stream, const PlayerPtr &obj)
+{
+    stream << obj.object->getName();
+    stream << obj.object->getColor();
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, PlayerPtr &obj)
+{
+    QString name;
+    QColor color;
+
+    stream >> name;
+    stream >> color;
+
+    obj.object = NULL;
+    Q_ASSERT(!name.isEmpty());
+
+    // find player
+    QList<Player*> players = GAME->getPlayers();
+    QList<Player*>::iterator i;
+    for(i = players.begin(); i != players.end(); ++i)
+    {
+        Player *p = *i;
+        if(p->getName() == name && p->getColor() == color)
+        {
+            obj.object = *i;
+            break;
+        }
+    }
+
+    Q_ASSERT(obj.object != NULL);
+    return stream;
 }
 

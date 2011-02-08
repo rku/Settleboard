@@ -59,7 +59,7 @@ Q_DECLARE_METATYPE(PlayerObject*);
 class PlayerObjectPtr
 {
     public:
-        PlayerObjectPtr() {}
+        PlayerObjectPtr() : object(NULL) {}
         PlayerObjectPtr(PlayerObject *p) { object = p; }
         PlayerObjectPtr(const PlayerObjectPtr &c) { object = c.object; }
         PlayerObject *getObject() { return object; }

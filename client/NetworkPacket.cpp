@@ -4,12 +4,15 @@
 NetworkPacket::NetworkPacket()
     : magic(NETWORK_PACKET_MAGIC), version(NETWORK_PACKET_VERSION)
 {
+    socket = NULL;
 }
 
-NetworkPacket::NetworkPacket(const QString &rule)
+NetworkPacket::NetworkPacket(const QString &rule, Player *_player)
     : magic(NETWORK_PACKET_MAGIC), version(NETWORK_PACKET_VERSION)
 {
     setRuleName(rule);
+    setPlayer(_player);
+    socket = NULL;
 }
 
 NetworkPacket::~NetworkPacket()
@@ -32,6 +35,7 @@ QDataStream &operator<<(QDataStream &stream, const NetworkPacket &packet)
     stream << packet.magic;
     stream << packet.version;
     stream << packet.ruleName;
+    stream << packet.player;
     stream << packet.data;
     return stream;
 }
@@ -52,6 +56,7 @@ QDataStream &operator>>(QDataStream &stream, NetworkPacket &packet)
     }
 
     stream >> packet.ruleName;
+    stream >> packet.player;
     stream >> packet.data;
     return stream;
 }

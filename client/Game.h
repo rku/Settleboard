@@ -32,6 +32,8 @@ class TextureManager;
 class MainWindow;
 class NetworkCore;
 
+#define GAME Game::getInstance()
+
 class Game : public QObject
 {
     Q_OBJECT
@@ -50,7 +52,8 @@ class Game : public QObject
         TextureManager *getTextureManager() { return textureManager; }
         Board *getBoard() { return board; }
         OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
-        const QList<Player*>& getPlayers() { return players; }
+        QList<Player*>& getPlayers() { return players; }
+        Player* getLocalPlayer() { return localPlayer; }
         Bank *getBank() { return bank; }
         NetworkCore *getNetworkCore() { return networkCore; }
 
@@ -65,6 +68,7 @@ class Game : public QObject
         Board *board;
         OBJGLLoader *objGLLoader;
         QList<Player*> players;
+        Player *localPlayer;
         Bank *bank;
         NetworkCore *networkCore;
 };
