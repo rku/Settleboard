@@ -35,6 +35,27 @@ PlayerPanel QGroupBox QLabel {
     font-size: 12px;
 }
 
+QDialog {
+    background: black;
+    color: white;
+}
+
+QDialog QGroupBox {
+    background: #4f4f4f;
+    border-radius: 10px;
+    color: yellow;
+    padding-top: 15px;
+}
+
+QDialog QListView {
+    background-color: #303030; 
+    border: 2px solid gray;
+}
+
+QDialog QListView::item {
+    background-color: #303030;
+}
+
 QStatusBar {
     background: black;
     color: yellow;

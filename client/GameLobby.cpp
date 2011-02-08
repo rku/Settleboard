@@ -24,6 +24,7 @@ GameLobby::GameLobby(QWidget *parent) : QDialog(parent)
 {
     ui.setupUi(this);
     setModal(true);
+    ui.listWidget->setSelectionMode(QAbstractItemView::NoSelection);
 }
 
 void GameLobby::clearPlayerList()
