@@ -48,6 +48,9 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleStartServer);
     REGISTER_RULE(ruleJoinGame);
     REGISTER_RULE(rulePlayerJoinedGame);
+    REGISTER_RULE(ruleStartPlayerSync);
+    REGISTER_RULE(rulePlayerSync);
+    REGISTER_RULE(ruleUpdateGameLobby);
 
     REGISTER_RULE(ruleInitGame);
     REGISTER_RULE(ruleInitPlayers);
@@ -215,6 +218,7 @@ bool GameRules::executeRule(QString name, Player *player)
     {
         // send the rule to the server
         NetworkPacket packet(name, player);
+        packRuleDataToNetworkPacket(packet);
         GAME->getNetworkCore()->sendPacket(packet);
     }
 
@@ -290,6 +294,7 @@ IMPLEMENT_RULE(ruleStartServer)
     GAME->getNetworkCore()->startServer(1234);
     GAME->setState(Game::PreparingState);
     gameLobby->show();
+    return executeRule("rulePlayerJoinedGame");
 }
 
 IMPLEMENT_RULE(ruleJoinGame)
@@ -330,12 +335,74 @@ IMPLEMENT_RULE(rulePlayerJoinedGame)
 
     qDebug() << "Player joined game" << player->getName();
 
+    executeRule("ruleStartPlayerSync");
     return true;
 }
 
+IMPLEMENT_RULE(ruleStartPlayerSync)
+{
+    SERVER_ONLY_RULE
+
+    QVariantList playerIds;
+    QList<Player*> players = GAME->getPlayers();
+    QList<Player*>::iterator i;
+
+    for(i = players.begin(); i != players.end(); ++i)
+        playerIds.append(qVariantFromValue(PlayerPtr(*i)));
+
+    RULEDATA_PUSH("PlayerIds", playerIds);
+    executeRule("rulePlayerSync");
+
+    return EXECUTE_SUBRULE(ruleUpdateGameLobby);
+}
+
+IMPLEMENT_RULE(rulePlayerSync)
+{
+    CLIENT_ONLY_RULE
+
+    RULEDATA_REQUIRE("PlayerIds");
+    QVariantList list = RULEDATA_POP("PlayerIds").value<QVariantList>();
+    QList<Player*> newList;
+
+    Q_ASSERT(GAME->getPlayers().count() <= list.count());
+    newList.reserve(list.count());
+
+    for(int i = 0; i < list.count(); i++)
+    {
+        Player *p = list.at(i).value<PlayerPtr>().getObject();
+        Q_ASSERT(p);
+
+        if(GAME->getPlayers().contains(p)) GAME->getPlayers().removeAll(p);
+        newList.append(p);
+    }
+
+    // all players should habe been arranged
+    Q_ASSERT(GAME->getPlayers().count() == 0);
+    GAME->getPlayers() = newList;
+
+    return EXECUTE_SUBRULE(ruleUpdateGameLobby);
+}
+
+IMPLEMENT_RULE(ruleUpdateGameLobby)
+{
+    QList<Player*> players = GAME->getPlayers();
+    QList<Player*>::iterator i;
+
+    gameLobby->clearPlayerList();
+
+    for(i = players.begin(); i != players.end(); ++i)
+    {
+        Player *p = *i;
+        gameLobby->addPlayer(p->getName(), "", p->getColor());
+    }
+
+    return true;
+}
+ 
+
 IMPLEMENT_RULE(ruleInitGame)
 {
-    player = game->getPlayers()[0];
+    SERVER_ONLY_RULE
 
     RULECHAIN_ADD(ruleInitGameCards);
     RULECHAIN_ADD(ruleInitPlayers);
@@ -351,6 +418,8 @@ IMPLEMENT_RULE(ruleInitGame)
 
 IMPLEMENT_RULE(ruleInitialPlacement1)
 {
+    SERVER_ONLY_RULE
+
     RULECHAIN_ADD(ruleSelectCrossroad);
     RULECHAIN_ADD(ruleCrossroadSelected);
     RULECHAIN_ADD(ruleBuildSettlement);
@@ -364,6 +433,8 @@ IMPLEMENT_RULE(ruleInitialPlacement1)
 
 IMPLEMENT_RULE(ruleInitialPlacement2)
 {
+    SERVER_ONLY_RULE
+
     RULECHAIN_ADD(ruleSelectCrossroad);
     RULECHAIN_ADD(ruleCrossroadSelected);
     RULECHAIN_ADD(ruleDrawInitialResourceCards);
@@ -379,6 +450,8 @@ IMPLEMENT_RULE(ruleInitialPlacement2)
 
 IMPLEMENT_RULE(ruleInitialPlacement)
 {
+    SERVER_ONLY_RULE
+
     QList<Player*> players = game->getPlayers();
     QListIterator<Player*> i(players);
 

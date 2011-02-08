@@ -63,6 +63,9 @@ typedef struct _RuleChainElement {
 #define SERVER_ONLY_RULE \
     if(!GAME->getNetworkCore()->getIsServer()) { \
         qDebug() << "Skipping server-only rule"; return true; }
+#define CLIENT_ONLY_RULE \
+    if(GAME->getNetworkCore()->getIsServer()) { \
+        qDebug() << "Skipping client-only rule"; return true; }
 
 #define DECLARE_RULE(a) bool a(Game*, Player*);
 #define IMPLEMENT_RULE(a) bool GameRules::a(Game *game, Player *player)
@@ -127,6 +130,9 @@ class GameRules : public QObject
         DECLARE_RULE(ruleStartServer);
         DECLARE_RULE(ruleJoinGame);
         DECLARE_RULE(rulePlayerJoinedGame);
+        DECLARE_RULE(ruleStartPlayerSync);
+        DECLARE_RULE(rulePlayerSync);
+        DECLARE_RULE(ruleUpdateGameLobby);
 
         DECLARE_RULE(ruleInitGame);
         DECLARE_RULE(ruleInitPlayers);

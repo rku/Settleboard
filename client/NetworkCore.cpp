@@ -119,12 +119,16 @@ void NetworkCore::packetReceived(QTcpSocket *s, NetworkPacket &packet)
 
     qDebug() << "Received rule" << s->peerAddress() << packet.getRuleName();
 
-    if(!players.contains(s))
+    if(getIsServer())
     {
-        players.insert(s, packet.getPlayer());
+        if(!players.contains(s))
+        {
+            players.insert(s, packet.getPlayer());
+        }
+
+        Q_ASSERT(packet.getPlayer() == players.value(s));
     }
 
-    Q_ASSERT(packet.getPlayer() == players.value(s));
     GAME->getRules()->executeRuleFromNetwork(packet);
 }
 
