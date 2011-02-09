@@ -50,6 +50,7 @@ class Board : public QObject
     public:
         Board(QObject *parent = 0);
         ~Board();
+        void reset();
         void freeObjects();
         void generate();
         void update();

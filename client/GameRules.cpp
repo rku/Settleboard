@@ -43,7 +43,6 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     gameInfoPanel = NULL;
     messagePanel = NULL;
     controlPanel = NULL;
-    gameLobby = new GameLobby(MainWindow::getInstance());
 
     REGISTER_RULE(ruleStartServer);
     REGISTER_RULE(ruleJoinGame);
@@ -53,7 +52,9 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleUpdateGameLobby);
     REGISTER_RULE(ruleUpdatePlayerReadyState);
     REGISTER_RULE(ruleNewChatMessage);
+    REGISTER_RULE(ruleDisconnect);
 
+    REGISTER_RULE(ruleStartGame);
     REGISTER_RULE(ruleInitGame);
     REGISTER_RULE(ruleInitPlayers);
     REGISTER_RULE(ruleInitGameCards);
@@ -102,7 +103,34 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
 
 GameRules::~GameRules()
 {
-    delete gameLobby;
+    reset();
+}
+
+void GameRules::reset()
+{
+    ruleChain.clear();
+    ruleData.clear();
+
+    if(playerPanel)
+    {
+        MainWindow *mainWindow = GAME->getMainWindow();
+
+        mainWindow->removeDockWidget(playerPanel);
+        delete playerPanel;
+        playerPanel = NULL;
+
+        mainWindow->removeDockWidget(gameInfoPanel);
+        delete gameInfoPanel;
+        gameInfoPanel = NULL;
+
+        mainWindow->removeDockWidget(controlPanel);
+        delete controlPanel;
+        controlPanel = NULL;
+
+        mainWindow->removeDockWidget(messagePanel);
+        delete messagePanel;
+        messagePanel = NULL;
+    }
 }
 
 void GameRules::registerRule(QString name, GameRule rule)
@@ -297,7 +325,7 @@ IMPLEMENT_RULE(ruleStartServer)
 {
     GAME->getNetworkCore()->startServer(1234);
     GAME->setState(Game::PreparingState);
-    gameLobby->show();
+    GAME->getLobby()->show();
     return executeRule("rulePlayerJoinedGame");
 }
 
@@ -305,7 +333,7 @@ IMPLEMENT_RULE(ruleJoinGame)
 {
     SERVER_ONLY_RULE
 
-    Q_ASSERT(player != GAME->getLocalPlayer());
+    Q_ASSERT(!player->getIsLocal());
     Q_ASSERT(!GAME->getPlayers().contains(player));
 
     // check if a player with that name exists
@@ -326,19 +354,19 @@ IMPLEMENT_RULE(ruleJoinGame)
 
 IMPLEMENT_RULE(rulePlayerJoinedGame)
 {
-    if(player != GAME->getLocalPlayer())
+    if(!player->getIsLocal())
     {
         Q_ASSERT(!GAME->getPlayers().contains(player));
         GAME->getPlayers().append(player);
-        gameLobby->addChatMessage(
+        GAME->getLobby()->addChatMessage(
             QString("*** %1 joined the game.").arg(player->getName()),
             Qt::white);
     }
     else
     {
         GAME->setState(Game::PreparingState);
-        gameLobby->show();
-        gameLobby->addChatMessage("*** You joined the game.", Qt::white);
+        GAME->getLobby()->show();
+        GAME->getLobby()->addChatMessage("*** You joined the game.", Qt::white);
     }
 
     qDebug() << "Player joined game" << player->getName();
@@ -396,10 +424,10 @@ IMPLEMENT_RULE(ruleUpdatePlayerReadyState)
     bool isReady = RULEDATA_POP("ReadyState").value<bool>();
 
     player->setIsReady(isReady);
-    gameLobby->addChatMessage(QString("*** %1 is now %2.")
+    GAME->getLobby()->addChatMessage(QString("*** %1 is now %2.")
         .arg(player->getName()).arg((isReady)?"ready":"not ready"), 
         Qt::white);
-    gameLobby->update();
+    GAME->getLobby()->update();
 
     return true;
 }
@@ -411,8 +439,27 @@ IMPLEMENT_RULE(ruleNewChatMessage)
 
     // add message to game lobby
     QString finalMsg = QString("<%1> %2").arg(player->getName()).arg(message);
-    gameLobby->addChatMessage(finalMsg, player->getColor());
+    GAME->getLobby()->addChatMessage(finalMsg, player->getColor());
 
+    return true;
+}
+
+IMPLEMENT_RULE(ruleDisconnect)
+{
+    // this should never happen!
+    Q_ASSERT(!player->getIsLocal());
+
+    GAME->getPlayers().removeAll(player);
+
+    if(GAME->getState() == Game::PreparingState)
+    {
+        GAME->getLobby()->addChatMessage(
+            QString("*** %1 left the game.").arg(player->getName()),
+            Qt::white);
+        GAME->getLobby()->update();
+    }
+
+    delete player;
     return true;
 }
 
@@ -421,10 +468,15 @@ IMPLEMENT_RULE(ruleUpdateGameLobby)
     QList<Player*> players = GAME->getPlayers();
     QList<Player*>::iterator i;
 
-    gameLobby->update();
+    GAME->getLobby()->update();
     return true;
 }
- 
+
+IMPLEMENT_RULE(ruleStartGame)
+{
+    GAME->getLobby()->hide();
+    return EXECUTE_SUBRULE(ruleInitGame);
+}
 
 IMPLEMENT_RULE(ruleInitGame)
 {

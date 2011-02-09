@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>529</width>
-    <height>403</height>
+    <height>462</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -277,6 +277,9 @@
        <property name="text">
         <string>Cancel</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -286,6 +289,9 @@
        </property>
        <property name="text">
         <string>Start Game</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

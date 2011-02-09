@@ -31,6 +31,7 @@ class GameRules;
 class TextureManager;
 class MainWindow;
 class NetworkCore;
+class GameLobby;
 
 #define GAME Game::getInstance()
 
@@ -43,10 +44,14 @@ class Game : public QObject
 
         static Game* getInstance();
 
-        enum GameState {NoGameState, PreparingState, PlayingState, FinishedState};
+        enum GameState {NoGameState, PreparingState, PlayingState,
+            FinishedState, EndingState};
         void setState(GameState st) { state = st; }
         GameState getState() { return state; }
 
+        void end();
+
+        GameLobby* getLobby() { return gameLobby; }
         MainWindow* getMainWindow() { return mainWindow; }
         GLWidget* getGLWidget() { return glWidget; }
         GameRules* getRules() { return rules; }
@@ -59,9 +64,13 @@ class Game : public QObject
         NetworkCore *getNetworkCore() { return networkCore; }
 
     protected:
+        void init();
+        void free();
+
         Game(QObject *parent = 0);
 
         GameState state;
+        GameLobby *gameLobby;
         MainWindow *mainWindow;
         GLWidget *glWidget;
         GameRules *rules;

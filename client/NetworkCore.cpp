@@ -50,6 +50,23 @@ void NetworkCore::connected()
     }
 }
 
+void NetworkCore::disconnectAll()
+{
+    if(getIsServer())
+    {
+        qDebug() << "Stopping game server...";
+        server->close();
+    }
+
+    while(!connections.isEmpty())
+    {
+        QTcpSocket *sock = connections.takeFirst();
+        qDebug() << "Disconnecting from" << sock->peerAddress();
+        sock->disconnectFromHost();
+        delete sock;
+    }
+}
+
 void NetworkCore::sendPacket(const NetworkPacket &packet)
 {
     QList<QTcpSocket*>::iterator i;
@@ -97,6 +114,20 @@ void NetworkCore::connectionClosed()
     {
         qDebug() << "Disconnected from" << s->peerAddress();
         connections.removeAll(s);
+
+        if(!getIsServer())
+        {
+            // lost connection to server!
+            QMessageBox::critical(0, "Disconnected",
+                "Lost connection to game server!");
+            GAME->end();
+        }
+
+        if(players.contains(s))
+        {
+            GAME->getRules()->executeRule("ruleDisconnect", players.value(s));
+            players.remove(s);
+        }
     }
 }
 

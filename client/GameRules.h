@@ -110,6 +110,7 @@ class GameRules : public QObject
         GameRules(QObject *parent = 0);
         ~GameRules();
 
+        void reset();
         bool executeRule(QString name);
         bool getIsRuleChainWaiting() { return isRuleChainWaiting; }
         void continueRuleChain();
@@ -135,7 +136,9 @@ class GameRules : public QObject
         DECLARE_RULE(ruleUpdateGameLobby);
         DECLARE_RULE(ruleUpdatePlayerReadyState);
         DECLARE_RULE(ruleNewChatMessage);
+        DECLARE_RULE(ruleDisconnect);
 
+        DECLARE_RULE(ruleStartGame);
         DECLARE_RULE(ruleInitGame);
         DECLARE_RULE(ruleInitPlayers);
         DECLARE_RULE(ruleInitGameCards);
@@ -180,7 +183,6 @@ class GameRules : public QObject
         DECLARE_RULE(ruleRoadwaySelected);
         DECLARE_RULE(ruleCanSelectRoadway);
 
-        GameLobby *gameLobby;
         PlayerPanel *playerPanel;
         ControlPanel *controlPanel;
         GameInfoPanel *gameInfoPanel;

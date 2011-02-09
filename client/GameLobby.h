@@ -32,6 +32,7 @@ class GameLobby : public QDialog
     public:
         GameLobby(QWidget *parent = 0);
 
+        void reset();
         void clearPlayerList();
         void update();
         void addChatMessage(const QString &message, const QColor&);
@@ -39,6 +40,7 @@ class GameLobby : public QDialog
     private slots:
         void chatMessageAvailable();
         void readyStateChanged(int);
+        void done(int);
 
     private:
         void init();

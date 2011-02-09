@@ -57,8 +57,19 @@ void GameLobby::init()
         this, SLOT(chatMessageAvailable()));
     connect(ui.checkBoxReady, SIGNAL(stateChanged(int)),
         this, SLOT(readyStateChanged(int)));
+    connect(ui.buttonCancel, SIGNAL(clicked()),
+        this, SLOT(reject()));
+    connect(ui.buttonStartGame, SIGNAL(clicked()),
+        this, SLOT(accept()));
 
+    ui.lineEditChatInput->setFocus();
     clearPlayerList();
+}
+
+void GameLobby::reset()
+{
+    ui.textEditChatOutput->clear();
+    hide();
 }
 
 void GameLobby::clearPlayerList()
@@ -94,6 +105,12 @@ void GameLobby::update()
             .arg(p->getColor().name());
         colorWidgets[numberOfPlayers]->setStyleSheet(colorStyle);
 
+        if(p->getIsLocal())
+        {
+            ui.checkBoxReady->setCheckState(
+                (p->getIsReady()) ? Qt::Checked : Qt::Unchecked);
+        }
+
         numberOfPlayers++;
     }
 
@@ -124,10 +141,14 @@ void GameLobby::addChatMessage(const QString &message, const QColor &color)
 
 void GameLobby::chatMessageAvailable()
 {
-    GAME->getRules()->pushRuleData("ChatMessage",
-        ui.lineEditChatInput->text());
-    GAME->getRules()->executeRule("ruleNewChatMessage");
-    ui.lineEditChatInput->setText("");
+    QString message = ui.lineEditChatInput->text();
+
+    if(!message.isEmpty())
+    {
+        GAME->getRules()->pushRuleData("ChatMessage", message);
+        GAME->getRules()->executeRule("ruleNewChatMessage");
+        ui.lineEditChatInput->setText("");
+    }
 }
 
 void GameLobby::readyStateChanged(int state)
@@ -136,5 +157,20 @@ void GameLobby::readyStateChanged(int state)
 
     GAME->getRules()->pushRuleData("ReadyState", isReady);
     GAME->getRules()->executeRule("ruleUpdatePlayerReadyState");
+}
+
+void GameLobby::done(int result)
+{
+    if(result == QDialog::Rejected)
+    {
+        // cancel or close
+        GAME->end();
+    }
+    else
+    {
+        // start game
+        GAME->getRules()->executeRule("ruleStartGame");
+        QDialog::done(result);
+    }
 }
 

@@ -15,6 +15,8 @@ class Bank
         Bank();
         ~Bank();
 
+        void reset();
+
         void registerCardStack(QString stack);
         void registerCard(QString stack, GameCard, uint totalAmount);
         GameCardStack *getCardStack(QString stack);

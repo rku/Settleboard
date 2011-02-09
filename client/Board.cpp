@@ -40,6 +40,12 @@ Board::~Board()
     freeObjects();
 }
 
+void Board::reset()
+{
+    freeObjects();
+    update();
+}
+
 void Board::freeObjects()
 {
     while(!numberChips.isEmpty()) delete numberChips.takeFirst();

@@ -13,6 +13,11 @@ Bank::~Bank()
     while(!cardStacks.isEmpty()) delete cardStacks.take(cardStacks.keys()[0]);
 }
 
+void Bank::reset()
+{
+    while(!cardStacks.isEmpty()) delete cardStacks.take(cardStacks.keys()[0]);
+}
+
 void Bank::registerCardStack(QString stack)
 {
     Q_ASSERT(!cardStacks.contains(stack));

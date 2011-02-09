@@ -26,10 +26,21 @@
 #include "TextureManager.h"
 #include "GameRules.h"
 #include "MainWindow.h"
+#include "GameLobby.h"
 
 #include "Game.h"
 
 Game::Game(QObject *parent) : QObject(parent)
+{
+    init();
+}
+
+Game::~Game()
+{
+    free();
+}
+
+void Game::init()
 {
     state = NoGameState;
     mainWindow = MainWindow::getInstance();
@@ -50,15 +61,19 @@ Game::Game(QObject *parent) : QObject(parent)
     objGLLoader = new OBJGLLoader();
     bank = new Bank();
     networkCore = new NetworkCore(this);
+    gameLobby = new GameLobby(mainWindow);
 
     // append local player
     localPlayer = new Player(this);
+    localPlayer->setIsLocal(true);
     players.append(localPlayer);
     qDebug() << "Local player is" << localPlayer->getName();
 }
 
-Game::~Game()
+void Game::free()
 {
+    while(!players.isEmpty()) delete players.takeFirst();
+    delete gameLobby;
     delete networkCore;
     delete bank;
     delete objGLLoader;
@@ -73,5 +88,18 @@ Game* Game::getInstance()
 
     if(instance == NULL) instance = new Game();
     return instance;
+}
+
+void Game::end()
+{
+    if(getState() == EndingState) return; // already called end()
+
+    state = EndingState;
+    networkCore->disconnectAll();
+    gameLobby->reset();
+    bank->reset();
+    board->reset();
+    rules->reset();
+    state = NoGameState;
 }
 
