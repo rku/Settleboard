@@ -51,6 +51,8 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleStartPlayerSync);
     REGISTER_RULE(rulePlayerSync);
     REGISTER_RULE(ruleUpdateGameLobby);
+    REGISTER_RULE(ruleUpdatePlayerReadyState);
+    REGISTER_RULE(ruleNewChatMessage);
 
     REGISTER_RULE(ruleInitGame);
     REGISTER_RULE(ruleInitPlayers);
@@ -177,6 +179,7 @@ bool GameRules::executeRuleFromNetwork(NetworkPacket &packet)
 
 bool GameRules::executeRule(QString name)
 {
+    qDebug() << "Trying to execute local player rule:" << name;
     Q_ASSERT(rules.contains(name));
 
     if(!GAME->getNetworkCore()->getHasConnection() ||
@@ -190,6 +193,7 @@ bool GameRules::executeRule(QString name)
         // send the rule to the server
         qDebug() << "Sending rule" << name << "to server";
         NetworkPacket packet(name, GAME->getLocalPlayer());
+        packRuleDataToNetworkPacket(packet);
         GAME->getNetworkCore()->sendPacket(packet);
     }
 
@@ -216,7 +220,7 @@ bool GameRules::executeRule(QString name, Player *player)
 
     if(GAME->getNetworkCore()->getIsServer())
     {
-        // send the rule to the server
+        // send the rule to the clients
         NetworkPacket packet(name, player);
         packRuleDataToNetworkPacket(packet);
         GAME->getNetworkCore()->sendPacket(packet);
@@ -326,15 +330,18 @@ IMPLEMENT_RULE(rulePlayerJoinedGame)
     {
         Q_ASSERT(!GAME->getPlayers().contains(player));
         GAME->getPlayers().append(player);
+        gameLobby->addChatMessage(
+            QString("*** %1 joined the game.").arg(player->getName()),
+            Qt::white);
     }
     else
     {
         GAME->setState(Game::PreparingState);
         gameLobby->show();
+        gameLobby->addChatMessage("*** You joined the game.", Qt::white);
     }
 
     qDebug() << "Player joined game" << player->getName();
-
     executeRule("ruleStartPlayerSync");
     return true;
 }
@@ -383,19 +390,38 @@ IMPLEMENT_RULE(rulePlayerSync)
     return EXECUTE_SUBRULE(ruleUpdateGameLobby);
 }
 
+IMPLEMENT_RULE(ruleUpdatePlayerReadyState)
+{
+    RULEDATA_REQUIRE("ReadyState");
+    bool isReady = RULEDATA_POP("ReadyState").value<bool>();
+
+    player->setIsReady(isReady);
+    gameLobby->addChatMessage(QString("*** %1 is now %2.")
+        .arg(player->getName()).arg((isReady)?"ready":"not ready"), 
+        Qt::white);
+    gameLobby->update();
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleNewChatMessage)
+{
+    RULEDATA_REQUIRE("ChatMessage");
+    QString message = RULEDATA_POP("ChatMessage").value<QString>();
+
+    // add message to game lobby
+    QString finalMsg = QString("<%1> %2").arg(player->getName()).arg(message);
+    gameLobby->addChatMessage(finalMsg, player->getColor());
+
+    return true;
+}
+
 IMPLEMENT_RULE(ruleUpdateGameLobby)
 {
     QList<Player*> players = GAME->getPlayers();
     QList<Player*>::iterator i;
 
-    gameLobby->clearPlayerList();
-
-    for(i = players.begin(); i != players.end(); ++i)
-    {
-        Player *p = *i;
-        gameLobby->addPlayer(p->getName(), "", p->getColor());
-    }
-
+    gameLobby->update();
     return true;
 }
  

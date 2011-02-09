@@ -33,9 +33,22 @@ class GameLobby : public QDialog
         GameLobby(QWidget *parent = 0);
 
         void clearPlayerList();
-        void addPlayer(const QString &name, const QString address, const QColor&);
+        void update();
+        void addChatMessage(const QString &message, const QColor&);
+
+    private slots:
+        void chatMessageAvailable();
+        void readyStateChanged(int);
 
     private:
+        void init();
+        void setIsPlayerReady(const QString &name, bool);
+
+        QList<QLabel*> nameLabels;
+        QList<QLabel*> addressLabels;
+        QList<QLabel*> readyLabels;
+        QList<QWidget*> colorWidgets;
+        uint numberOfPlayers;
         Ui::GameLobbyForm ui;
 };
 

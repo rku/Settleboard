@@ -51,6 +51,8 @@ class Player : public QObject
         bool getIsLocal() { return isLocal; }
         void setIsSpectator(bool b) { isSpectator = b; }
         bool getIsSpectator() { return isSpectator; }
+        void setIsReady(bool b) { isReady = b; }
+        bool getIsReady() { return isReady; }
 
         GameCardStack *getCardStack() { return &cards; }
 
@@ -66,6 +68,7 @@ class Player : public QObject
         QUuid id;
         bool isLocal;
         bool isSpectator;
+        bool isReady;
         QColor color;
         QString name;
         GameCardStack cards;

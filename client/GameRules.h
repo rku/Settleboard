@@ -133,6 +133,8 @@ class GameRules : public QObject
         DECLARE_RULE(ruleStartPlayerSync);
         DECLARE_RULE(rulePlayerSync);
         DECLARE_RULE(ruleUpdateGameLobby);
+        DECLARE_RULE(ruleUpdatePlayerReadyState);
+        DECLARE_RULE(ruleNewChatMessage);
 
         DECLARE_RULE(ruleInitGame);
         DECLARE_RULE(ruleInitPlayers);

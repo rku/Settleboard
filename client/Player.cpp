@@ -24,7 +24,9 @@
 
 Player::Player(QObject *parent) : QObject(parent)
 {
+    isLocal = false;
     isSpectator = false;
+    isReady = false;
     color = Qt::red;
     id = QUuid::createUuid();
 
