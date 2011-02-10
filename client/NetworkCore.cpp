@@ -7,13 +7,13 @@
 
 NetworkCore::NetworkCore(QObject *parent) : QObject(parent)
 {
-    socket = new QTcpSocket();
+    socket = NULL;
     server = new QTcpServer();
 }
 
 NetworkCore::~NetworkCore()
 {
-    delete socket;
+    if(socket) delete socket;
     delete server;
 }
 
@@ -30,7 +30,9 @@ bool NetworkCore::startServer(uint port)
 bool NetworkCore::connectToServer(QString host, uint port)
 {
     qDebug() << "Connecting to" << host << "on port" << port;
+    Q_ASSERT(socket == NULL);
     disconnectAll();
+    socket = new QTcpSocket();
     setupSocket(socket);
     socket->connectToHost(host, port);
     return true;
@@ -55,8 +57,9 @@ void NetworkCore::disconnectSocket(QTcpSocket *s)
     s->disconnect(this);
     s->disconnectFromHost();
     connections.removeAll(s);
-    players.remove(s);
-    if(s != socket) delete s;
+    if(players.contains(s)) players.remove(s);
+    if(s == socket) socket = NULL;
+    delete s;
 }
 
 void NetworkCore::disconnectAll()
@@ -123,19 +126,22 @@ void NetworkCore::connectionClosed()
         qDebug() << "Disconnected from" << s->peerAddress();
         connections.removeAll(s);
 
+        if(players.contains(s))
+        {
+            GAME->getRules()->executeRule("ruleDisconnect", players.value(s));
+            players.remove(s);
+        }
+
+        if(socket == s) socket = NULL;
+        s->close();
+        s->deleteLater();
+
         if(!getIsServer())
         {
             // lost connection to server!
             QMessageBox::critical(0, "Disconnected",
                 "Lost connection to game server!");
             GAME->reset();
-            return;
-        }
-
-        if(players.contains(s))
-        {
-            GAME->getRules()->executeRule("ruleDisconnect", players.value(s));
-            players.remove(s);
         }
     }
 }
