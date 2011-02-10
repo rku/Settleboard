@@ -32,6 +32,7 @@
 
 Game::Game(QObject *parent) : QObject(parent)
 {
+    localPlayer = NULL;
     init();
 }
 
@@ -63,11 +64,7 @@ void Game::init()
     networkCore = new NetworkCore(this);
     gameLobby = new GameLobby(mainWindow);
 
-    // append local player
-    localPlayer = new Player(this);
-    localPlayer->setIsLocal(true);
-    players.append(localPlayer);
-    qDebug() << "Local player is" << localPlayer->getName();
+    initLocalPlayer();
 }
 
 void Game::free()
@@ -90,16 +87,30 @@ Game* Game::getInstance()
     return instance;
 }
 
-void Game::end()
+void Game::initLocalPlayer()
 {
-    if(getState() == EndingState) return; // already called end()
+    Q_ASSERT(localPlayer == NULL);
+    localPlayer = new Player(this);
+    localPlayer->setIsLocal(true);
+    players.append(localPlayer);
+    qDebug() << "Local player is" << localPlayer->getName();
+}
 
+void Game::reset()
+{
+    qDebug() << "Resetting game state";
     state = EndingState;
+
+    while(!players.isEmpty()) delete players.takeFirst();
+    localPlayer = NULL;
+
     networkCore->disconnectAll();
-    gameLobby->reset();
     bank->reset();
+    gameLobby->reset();
     board->reset();
     rules->reset();
+    initLocalPlayer();
+
     state = NoGameState;
 }
 

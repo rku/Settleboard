@@ -56,8 +56,7 @@ MainWindow* MainWindow::getInstance()
 
 void MainWindow::initGame()
 {
-    game = Game::getInstance();
-    setCentralWidget(game->getGLWidget());
+    setCentralWidget(GAME->getGLWidget());
 }
 
 void MainWindow::newGame()
@@ -136,12 +135,12 @@ void MainWindow::createStatusBar()
 void MainWindow::showConnector()
 {
     //gameConnector->show();
-    game->getNetworkCore()->connectToServer("localhost", 1234);
+    GAME->getNetworkCore()->connectToServer("localhost", 1234);
 }
 
 void MainWindow::startServer()
 {
-    game->getRules()->executeRule("ruleStartServer");
+    GAME->getRules()->executeRule("ruleStartServer");
 }
 
 void MainWindow::showPrefs()

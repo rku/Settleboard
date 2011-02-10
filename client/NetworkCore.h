@@ -18,11 +18,11 @@ class NetworkCore : public QObject
         ~NetworkCore();
 
         bool startServer(uint port);
-        bool getIsServer() { return (server != NULL); }
+        bool getIsServer() { return server->isListening(); }
         bool getHasConnection() { return (connections.size()>0); }
         bool connectToServer(QString host, uint port);
+        void disconnectSocket(QTcpSocket*);
         void disconnectAll();
-        void closeConnection(QTcpSocket*);
         void sendPacket(const NetworkPacket&);
         void sendPacket(QTcpSocket*, const NetworkPacket&);
 

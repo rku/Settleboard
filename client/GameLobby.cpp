@@ -68,6 +68,7 @@ void GameLobby::init()
 
 void GameLobby::reset()
 {
+    clearPlayerList();
     ui.textEditChatOutput->clear();
     hide();
 }
@@ -164,7 +165,7 @@ void GameLobby::done(int result)
     if(result == QDialog::Rejected)
     {
         // cancel or close
-        GAME->end();
+        GAME->reset();
     }
     else
     {

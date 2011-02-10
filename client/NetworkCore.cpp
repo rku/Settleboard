@@ -7,32 +7,31 @@
 
 NetworkCore::NetworkCore(QObject *parent) : QObject(parent)
 {
-    server = NULL;
-    socket = NULL;
+    socket = new QTcpSocket();
+    server = new QTcpServer();
 }
 
 NetworkCore::~NetworkCore()
 {
-    if(socket) delete socket;
-    if(server) delete server;
+    delete socket;
+    delete server;
 }
 
 bool NetworkCore::startServer(uint port)
 {
-    if(getIsServer() && server->isListening()) return true;
+    if(getIsServer()) return true;
 
-    server = new QTcpServer();
-    connect(server, SIGNAL(newConnection()), this, SLOT(acceptNewConnection()));
+    disconnectAll();
     qDebug() << "Starting up server to listen at port" << port;
-
+    connect(server, SIGNAL(newConnection()), this, SLOT(acceptNewConnection()));
     return server->listen(QHostAddress::Any, port);
 }
 
 bool NetworkCore::connectToServer(QString host, uint port)
 {
-    QTcpSocket *socket = new QTcpSocket(this);
-    setupSocket(socket);
     qDebug() << "Connecting to" << host << "on port" << port;
+    disconnectAll();
+    setupSocket(socket);
     socket->connectToHost(host, port);
     return true;
 }
@@ -50,20 +49,29 @@ void NetworkCore::connected()
     }
 }
 
+void NetworkCore::disconnectSocket(QTcpSocket *s)
+{
+    qDebug() << "Disconnecting from" << s->peerAddress();
+    s->disconnect(this);
+    s->disconnectFromHost();
+    connections.removeAll(s);
+    players.remove(s);
+    if(s != socket) delete s;
+}
+
 void NetworkCore::disconnectAll()
 {
     if(getIsServer())
     {
         qDebug() << "Stopping game server...";
+        server->disconnect(this);
         server->close();
     }
 
     while(!connections.isEmpty())
     {
         QTcpSocket *sock = connections.takeFirst();
-        qDebug() << "Disconnecting from" << sock->peerAddress();
-        sock->disconnectFromHost();
-        delete sock;
+        disconnectSocket(sock);
     }
 }
 
@@ -120,7 +128,8 @@ void NetworkCore::connectionClosed()
             // lost connection to server!
             QMessageBox::critical(0, "Disconnected",
                 "Lost connection to game server!");
-            GAME->end();
+            GAME->reset();
+            return;
         }
 
         if(players.contains(s))
@@ -129,13 +138,6 @@ void NetworkCore::connectionClosed()
             players.remove(s);
         }
     }
-}
-
-void NetworkCore::closeConnection(QTcpSocket *s)
-{
-    qDebug() << "Disconnecting from" << s->peerAddress();
-    s->disconnectFromHost();
-    connections.removeAll(s);
 }
 
 void NetworkCore::packetReceived(QTcpSocket *s, NetworkPacket &packet)
@@ -152,11 +154,7 @@ void NetworkCore::packetReceived(QTcpSocket *s, NetworkPacket &packet)
 
     if(getIsServer())
     {
-        if(!players.contains(s))
-        {
-            players.insert(s, packet.getPlayer());
-        }
-
+        if(!players.contains(s)) players.insert(s, packet.getPlayer());
         Q_ASSERT(packet.getPlayer() == players.value(s));
     }
 

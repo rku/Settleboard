@@ -28,7 +28,6 @@
 class GLWidget;
 class GameConnector;
 class PrefsForm;
-class Game;
 
 class MainWindow : public QMainWindow
 {
@@ -59,7 +58,6 @@ class MainWindow : public QMainWindow
 
         static MainWindow *instance;
 
-        Game *game;
         GLWidget *glWidget;
         GameConnector *gameConnector;
         PrefsForm *prefsForm;

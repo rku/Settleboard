@@ -49,8 +49,6 @@ class Game : public QObject
         void setState(GameState st) { state = st; }
         GameState getState() { return state; }
 
-        void end();
-
         GameLobby* getLobby() { return gameLobby; }
         MainWindow* getMainWindow() { return mainWindow; }
         GLWidget* getGLWidget() { return glWidget; }
@@ -63,8 +61,12 @@ class Game : public QObject
         Bank *getBank() { return bank; }
         NetworkCore *getNetworkCore() { return networkCore; }
 
+    public slots:
+        void reset();
+
     protected:
         void init();
+        void initLocalPlayer();
         void free();
 
         Game(QObject *parent = 0);
