@@ -76,6 +76,8 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleGenerateBoard);
     REGISTER_RULE(ruleUpdateInterface);
 
+    REGISTER_RULE(ruleSelectBoardObject);
+
     REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
@@ -154,12 +156,13 @@ void GameRules::packRuleDataToNetworkPacket(NetworkPacket &packet)
         if(type == QVariant::nameToType("Crossroad*"))
         { v = qVariantFromValue(CrossroadPtr(i.value().value<Crossroad*>())); }
 
-        if(type == QVariant::nameToType("Roadway*"))
+        else if(type == QVariant::nameToType("Roadway*"))
         { v = qVariantFromValue(RoadwayPtr(i.value().value<Roadway*>())); }
 
-        if(type == QVariant::nameToType("GLGameModel*"))
+        else if(type == QVariant::nameToType("GLGameModel*"))
         { v = qVariantFromValue(GLGameModelPtr(i.value().value<GLGameModel*>())); }
 
+        qDebug() << "Packing rule data" << v;
         packet.addData(i.key(), v);
     }
 }
@@ -179,12 +182,13 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
         if(type == QVariant::nameToType("CrossroadPtr"))
         { v = qVariantFromValue(i.value().value<CrossroadPtr>().getObject()); }
 
-        if(type == QVariant::nameToType("RoadwayPtr"))
+        else if(type == QVariant::nameToType("RoadwayPtr"))
         { v = qVariantFromValue(i.value().value<RoadwayPtr>().getObject()); }
 
-        if(type == QVariant::nameToType("GLGameModelPtr"))
+        else if(type == QVariant::nameToType("GLGameModelPtr"))
         { v = qVariantFromValue(i.value().value<GLGameModelPtr>().getObject()); }
 
+        qDebug() << "Unpacking rule data" << v;
         ruleData.insertMulti(i.key(), v);
     }
 }
@@ -850,7 +854,21 @@ IMPLEMENT_RULE(ruleUpdateInterface)
 {
     EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
     EXECUTE_SUBRULE(ruleUpdateControlPanel);
+
+    GAME->getBoard()->update();
+
     return true;
+}
+
+IMPLEMENT_RULE(ruleSelectBoardObject)
+{
+    RULEDATA_REQUIRE("Position");
+    QVector3D pos = RULEDATA_POP("Position").value<QVector3D>();
+
+    bool objectFound = game->getBoard()->selectSelectableObjectAtVertex(pos);
+    Q_ASSERT(objectFound);
+
+    return objectFound;
 }
 
 IMPLEMENT_RULE(ruleGenerateBoard)
@@ -920,7 +938,7 @@ IMPLEMENT_RULE(ruleSelectSettlement)
             PlayerObject *bld = (PlayerObject*)c->getPlayerObject();
             if(!bld->getType().compare("Settlement"))
             {
-                if(player->getIsLocal()) bld->setIsSelectable(true);
+                bld->setIsSelectable(true);
                 selectableObjectFound = true;
             }
         }
@@ -1014,7 +1032,7 @@ IMPLEMENT_RULE(ruleSelectCrossroad)
     {
         RULEDATA_PUSH("Crossroad", crossroads.at(i));
         bool selectable = EXECUTE_SUBRULE(ruleCanSelectCrossroad);
-        if(player->getIsLocal()) crossroads.at(i)->setIsSelectable(selectable);
+        crossroads.at(i)->setIsSelectable(selectable);
         if(selectable) selectableObjectFound = true;
     }
 
@@ -1111,7 +1129,7 @@ IMPLEMENT_RULE(ruleSelectRoadway)
     {
         RULEDATA_PUSH("Roadway", roadways.at(i));
         bool selectable = EXECUTE_SUBRULE(ruleCanSelectRoadway);
-        if(player->getIsLocal()) roadways.at(i)->setIsSelectable(selectable);
+        roadways.at(i)->setIsSelectable(selectable);
         if(selectable) selectableObjectFound = true;
     }
 

@@ -72,7 +72,8 @@ void Crossroad::draw()
 
     // if no building is available on this crossroad and
     // it is selectable, draw the selection circle
-    if(getIsSelectable()) drawSelectionCircle();
+    if(GAME->getBoard()->getIsSelectionModeActive() &&
+        getIsSelectable()) drawSelectionCircle();
 }
 
 void Crossroad::addTile(HexTile *tile)
@@ -133,6 +134,7 @@ QDataStream &operator>>(QDataStream &stream, CrossroadPtr &obj)
     stream >> v;
     // find object with vertex v
     obj.object = GAME->getBoard()->getCrossroadAtVertex(v);
+    Q_ASSERT(obj.object != NULL);
 
     return stream;
 }

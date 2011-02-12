@@ -36,6 +36,8 @@ class Crossroad : public GLGameModelProxy
 
         void placePlayerObject(PlayerObject*);
 
+        const QVector3D& getPos() { return vertex; }
+
     private:
         void createSelectionCircle();
         void drawSelectionCircle();

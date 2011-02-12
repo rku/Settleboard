@@ -45,9 +45,11 @@ void Roadway::draw()
         return;
     }
 
+    bool selectable = getIsSelectable() &&
+        GAME->getBoard()->getIsSelectionModeActive();
     Player *p = GAME->getPlayers().at(0);
-    QColor color = (getIsSelectable()) ? p->getColor() : Qt::black;
-    float width = (getIsSelectable()) ? 5.0f : 2.0f;
+    QColor color = (selectable) ? p->getColor() : Qt::black;
+    float width = (selectable) ? 5.0f : 2.0f;
 
     // draw roadway lines
     glPushMatrix();

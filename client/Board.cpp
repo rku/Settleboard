@@ -124,7 +124,7 @@ GLGameModel *Board::getSelectableObjectAtMousePos(const QPoint &pos)
     QList<GLGameModel*> selObjs, hits;
     int max = 1;
 
-#define ADD_SELECTED_OBJECTS(a) if(a.size()>i) {\
+#define ADD_SELECTABLE_OBJECTS(a) if(a.size()>i) {\
         GLGameModel *obj = dynamic_cast<GLGameModel*>(a.at(i)); \
         if(obj->getIsSelectable()) selObjs.append(obj); \
         done = false; }
@@ -133,15 +133,42 @@ GLGameModel *Board::getSelectableObjectAtMousePos(const QPoint &pos)
     {
         bool done = true;
 
-        ADD_SELECTED_OBJECTS(crossroads);
-        ADD_SELECTED_OBJECTS(roadways);
-        ADD_SELECTED_OBJECTS(boardTiles);
+        ADD_SELECTABLE_OBJECTS(crossroads);
+        ADD_SELECTABLE_OBJECTS(roadways);
+        ADD_SELECTABLE_OBJECTS(boardTiles);
 
         if(!done) max++;
     }
 
     hits = getObjectsAtMousePos(selObjs, pos);
     return (hits.size()>0) ? hits.at(0) : NULL;
+}
+
+bool Board::selectSelectableObjectAtVertex(const QVector3D &vertex)
+{
+    QList<GLGameModel*> selObjs, hits;
+    int max = 1;
+
+#define CHECKV_SELECTABLE_OBJECTS(a) if(a.size()>i) {\
+        GLGameModel *obj = dynamic_cast<GLGameModel*>(a.at(i)); \
+        if(obj->getIsSelectable() && qFuzzyCompare(obj->getPos(), vertex)) { \
+            qDebug() << "Found object at vertex" << vertex; \
+            setSelectedObject(obj); return true; } \
+        done = false; }
+
+    for(int i = 0; i < max; i++)
+    {
+        bool done = true;
+
+        CHECKV_SELECTABLE_OBJECTS(crossroads);
+        CHECKV_SELECTABLE_OBJECTS(roadways);
+        CHECKV_SELECTABLE_OBJECTS(boardTiles);
+
+        if(!done) max++;
+    }
+
+    qDebug() << "No object found at vertex" << vertex;
+    return false;
 }
 
 void Board::handleMouseClick(QMouseEvent *event)
@@ -156,6 +183,8 @@ void Board::handleMouseClick(QMouseEvent *event)
         if(obj != NULL)
         {
             setSelectedObject(obj);
+            GAME->getRules()->pushRuleData("Position", obj->getPos());
+            GAME->getRules()->executeRule("ruleSelectBoardObject");
             endSelectionMode();
             return;
         }

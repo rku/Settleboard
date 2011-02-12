@@ -165,6 +165,8 @@ class GameRules : public QObject
         DECLARE_RULE(ruleGenerateBoard);
         DECLARE_RULE(ruleUpdateInterface);
 
+        DECLARE_RULE(ruleSelectBoardObject);
+
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);
