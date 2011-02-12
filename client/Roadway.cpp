@@ -134,6 +134,7 @@ QDataStream &operator>>(QDataStream &stream, RoadwayPtr &obj)
 
     // find object with vertices v1/v2 
     obj.object = GAME->getBoard()->getRoadwayWithVertices(v1, v2);
+    Q_ASSERT(obj.object != NULL);
 
     return stream;
 }

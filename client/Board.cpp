@@ -146,14 +146,14 @@ GLGameModel *Board::getSelectableObjectAtMousePos(const QPoint &pos)
 
 bool Board::selectSelectableObjectAtVertex(const QVector3D &vertex)
 {
-    QList<GLGameModel*> selObjs, hits;
     int max = 1;
+
+    setSelectedObject(NULL);
 
 #define CHECKV_SELECTABLE_OBJECTS(a) if(a.size()>i) {\
         GLGameModel *obj = dynamic_cast<GLGameModel*>(a.at(i)); \
         if(obj->getIsSelectable() && qFuzzyCompare(obj->getPos(), vertex)) { \
-            qDebug() << "Found object at vertex" << vertex; \
-            setSelectedObject(obj); return true; } \
+            setSelectedObject(obj); break; } \
         done = false; }
 
     for(int i = 0; i < max; i++)
@@ -165,6 +165,17 @@ bool Board::selectSelectableObjectAtVertex(const QVector3D &vertex)
         CHECKV_SELECTABLE_OBJECTS(boardTiles);
 
         if(!done) max++;
+    }
+
+    if(getSelectedObject() != NULL)
+    {
+        qDebug() << "Found object at vertex" << vertex;
+        if(getIsSelectionModeActive())
+        {
+            endSelectionMode();
+        }
+        else resetBoardState();
+        return true;
     }
 
     qDebug() << "No object found at vertex" << vertex;
@@ -185,7 +196,6 @@ void Board::handleMouseClick(QMouseEvent *event)
             setSelectedObject(obj);
             GAME->getRules()->pushRuleData("Position", obj->getPos());
             GAME->getRules()->executeRule("ruleSelectBoardObject");
-            endSelectionMode();
             return;
         }
     }
@@ -230,6 +240,7 @@ void Board::setSelectionMode()
 
     selectedObject = NULL;
     isSelectionModeActive = true;
+    update();
 }
 
 void Board::endSelectionMode()

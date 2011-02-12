@@ -151,18 +151,18 @@ void GameRules::packRuleDataToNetworkPacket(NetworkPacket &packet)
     for(i = ruleData.begin(); i != ruleData.end(); ++i)
     {
         QVariant v = i.value();
-        QVariant::Type type = i.value().type();
+        const char *typeName = i.value().typeName();
 
-        if(type == QVariant::nameToType("Crossroad*"))
+        if(!qstrcmp(typeName, "Crossroad*"))
         { v = qVariantFromValue(CrossroadPtr(i.value().value<Crossroad*>())); }
 
-        else if(type == QVariant::nameToType("Roadway*"))
+        else if(!qstrcmp(typeName, "Roadway*"))
         { v = qVariantFromValue(RoadwayPtr(i.value().value<Roadway*>())); }
 
-        else if(type == QVariant::nameToType("GLGameModel*"))
+        else if(!qstrcmp(typeName, "GLGameModel*"))
         { v = qVariantFromValue(GLGameModelPtr(i.value().value<GLGameModel*>())); }
 
-        qDebug() << "Packing rule data" << v;
+        qDebug() << "Packing rule data" << i.key() << v;
         packet.addData(i.key(), v);
     }
 }
@@ -177,18 +177,18 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
     for(i = data.begin(); i != data.end(); ++i)
     {
         QVariant v = i.value();
-        QVariant::Type type = i.value().type();
+        const char *typeName = i.value().typeName();
 
-        if(type == QVariant::nameToType("CrossroadPtr"))
+        if(!qstrcmp(typeName, "CrossroadPtr"))
         { v = qVariantFromValue(i.value().value<CrossroadPtr>().getObject()); }
 
-        else if(type == QVariant::nameToType("RoadwayPtr"))
+        else if(!qstrcmp(typeName, "RoadwayPtr"))
         { v = qVariantFromValue(i.value().value<RoadwayPtr>().getObject()); }
 
-        else if(type == QVariant::nameToType("GLGameModelPtr"))
+        else if(!qstrcmp(typeName, "GLGameModelPtr"))
         { v = qVariantFromValue(i.value().value<GLGameModelPtr>().getObject()); }
 
-        qDebug() << "Unpacking rule data" << v;
+        qDebug() << "Unpacking rule data" << i.key() << v;
         ruleData.insertMulti(i.key(), v);
     }
 }
@@ -276,6 +276,8 @@ void GameRules::suspendRuleChain()
 
 void GameRules::startRuleChain()
 {
+    if(!GAME->getNetworkCore()->getIsServer()) return;
+
     Q_ASSERT(ruleChain.size() > 0 && !isRuleChainWaiting);
     qDebug() << "Starting rule chain";
 
@@ -284,6 +286,8 @@ void GameRules::startRuleChain()
 
 void GameRules::continueRuleChain()
 {
+    if(!GAME->getNetworkCore()->getIsServer()) return;
+
     while(ruleChain.size() > 0)
     {
         RuleChainElement rce = ruleChain.takeFirst();
@@ -1087,24 +1091,21 @@ IMPLEMENT_RULE(ruleCanSelectCrossroad)
 
 IMPLEMENT_RULE(ruleUserActionBuildRoad)
 {
-    if(player->getIsLocal())
-    {
-        RULECHAIN_ADD(ruleCanBuildRoad);
-        RULECHAIN_ADD(ruleSelectRoadway);
-        RULECHAIN_ADD(ruleRoadwaySelected);
-        RULECHAIN_ADD(ruleBuildRoad);
+    SERVER_ONLY_RULE
 
-        startRuleChain();
-    }
-
+    RULECHAIN_ADD(ruleCanBuildRoad);
+    RULECHAIN_ADD(ruleSelectRoadway);
+    RULECHAIN_ADD(ruleRoadwaySelected);
+    RULECHAIN_ADD(ruleBuildRoad);
+    startRuleChain();
     return true;
 }
 
 IMPLEMENT_RULE(ruleBuildRoad)
 {
     RULEDATA_REQUIRE("Roadway");
-
     Roadway *r = RULEDATA_POP("Roadway").value<Roadway*>();
+
     PlayerObject *road = player->getUnplacedObjectOfType("Road");
     road->setScale(0.3);
     r->placePlayerObject(road);
@@ -1147,13 +1148,6 @@ IMPLEMENT_RULE(ruleSelectRoadway)
 
 IMPLEMENT_RULE(ruleSelectRoadwayAtCrossroad)
 {
-    if(!player->getIsLocal())
-    {
-        LOG_PLAYER_MSG(QString("Waiting for %1 to select a roadway.")
-            .arg(player->getName()));
-        return true;
-    }
-
     RULEDATA_REQUIRE("Crossroad");
     Crossroad *cr = RULEDATA_READ("Crossroad").value<Crossroad*>();
     QList<Roadway*> roadways = cr->getRoadways();
@@ -1172,7 +1166,7 @@ IMPLEMENT_RULE(ruleSelectRoadwayAtCrossroad)
     {
         board->setSelectionMode();
         suspendRuleChain();
-        LOG_SYSTEM_MSG(QString("%1, please select a roadway.")
+        LOG_SYSTEM_MSG(QString("Waiting for %1 to select a roadway.")
             .arg(player->getName()));
         return true;
     }

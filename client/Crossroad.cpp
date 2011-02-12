@@ -20,7 +20,6 @@ Crossroad::Crossroad(QVector3D v, QObject *parent)
 
 Crossroad::~Crossroad()
 {
-    if(getIsPlayerObjectPlaced()) delete playerObject;
     glDeleteLists(selectionCircleListID, 1);
 }
 
