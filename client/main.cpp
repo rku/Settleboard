@@ -25,7 +25,7 @@
 
 #include "Crossroad.h"
 #include "Roadway.h"
-#include "PlayerObject.h"
+#include "GLGameModel.h"
 #include "Player.h"
 #include "FileManager.h"
 #include "MainWindow.h"
@@ -55,8 +55,8 @@ void registerMetaTypeOperators()
     qRegisterMetaType<RoadwayPtr>("RoadwayPtr");
     qRegisterMetaTypeStreamOperators<RoadwayPtr>("RoadwayPtr");
 
-    qRegisterMetaType<PlayerObjectPtr>("PlayerObjectPtr");
-    qRegisterMetaTypeStreamOperators<PlayerObjectPtr>("PlayerObjectPtr");
+    qRegisterMetaType<GLGameModelPtr>("GLGameModelPtr");
+    qRegisterMetaTypeStreamOperators<GLGameModelPtr>("GLGameModelPtr");
 
     qRegisterMetaType<PlayerPtr>("PlayerPtr");
     qRegisterMetaTypeStreamOperators<PlayerPtr>("PlayerPtr");

@@ -320,3 +320,22 @@ QList<QVector3D> GLGameModel::getVerticesOfGroupWithName(QString name)
     return list;
 }
 
+// QDataStream operators
+
+QDataStream &operator<<(QDataStream &stream, const GLGameModelPtr &obj)
+{
+    stream << obj.object->getPos();
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, GLGameModelPtr &obj)
+{
+    QVector3D v;
+
+    stream >> v;
+    // find object with vertex v
+    //obj.object = Game::getInstance()->getBoard()->getGLGameModelAtVertex(v);
+
+    return stream;
+}
+

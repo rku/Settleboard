@@ -157,8 +157,8 @@ void GameRules::packRuleDataToNetworkPacket(NetworkPacket &packet)
         if(type == QVariant::nameToType("Roadway*"))
         { v = qVariantFromValue(RoadwayPtr(i.value().value<Roadway*>())); }
 
-        if(type == QVariant::nameToType("PlayerObject*"))
-        { v = qVariantFromValue(PlayerObjectPtr(i.value().value<PlayerObject*>())); }
+        if(type == QVariant::nameToType("GLGameModel*"))
+        { v = qVariantFromValue(GLGameModelPtr(i.value().value<GLGameModel*>())); }
 
         packet.addData(i.key(), v);
     }
@@ -182,8 +182,8 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
         if(type == QVariant::nameToType("RoadwayPtr"))
         { v = qVariantFromValue(i.value().value<RoadwayPtr>().getObject()); }
 
-        if(type == QVariant::nameToType("PlayerObjectPtr"))
-        { v = qVariantFromValue(i.value().value<PlayerObjectPtr>().getObject()); }
+        if(type == QVariant::nameToType("GLGameModelPtr"))
+        { v = qVariantFromValue(i.value().value<GLGameModelPtr>().getObject()); }
 
         ruleData.insertMulti(i.key(), v);
     }
@@ -241,7 +241,6 @@ bool GameRules::executeSubRule(QString name, Player *player)
 
 bool GameRules::executeRule(QString name, Player *player)
 {
-    Q_ASSERT(!isRuleChainWaiting);
     Q_ASSERT(player != NULL);
     qDebug() << "Executing rule:" << name << "for" << player->getName();
     Q_ASSERT(rules.contains(name));
@@ -970,10 +969,11 @@ IMPLEMENT_RULE(ruleUserActionBuildSettlement)
 IMPLEMENT_RULE(ruleBuildSettlement)
 {
     RULEDATA_REQUIRE("Crossroad");
-
     Crossroad *cr = RULEDATA_READ("Crossroad").value<Crossroad*>();
 
+    Q_ASSERT(cr != NULL);
     Q_ASSERT(!cr->getIsPlayerObjectPlaced());
+
     PlayerObject *bld = player->getUnplacedObjectOfType("Settlement");
     bld->setScale(0.3);
     cr->placePlayerObject(bld);
@@ -1036,13 +1036,8 @@ IMPLEMENT_RULE(ruleCrossroadSelected)
     Crossroad *obj = (Crossroad*)board->getSelectedObject();
     Q_ASSERT(obj != NULL);
 
-    if(board->getHasSelectedObject())
-    {
-        RULEDATA_PUSH("Crossroad", obj);
-        return true;
-    }
-
-    return false;
+    RULEDATA_PUSH("Crossroad", obj);
+    return true;
 }
 
 // Check if a crossroad can be selected

@@ -54,7 +54,7 @@ class GLGameModel : public QObject
         GLfloat getPosY() { return pos.y(); }
         void setPosZ(GLfloat i) { pos.setZ(i); }
         GLfloat getPosZ() { return pos.z(); }
-        QVector3D getPos() { return pos; }
+        virtual QVector3D getPos() { return pos; }
         void setPos(QVector3D v) { pos = v; }
         void setPos(GLfloat x, GLfloat y, GLfloat z)
             { pos = QVector3D(x, y, z); }
@@ -131,5 +131,24 @@ class GLGameModel : public QObject
         bool isVisible;
         bool isEnabled;
 };
+
+Q_DECLARE_METATYPE(GLGameModel*);
+
+class GLGameModelPtr
+{
+    public:
+        GLGameModelPtr() : object(NULL) {}
+        GLGameModelPtr(GLGameModel *p) { object = p; }
+        GLGameModelPtr(const GLGameModelPtr &c) { object = c.object; }
+        GLGameModel *getObject() { return object; }
+
+        friend QDataStream &operator<<(QDataStream&, const GLGameModelPtr&);
+        friend QDataStream &operator>>(QDataStream&, GLGameModelPtr&);
+
+    protected:
+        GLGameModel *object;
+};
+
+Q_DECLARE_METATYPE(GLGameModelPtr);
 
 #endif /* GLGAMEMODEL_H */

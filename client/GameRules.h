@@ -66,6 +66,12 @@ typedef struct _RuleChainElement {
 #define CLIENT_ONLY_RULE \
     if(GAME->getNetworkCore()->getIsServer()) { \
         qDebug() << "Skipping client-only rule"; return true; }
+#define LOCAL_ONLY_RULE \
+    if(!player->getIsLocal()) { \
+        qDebug() << "Skipping local-only rule"; return true; }
+#define REMOTE_ONLY_RULE \
+    if(player->getIsLocal()) { \
+        qDebug() << "Skipping remote-only rule"; return true; }
 
 #define DECLARE_RULE(a) bool a(Game*, Player*);
 #define IMPLEMENT_RULE(a) bool GameRules::a(Game *game, Player *player)
