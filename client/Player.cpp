@@ -111,6 +111,7 @@ QDataStream &operator<<(QDataStream &stream, const PlayerPtr &obj)
     stream << obj.object->getId();
     stream << obj.object->getName();
     stream << obj.object->getColor();
+    stream << obj.object->getIsReady();
     return stream;
 }
 
@@ -118,10 +119,12 @@ QDataStream &operator>>(QDataStream &stream, PlayerPtr &obj)
 {
     QString id, name;
     QColor color;
+    bool isReady;
 
     stream >> id;
     stream >> name;
     stream >> color;
+    stream >> isReady;
 
     obj.object = NULL;
     Q_ASSERT(!name.isEmpty());
@@ -146,6 +149,7 @@ QDataStream &operator>>(QDataStream &stream, PlayerPtr &obj)
         obj.object->setId(id);
         obj.object->setName(name);
         obj.object->setColor(color);
+        obj.object->setIsReady(isReady);
     }
 
     return stream;
