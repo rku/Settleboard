@@ -23,10 +23,12 @@
 <file>./Objects/HexTile_Water.obj</file>
 <file>./Objects/HexTile_Wheat.obj</file>
 <file>./Objects/HexTile_Wood.obj</file>
+<file>./Objects/NumberChip.obj</file>
 <file>./Objects/Road.obj</file>
 <file>./Objects/Robber.obj</file>
 <file>./Objects/Settlement.obj</file>
 <file>./Resources.qrc</file>
 <file>./Styles/Default.qss</file>
+<file>./Textures/desert.jpg</file>
 </qresource>
 </RCC>

@@ -29,6 +29,7 @@ struct Texture {
     GLuint id;
     unsigned int width;
     unsigned int height;
+    bool loaded;
 };
 
 class TextureManager : public QObject

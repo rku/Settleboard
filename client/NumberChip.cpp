@@ -18,12 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "NumberChip.h"
+#include "FileManager.h"
 #include "Game.h"
+#include "NumberChip.h"
 
 NumberChip::NumberChip(QObject *parent) : GLGameModel(parent)
 {
     number = 1;
+    create();
 }
 
 NumberChip::~NumberChip()
@@ -32,5 +34,8 @@ NumberChip::~NumberChip()
 
 void NumberChip::create()
 {
+    load(FileManager::getPathOfGLObject("NumberChip"), Qt::white);
+    setPosY(0.1);
+    setScale(0.3);
 }
 

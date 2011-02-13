@@ -61,7 +61,6 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 {
     qglClearColor(this->palette().color(this->backgroundRole()));
-    //glClearColor(0.5, 0.5, 0.5, 1.0);
 
     glShadeModel(GL_SMOOTH);
     glEnable(GL_CULL_FACE);

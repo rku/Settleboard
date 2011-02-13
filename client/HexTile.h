@@ -26,6 +26,7 @@
 #include "GLGameModelProxy.h"
 
 class Game;
+class NumberChip;
 class Crossroad;
 class Roadway;
 
@@ -65,6 +66,7 @@ class HexTile : public GLGameModelProxy
         bool fixedPosition;
         int number;
         unsigned int type;
+        NumberChip *numberChip;
         QList<Crossroad*> crossroads;
         QList<Roadway*> roadways;
 };

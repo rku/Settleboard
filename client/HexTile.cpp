@@ -20,24 +20,28 @@
 
 #include "Game.h"
 #include "Crossroad.h"
+#include "NumberChip.h"
 #include "Roadway.h"
 #include "FileManager.h"
 #include "HexTile.h"
 
 HexTile::HexTile(QObject *parent) : GLGameModelProxy(parent)
 {
+    numberChip = NULL;
     setIsLightingEnabled(false);
     setType(HEXTILE_TYPE_WATER);
 }
 
 HexTile::~HexTile()
 {
+    if(numberChip) delete numberChip;
 }
 
 void HexTile::setType(const unsigned int _type)
 {
     QColor color;
     QString modelName;
+    bool hasNumberChip = false;
 
     switch(_type)
     {
@@ -52,30 +56,42 @@ void HexTile::setType(const unsigned int _type)
         case HEXTILE_TYPE_WOOD:
             modelName = "HexTile_Wood";
             color.setRgb(27,150,11,255);
+            hasNumberChip = true;
             break;
         case HEXTILE_TYPE_SHEEP:
             modelName = "HexTile_Sheep";
             color.setRgb(208,241,206,255);
+            hasNumberChip = true;
             break;
         case HEXTILE_TYPE_WHEAT:
             modelName = "HexTile_Wheat";
             color.setRgb(237,239,97,255); 
+            hasNumberChip = true;
             break;
         case HEXTILE_TYPE_ORE:
             modelName = "HexTile_Ore";
             color.setRgb(106,112,124,255);
+            hasNumberChip = true;
             break;
         case HEXTILE_TYPE_GOLD:
             modelName = "HexTile_Gold"; 
             color.setRgb(222,224,35,255);
+            hasNumberChip = true;
             break;
         case HEXTILE_TYPE_CLAY:
             modelName = "HexTile_Clay";
             color.setRgb(231,126,33,255);
+            hasNumberChip = true;
             break;
         default:
             qDebug() << "Unknown hextile type:" << _type;
             return;
+    }
+
+    if(hasNumberChip)
+    {
+        if(numberChip) delete numberChip;
+        numberChip = new NumberChip();
     }
 
     type = _type;
@@ -85,6 +101,14 @@ void HexTile::setType(const unsigned int _type)
 void HexTile::draw()
 {
     GLGameModel::draw();
+
+    if(numberChip)
+    {
+        QVector3D v = getCenterVertex();
+        numberChip->setPosX(v.x());
+        numberChip->setPosZ(v.z());
+        numberChip->draw();
+    }
 }
 
 unsigned int HexTile::getType()

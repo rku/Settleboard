@@ -56,7 +56,7 @@ GLGameModel::~GLGameModel()
 
 void GLGameModel::create()
 {
-    GLuint currentTex = 65535;
+    GLuint currentTex = 0;
     TextureManager *tm = GAME->getTextureManager();
 
     glNewList(displayListID, GL_COMPILE);
@@ -71,17 +71,18 @@ void GLGameModel::create()
         if(!face.texFilename.isEmpty())
         {
             GLuint texId = tm->getTextureId(face.texFilename);
-            if(currentTex != texId && currentTex > 0 && currentTex < 65535)
+            if(currentTex != texId && currentTex > 0)
             {
+                glDisable(GL_COLOR_MATERIAL);
                 glEnable(GL_TEXTURE_2D);
-                glBindTexture(GL_TEXTURE_2D, texId);
                 GAME->getGLWidget()->qglColor(Qt::white);
+                glBindTexture(GL_TEXTURE_2D, texId);
                 currentTex = texId;
             }
         }
         else
         {
-            if(currentTex != 0)
+            if(currentTex == 0)
             {
                 glEnable(GL_COLOR_MATERIAL);
                 currentTex = 0;

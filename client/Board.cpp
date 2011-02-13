@@ -73,6 +73,10 @@ void Board::render()
     robber->setScale(0.7);
     robber->draw();
     delete robber;
+
+    NumberChip *chip = new NumberChip();
+    chip->draw();
+    delete chip;
 }
 
 void Board::update()

@@ -50,6 +50,7 @@ const Texture& TextureManager::loadTexture(const QString& filename)
     newTex.name   = filename;
     newTex.width  = 0;
     newTex.height = 0;
+    newTex.loaded = false;
 
     glGenTextures(1, &newTex.id);
 
@@ -74,13 +75,14 @@ const Texture& TextureManager::loadTexture(const QString& filename)
         newTex.width = tex.width();
         newTex.height = tex.height();
 
-        glTexImage2D( GL_TEXTURE_2D, 0, 3, tex.width(), tex.height(), 0,
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex.width(), tex.height(), 0,
             GL_RGBA, GL_UNSIGNED_BYTE, tex.bits() );
 
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.width(), tex.height(),
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, tex.width(), tex.height(),
             GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
 
         qDebug() << "Loaded texture: " << filepath;
+        newTex.loaded = true;
     }
     else
     {   
