@@ -137,6 +137,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleStartServer);
         DECLARE_RULE(ruleJoinGame);
         DECLARE_RULE(rulePlayerJoinedGame);
+        DECLARE_RULE(ruleChangePlayerColor);
         DECLARE_RULE(ruleStartPlayerSync);
         DECLARE_RULE(rulePlayerSync);
         DECLARE_RULE(ruleUpdateGameLobby);

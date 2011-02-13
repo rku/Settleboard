@@ -47,7 +47,7 @@ void Roadway::draw()
 
     bool selectable = getIsSelectable() &&
         GAME->getBoard()->getIsSelectionModeActive();
-    Player *p = GAME->getPlayers().at(0);
+    Player *p = GAME->getLocalPlayer();
     QColor color = (selectable) ? p->getColor() : Qt::black;
     float width = (selectable) ? 5.0f : 2.0f;
 

@@ -52,7 +52,7 @@ void Crossroad::createSelectionCircle()
 void Crossroad::drawSelectionCircle()
 {
     QGLWidget *widget = GAME->getGLWidget();
-    QColor color = GAME->getPlayers().at(0)->getColor();
+    QColor color = GAME->getLocalPlayer()->getColor();
 
     glPushMatrix();
     widget->qglColor((isHighlighted) ? color.lighter() : color);

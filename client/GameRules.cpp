@@ -44,9 +44,12 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     messagePanel = NULL;
     controlPanel = NULL;
 
+    reset();
+
     REGISTER_RULE(ruleStartServer);
     REGISTER_RULE(ruleJoinGame);
     REGISTER_RULE(rulePlayerJoinedGame);
+    REGISTER_RULE(ruleChangePlayerColor);
     REGISTER_RULE(ruleStartPlayerSync);
     REGISTER_RULE(rulePlayerSync);
     REGISTER_RULE(ruleUpdateGameLobby);
@@ -330,18 +333,36 @@ IMPLEMENT_RULE(ruleJoinGame)
     Q_ASSERT(!player->getIsLocal());
     Q_ASSERT(!GAME->getPlayers().contains(player));
 
+    bool colorInUse = false;
+    QList<QColor> availableColors;
+    availableColors << Qt::red << Qt::blue << Qt::green << Qt::magenta;
+
     // check if a player with that name exists
     QList<Player*> players = GAME->getPlayers();
     QList<Player*>::iterator i;
     for(i = players.begin(); i != players.end(); ++i)
     {
-        if((*i)->getName() == player->getName())
+        Player *p = *i;
+
+        if(p->getName() == player->getName())
         {
             executeRule("rulePlayerNameExists", player);
             return false;
         }
+
+        if(p->getColor() == player->getColor()) colorInUse = true;
+        availableColors.removeAll(p->getColor());
     }
 
+    // check if the player's color is already in use and select
+    // a new one if neccessary
+    if(colorInUse)
+    {
+        RULEDATA_PUSH("Color", availableColors.takeFirst());
+        executeRule("ruleChangePlayerColor", player);
+    }
+
+    // broadcast the join
     executeRule("rulePlayerJoinedGame", player);
     return true;
 }
@@ -365,6 +386,14 @@ IMPLEMENT_RULE(rulePlayerJoinedGame)
 
     qDebug() << "Player joined game" << player->getName();
     executeRule("ruleStartPlayerSync");
+    return true;
+}
+
+IMPLEMENT_RULE(ruleChangePlayerColor)
+{
+    RULEDATA_REQUIRE("Color");
+    QColor color = RULEDATA_POP("Color").value<QColor>();
+    player->setColor(color);
     return true;
 }
 
