@@ -68,7 +68,6 @@ class Board : public QObject
         bool getHasSelectedObject() { return (selectedObject != NULL); }
         GLGameModel *getSelectedObject() { return selectedObject; }
         void setSelectedObject(GLGameModel*);
-        bool selectSelectableObjectAtVertex(const QVector3D&);
 
         const QList<HexTile*> getBoardTiles() { return boardTiles; }
         const QList<Crossroad*> getCrossroads() { return crossroads; }

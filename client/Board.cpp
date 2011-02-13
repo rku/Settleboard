@@ -144,44 +144,6 @@ GLGameModel *Board::getSelectableObjectAtMousePos(const QPoint &pos)
     return (hits.size()>0) ? hits.at(0) : NULL;
 }
 
-bool Board::selectSelectableObjectAtVertex(const QVector3D &vertex)
-{
-    int max = 1;
-
-    setSelectedObject(NULL);
-
-#define CHECKV_SELECTABLE_OBJECTS(a) if(a.size()>i) {\
-        GLGameModel *obj = dynamic_cast<GLGameModel*>(a.at(i)); \
-        if(obj->getIsSelectable() && qFuzzyCompare(obj->getPos(), vertex)) { \
-            setSelectedObject(obj); break; } \
-        done = false; }
-
-    for(int i = 0; i < max; i++)
-    {
-        bool done = true;
-
-        CHECKV_SELECTABLE_OBJECTS(crossroads);
-        CHECKV_SELECTABLE_OBJECTS(roadways);
-        CHECKV_SELECTABLE_OBJECTS(boardTiles);
-
-        if(!done) max++;
-    }
-
-    if(getSelectedObject() != NULL)
-    {
-        qDebug() << "Found object at vertex" << vertex;
-        if(getIsSelectionModeActive())
-        {
-            endSelectionMode();
-        }
-        else resetBoardState();
-        return true;
-    }
-
-    qDebug() << "No object found at vertex" << vertex;
-    return false;
-}
-
 void Board::handleMouseClick(QMouseEvent *event)
 {
     if(!isLoaded) return;
@@ -194,9 +156,22 @@ void Board::handleMouseClick(QMouseEvent *event)
         if(obj != NULL)
         {
             setSelectedObject(obj);
-            GAME->getRules()->pushRuleData("Position", obj->getPos());
-            GAME->getRules()->executeRule("ruleSelectBoardObject");
-            return;
+            endSelectionMode();
+
+            Crossroad *cr = qobject_cast<Crossroad*>(obj);
+            Roadway *rw = qobject_cast<Roadway*>(obj);
+            GLGameModel *gm = qobject_cast<GLGameModel*>(obj);
+            GameRules *rules = GAME->getRules();
+
+            if(cr)
+            { rules->pushRuleData("Crossroad", qVariantFromValue(cr)); }
+            else if(rw)
+            { rules->pushRuleData("Roadway", qVariantFromValue(rw)); }
+            else if(gm)
+            { rules->pushRuleData("GLGameModel", qVariantFromValue(gm)); }
+            else Q_ASSERT(false);
+
+            GAME->getRules()->executeRule("ruleBoardObjectSelected");
         }
     }
 }
@@ -249,9 +224,6 @@ void Board::endSelectionMode()
 
     isSelectionModeActive = false;
     resetBoardState();
-
-    if(GAME->getRules()->getIsRuleChainWaiting())
-        GAME->getRules()->continueRuleChain();
 
     selectedObject = NULL;
 }

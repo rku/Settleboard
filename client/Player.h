@@ -88,7 +88,6 @@ class PlayerPtr
         friend QDataStream &operator<<(QDataStream&, const PlayerPtr&);
         friend QDataStream &operator>>(QDataStream&, PlayerPtr&);
 
-    protected:
         Player *object;
 };
 

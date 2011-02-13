@@ -63,7 +63,6 @@ class RoadwayPtr
         friend QDataStream &operator<<(QDataStream&, const RoadwayPtr&);
         friend QDataStream &operator>>(QDataStream&, RoadwayPtr&);
 
-    protected:
         Roadway *object;
 };
 

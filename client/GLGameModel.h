@@ -145,7 +145,6 @@ class GLGameModelPtr
         friend QDataStream &operator<<(QDataStream&, const GLGameModelPtr&);
         friend QDataStream &operator>>(QDataStream&, GLGameModelPtr&);
 
-    protected:
         GLGameModel *object;
 };
 

@@ -63,7 +63,6 @@ class CrossroadPtr
         friend QDataStream &operator<<(QDataStream&, const CrossroadPtr&);
         friend QDataStream &operator>>(QDataStream&, CrossroadPtr&);
 
-    protected:
         Crossroad *object;
 };
 

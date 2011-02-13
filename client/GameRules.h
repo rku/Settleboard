@@ -143,7 +143,6 @@ class GameRules : public QObject
         DECLARE_RULE(ruleUpdatePlayerReadyState);
         DECLARE_RULE(ruleNewChatMessage);
         DECLARE_RULE(ruleDisconnect);
-
         DECLARE_RULE(ruleStartGame);
         DECLARE_RULE(ruleInitGame);
         DECLARE_RULE(ruleInitPlayers);
@@ -152,10 +151,8 @@ class GameRules : public QObject
         DECLARE_RULE(ruleInitialPlacement1);
         DECLARE_RULE(ruleInitialPlacement2);
         DECLARE_RULE(ruleDrawInitialResourceCards);
-
         DECLARE_RULE(ruleBeginTurn);
         DECLARE_RULE(ruleEndTurn);
-
         DECLARE_RULE(ruleDrawCardsFromBankStack);
         DECLARE_RULE(ruleInitDockWidgets);
         DECLARE_RULE(ruleInitPlayerPanel);
@@ -164,31 +161,23 @@ class GameRules : public QObject
         DECLARE_RULE(ruleUpdateControlPanel);
         DECLARE_RULE(ruleGenerateBoard);
         DECLARE_RULE(ruleUpdateInterface);
-
-        DECLARE_RULE(ruleSelectBoardObject);
-
+        DECLARE_RULE(ruleBoardObjectSelected);
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);
-
         DECLARE_RULE(ruleSelectSettlement);
         DECLARE_RULE(ruleSettlementSelected);
         DECLARE_RULE(ruleUserActionBuildSettlement);
         DECLARE_RULE(ruleBuildSettlement);
         DECLARE_RULE(ruleCanBuildSettlement);
         DECLARE_RULE(ruleRemoveSettlement);
-
         DECLARE_RULE(ruleSelectCrossroad);
-        DECLARE_RULE(ruleCrossroadSelected);
         DECLARE_RULE(ruleCanSelectCrossroad);
-
         DECLARE_RULE(ruleUserActionBuildRoad);
         DECLARE_RULE(ruleBuildRoad);
         DECLARE_RULE(ruleCanBuildRoad);
-
         DECLARE_RULE(ruleSelectRoadway);
         DECLARE_RULE(ruleSelectRoadwayAtCrossroad);
-        DECLARE_RULE(ruleRoadwaySelected);
         DECLARE_RULE(ruleCanSelectRoadway);
 
         PlayerPanel *playerPanel;
