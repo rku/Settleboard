@@ -47,7 +47,7 @@ void HexTile::setType(const unsigned int _type)
             break;
         case HEXTILE_TYPE_DESERT:
             modelName = "HexTile_Desert";
-            color.setRgb(225,130,7,255);
+            color.setRgb(225,255,255,255);
             break;
         case HEXTILE_TYPE_WOOD:
             modelName = "HexTile_Wood";

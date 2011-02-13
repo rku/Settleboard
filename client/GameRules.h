@@ -121,6 +121,7 @@ class GameRules : public QObject
         bool getIsRuleChainWaiting() { return isRuleChainWaiting; }
         void continueRuleChain();
         void cancelRuleChain();
+        void pushRuleData(QObject*);
         void pushRuleData(const QString &identifier, QVariant);
 
     protected:

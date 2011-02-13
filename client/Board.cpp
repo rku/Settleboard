@@ -158,19 +158,7 @@ void Board::handleMouseClick(QMouseEvent *event)
             setSelectedObject(obj);
             endSelectionMode();
 
-            Crossroad *cr = qobject_cast<Crossroad*>(obj);
-            Roadway *rw = qobject_cast<Roadway*>(obj);
-            GLGameModel *gm = qobject_cast<GLGameModel*>(obj);
-            GameRules *rules = GAME->getRules();
-
-            if(cr)
-            { rules->pushRuleData("Crossroad", qVariantFromValue(cr)); }
-            else if(rw)
-            { rules->pushRuleData("Roadway", qVariantFromValue(rw)); }
-            else if(gm)
-            { rules->pushRuleData("GLGameModel", qVariantFromValue(gm)); }
-            else Q_ASSERT(false);
-
+            GAME->getRules()->pushRuleData(obj);
             GAME->getRules()->executeRule("ruleBoardObjectSelected");
         }
     }
