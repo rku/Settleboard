@@ -47,7 +47,7 @@ void MessagePanel::addChatMessage(Player *player, const QString msg)
 {
     QString format("# <%1> %2");
 
-    output->setTextColor(player->getColor());
+    output->setTextColor(Qt::yellow);
     output->append(format.arg(player->getName()).arg(msg));
 }
 

@@ -43,6 +43,7 @@ QStatusBar {
 QTextEdit, QLineEdit {
     background: #050505;
     color: white;
+    font-size: 12px;
     border-style: outset;
     border-color: #3f3f3f;
     border-width: 2px;

@@ -710,9 +710,9 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
 
     messagePanel = new MessagePanel("Messages", mainWindow);
     messagePanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    messagePanel->setMinimumHeight(150);
-    messagePanel->setMinimumWidth(150);
-    messagePanel->setMaximumWidth(400);
+    messagePanel->setMinimumHeight(250);
+    messagePanel->setMinimumWidth(250);
+    messagePanel->setMaximumWidth(500);
     messagePanel->setFeatures(QDockWidget::DockWidgetMovable);
     mainWindow->addDockWidget(Qt::RightDockWidgetArea, messagePanel);
 
