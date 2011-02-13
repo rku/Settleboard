@@ -1,5 +1,6 @@
 
 #include "Player.h"
+#include "Game.h"
 #include "MessagePanel.h"
 
 MessagePanel::MessagePanel(const QString &title, QWidget *parent)
@@ -9,6 +10,9 @@ MessagePanel::MessagePanel(const QString &title, QWidget *parent)
     QWidget *widget = new QWidget(this);
 
     input = new QLineEdit(widget);
+    connect(input, SIGNAL(returnPressed()),
+        this, SLOT(newMessageAvailable()));
+
     output = new QTextEdit(widget);
     output->setReadOnly(true);
 
@@ -45,5 +49,16 @@ void MessagePanel::addChatMessage(Player *player, const QString msg)
 
     output->setTextColor(player->getColor());
     output->append(format.arg(player->getName()).arg(msg));
+}
+
+void MessagePanel::newMessageAvailable()
+{
+    QString msg = input->text();
+    if(!msg.isEmpty())
+    {
+        input->setText("");
+        GAME->getRules()->pushRuleData("ChatMessage", msg);
+        GAME->getRules()->executeRule("ruleNewChatMessage");
+    }
 }
 

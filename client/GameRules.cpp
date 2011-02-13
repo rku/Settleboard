@@ -433,7 +433,10 @@ IMPLEMENT_RULE(ruleNewChatMessage)
 
     // add message to game lobby
     QString finalMsg = QString("<%1> %2").arg(player->getName()).arg(message);
-    GAME->getLobby()->addChatMessage(finalMsg, player->getColor());
+    game->getLobby()->addChatMessage(finalMsg, player->getColor());
+
+    if(game->getState() == Game::PlayingState)
+        messagePanel->addChatMessage(player, message);
 
     return true;
 }
@@ -469,7 +472,9 @@ IMPLEMENT_RULE(ruleUpdateGameLobby)
 IMPLEMENT_RULE(ruleStartGame)
 {
     GAME->getLobby()->hide();
-    return EXECUTE_SUBRULE(ruleInitGame);
+    EXECUTE_SUBRULE(ruleInitGame);
+    GAME->setState(Game::PlayingState);
+    return true;
 }
 
 IMPLEMENT_RULE(ruleInitGame)

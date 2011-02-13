@@ -18,6 +18,9 @@ class MessagePanel : public QDockWidget
         void addLogMessage(Player*, const QString msg);
         void addChatMessage(Player*, const QString msg);
 
+    protected slots:
+        void newMessageAvailable();
+
     protected:
         QLineEdit *input;
         QTextEdit *output;
