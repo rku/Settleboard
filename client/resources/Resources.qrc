@@ -12,8 +12,6 @@
 <file>./Images/Sheep.png</file>
 <file>./Images/Trade.png</file>
 <file>./Images/Wheat.png</file>
-<file>./Maps/Islands.rsm</file>
-<file>./Maps/StandardSettlers.rsm</file>
 <file>./Objects/City.obj</file>
 <file>./Objects/HexTile.obj</file>
 <file>./Objects/NumberChip.obj</file>

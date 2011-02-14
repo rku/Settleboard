@@ -18,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
+
 #include "FileManager.h"
 #include "Game.h"
 #include "NumberChip.h"
@@ -39,6 +41,11 @@ void NumberChip::create()
     setNumber(number);
     setPosY(0.1);
     setScale(0.25);
+
+    // set a random rotation angle
+    float angle = ( (qrand() * 359.0) / RAND_MAX ) + 1;
+    qDebug() << "Rotating numberchip with angle of" << angle;
+    setAngleY(angle);
 }
 
 void NumberChip::setNumber(unsigned int n)

@@ -207,19 +207,19 @@ void GLGameModel::draw()
 void GLGameModel::setAngleX(GLfloat i)
 {
     angleX = (i > 0.0f) ? i : 0.0f;
-    if(angleX > 360.0f) angleX -= 360.0f;
+    while(angleX > 360.0f) angleX -= 360.0f;
 }
 
 void GLGameModel::setAngleY(GLfloat i)
 {
     angleY = (i > 0.0f) ? i : 0.0f;
-    if(angleY > 360.0f) angleX -= 360.0f;
+    while(angleY > 360.0f) angleX -= 360.0f;
 }
 
 void GLGameModel::setAngleZ(GLfloat i)
 {
     angleZ = (i > 0.0f) ? i : 0.0f;
-    if(angleZ > 360.0f) angleZ -= 360.0f;
+    while(angleZ > 360.0f) angleZ -= 360.0f;
 }
 
 void GLGameModel::pointToVertex(QVector3D vertex)
