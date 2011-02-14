@@ -57,7 +57,7 @@ const Texture& TextureManager::loadTexture(const QString& filename)
     glGenTextures(1, &newTex.id);
 
     glBindTexture(GL_TEXTURE_2D, newTex.id);
-    tex = QImage(filepath);
+    tex = QImage(filepath).mirrored();
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
