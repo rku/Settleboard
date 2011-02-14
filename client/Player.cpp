@@ -30,6 +30,7 @@ Player::Player(QObject *parent) : QObject(parent)
     isReady = false;
     color = Qt::red;
     id = QUuid::createUuid();
+    winningPoints = 0;
 
     qsrand(time(NULL));
     name = QString("Player%1").arg(qrand());

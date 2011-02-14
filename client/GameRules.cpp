@@ -674,9 +674,10 @@ IMPLEMENT_RULE(ruleInitPlayers)
     {
         Player *p = players.at(i);
 
-        for(int i = 0; i < 10; i++) p->addObjectOfType("Road");
+        for(int i = 0; i < 15; i++) p->addObjectOfType("Road");
         for(int i = 0; i < 5;  i++) p->addObjectOfType("Settlement");
-        for(int i = 0; i < 5;  i++) p->addObjectOfType("City");
+        for(int i = 0; i < 4;  i++) p->addObjectOfType("City");
+        p->setWinningPoints(0);
 
         qDebug() << "Player" << p->getName() << "initialized";
     }
@@ -789,6 +790,8 @@ IMPLEMENT_RULE(ruleInitPlayerPanel)
 
 IMPLEMENT_RULE(ruleUpdatePlayerPanel)
 {
+    playerPanel->updatePlayerInfo(player, "WinningPoints",
+        player->getWinningPoints());
     playerPanel->updatePlayerInfo(player, "Roads",
         player->getNumberOfUnplacedObjectsOfType("Road"));
     playerPanel->updatePlayerInfo(player, "Settlements",
@@ -943,6 +946,7 @@ IMPLEMENT_RULE(ruleBuildCity)
         PlayerObject *bld = player->getUnplacedObjectOfType("City");
         bld->setScale(0.7);
         cr->placePlayerObject(bld);
+        player->increaseWinningPointsBy(2);
 
         EXECUTE_SUBRULE(ruleUpdateInterface);
         LOG_PLAYER_MSG(QString("%1 built a City.").arg(player->getName()));
@@ -1027,6 +1031,7 @@ IMPLEMENT_RULE(ruleBuildSettlement)
     PlayerObject *bld = player->getUnplacedObjectOfType("Settlement");
     bld->setScale(0.3);
     cr->placePlayerObject(bld);
+    player->increaseWinningPointsBy(1);
 
     EXECUTE_SUBRULE(ruleUpdateInterface);
     LOG_PLAYER_MSG(QString("%1 built a settlement.").arg(player->getName()));
@@ -1041,13 +1046,13 @@ IMPLEMENT_RULE(ruleCanBuildSettlement)
 IMPLEMENT_RULE(ruleRemoveSettlement)
 {
     RULEDATA_REQUIRE("Settlement");
-
     PlayerObject *b = RULEDATA_POP("Settlement").value<PlayerObject*>();
 
     Q_ASSERT(b->getIsPlaced());
     Q_ASSERT(b->getBaseObject() == (GLGameModelProxy*)b);
     b->getBaseObject()->placePlayerObject(NULL);
     b->setBaseObject(NULL);
+    b->getOwner()->increaseWinningPointsBy(-1);
 
     return true;
 }

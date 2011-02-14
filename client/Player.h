@@ -55,6 +55,9 @@ class Player : public QObject
         bool getIsReady() { return isReady; }
         void setIsDisconnected(bool b) { isDisconnected = b; }
         bool getIsDisconnected() { return isDisconnected; }
+        void setWinningPoints(unsigned int i) { winningPoints = i; }
+        void increaseWinningPointsBy(int i) { winningPoints += i; }
+        unsigned int getWinningPoints() { return winningPoints; }
 
         GameCardStack *getCardStack() { return &cards; }
 
@@ -72,6 +75,7 @@ class Player : public QObject
         bool isSpectator;
         bool isReady;
         bool isDisconnected;
+        unsigned int winningPoints;
         QColor color;
         QString name;
         GameCardStack cards;
