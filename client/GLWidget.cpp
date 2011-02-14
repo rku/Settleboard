@@ -77,21 +77,18 @@ void GLWidget::initializeGL()
         << (char*)glGetString(GL_VENDOR);
     qDebug() << (char*)glGetString(GL_RENDERER);
 
-    GLfloat light_position[] = { 5.0, 1.0, 0.0, 1.0 };
-    //GLfloat white_color[] = { 0.5, 0.5, 0.5, 1.0 };
-    //GLfloat black_color[] = { 0.0, 0.0, 0.0, 1.0 };
-    //glLightfv(GL_LIGHT0, GL_AMBIENT, white_color);
-    //glLightfv(GL_LIGHT0, GL_DIFFUSE, black_color);
-    //glLightfv(GL_LIGHT0, GL_SPECULAR, black_color);
-#ifdef GL_LIGHT_MODEL_COLOR_CONTROL
-    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SINGLE_COLOR);
-#endif
+    GLfloat white_color[] = { 0.6, 0.6, 0.6, 1.0 };
+    GLfloat black_color[] = { 0.0, 0.0, 0.0, 1.0 };
+    glLightfv(GL_LIGHT0, GL_AMBIENT, white_color);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, black_color);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, black_color);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, white_color);
 
-    //glColorMaterial(GL_FRONT, GL_AMBIENT);
-
+    glColorMaterial(GL_FRONT, GL_AMBIENT);
     glEnable(GL_LIGHT0);
 
     glLoadIdentity();
+    GLfloat light_position[] = { 5.0, 1.0, 0.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 }
 

@@ -29,6 +29,12 @@
 <file>./Objects/Settlement.obj</file>
 <file>./Resources.qrc</file>
 <file>./Styles/Default.qss</file>
+<file>./Textures/clay.jpg</file>
 <file>./Textures/desert.jpg</file>
+<file>./Textures/ore.jpg</file>
+<file>./Textures/sheep.jpg</file>
+<file>./Textures/water.jpg</file>
+<file>./Textures/wheat.jpg</file>
+<file>./Textures/wood.jpg</file>
 </qresource>
 </RCC>

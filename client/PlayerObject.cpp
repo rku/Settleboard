@@ -33,3 +33,18 @@ PlayerObject::PlayerObject(Player *_owner, QString _type, QObject *parent)
     baseObject = NULL;
 }
 
+void PlayerObject::setupLightingParameters()
+{
+    GLfloat ambient_color[] = { 0.3, 0.3, 0.3, 1.0 };
+    GLfloat diffuse_color[] = { 0.5, 0.5, 0.5, 1.0 };
+
+    if(!getIsEnabled())
+    {   
+        diffuse_color[0] = diffuse_color[1] = diffuse_color[2] = 0.0;
+    }   
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_color);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_color);
+}
+
+

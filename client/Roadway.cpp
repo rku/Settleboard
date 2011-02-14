@@ -45,18 +45,18 @@ void Roadway::draw()
         return;
     }
 
-    bool selectable = getIsSelectable() &&
-        GAME->getBoard()->getIsSelectionModeActive();
-    Player *p = GAME->getLocalPlayer();
-    QColor color = (selectable) ? p->getColor() : Qt::black;
-    float width = (selectable) ? 5.0f : 2.0f;
+    if(getIsSelectable() && GAME->getBoard()->getIsSelectionModeActive())
+    {
+        QColor col = GAME->getLocalPlayer()->getColor();
+        float width = 5.0f;
 
-    // draw roadway lines
-    glPushMatrix();
-    GAME->getGLWidget()->qglColor((getIsHighlighted()) ? color.lighter() : color);
-    glLineWidth(width);
-    glCallList(selectionRectListID);
-    glPopMatrix();
+        // draw roadway lines
+        glPushMatrix();
+        GAME->getGLWidget()->qglColor((getIsHighlighted()) ? col.lighter() : col);
+        glLineWidth(width);
+        glCallList(selectionRectListID);
+        glPopMatrix();
+    }
 }
 
 void Roadway::setVertices(QVector3D a, QVector3D b)

@@ -76,6 +76,7 @@ void GLGameModel::create()
                 glDisable(GL_COLOR_MATERIAL);
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texId);
+                GAME->getGLWidget()->qglColor(Qt::white);
                 currentTex = texId;
             }
         }
@@ -124,6 +125,7 @@ void GLGameModel::create()
     }
 
     glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
     glEndList();
 
     createBorder();
@@ -153,16 +155,17 @@ void GLGameModel::setupLightingParameters()
 {
     if(getIsEnabled())
     {
-        GLfloat white_color[] = { 0.4, 0.4, 0.4, 1.0 };
-        glLightfv(GL_LIGHT0, GL_AMBIENT, white_color);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE, white_color);
+        GLfloat ambient_color[] = { 0.6, 0.6, 0.6, 1.0 };
+        glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_color);
+        GLfloat diffuse_color[] = { 0.2, 0.2, 0.2, 1.0 };
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_color);
     }
     else
     {
-        GLfloat gray_color[] = { 0.5, 0.5, 0.5, 1.0 };
-        glLightfv(GL_LIGHT0, GL_AMBIENT, gray_color);
-        GLfloat black_color[] = { 0.0, 0.0 , 0.0, 1.0 };
-        glLightfv(GL_LIGHT0, GL_DIFFUSE, black_color);
+        GLfloat ambient_color[] = { 0.2, 0.2, 0.2, 1.0 };
+        glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_color);
+        GLfloat diffuse_color[] = { 0.0, 0.0, 0.0, 1.0 };
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_color);
         glEnable(GL_LIGHTING);
     }
 }

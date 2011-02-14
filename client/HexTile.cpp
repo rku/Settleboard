@@ -28,7 +28,6 @@
 HexTile::HexTile(QObject *parent) : GLGameModelProxy(parent)
 {
     numberChip = NULL;
-    setIsLightingEnabled(false);
     setType(HEXTILE_TYPE_WATER);
 }
 

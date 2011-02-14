@@ -108,7 +108,7 @@ class GLGameModel : public QObject
         void createBorder();
         void transform();
         void highlight();
-        void setupLightingParameters();
+        virtual void setupLightingParameters();
 
         GLuint displayListID;
         GLuint borderDisplayListID;

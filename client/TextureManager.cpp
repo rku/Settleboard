@@ -76,20 +76,20 @@ const Texture& TextureManager::loadTexture(const QString& filename)
         /*newTex.id = GAME->getGLWidget()->bindTexture(
             tex, GL_TEXTURE_2D, GL_RGBA,
             QGLContext::LinearFilteringBindOption |
-            QGLContext::MipmapBindOption);*/
+            QGLContext::MipmapBindOption);
 
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 #ifdef GL_MIRRORED_REPEAT
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-#endif
+#endif*/
 
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex.width(), tex.height(), 0,
             GL_RGBA, GL_UNSIGNED_BYTE, tex.bits() );
 
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, tex.width(), tex.height(),
-            GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
+        /*gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, tex.width(), tex.height(),
+            GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());*/
 
         qDebug() << "Loaded texture: " << filepath << "with id" << newTex.id;
         newTex.loaded = true;

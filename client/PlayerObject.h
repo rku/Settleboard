@@ -46,6 +46,9 @@ class PlayerObject : public GLGameModel
         HexTile *getTile() { return tile; }
         void setTile(HexTile *t) { tile = t; }
 
+    protected:
+        virtual void setupLightingParameters();
+
     private:
         QString type;
         Player *owner;
