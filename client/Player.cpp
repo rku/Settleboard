@@ -24,6 +24,7 @@
 
 Player::Player(QObject *parent) : QObject(parent)
 {
+    isDisconnected = false;
     isLocal = false;
     isSpectator = false;
     isReady = false;

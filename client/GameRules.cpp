@@ -223,7 +223,6 @@ bool GameRules::executeRule(QString name)
 bool GameRules::executeSubRule(QString name, Player *player)
 {
     Q_ASSERT(player != NULL);
-    Q_ASSERT(!isRuleChainWaiting);
     Q_ASSERT(rules.contains(name));
 
     qDebug() << "Executing nested rule" << name << player->getName();
@@ -493,17 +492,19 @@ IMPLEMENT_RULE(ruleDisconnect)
     // this should never happen!
     Q_ASSERT(!player->getIsLocal());
 
-    game->getPlayers().removeAll(player);
+    player->setIsDisconnected(true);
 
     if(game->getState() == Game::PreparingState)
     {
+        game->getPlayers().removeAll(player);
         game->getLobby()->addChatMessage(
             QString("*** %1 left the game.").arg(player->getName()),
             Qt::white);
         game->getLobby()->update();
+        delete player;
     }
+    else EXECUTE_SUBRULE(ruleUpdateInterface);
 
-    delete player;
     return true;
 }
 

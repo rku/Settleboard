@@ -20,18 +20,25 @@ PlayerPanel::~PlayerPanel()
 
 QGroupBox* PlayerPanel::getPlayerBox(Player *player)
 {
-    if(playerBoxes.contains(player)) return playerBoxes.value(player);
+    QGroupBox *box;
 
-    // create a new one
-    QGroupBox *box = new QGroupBox(player->getName(), widget());
-    QString color = QString("::title { color: %1; }");
-    box->setStyleSheet(color.arg(player->getColor().name()));
+    if(!playerBoxes.contains(player))
+    {
+        // create a new one
+        box = new QGroupBox(widget());
 
-    QVBoxLayout *l = (QVBoxLayout*)widget()->layout();
-    Q_ASSERT(l->count() > 0); // we expect at least a stretcher
-    l->insertWidget(l->count() - 1, box);
-    box->setLayout(new QGridLayout());
-    playerBoxes.insert(player, box);
+        QVBoxLayout *l = (QVBoxLayout*)widget()->layout();
+        Q_ASSERT(l->count() > 0); // we expect at least a stretcher
+        l->insertWidget(l->count() - 1, box);
+        box->setLayout(new QGridLayout());
+        playerBoxes.insert(player, box);
+    }
+    else box = playerBoxes.value(player);
+
+    QString style = QString("::title { color: %1; }");
+    QColor color = (player->getIsDisconnected()) ? Qt::gray : player->getColor();
+    box->setStyleSheet(style.arg(color.name()));
+    box->setTitle((player->getIsDisconnected())?"Disconnected":player->getName());
 
     return box;
 }

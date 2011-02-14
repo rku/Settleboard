@@ -159,7 +159,7 @@ void GLGameModel::setupLightingParameters()
     {
         GLfloat ambient_color[] = { 0.6, 0.6, 0.6, 1.0 };
         glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_color);
-        GLfloat diffuse_color[] = { 0.2, 0.2, 0.2, 1.0 };
+        GLfloat diffuse_color[] = { 0.3, 0.3, 0.3, 1.0 };
         glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_color);
     }
     else

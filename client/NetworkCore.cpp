@@ -106,6 +106,14 @@ void NetworkCore::acceptNewConnection()
     QTcpSocket *socket = server->nextPendingConnection();
     if(!socket) return;
 
+    if(GAME->getState() != Game::PreparingState)
+    {
+        socket->disconnectFromHost();
+        qDebug() << "Game not preparing. New connection from"
+            << socket->peerAddress() << "denied.";
+        return;
+    }
+
     qDebug() << "New connection from" << socket->peerAddress();
     connections.append(socket);
 
