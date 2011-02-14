@@ -18,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QtDebug>
+
 #include "TextureManager.h"
 #include "FileManager.h"
 #include "GLWidget.h"
@@ -56,7 +58,6 @@ const Texture& TextureManager::loadTexture(const QString& filename)
 
     glBindTexture(GL_TEXTURE_2D, newTex.id);
     tex = QImage(filepath);
-    //newTex.id = Game::getInstance()->getGLWidget()->bindTexture(tex);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
@@ -69,11 +70,20 @@ const Texture& TextureManager::loadTexture(const QString& filename)
 #endif
 
     tex = QGLWidget::convertToGLFormat(QImage(filepath));
-
     if(!tex.isNull())
     {
-        newTex.width = tex.width();
-        newTex.height = tex.height();
+        //glEnable(GL_TEXTURE_2D);
+        /*newTex.id = GAME->getGLWidget()->bindTexture(
+            tex, GL_TEXTURE_2D, GL_RGBA,
+            QGLContext::LinearFilteringBindOption |
+            QGLContext::MipmapBindOption);*/
+
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+#ifdef GL_MIRRORED_REPEAT
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+#endif
 
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex.width(), tex.height(), 0,
             GL_RGBA, GL_UNSIGNED_BYTE, tex.bits() );
@@ -81,7 +91,7 @@ const Texture& TextureManager::loadTexture(const QString& filename)
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, tex.width(), tex.height(),
             GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
 
-        qDebug() << "Loaded texture: " << filepath;
+        qDebug() << "Loaded texture: " << filepath << "with id" << newTex.id;
         newTex.loaded = true;
     }
     else
@@ -100,7 +110,7 @@ const Texture& TextureManager::loadTexture(const QString& filename)
 GLuint TextureManager::getTextureId(const QString& filename)
 {
     const Texture tex = getTexture(filename);
-    return tex.id;
+    return (tex.loaded) ? tex.id : 0;
 }
 
 const Texture& TextureManager::getTexture(const QString& filename)

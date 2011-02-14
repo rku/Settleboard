@@ -71,11 +71,10 @@ void GLGameModel::create()
         if(!face.texFilename.isEmpty())
         {
             GLuint texId = tm->getTextureId(face.texFilename);
-            if(currentTex != texId && currentTex > 0)
+            if(currentTex != texId)
             {
                 glDisable(GL_COLOR_MATERIAL);
                 glEnable(GL_TEXTURE_2D);
-                GAME->getGLWidget()->qglColor(Qt::white);
                 glBindTexture(GL_TEXTURE_2D, texId);
                 currentTex = texId;
             }

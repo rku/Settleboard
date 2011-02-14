@@ -87,6 +87,8 @@ void GLWidget::initializeGL()
     glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SINGLE_COLOR);
 #endif
 
+    //glColorMaterial(GL_FRONT, GL_AMBIENT);
+
     glEnable(GL_LIGHT0);
 
     glLoadIdentity();

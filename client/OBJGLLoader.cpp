@@ -109,9 +109,9 @@ OBJ *OBJGLLoader::load(QString filename)
         {
             QVector3D v3d;
 
-            if(parts.size() > 3)
-                v3d = QVector3D(parts.at(1).toFloat(),
-                    parts.at(2).toFloat(), parts.at(3).toFloat());
+            if(parts.size() > 1) v3d.setX(parts.at(1).toFloat());
+            if(parts.size() > 2) v3d.setY(parts.at(2).toFloat());
+            if(parts.size() > 3) v3d.setZ(parts.at(3).toFloat());
 
             if(parts.at(0).size() == 1)
             {
