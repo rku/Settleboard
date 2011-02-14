@@ -45,7 +45,9 @@ HEADERS = client/GLWidget.h \
           client/GameInfoPanel.h \
           client/NetworkCore.h \
           client/NetworkPacket.h \
-          client/GameLobby.h
+          client/GameLobby.h \
+          client/Map.h \
+          client/StandardMap.h
 
 SOURCES = client/GLWidget.cpp \
           client/Game.cpp \
@@ -74,5 +76,7 @@ SOURCES = client/GLWidget.cpp \
           client/GameInfoPanel.cpp \
           client/NetworkCore.cpp \
           client/NetworkPacket.cpp \
-          client/GameLobby.cpp
+          client/GameLobby.cpp \
+          client/Map.cpp \
+          client/StandardMap.cpp
 

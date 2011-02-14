@@ -35,9 +35,15 @@ class NumberChip : public GLGameModel
     public:
         NumberChip(QObject *parent = 0);
         ~NumberChip();
-        void create();
+
+        virtual void draw();
+
+        void setNumber(unsigned int n);
+        unsigned int getNumber() { return number; }
 
     private:
+        void create();
+
         int number;
 };
 

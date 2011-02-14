@@ -34,6 +34,7 @@
 #include "NetworkCore.h"
 #include "GameLobby.h"
 #include "Game.h"
+#include "StandardMap.h"
 #include "GameRules.h"
 
 GameRules::GameRules(QObject *parent) : QObject(parent)
@@ -624,11 +625,11 @@ IMPLEMENT_RULE(ruleDrawInitialResourceCards)
 
         switch(r->getTiles().at(i)->getType())
         {
-            case HEXTILE_TYPE_ORE:   stack = "Ore";    break;
-            case HEXTILE_TYPE_CLAY:  stack = "Clay";   break;
-            case HEXTILE_TYPE_WHEAT: stack = "Wheat";  break;
-            case HEXTILE_TYPE_SHEEP: stack = "Sheep";  break;
-            case HEXTILE_TYPE_WOOD:  stack = "Lumber"; break;
+            case HexTile::HexTileTypeOre:   stack = "Ore";    break;
+            case HexTile::HexTileTypeClay:  stack = "Clay";   break;
+            case HexTile::HexTileTypeWheat: stack = "Wheat";  break;
+            case HexTile::HexTileTypeSheep: stack = "Sheep";  break;
+            case HexTile::HexTileTypeWood:  stack = "Lumber"; break;
             default: continue;
         }
 
@@ -910,8 +911,7 @@ IMPLEMENT_RULE(ruleBoardObjectSelected)
 
 IMPLEMENT_RULE(ruleGenerateBoard)
 {
-    game->getBoard()->loadByName("StandardSettlers");
-    game->getBoard()->generate();
+    game->getBoard()->load(new StandardMap(game->getBoard()));
     game->getBoard()->update();
     return true;
 }
@@ -1097,7 +1097,7 @@ IMPLEMENT_RULE(ruleCanSelectCrossroad)
 
     for(int i = 0; i < c->getTiles().size(); i++)
     {
-        if(c->getTiles().at(i)->getType() != HEXTILE_TYPE_WATER)
+        if(c->getTiles().at(i)->getType() != HexTile::HexTileTypeWater)
             return true;
     }
 
@@ -1203,7 +1203,7 @@ IMPLEMENT_RULE(ruleCanSelectRoadway)
 
     for(int i = 0; i < r->getTiles().size(); i++)
     {
-        if(r->getTiles().at(i)->getType() != HEXTILE_TYPE_WATER)
+        if(r->getTiles().at(i)->getType() != HexTile::HexTileTypeWater)
             return canSelect;
     }
 

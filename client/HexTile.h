@@ -30,27 +30,33 @@ class NumberChip;
 class Crossroad;
 class Roadway;
 
-#define HEXTILE_TYPE_WOOD   0x00 
-#define HEXTILE_TYPE_WATER  0x01
-#define HEXTILE_TYPE_WHEAT  0x02
-#define HEXTILE_TYPE_SHEEP  0x03
-#define HEXTILE_TYPE_DESERT 0x04
-#define HEXTILE_TYPE_ORE    0x05
-#define HEXTILE_TYPE_CLAY   0x06
-#define HEXTILE_TYPE_GOLD   0x07
-
 class HexTile : public GLGameModelProxy
 {
     Q_OBJECT
 
     public:
-        HexTile(QObject *parent = 0);
+        enum HexTileType {HexTileTypeNone, HexTileTypeWood,
+            HexTileTypeWater, HexTileTypeWheat, HexTileTypeSheep,
+            HexTileTypeDesert, HexTileTypeOre, HexTileTypeClay,
+            HexTileTypeGold};
+
+        HexTile(HexTileType = HexTileTypeNone,
+            unsigned int x = 0, unsigned int y = 0,
+            QObject *parent = 0);
         ~HexTile();
 
-        void setType(const unsigned int);
-        unsigned int getType();
-        void setFixedPosition(bool b) { fixedPosition = b; }
-        bool hasFixedPosition() { return fixedPosition; }
+        void setType(HexTileType);
+        HexTileType getType();
+
+        void setChipNumber(unsigned int number);
+        unsigned int getChipNumber() { return chipNumber; }
+        bool getHasNumberChip() { return (numberChip != NULL); }
+
+        unsigned int getRow() { return position.y(); }
+        unsigned int getColumn() { return position.x(); }
+
+        void setHasFixedPosition(bool b) { hasFixedPosition = b; }
+        bool getHasFixedPosition() { return hasFixedPosition; }
         void draw();
 
         QVector3D getCenterVertex();
@@ -62,10 +68,14 @@ class HexTile : public GLGameModelProxy
         const QList<Roadway*>& getRoadways() { return roadways; }
 
     private:
-        bool isPort;
-        bool fixedPosition;
-        int number;
-        unsigned int type;
+        void setColumn(unsigned int i) { position.setX(i); }
+        void setRow(unsigned int i) { position.setY(i); }
+
+        bool hasPort;
+        bool hasFixedPosition;
+        int chipNumber;
+        QPoint position;
+        HexTileType type;
         NumberChip *numberChip;
         QList<Crossroad*> crossroads;
         QList<Roadway*> roadways;

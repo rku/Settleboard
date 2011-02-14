@@ -24,7 +24,7 @@
 
 NumberChip::NumberChip(QObject *parent) : GLGameModel(parent)
 {
-    number = 1;
+    number = 0;
     create();
 }
 
@@ -36,8 +36,23 @@ void NumberChip::create()
 {
     setIsLightingEnabled(false);
     load(FileManager::getPathOfGLObject("NumberChip"), Qt::gray);
-    setTexture("number", "nc4.jpg");
+    setNumber(number);
     setPosY(0.1);
     setScale(0.25);
+}
+
+void NumberChip::setNumber(unsigned int n)
+{
+    if(n > 1 && n < 13 && n != 7)
+    {
+        number = n;
+        setTexture("number", QString("nc%1.jpg").arg(number));
+    }
+}
+
+void NumberChip::draw()
+{
+    if(number < 2 || number > 12 || number == 7) return;
+    GLGameModel::draw();
 }
 

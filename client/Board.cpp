@@ -24,12 +24,14 @@
 #include "BoardState.h"
 #include "FileManager.h"
 #include "GLWidget.h"
+#include "StandardMap.h"
 #include "Roadway.h"
 
 #include <math.h>
 
 Board::Board(QObject *parent) : QObject(parent)
 {
+    map                     = NULL;
     isLoaded                = false;
     isSelectionModeActive   = false;
     selectedObject          = NULL;
@@ -48,18 +50,19 @@ void Board::reset()
 
 void Board::freeObjects()
 {
-    while(!numberChips.isEmpty()) delete numberChips.takeFirst();
-    while(! boardTiles.isEmpty()) delete boardTiles.takeFirst();
     while(! crossroads.isEmpty()) delete crossroads.takeFirst();
     while(!   roadways.isEmpty()) delete roadways.takeFirst();
+
+    if(map) delete map;
+    isLoaded = false;
 }
 
 void Board::render()
 {
     if(!getIsLoaded()) return;
 
-    for(int i = 0; i < boardTiles.size(); ++i)
-        boardTiles.at(i)->draw();
+    for(int i = 0; i < getBoardTiles().size(); ++i)
+        getBoardTiles().at(i)->draw();
 
     for(int i = 0; i < crossroads.size(); ++i)
         crossroads.at(i)->draw();
@@ -73,10 +76,6 @@ void Board::render()
     robber->setScale(0.7);
     robber->draw();
     delete robber;
-
-    NumberChip *chip = new NumberChip();
-    chip->draw();
-    delete chip;
 }
 
 void Board::update()
@@ -139,7 +138,7 @@ GLGameModel *Board::getSelectableObjectAtMousePos(const QPoint &pos)
 
         ADD_SELECTABLE_OBJECTS(crossroads);
         ADD_SELECTABLE_OBJECTS(roadways);
-        ADD_SELECTABLE_OBJECTS(boardTiles);
+        ADD_SELECTABLE_OBJECTS(getBoardTiles());
 
         if(!done) max++;
     }
@@ -177,7 +176,7 @@ void Board::handleMouseOver(QMouseEvent *event)
     // highlight selectable objects at mousepos
     highlightObjectsAtMousePos(crossroads, mousePos);
     highlightObjectsAtMousePos(roadways, mousePos);
-    highlightObjectsAtMousePos(boardTiles, mousePos);
+    highlightObjectsAtMousePos(getBoardTiles(), mousePos);
 
     GAME->getGLWidget()->updateGL();
 }
@@ -200,7 +199,7 @@ void Board::setSelectionMode()
 
         DISABLE_NONSELECTABLE_OBJECT_OF(crossroads);
         DISABLE_NONSELECTABLE_OBJECT_OF(roadways);
-        DISABLE_NONSELECTABLE_OBJECT_OF(boardTiles);
+        DISABLE_NONSELECTABLE_OBJECT_OF(getBoardTiles());
 
         if(!done) max++;
     }
@@ -267,7 +266,7 @@ void Board::resetBoardState(BoardObjectState s)
         s.index = i; \
         state.sto.append(s); } }
 
-    CREATE_RESET_STATE_FOR(boardTiles, tileStates);
+    CREATE_RESET_STATE_FOR(getBoardTiles(), tileStates);
     CREATE_RESET_STATE_FOR(crossroads, crossroadStates);
     CREATE_RESET_STATE_FOR(roadways, roadwayStates);
 
@@ -293,7 +292,7 @@ void Board::updateBoardState(BoardState &newState)
         if(newState.tileStates.size() >= max)
         {
             s = newState.tileStates.at(i);
-            HexTile *h = boardTiles.at(s.index);
+            HexTile *h = getBoardTiles().at(s.index);
             UPDATE_GLOBJECT_STATE(h, s);
         }
 
@@ -317,147 +316,39 @@ void Board::updateBoardState(BoardState &newState)
     GAME->getGLWidget()->updateGL();
 }
 
-// load a board from a plain textfile
-// See MAPFORMAT for a description of the
-// file format.
-bool Board::loadFromFile(const QString& filename)
-{
-    QFile boardFile(filename);
-    QTextStream stream(&boardFile);
-    char *pDir = tileData;
-
-    memset(pDir, 0, BOARD_MAX_TILES);
-
-    if(!boardFile.open(QFile::ReadOnly))
-    {
-        qCritical() << "Could'nt load board file: " << filename;
-        return false;
-    }
-
-    name   = stream.readLine();
-    author = stream.readLine();
-
-    stream >> width;
-    stream >> height;
-
-    if((width * height) > (BOARD_MAX_TILES-1))
-    {
-        qCritical() << "Board too large.";
-        return false;
-    }
-
-    if(width < 2 || height < 2)
-    {
-        qCritical() << "Boardsize must be at least 2x2.";
-        return false;
-    }
-
-    for(unsigned int i = 0; i < (width * height); i++)
-    {
-        if(stream.atEnd())
-        {
-            qCritical() << "Can't load board. Invalid data size.";
-            return false;
-        }
-
-        stream >> *pDir;
-
-        if(*pDir == '\n' || *pDir == ' ')
-            { i--; } else { pDir++; }
-    }
-
-    qDebug() << "Board loaded: " << filename;
-    isLoaded = true;
-
-    boardFile.close();
-
-    return true;
-}
-
-bool Board::loadByName(const QString &name)
-{
-    return loadFromFile(FileManager::getPathOfMap(name));
-}
-
-QVector3D Board::getPosForTile(HexTile *tile, int col, int row)
+void Board::setPosForTile(HexTile *tile)
 {
     float w = tile->getWidth();
     float d = tile->getDepth() - 0.6f;
+    unsigned int row = tile->getRow();
+    unsigned int col = tile->getColumn();
+    unsigned int width = map->getWidth();
+    unsigned int height = map->getHeight();
 
     // center - boardwidth/2 + tilewidth*col
-    return QVector3D(
+    tile->setPos(QVector3D(
         0 - ( width * (w/2) ) + (col * w) + (row % 2) * (w/2),
         0.0f,
         // center - boardheight/2 - tiledepth/2 + row*tiledepth
-        (d/2) - ( height * (d/2) ) + (row * d));
+        (d/2) - ( height * (d/2) ) + (row * d)));
 }
 
-void Board::generate()
+bool Board::load(Map *theMap)
 {
-    int row = 0, col = -1;
-    QVector3D pos;
-
     // discard old board
     freeObjects();
 
-    for(char *p = tileData; row < (int)height && *p; p++)
+    map = theMap;
+
+    HexTileList tiles = map->getTiles();
+    HexTileList::iterator i;
+
+    for(i = tiles.begin(); i != tiles.end(); ++i)
     {
-        HexTile *newTile = new HexTile(this);
-
-        col++;
-        if(col >= (int)width)
-        {
-            col = 0;
-            row++;
-        }
-
-        switch(*p)
-        {
-            case 'X':
-                newTile->setFixedPosition(true);
-            case 'x':
-                newTile->setType(HEXTILE_TYPE_WATER);
-                break;
-            case 'E': // wheat
-                newTile->setFixedPosition(true);
-            case 'e':
-                newTile->setType(HEXTILE_TYPE_WHEAT);
-                break;
-            case 'S': // sheep
-                newTile->setFixedPosition(true);
-            case 's':
-                newTile->setType(HEXTILE_TYPE_SHEEP);
-                break;
-            case 'W': // wood
-                newTile->setFixedPosition(true);
-            case 'w':
-                newTile->setType(HEXTILE_TYPE_WOOD);
-                break;
-            case 'C': // clay
-                newTile->setFixedPosition(true);
-            case 'c':
-                newTile->setType(HEXTILE_TYPE_CLAY);
-                break;
-            case 'G': // gold
-                newTile->setFixedPosition(true);
-            case 'g':
-                newTile->setType(HEXTILE_TYPE_GOLD);
-                break;
-            case 'O': // ore
-                newTile->setFixedPosition(true);
-            case 'o':
-                newTile->setType(HEXTILE_TYPE_ORE);
-                break;
-            case 'D': // desert
-                newTile->setType(HEXTILE_TYPE_DESERT);
-                break;
-            default:
-                continue;
-        }
+        HexTile *newTile = *i;
 
         // set position
-        pos = getPosForTile(newTile, col, row);
-        newTile->setPos(pos);
+        setPosForTile(newTile);
 
         // setup crossroads and roadways
         QList<QVector3D> vertices = newTile->getCornerVertices();
@@ -477,14 +368,14 @@ void Board::generate()
 
             lastCrossroad = cr;
         }
-
-        // add tile
-        boardTiles.insert(boardTiles.begin(), newTile);
     }
 
     qDebug() << "Board generated:" << crossroads.size() << "crossroads" <<
         "," << roadways.size() << "roadways" <<
-        "and" << boardTiles.size() << "tiles";
+        "and" << getBoardTiles().size() << "tiles";
+
+    isLoaded = true;
+    return true;
 }
 
 Crossroad *Board::getCrossroadNearPosition(QVector3D pos, bool create)

@@ -25,10 +25,15 @@
 #include "FileManager.h"
 #include "HexTile.h"
 
-HexTile::HexTile(QObject *parent) : GLGameModelProxy(parent)
+HexTile::HexTile(HexTileType t, unsigned int x, unsigned int y,
+    QObject *parent) : GLGameModelProxy(parent)
 {
+    setColumn(x);
+    setRow(y);
+
     numberChip = NULL;
-    setType(HEXTILE_TYPE_WATER);
+    chipNumber = 0;
+    setType(t);
 }
 
 HexTile::~HexTile()
@@ -36,70 +41,75 @@ HexTile::~HexTile()
     if(numberChip) delete numberChip;
 }
 
-void HexTile::setType(const unsigned int _type)
+void HexTile::setChipNumber(unsigned int number)
+{
+    Q_ASSERT(number > 1 && number < 13 && number != 7);
+
+    QString texture("nc%1.jpg");
+    setTexture("number", texture.arg(number));
+    if(!numberChip) numberChip = new NumberChip(this);
+    numberChip->setNumber(number);
+}
+
+void HexTile::setType(HexTileType t)
 {
     QColor color;
     QString surfaceTexture;
-    bool hasNumberChip = false;
 
-    switch(_type)
+    if(t == HexTileTypeNone)
     {
-        case HEXTILE_TYPE_WATER:
+        type = t;
+        return;
+    }
+
+    switch(t)
+    {
+        case HexTileTypeWater:
             surfaceTexture = "water.jpg";
             color.setRgb(22,73,142,255);
             break;
-        case HEXTILE_TYPE_DESERT:
+        case HexTileTypeDesert:
             surfaceTexture = "desert.jpg";
             color.setRgb(225,255,255,255);
             break;
-        case HEXTILE_TYPE_WOOD:
+        case HexTileTypeWood:
             surfaceTexture = "wood.jpg";
             color.setRgb(27,150,11,255);
-            hasNumberChip = true;
             break;
-        case HEXTILE_TYPE_SHEEP:
+        case HexTileTypeSheep:
             surfaceTexture = "sheep.jpg";
             color.setRgb(208,241,206,255);
-            hasNumberChip = true;
             break;
-        case HEXTILE_TYPE_WHEAT:
+        case HexTileTypeWheat:
             surfaceTexture = "wheat.jpg";
             color.setRgb(237,239,97,255); 
-            hasNumberChip = true;
             break;
-        case HEXTILE_TYPE_ORE:
+        case HexTileTypeOre:
             surfaceTexture = "ore.jpg";
             color.setRgb(106,112,124,255);
-            hasNumberChip = true;
             break;
-        case HEXTILE_TYPE_GOLD:
+        case HexTileTypeGold:
             surfaceTexture = "gold.jpg"; 
             color.setRgb(222,224,35,255);
-            hasNumberChip = true;
             break;
-        case HEXTILE_TYPE_CLAY:
+        case HexTileTypeClay:
             surfaceTexture = "clay.jpg";
             color.setRgb(231,126,33,255);
-            hasNumberChip = true;
             break;
         default:
-            qDebug() << "Unknown hextile type:" << _type;
+            qDebug() << "Unknown hextile type:" << t;
             return;
     }
 
-    if(hasNumberChip)
-    {
-        if(numberChip) delete numberChip;
-        numberChip = new NumberChip();
-    }
-
-    type = _type;
+    type = t;
     setTexture("surface", surfaceTexture);
     load(FileManager::getPathOfGLObject("HexTile"), color);
 }
 
 void HexTile::draw()
 {
+    if(getType() == HexTileTypeNone) return;
+
     GLGameModel::draw();
 
     if(numberChip)
@@ -111,7 +121,7 @@ void HexTile::draw()
     }
 }
 
-unsigned int HexTile::getType()
+HexTile::HexTileType HexTile::getType()
 {
     return type;
 }

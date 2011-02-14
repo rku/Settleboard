@@ -31,17 +31,11 @@
 #include "GLWidget.h"
 #include "GLTypes.h"
 #include "BoardState.h"
+#include "Map.h"
 
 class Game;
 class Crossroad;
 class Roadway;
-
-#define BOARD_MAX_TILES                 512 
-
-#define BOARD_STATE_NORMAL              0x00
-#define BOARD_STATE_SELECT_CROSSROAD    0x01
-#define BOARD_STATE_SELECT_ROADWAY      0x02
-#define BOARD_STATE_SELECT_HEXTILE      0x04
 
 class Board : public QObject
 {
@@ -52,10 +46,9 @@ class Board : public QObject
         ~Board();
         void reset();
         void freeObjects();
-        void generate();
         void update();
-        bool loadFromFile(const QString&);
-        bool loadByName(const QString&);
+        bool load(Map*);
+        Map* getMap() { return map; }
         bool getIsLoaded() { return isLoaded; }
 
         void resetBoardState(BoardObjectState s = defaultBoardObjectState);
@@ -69,7 +62,7 @@ class Board : public QObject
         GLGameModel *getSelectedObject() { return selectedObject; }
         void setSelectedObject(GLGameModel*);
 
-        const QList<HexTile*> getBoardTiles() { return boardTiles; }
+        const QList<HexTile*> getBoardTiles() { return map->getTiles(); }
         const QList<Crossroad*> getCrossroads() { return crossroads; }
         const QList<Roadway*> getRoadways() { return roadways; }
 
@@ -86,22 +79,16 @@ class Board : public QObject
         template <typename T> const T getObjectsAtMousePos(T, const QPoint&);
         template <typename T> void highlightObjectsAtMousePos(T, const QPoint&);
         GLGameModel *getSelectableObjectAtMousePos(const QPoint &pos);
-        QVector3D getPosForTile(HexTile*, int col, int row);
+        void setPosForTile(HexTile*);
         Crossroad *getCrossroadNearPosition(QVector3D, bool create = false);
         Roadway *getRoadwayNear(QVector3D, QVector3D, bool create = false);
 
-        QList<HexTile*> boardTiles;
-        QList<NumberChip*> numberChips;
-        unsigned int width;
-        unsigned int height;
-        char tileData[BOARD_MAX_TILES];
+        Map *map;
         bool isSelectionModeActive;
         bool isLoaded;
         GLGameModel *selectedObject;
         QList<Crossroad*> crossroads;
         QList<Roadway*> roadways;
-        QString name;
-        QString author;
 };
 
 #endif
