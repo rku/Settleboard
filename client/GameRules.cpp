@@ -68,6 +68,9 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleBeginTurn);
     REGISTER_RULE(ruleEndTurn);
     REGISTER_RULE(ruleUserActionRollDice);
+    REGISTER_RULE(ruleDiceRolled);
+    REGISTER_RULE(ruleDrawRolledResources);
+    REGISTER_RULE(ruleHighlightRolledTiles);
     REGISTER_RULE(ruleDrawCardsFromBankStack);
     REGISTER_RULE(ruleInitDockWidgets);
     REGISTER_RULE(ruleInitPlayerPanel);
@@ -521,6 +524,7 @@ IMPLEMENT_RULE(ruleUpdateGameLobby)
 
 IMPLEMENT_RULE(ruleStartGame)
 {
+    srandom(time(NULL));
     diceRolled = false;
     game->getLobby()->hide();
     EXECUTE_SUBRULE(ruleInitGame);
@@ -616,7 +620,103 @@ IMPLEMENT_RULE(ruleEndTurn)
 
 IMPLEMENT_RULE(ruleUserActionRollDice)
 {
+    SERVER_ONLY_RULE
+
+    quint8 dice1 = quint8( random() / (RAND_MAX + 1.0) * 6 + 1 );
+    quint8 dice2 = quint8( random() / (RAND_MAX + 1.0) * 6 + 1 );
+
+    RULEDATA_PUSH("Dice1Value", dice1);
+    RULEDATA_PUSH("Dice2Value", dice2);
+
+    RULECHAIN_ADD(ruleDiceRolled);
+    RULECHAIN_ADD(ruleDrawRolledResources);
+    RULECHAIN_ADD(ruleHighlightRolledTiles);
+    RULECHAIN_ADD(ruleUpdateInterface);
+    startRuleChain();
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleDiceRolled)
+{
+    RULEDATA_REQUIRE("Dice1Value");
+    RULEDATA_REQUIRE("Dice2Value");
+    quint8 dice1 = RULEDATA_READ("Dice1Value").value<quint8>();
+    quint8 dice2 = RULEDATA_READ("Dice2Value").value<quint8>();
+
     diceRolled = true;
+    LOG_PLAYER_MSG(QString("%1 rolled a %2 (%3, %4).")
+        .arg(player->getName()).arg(dice1 + dice2).arg(dice1).arg(dice2));
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleDrawRolledResources)
+{
+    SERVER_ONLY_RULE
+
+    RULEDATA_REQUIRE("Dice1Value");
+    RULEDATA_REQUIRE("Dice2Value");
+    quint8 dice1 = RULEDATA_READ("Dice1Value").value<quint8>();
+    quint8 dice2 = RULEDATA_READ("Dice2Value").value<quint8>();
+
+    HexTileList tiles = game->getBoard()->getBoardTiles();
+    HexTileList::iterator hI;
+
+    for(hI = tiles.begin(); hI != tiles.end(); ++hI)
+    {
+        HexTile *t = *hI;
+        QString stack;
+
+        if(!t->getHasNumberChip()) continue;
+        if(t->getChipNumber() != (dice1+dice2)) continue;
+
+        switch(t->getType())
+        {
+            case HexTile::HexTileTypeOre:   stack = "Ore";    break;
+            case HexTile::HexTileTypeClay:  stack = "Clay";   break;
+            case HexTile::HexTileTypeWheat: stack = "Wheat";  break;
+            case HexTile::HexTileTypeSheep: stack = "Sheep";  break;
+            case HexTile::HexTileTypeWood:  stack = "Lumber"; break;
+            default: continue;
+        }
+
+        QList<Crossroad*> crossroads = t->getCrossroads();
+        QList<Crossroad*>::iterator cI;
+        for(cI = crossroads.begin(); cI != crossroads.end(); ++cI)
+        {
+            unsigned int amount = 0;
+            Crossroad *c = *cI;
+
+            if(!c->getIsPlayerObjectPlaced()) continue;
+            PlayerObject *pO = c->getPlayerObject();
+
+            if(pO->getType() == "Settlement") amount = 1;
+            if(pO->getType() == "City") amount = 2;
+
+            if(amount > 0)
+            {
+                ruleData.remove("CardStackName");
+                ruleData.remove("Amount");
+                RULEDATA_PUSH("CardStackName", stack);
+                RULEDATA_PUSH("Amount", amount);
+                executeRule("ruleDrawCardsFromBankStack", pO->getOwner());
+            }
+        }
+    }
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleHighlightRolledTiles)
+{
+    RULEDATA_REQUIRE("Dice1Value");
+    RULEDATA_REQUIRE("Dice2Value");
+    quint8 dice1 = RULEDATA_READ("Dice1Value").value<quint8>();
+    quint8 dice2 = RULEDATA_READ("Dice2Value").value<quint8>();
+
+    // IMPLEMENT ME!
+    return true;
 }
 
 IMPLEMENT_RULE(ruleDrawInitialResourceCards)
@@ -905,6 +1005,7 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
         controlPanel->setActionState("BuildCity",
             diceRolled && EXECUTE_SUBRULE(ruleCanBuildCity));
         controlPanel->setActionState("RollDice", !diceRolled);
+        controlPanel->setActionState("EndTurn", diceRolled);
     }
 
     return true;

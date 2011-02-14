@@ -156,6 +156,9 @@ class GameRules : public QObject
         DECLARE_RULE(ruleBeginTurn);
         DECLARE_RULE(ruleEndTurn);
         DECLARE_RULE(ruleUserActionRollDice);
+        DECLARE_RULE(ruleDiceRolled);
+        DECLARE_RULE(ruleDrawRolledResources);
+        DECLARE_RULE(ruleHighlightRolledTiles);
         DECLARE_RULE(ruleDrawCardsFromBankStack);
         DECLARE_RULE(ruleInitDockWidgets);
         DECLARE_RULE(ruleInitPlayerPanel);

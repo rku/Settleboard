@@ -49,6 +49,7 @@ void HexTile::setChipNumber(unsigned int number)
     setTexture("number", texture.arg(number));
     if(!numberChip) numberChip = new NumberChip(this);
     numberChip->setNumber(number);
+    chipNumber = number;
 }
 
 void HexTile::setType(HexTileType t)
