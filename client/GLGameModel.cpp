@@ -68,9 +68,11 @@ void GLGameModel::create()
         GLModelFace face = glModelFaces.at(i);
 
         // set or unset texture if neccessary
-        if(!face.texFilename.isEmpty())
+        if(!face.materialName.isEmpty() &&
+            materials.contains(face.materialName))
         {
-            GLuint texId = tm->getTextureId(face.texFilename);
+            QString textureFileName = materials.value(face.materialName);
+            GLuint texId = tm->getTextureId(textureFileName);
             if(currentTex != texId)
             {
                 glDisable(GL_COLOR_MATERIAL);
@@ -321,6 +323,11 @@ QList<QVector3D> GLGameModel::getVerticesOfGroupWithName(QString name)
     }
 
     return list;
+}
+
+void GLGameModel::setTexture(const QString &materialName, const QString &fileName)
+{
+    materials.insert(materialName, fileName);
 }
 
 // QDataStream operators

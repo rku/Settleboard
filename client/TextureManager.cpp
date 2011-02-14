@@ -88,8 +88,8 @@ const Texture& TextureManager::loadTexture(const QString& filename)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, tex.width(), tex.height(), 0,
             GL_RGBA, GL_UNSIGNED_BYTE, tex.bits() );
 
-        /*gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, tex.width(), tex.height(),
-            GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());*/
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, tex.width(), tex.height(),
+            GL_RGBA, GL_UNSIGNED_BYTE, tex.bits());
 
         qDebug() << "Loaded texture: " << filepath << "with id" << newTex.id;
         newTex.loaded = true;

@@ -39,46 +39,46 @@ HexTile::~HexTile()
 void HexTile::setType(const unsigned int _type)
 {
     QColor color;
-    QString modelName;
+    QString surfaceTexture;
     bool hasNumberChip = false;
 
     switch(_type)
     {
         case HEXTILE_TYPE_WATER:
-            modelName = "HexTile_Water";
+            surfaceTexture = "water.jpg";
             color.setRgb(22,73,142,255);
             break;
         case HEXTILE_TYPE_DESERT:
-            modelName = "HexTile_Desert";
+            surfaceTexture = "desert.jpg";
             color.setRgb(225,255,255,255);
             break;
         case HEXTILE_TYPE_WOOD:
-            modelName = "HexTile_Wood";
+            surfaceTexture = "wood.jpg";
             color.setRgb(27,150,11,255);
             hasNumberChip = true;
             break;
         case HEXTILE_TYPE_SHEEP:
-            modelName = "HexTile_Sheep";
+            surfaceTexture = "sheep.jpg";
             color.setRgb(208,241,206,255);
             hasNumberChip = true;
             break;
         case HEXTILE_TYPE_WHEAT:
-            modelName = "HexTile_Wheat";
+            surfaceTexture = "wheat.jpg";
             color.setRgb(237,239,97,255); 
             hasNumberChip = true;
             break;
         case HEXTILE_TYPE_ORE:
-            modelName = "HexTile_Ore";
+            surfaceTexture = "ore.jpg";
             color.setRgb(106,112,124,255);
             hasNumberChip = true;
             break;
         case HEXTILE_TYPE_GOLD:
-            modelName = "HexTile_Gold"; 
+            surfaceTexture = "gold.jpg"; 
             color.setRgb(222,224,35,255);
             hasNumberChip = true;
             break;
         case HEXTILE_TYPE_CLAY:
-            modelName = "HexTile_Clay";
+            surfaceTexture = "clay.jpg";
             color.setRgb(231,126,33,255);
             hasNumberChip = true;
             break;
@@ -94,7 +94,8 @@ void HexTile::setType(const unsigned int _type)
     }
 
     type = _type;
-    load(FileManager::getPathOfGLObject(modelName), color);
+    setTexture("surface", surfaceTexture);
+    load(FileManager::getPathOfGLObject("HexTile"), color);
 }
 
 void HexTile::draw()

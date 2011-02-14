@@ -92,6 +92,8 @@ class GLGameModel : public QObject
         bool getVertexGroupWithName(QString,VertexGroup&);
         QList<QVector3D> getVerticesOfGroupWithName(QString);
 
+        void setTexture(const QString &materialName, const QString &fileName);
+
         virtual void setIsLightingEnabled(bool b) { isLightingEnabled = b; }
         virtual bool getIsLightingEnabled() { return isLightingEnabled; }
         virtual void setIsHighlighted(bool b) { isHighlighted = b; }
@@ -119,6 +121,7 @@ class GLGameModel : public QObject
         QList<VertexGroup> vertexGroups;
         QVector<QVector2D> textureCoords;
         QList<GLModelFace> glModelFaces;
+        QMap<QString, QString> materials;
         QVector3D pos;
         GLfloat scale;
         GLfloat angleX;

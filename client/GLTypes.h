@@ -35,7 +35,7 @@
 } Vertex2f;*/
 
 typedef struct _GLModelFace {
-    QString texFilename;
+    QString materialName;
     QVector<GLuint> vertexIds;
     QVector<GLuint> vertexNormalIds;
     QVector<GLuint> textureCoordIds; 

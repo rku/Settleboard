@@ -54,7 +54,7 @@ OBJ *OBJGLLoader::load(QString filename)
 {
     QFile file(filename);
     QFileInfo finfo(file);
-    QString texFilename;
+    QString materialName;
     GLfloat vMax = 0.0f;
     OBJ obj;
     int id;
@@ -152,8 +152,8 @@ OBJ *OBJGLLoader::load(QString filename)
                     face.vertexNormalIds.append(faceParts.at(2).toInt() - 1);
             }
 
-            if(!texFilename.isEmpty())
-                face.texFilename = texFilename;
+            if(!materialName.isEmpty())
+                face.materialName = materialName;
 
             obj.glModelFaces.append(face);
         }
@@ -162,9 +162,9 @@ OBJ *OBJGLLoader::load(QString filename)
         {
             QStringList matNameParts = parts.at(1).split("_");
             if(matNameParts.isEmpty() || matNameParts.last().isEmpty())
-            { texFilename = QString(); }
+            { materialName = QString(); }
             else
-            { texFilename = matNameParts.last(); }
+            { materialName = matNameParts.last(); }
         }
         // unhandled data
         else
