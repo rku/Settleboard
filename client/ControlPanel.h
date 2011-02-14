@@ -16,6 +16,9 @@ class ControlPanel : public QDockWidget
         void setActionState(const QString name, bool state);
         void clear();
 
+    protected slots:
+        void actionTriggered();
+
     protected:
         QMap<QString, QToolButton*> buttons;
 };

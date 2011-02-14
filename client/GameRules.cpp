@@ -67,6 +67,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleDrawInitialResourceCards);
     REGISTER_RULE(ruleBeginTurn);
     REGISTER_RULE(ruleEndTurn);
+    REGISTER_RULE(ruleUserActionRollDice);
     REGISTER_RULE(ruleDrawCardsFromBankStack);
     REGISTER_RULE(ruleInitDockWidgets);
     REGISTER_RULE(ruleInitPlayerPanel);
@@ -520,6 +521,7 @@ IMPLEMENT_RULE(ruleUpdateGameLobby)
 
 IMPLEMENT_RULE(ruleStartGame)
 {
+    diceRolled = false;
     game->getLobby()->hide();
     EXECUTE_SUBRULE(ruleInitGame);
     game->setState(Game::PlayingState);
@@ -610,6 +612,11 @@ IMPLEMENT_RULE(ruleEndTurn)
     LOG_PLAYER_MSG(QString("%1 finished turn.").arg(player->getName()));
 
     return EXECUTE_SUBRULE(ruleBeginTurn);
+}
+
+IMPLEMENT_RULE(ruleUserActionRollDice)
+{
+    diceRolled = true;
 }
 
 IMPLEMENT_RULE(ruleDrawInitialResourceCards)
@@ -880,8 +887,6 @@ IMPLEMENT_RULE(ruleInitControlPanel)
 
 IMPLEMENT_RULE(ruleUpdateControlPanel)
 {
-    if(!player->getIsLocal()) return true;
-
     controlPanel->setActionState("BuildRoad", false);
     controlPanel->setActionState("BuildSettlement", false);
     controlPanel->setActionState("BuildCity", false);
@@ -890,6 +895,17 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
     controlPanel->setActionState("Trade", false);
     controlPanel->setActionState("RollDice", false);
     controlPanel->setActionState("EndTurn", false);
+
+    if(player->getIsLocal())
+    {
+        controlPanel->setActionState("BuildRoad",
+            diceRolled && EXECUTE_SUBRULE(ruleCanBuildRoad));
+        controlPanel->setActionState("BuildSettlement",
+            diceRolled && EXECUTE_SUBRULE(ruleCanBuildSettlement));
+        controlPanel->setActionState("BuildCity",
+            diceRolled && EXECUTE_SUBRULE(ruleCanBuildCity));
+        controlPanel->setActionState("RollDice", !diceRolled);
+    }
 
     return true;
 }

@@ -1,4 +1,5 @@
 
+#include "Game.h"
 #include "ControlPanel.h"
 
 ControlPanel::ControlPanel(const QString &title, QWidget *parent)
@@ -30,6 +31,8 @@ void ControlPanel::registerAction(const QString name, QAction *action)
     button->setDefaultAction(action);
     l->insertWidget(l->count() - 1, button);
 
+    connect(action, SIGNAL(triggered()), this, SLOT(actionTriggered()));
+
     buttons.insert(name, button);
 }
 
@@ -39,6 +42,7 @@ void ControlPanel::setActionState(const QString name, bool state)
 
     QToolButton *button = buttons.value(name);
     button->setEnabled(state);
+    button->setVisible(state);
 }
 
 void ControlPanel::clear()
@@ -48,6 +52,20 @@ void ControlPanel::clear()
         QToolButton *button = buttons.take(buttons.keys().at(0));
 
         widget()->layout()->removeWidget(button);
+        button->defaultAction()->disconnect(this);
         delete button;
     }
 }
+
+void ControlPanel::actionTriggered()
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if(!action) return;
+
+    QString rule = action->data().value<QString>();
+    if(rule.isEmpty()) return;
+
+    qDebug() << "Control panel action triggered. Rule:" << rule;
+    GAME->getRules()->executeRule(rule);
+}
+

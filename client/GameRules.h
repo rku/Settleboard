@@ -155,6 +155,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleDrawInitialResourceCards);
         DECLARE_RULE(ruleBeginTurn);
         DECLARE_RULE(ruleEndTurn);
+        DECLARE_RULE(ruleUserActionRollDice);
         DECLARE_RULE(ruleDrawCardsFromBankStack);
         DECLARE_RULE(ruleInitDockWidgets);
         DECLARE_RULE(ruleInitPlayerPanel);
@@ -182,6 +183,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleSelectRoadwayAtCrossroad);
         DECLARE_RULE(ruleCanSelectRoadway);
 
+        bool diceRolled;
         PlayerPanel *playerPanel;
         ControlPanel *controlPanel;
         GameInfoPanel *gameInfoPanel;
