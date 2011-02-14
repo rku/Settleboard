@@ -34,8 +34,9 @@ NumberChip::~NumberChip()
 
 void NumberChip::create()
 {
+    setIsLightingEnabled(false);
     load(FileManager::getPathOfGLObject("NumberChip"), Qt::gray);
-    setTexture("surface", "nc1.jpg");
+    setTexture("number", "nc4.jpg");
     setPosY(0.1);
     setScale(0.25);
 }

@@ -161,7 +161,8 @@ OBJ *OBJGLLoader::load(QString filename)
         else if(parts.at(0) == "usemtl" && parts.size() == 2)
         {
             QStringList matNameParts = parts.at(1).split("_");
-            if(matNameParts.isEmpty() || matNameParts.last().isEmpty())
+            if(matNameParts.isEmpty() || matNameParts.last().isEmpty() ||
+               matNameParts.last() == "(null)")
             { materialName = QString(); }
             else
             { materialName = matNameParts.last(); }

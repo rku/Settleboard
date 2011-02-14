@@ -56,7 +56,7 @@ GLGameModel::~GLGameModel()
 
 void GLGameModel::create()
 {
-    GLuint currentTex = 0;
+    GLuint currentTex = 65535;
     TextureManager *tm = GAME->getTextureManager();
 
     glNewList(displayListID, GL_COMPILE);
@@ -84,7 +84,7 @@ void GLGameModel::create()
         }
         else
         {
-            if(currentTex == 0)
+            if(currentTex != 0)
             {
                 glEnable(GL_COLOR_MATERIAL);
                 currentTex = 0;
