@@ -134,13 +134,12 @@ void MainWindow::createStatusBar()
 
 void MainWindow::showConnector()
 {
-    //gameConnector->show();
     if(GAME->getState() != Game::NoGameState)
     {
         GAME->reset();
     }
 
-    GAME->getNetworkCore()->connectToServer("localhost", 1234);
+    gameConnector->show();
 }
 
 void MainWindow::startServer()

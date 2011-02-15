@@ -7,13 +7,13 @@
 
 NetworkCore::NetworkCore(QObject *parent) : QObject(parent)
 {
-    socket = NULL;
+    socket = new QTcpSocket();
     server = new QTcpServer();
 }
 
 NetworkCore::~NetworkCore()
 {
-    if(socket) delete socket;
+    delete socket;
     delete server;
 }
 
@@ -30,9 +30,8 @@ bool NetworkCore::startServer(uint port)
 bool NetworkCore::connectToServer(QString host, uint port)
 {
     qDebug() << "Connecting to" << host << "on port" << port;
-    Q_ASSERT(socket == NULL);
+    socket->disconnectFromHost();
     disconnectAll();
-    socket = new QTcpSocket();
     setupSocket(socket);
     socket->connectToHost(host, port);
     return true;
@@ -58,8 +57,7 @@ void NetworkCore::disconnectSocket(QTcpSocket *s)
     s->disconnectFromHost();
     connections.removeAll(s);
     if(players.contains(s)) players.remove(s);
-    if(s == socket) socket = NULL;
-    delete s;
+    if(s != socket) delete s;
 }
 
 void NetworkCore::disconnectAll()
@@ -70,6 +68,8 @@ void NetworkCore::disconnectAll()
         server->disconnect(this);
         server->close();
     }
+
+    disconnectSocket(socket);
 
     while(!connections.isEmpty())
     {
@@ -103,25 +103,26 @@ void NetworkCore::sendPacket(QTcpSocket *s, const NetworkPacket &packet)
 
 void NetworkCore::acceptNewConnection()
 {
-    QTcpSocket *socket = server->nextPendingConnection();
-    if(!socket) return;
+    QTcpSocket *sock = server->nextPendingConnection();
+    if(!sock) return;
 
     if(GAME->getState() != Game::PreparingState)
     {
-        socket->disconnectFromHost();
+        sock->disconnectFromHost();
         qDebug() << "Game not preparing. New connection from"
-            << socket->peerAddress() << "denied.";
+            << sock->peerAddress() << "denied.";
         return;
     }
 
-    qDebug() << "New connection from" << socket->peerAddress();
-    connections.append(socket);
+    qDebug() << "New connection from" << sock->peerAddress();
+    connections.append(sock);
 
-    setupSocket(socket);
+    setupSocket(sock);
 }
 
 void NetworkCore::setupSocket(QTcpSocket *s)
 {
+    s->disconnect(this);
     connect(s, SIGNAL(disconnected()), this, SLOT(connectionClosed()));
     connect(s, SIGNAL(readyRead()), this, SLOT(dataAvailable()));
     connect(s, SIGNAL(connected()), this, SLOT(connected()));
@@ -140,9 +141,8 @@ void NetworkCore::connectionClosed()
             players.remove(s);
         }
 
-        if(socket == s) socket = NULL;
         s->close();
-        s->deleteLater();
+        if(s != socket) s->deleteLater();
 
         if(!getIsServer())
         {

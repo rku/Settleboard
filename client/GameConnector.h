@@ -31,8 +31,17 @@ class GameConnector : public QDialog
 
     public:
         GameConnector(QWidget *parent = 0);
+        void show();
+
+    protected slots:
+        void textChanged(const QString&);
+        void connectToHost();
+        void updateState();
+        void cancel();
 
     private:
+        unsigned int attempts;
+        QTimer connectTimer;
         Ui::ConnectorForm ui;
 };
 

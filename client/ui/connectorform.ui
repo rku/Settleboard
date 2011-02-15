@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>304</width>
-    <height>155</height>
+    <height>174</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,24 +41,32 @@
          <item>
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="1">
-            <widget class="QLineEdit" name="lineEdit"/>
+            <widget class="QLineEdit" name="editRemoteHost">
+             <property name="maxLength">
+              <number>64</number>
+             </property>
+            </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLabel" name="label">
+            <widget class="QLabel" name="labelRemoteHost">
              <property name="text">
               <string>Remote Host:</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="labelRemotePort">
              <property name="text">
               <string>Remote Port:</string>
              </property>
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QLineEdit" name="lineEdit_2"/>
+            <widget class="QLineEdit" name="editRemotePort">
+             <property name="maxLength">
+              <number>5</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -84,13 +92,27 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="buttonCancel">
+       <property name="text">
+        <string>Ca&amp;ncel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonConnect">
        <property name="text">
         <string>&amp;Connect</string>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelStatus">
+     <property name="text">
+      <string>Status...</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

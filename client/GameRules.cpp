@@ -77,9 +77,11 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleUpdatePlayerPanel);
     REGISTER_RULE(ruleInitControlPanel);
     REGISTER_RULE(ruleUpdateControlPanel);
+    REGISTER_RULE(ruleUpdateGameInfoPanel);
     REGISTER_RULE(ruleGenerateBoard);
     REGISTER_RULE(ruleUpdateInterface);
     REGISTER_RULE(ruleBoardObjectSelected);
+    REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
     REGISTER_RULE(ruleSelectSettlement);
@@ -275,7 +277,9 @@ void GameRules::pushRuleChain()
     {
         qDebug() << "Pushing current rule chain on stack.";
         ruleChainStack.push(ruleChain);
+        ruleDataStack.push(ruleData);
         ruleChain.clear();
+        ruleData.clear();
     }
 }
 
@@ -285,6 +289,7 @@ void GameRules::popRuleChain()
     {
         qDebug() << "Popping next rule chain from stack.";
         ruleChain = ruleChainStack.pop();
+        ruleData = ruleDataStack.pop();
     }
 }
 
@@ -792,8 +797,8 @@ IMPLEMENT_RULE(ruleDrawCardsFromBankStack)
     bool r = stack->drawFirstCards(player->getCardStack(), amount);
     EXECUTE_SUBRULE(ruleUpdateInterface);
 
-    LOG_PLAYER_MSG(QString("%1 draws a %2 card from the bank.")
-        .arg(player->getName()).arg(stackName));
+    LOG_PLAYER_MSG(QString("%1 draws %2 %3 card from the bank.")
+        .arg(player->getName()).arg(amount).arg(stackName));
 
     return r;
 }
@@ -1037,10 +1042,17 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
     return true;
 }
 
+IMPLEMENT_RULE(ruleUpdateGameInfoPanel)
+{
+    if(currentPlayer) gameInfoPanel->setCurrentPlayer(currentPlayer);
+    return true;
+}
+
 IMPLEMENT_RULE(ruleUpdateInterface)
 {
     EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
     EXECUTE_SUBRULE(ruleUpdateControlPanel);
+    EXECUTE_SUBRULE(ruleUpdateGameInfoPanel);
 
     game->getBoard()->update();
 

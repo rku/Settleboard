@@ -26,6 +26,9 @@ class NetworkCore : public QObject
         void sendPacket(const NetworkPacket&);
         void sendPacket(QTcpSocket*, const NetworkPacket&);
 
+        bool getIsClient() { return (!getIsServer()); }
+        QTcpSocket* getClientSocket() { return socket; }
+
     protected slots:
         void acceptNewConnection();
         void connectionClosed();

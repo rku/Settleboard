@@ -15,7 +15,7 @@ QDockWidget QLabel {
 QDockWidget::title {
 }
 
-PlayerPanel QGroupBox {
+QGroupBox {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                       stop: 0 #303030, stop: 1 #3a3a3a);
     border: 2px solid gray;
@@ -24,7 +24,7 @@ PlayerPanel QGroupBox {
     color: white
  }
 
-PlayerPanel QGroupBox::title {
+QGroupBox::title {
     subcontrol-origin: margin;
     subcontrol-position: top center; /* position at the top center */
     padding: 0 3px;
@@ -37,7 +37,47 @@ PlayerPanel QGroupBox QLabel {
 
 QStatusBar {
     background: black;
-    color: yellow;
+    color: orange;
+}
+
+QDialog {
+    background: black;
+    color: gray;
+}
+
+QCheckBox {
+    background: black;
+    color: white;
+}
+
+QCheckBox::hover {
+    background: black;
+    color: orange;
+}
+
+QPushButton {
+    border-style: outset;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 3px;
+    background: #3f3f3f;
+}
+
+QPushButton::enabled {
+    color: white;
+}
+
+QPushButton::disabled {
+    color: gray;
+}
+
+QPushButton::hover {
+    background: #202020;
+    color: orange;
+}
+
+QDialog QLabel {
+    color: orange;
 }
 
 QTextEdit, QLineEdit {
@@ -48,5 +88,10 @@ QTextEdit, QLineEdit {
     border-color: #3f3f3f;
     border-width: 2px;
     border-radius: 5px;
+}
+
+QTextEdit::disabled, QLineEdit::disabled {
+    background: #3f3f3f;
+    color: gray;
 }
 
