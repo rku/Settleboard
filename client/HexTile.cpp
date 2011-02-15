@@ -159,3 +159,17 @@ QList<QVector3D> HexTile::getCornerVertices()
     return vertices;
 }
 
+const QString HexTile::getResourceName(HexTileType t)
+{
+    switch(t)
+    {
+        case HexTileTypeOre:    return "Ore";
+        case HexTileTypeGold:   return "Gold";
+        case HexTileTypeWheat:  return "Wheat";
+        case HexTileTypeSheep:  return "Sheep";
+        case HexTileTypeWood:   return "Lumber";
+        case HexTileTypeClay:   return "Clay";
+        default: return QString();
+    }
+}
+

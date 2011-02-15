@@ -126,6 +126,8 @@ class GameRules : public QObject
 
     protected:
         void registerRule(QString name, GameRule);
+        void pushRuleChain();
+        void popRuleChain();
         bool executeRuleFromNetwork(NetworkPacket&);
         bool executeRule(QString name, Player*);
         bool executeSubRule(QString name, Player*);
@@ -154,6 +156,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleInitialPlacement2);
         DECLARE_RULE(ruleDrawInitialResourceCards);
         DECLARE_RULE(ruleBeginTurn);
+        DECLARE_RULE(ruleUserActionEndTurn);
         DECLARE_RULE(ruleEndTurn);
         DECLARE_RULE(ruleUserActionRollDice);
         DECLARE_RULE(ruleDiceRolled);
@@ -187,6 +190,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleCanSelectRoadway);
 
         bool diceRolled;
+        Player *currentPlayer;
         PlayerPanel *playerPanel;
         ControlPanel *controlPanel;
         GameInfoPanel *gameInfoPanel;

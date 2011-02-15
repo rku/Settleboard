@@ -67,6 +67,9 @@ class HexTile : public GLGameModelProxy
         void addRoadway(Roadway*);
         const QList<Roadway*>& getRoadways() { return roadways; }
 
+        const QString getResourceName() { return getResourceName(type); }
+        static const QString getResourceName(HexTileType);
+
     private:
         void setColumn(unsigned int i) { position.setX(i); }
         void setRow(unsigned int i) { position.setY(i); }

@@ -45,6 +45,11 @@ Board::~Board()
 void Board::reset()
 {
     freeObjects();
+
+    isLoaded = false;
+    isSelectionModeActive = false;
+    selectedObject = NULL;
+
     update();
 }
 
@@ -54,7 +59,7 @@ void Board::freeObjects()
     while(!   roadways.isEmpty()) delete roadways.takeFirst();
 
     if(map) delete map;
-    isLoaded = false;
+    map = NULL;
 }
 
 void Board::render()

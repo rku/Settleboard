@@ -39,7 +39,6 @@
 
 GameRules::GameRules(QObject *parent) : QObject(parent)
 {
-    isRuleChainWaiting = false;
     playerPanel = NULL;
     gameInfoPanel = NULL;
     messagePanel = NULL;
@@ -67,6 +66,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleDrawInitialResourceCards);
     REGISTER_RULE(ruleBeginTurn);
     REGISTER_RULE(ruleEndTurn);
+    REGISTER_RULE(ruleUserActionEndTurn);
     REGISTER_RULE(ruleUserActionRollDice);
     REGISTER_RULE(ruleDiceRolled);
     REGISTER_RULE(ruleDrawRolledResources);
@@ -105,6 +105,9 @@ GameRules::~GameRules()
 
 void GameRules::reset()
 {
+    isRuleChainWaiting = false;
+    currentPlayer = NULL;
+
     ruleChain.clear();
     ruleData.clear();
 
@@ -266,6 +269,25 @@ void GameRules::suspendRuleChain()
     }
 }
 
+void GameRules::pushRuleChain()
+{
+    if(ruleChain.size() > 0)
+    {
+        qDebug() << "Pushing current rule chain on stack.";
+        ruleChainStack.push(ruleChain);
+        ruleChain.clear();
+    }
+}
+
+void GameRules::popRuleChain()
+{
+    if(ruleChainStack.size() > 0)
+    {
+        qDebug() << "Popping next rule chain from stack.";
+        ruleChain = ruleChainStack.pop();
+    }
+}
+
 void GameRules::startRuleChain()
 {
     if(!GAME->getNetworkCore()->getIsServer()) return;
@@ -290,7 +312,10 @@ void GameRules::continueRuleChain()
 
         // cancel rule, if a rule fails
         if(!executeRule(rce.name, rce.player)) cancelRuleChain();
+
         if(isRuleChainWaiting) break; // detect nested suspensions
+
+        if(ruleChain.size() == 0) popRuleChain();
     }
 
     if(ruleChain.size() == 0) ruleChainFinished();
@@ -527,8 +552,8 @@ IMPLEMENT_RULE(ruleStartGame)
     srandom(time(NULL));
     diceRolled = false;
     game->getLobby()->hide();
-    EXECUTE_SUBRULE(ruleInitGame);
     game->setState(Game::PlayingState);
+    EXECUTE_SUBRULE(ruleInitGame);
     return true;
 }
 
@@ -536,6 +561,7 @@ IMPLEMENT_RULE(ruleInitGame)
 {
     SERVER_ONLY_RULE
 
+    pushRuleChain();
     RULECHAIN_ADD(ruleInitGameCards);
     RULECHAIN_ADD(ruleInitPlayers);
     RULECHAIN_ADD(ruleInitDockWidgets);
@@ -543,6 +569,7 @@ IMPLEMENT_RULE(ruleInitGame)
     RULECHAIN_ADD(ruleInitControlPanel);
     RULECHAIN_ADD(ruleGenerateBoard);
     RULECHAIN_ADD(ruleInitialPlacement);
+    RULECHAIN_ADD(ruleBeginTurn)
     startRuleChain();
 
     return true;
@@ -552,6 +579,7 @@ IMPLEMENT_RULE(ruleInitialPlacement1)
 {
     SERVER_ONLY_RULE
 
+    pushRuleChain();
     RULECHAIN_ADD(ruleSelectCrossroad);
     RULECHAIN_ADD(ruleBuildSettlement);
     RULECHAIN_ADD(ruleSelectRoadwayAtCrossroad);
@@ -565,12 +593,12 @@ IMPLEMENT_RULE(ruleInitialPlacement2)
 {
     SERVER_ONLY_RULE
 
+    pushRuleChain();
     RULECHAIN_ADD(ruleSelectCrossroad);
     RULECHAIN_ADD(ruleDrawInitialResourceCards);
     RULECHAIN_ADD(ruleBuildSettlement);
     RULECHAIN_ADD(ruleSelectRoadwayAtCrossroad);
     RULECHAIN_ADD(ruleBuildRoad);
-
     startRuleChain();
 
     return true;
@@ -582,6 +610,8 @@ IMPLEMENT_RULE(ruleInitialPlacement)
 
     QList<Player*> players = game->getPlayers();
     QListIterator<Player*> i(players);
+
+    pushRuleChain();
 
     while(i.hasNext())
         RULECHAIN_ADD_WITH_PLAYER(ruleInitialPlacement1, i.next());
@@ -597,25 +627,36 @@ IMPLEMENT_RULE(ruleInitialPlacement)
 
 IMPLEMENT_RULE(ruleBeginTurn)
 {
+    diceRolled = false;
+
+    currentPlayer = player;
+    LOG_PLAYER_MSG(QString("%1 begins turn.").arg(player->getName()));
+
+    EXECUTE_SUBRULE(ruleUpdateInterface);
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleUserActionEndTurn)
+{
+    SERVER_ONLY_RULE
+
+    executeRule("ruleEndTurn", player);
     return true;
 }
 
 IMPLEMENT_RULE(ruleEndTurn)
 {
     QList<Player*> players = game->getPlayers();
-    QList<Player*>::iterator i;
     Q_ASSERT(players.contains(player));
-
-    i += players.indexOf(player) + 1;
-
-    if(i == players.end())
-    { player = players.at(0); }
-    else
-    { player = *i; }
 
     LOG_PLAYER_MSG(QString("%1 finished turn.").arg(player->getName()));
 
-    return EXECUTE_SUBRULE(ruleBeginTurn);
+    // hand over to next player
+    unsigned int index = players.indexOf(player) + 1;
+    if(players.size() <= (int)index) index = 0;
+
+    return executeSubRule("ruleBeginTurn", players.at(index));
 }
 
 IMPLEMENT_RULE(ruleUserActionRollDice)
@@ -628,6 +669,7 @@ IMPLEMENT_RULE(ruleUserActionRollDice)
     RULEDATA_PUSH("Dice1Value", dice1);
     RULEDATA_PUSH("Dice2Value", dice2);
 
+    pushRuleChain();
     RULECHAIN_ADD(ruleDiceRolled);
     RULECHAIN_ADD(ruleDrawRolledResources);
     RULECHAIN_ADD(ruleHighlightRolledTiles);
@@ -671,15 +713,8 @@ IMPLEMENT_RULE(ruleDrawRolledResources)
         if(!t->getHasNumberChip()) continue;
         if(t->getChipNumber() != (dice1+dice2)) continue;
 
-        switch(t->getType())
-        {
-            case HexTile::HexTileTypeOre:   stack = "Ore";    break;
-            case HexTile::HexTileTypeClay:  stack = "Clay";   break;
-            case HexTile::HexTileTypeWheat: stack = "Wheat";  break;
-            case HexTile::HexTileTypeSheep: stack = "Sheep";  break;
-            case HexTile::HexTileTypeWood:  stack = "Lumber"; break;
-            default: continue;
-        }
+        stack = t->getResourceName();
+        if(stack.isEmpty()) continue;
 
         QList<Crossroad*> crossroads = t->getCrossroads();
         QList<Crossroad*>::iterator cI;
@@ -728,17 +763,8 @@ IMPLEMENT_RULE(ruleDrawInitialResourceCards)
 
     for(int i = 0; i < r->getTiles().size(); i++)
     {
-        QString stack;
-
-        switch(r->getTiles().at(i)->getType())
-        {
-            case HexTile::HexTileTypeOre:   stack = "Ore";    break;
-            case HexTile::HexTileTypeClay:  stack = "Clay";   break;
-            case HexTile::HexTileTypeWheat: stack = "Wheat";  break;
-            case HexTile::HexTileTypeSheep: stack = "Sheep";  break;
-            case HexTile::HexTileTypeWood:  stack = "Lumber"; break;
-            default: continue;
-        }
+        QString stack = r->getTiles().at(i)->getResourceName();
+        if(stack.isEmpty()) continue;
 
         RULEDATA_PUSH("CardStackName", stack);
         EXECUTE_SUBRULE(ruleDrawCardsFromBankStack);
@@ -803,16 +829,16 @@ IMPLEMENT_RULE(ruleInitGameCards)
     bank->registerCardStack("Lumber");
     bank->registerCardStack("Clay");
 
-    bank->registerCard("Wheat",  GAMECARD_WHEAT,  20);
-    bank->registerCard("Sheep",  GAMECARD_SHEEP,  20);
-    bank->registerCard("Ore",    GAMECARD_ORE,    20);
-    bank->registerCard("Lumber", GAMECARD_LUMBER, 20);
-    bank->registerCard("Clay",   GAMECARD_CLAY,   20);
+    bank->registerCard("Wheat",  GAMECARD_WHEAT,  19);
+    bank->registerCard("Sheep",  GAMECARD_SHEEP,  19);
+    bank->registerCard("Ore",    GAMECARD_ORE,    19);
+    bank->registerCard("Lumber", GAMECARD_LUMBER, 19);
+    bank->registerCard("Clay",   GAMECARD_CLAY,   19);
 
     // development cards
     bank->registerCardStack("Development");
-    bank->registerCard("Development", GAMECARD_KNIGHT, 10);
-    bank->registerCard("Development", GAMECARD_BUILD_ROAD, 4);
+    bank->registerCard("Development", GAMECARD_KNIGHT, 14);
+    bank->registerCard("Development", GAMECARD_BUILD_ROAD, 2);
     bank->getCardStack("Development")->shuffle();
 
     return true;
@@ -996,7 +1022,7 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
     controlPanel->setActionState("RollDice", false);
     controlPanel->setActionState("EndTurn", false);
 
-    if(player->getIsLocal())
+    if(currentPlayer && currentPlayer->getIsLocal())
     {
         controlPanel->setActionState("BuildRoad",
             diceRolled && EXECUTE_SUBRULE(ruleCanBuildRoad));
@@ -1040,6 +1066,7 @@ IMPLEMENT_RULE(ruleUserActionBuildCity)
 {
     SERVER_ONLY_RULE
 
+    pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildCity);
     RULECHAIN_ADD(ruleSelectSettlement);
     RULECHAIN_ADD(ruleSettlementSelected);
@@ -1129,6 +1156,7 @@ IMPLEMENT_RULE(ruleUserActionBuildSettlement)
 {
     SERVER_ONLY_RULE
 
+    pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildSettlement);
     RULECHAIN_ADD(ruleSelectCrossroad);
     RULECHAIN_ADD(ruleBuildSettlement);
@@ -1230,6 +1258,7 @@ IMPLEMENT_RULE(ruleUserActionBuildRoad)
 {
     SERVER_ONLY_RULE
 
+    pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildRoad);
     RULECHAIN_ADD(ruleSelectRoadway);
     RULECHAIN_ADD(ruleBuildRoad);
