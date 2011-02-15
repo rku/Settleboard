@@ -66,10 +66,6 @@ class Board : public QObject
         const QList<Crossroad*> getCrossroads() { return crossroads; }
         const QList<Roadway*> getRoadways() { return roadways; }
 
-        Crossroad *getCrossroadAtVertex(const QVector3D&);
-        Roadway *getRoadwayWithVertices(const QVector3D&, const QVector3D&);
-        PlayerObject *getPlayerObjectAtVertex(const QString &type, const QVector3D&);
-
     public slots:
         void render();
         void handleMouseClick(QMouseEvent*);

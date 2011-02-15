@@ -37,7 +37,6 @@ class Roadway : public GLGameModelProxy
         void placePlayerObject(PlayerObject*);
 
         const QVector3D& getPos() { return centerVertex; }
-        unsigned int getId();
 
     private:
         void createSelectionRect();

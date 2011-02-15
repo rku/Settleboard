@@ -116,22 +116,14 @@ void Roadway::placePlayerObject(PlayerObject *p)
     }
 }
 
-unsigned int Roadway::getId()
-{
-    if(GAME->getBoard()->getRoadways().contains(this))
-    {
-        return GAME->getBoard()->getRoadways().indexOf(this);
-    }
-
-    Q_ASSERT(false); // this should never happend
-    return 0;
-}
-
 // QDataStream operators
 
 QDataStream &operator<<(QDataStream &stream, const RoadwayPtr &obj)
 {
-    stream << (quint16)obj.object->getId();
+    int index = GAME->getBoard()->getRoadways().indexOf(obj.object);
+    Q_ASSERT(index >= 0);
+    stream << (quint16)index;
+
     return stream;
 }
 
