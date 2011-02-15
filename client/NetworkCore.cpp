@@ -93,6 +93,7 @@ void NetworkCore::sendPacket(QTcpSocket *s, const NetworkPacket &packet)
     QByteArray block;
     QDataStream data(&block, QIODevice::WriteOnly);
     data.setVersion(QDataStream::Qt_4_7);
+    data.setFloatingPointPrecision(QDataStream::DoublePrecision);
 
     data << (quint32)0;
     data << packet;
@@ -181,6 +182,7 @@ void NetworkCore::dataAvailable()
     QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
     QDataStream data(s);
     data.setVersion(QDataStream::Qt_4_7);
+    data.setFloatingPointPrecision(QDataStream::DoublePrecision);
 
     while(s->bytesAvailable() > 0)
     {
