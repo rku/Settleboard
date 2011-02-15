@@ -36,12 +36,9 @@ class GameConnector : public QDialog
     protected slots:
         void textChanged(const QString&);
         void connectToHost();
-        void updateState();
         void cancel();
 
     private:
-        unsigned int attempts;
-        QTimer connectTimer;
         Ui::ConnectorForm ui;
 };
 

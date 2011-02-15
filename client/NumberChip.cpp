@@ -44,7 +44,6 @@ void NumberChip::create()
 
     // set a random rotation angle
     float angle = ( (qrand() * 359.0) / RAND_MAX ) + 1;
-    qDebug() << "Rotating numberchip with angle of" << angle;
     setAngleY(angle);
 }
 

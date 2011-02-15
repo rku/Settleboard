@@ -24,10 +24,6 @@
 
 GameConnector::GameConnector(QWidget *parent) : QDialog(parent)
 {
-    connectTimer.setInterval(5000);
-    connectTimer.setSingleShot(false);
-    connect(&connectTimer, SIGNAL(timeout()), this, SLOT(updateState()));
-
     ui.setupUi(this);
 
     ui.editRemotePort->setValidator(
@@ -35,7 +31,6 @@ GameConnector::GameConnector(QWidget *parent) : QDialog(parent)
     ui.editRemoteHost->setValidator(
         new QRegExpValidator(QRegExp("^[0-9a-zA-Z\\.-]+$"), this));
 
-    connect(this, SIGNAL(finished(int)), this, SLOT(cancel()));
     connect(ui.editRemoteHost, SIGNAL(textChanged(const QString&)),
         this, SLOT(textChanged(const QString&)));
     connect(ui.editRemotePort, SIGNAL(textChanged(const QString&)),
@@ -46,12 +41,9 @@ GameConnector::GameConnector(QWidget *parent) : QDialog(parent)
 
 void GameConnector::show()
 {
-    connectTimer.stop();
-    attempts = 0;
     ui.groupBox->setEnabled(true);
-    ui.buttonCancel->setEnabled(false);
+    ui.buttonCancel->setEnabled(true);
     textChanged("");
-    ui.labelStatus->setText("");
     QDialog::show();
 }
 
@@ -70,50 +62,14 @@ void GameConnector::connectToHost()
     ui.buttonConnect->setEnabled(false);
     ui.buttonCancel->setEnabled(true);
 
-    attempts++;
-    ui.labelStatus->setText(
-        QString("Connecting to %1:%2... (%3 of 5)")
-        .arg(ui.editRemoteHost->text()).arg(ui.editRemotePort->text())
-        .arg(attempts));
+    hide();
 
     unsigned int port = ui.editRemotePort->text().toUInt();
     GAME->getNetworkCore()->connectToServer(ui.editRemoteHost->text(), port);
-    if(!connectTimer.isActive()) connectTimer.start();
-}
-
-void GameConnector::updateState()
-{
-    QAbstractSocket::SocketState state;
-
-    state = GAME->getNetworkCore()->getClientSocket()->state();
-    if(state == QAbstractSocket::ConnectedState)
-    {
-        connectTimer.stop();
-        ui.labelStatus->setText("Connected!");
-        hide();
-        return;
-    }
-
-    if(attempts < 5)
-    {
-        connectToHost();
-        return;
-    }
-
-    attempts = 0;
-    connectTimer.stop();
-    GAME->getNetworkCore()->disconnectAll();
-    ui.labelStatus->setText("Error: Couldn't connect to server!");
-    ui.groupBox->setEnabled(true);
-    ui.buttonConnect->setEnabled(true);
-    ui.buttonCancel->setEnabled(false);
 }
 
 void GameConnector::cancel()
 {
-    qDebug() << "Connection attempt canceled.";
-    connectTimer.stop();
-    attempts = 5;
-    updateState();
+    hide();
 }
 

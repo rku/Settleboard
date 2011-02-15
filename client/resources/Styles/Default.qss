@@ -15,6 +15,17 @@ QDockWidget QLabel {
 QDockWidget::title {
 }
 
+QDockWidget QToolButton {
+    background: #3f3f3f;
+    border: 2px solid gray;
+    border-radius: 5px;
+    color: orange;
+}
+
+QDockWidget QToolButton::hover {
+    border: 2px solid orange;
+}
+
 QGroupBox {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                       stop: 0 #303030, stop: 1 #3a3a3a);
@@ -41,51 +52,47 @@ QStatusBar {
 }
 
 QDialog {
-    background: black;
-    color: gray;
+    background: #3f3f3f;
 }
 
 QCheckBox {
-    background: black;
+    background: #3f3f3f;
     color: white;
 }
 
 QCheckBox::hover {
-    background: black;
-    color: orange;
+    color: white;
 }
 
 QPushButton {
     border-style: outset;
-    border: 1px solid gray;
+    border: 2px solid black;
     border-radius: 5px;
-    padding: 3px;
-    background: #3f3f3f;
-}
-
-QPushButton::enabled {
-    color: white;
+    padding: 4px;
+    background: #9f9f9f;
+    color: black;
 }
 
 QPushButton::disabled {
+    background: #101010;
     color: gray;
+    border: 2px solid black;
 }
 
 QPushButton::hover {
-    background: #202020;
-    color: orange;
+    border: 2px solid orange;
 }
 
 QDialog QLabel {
-    color: orange;
+    color: white;
 }
 
 QTextEdit, QLineEdit {
     background: #050505;
     color: white;
-    font-size: 12px;
+    font-size: 13px;
     border-style: outset;
-    border-color: #3f3f3f;
+    border-color: #2f2f2f;
     border-width: 2px;
     border-radius: 5px;
 }
