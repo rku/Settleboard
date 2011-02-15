@@ -5,6 +5,10 @@
 #include <Qt>
 #include <QTcpSocket>
 #include <QTcpServer>
+#include <QDialog>
+#include <QTimer>
+
+#include "ui_infoboxform.h"
 
 class NetworkPacket;
 class Player;
@@ -22,14 +26,18 @@ class NetworkCore : public QObject
         bool getHasConnection() { return (connections.size()>0); }
         bool connectToServer(QString host, uint port);
         void disconnectSocket(QTcpSocket*);
-        void disconnectAll();
         void sendPacket(const NetworkPacket&);
         void sendPacket(QTcpSocket*, const NetworkPacket&);
 
         bool getIsClient() { return (!getIsServer()); }
         QTcpSocket* getClientSocket() { return socket; }
 
+    public slots:
+        void disconnectAll();
+
     protected slots:
+        void retryConnect();
+        void cancelConnect();
         void acceptNewConnection();
         void connectionClosed();
         void dataAvailable();
@@ -39,6 +47,12 @@ class NetworkCore : public QObject
         void setupSocket(QTcpSocket*);
         void packetReceived(QTcpSocket*, NetworkPacket&);
 
+        unsigned int port;
+        QString hostName;
+        unsigned int connectAttempts;
+        QTimer connectTimer;
+        Ui::InfoBoxForm infoBox;
+        QDialog *infoBoxDialog;
         QList<QTcpSocket*> connections;
         QMap<QTcpSocket*, quint32> pendingBlockSizes;
         QMap<QTcpSocket*, Player*> players;

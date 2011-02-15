@@ -5,14 +5,28 @@
 #include "Crossroad.h"
 #include "NetworkCore.h"
 
+#include "ui_infoboxform.h"
+
 NetworkCore::NetworkCore(QObject *parent) : QObject(parent)
 {
     socket = new QTcpSocket();
     server = new QTcpServer();
+
+    // create infobox
+    infoBoxDialog = new QDialog();
+    infoBox.setupUi(infoBoxDialog);
+    infoBoxDialog->setWindowTitle("Network Status");
+    connect(infoBox.buttonCancel, SIGNAL(clicked()),
+        this, SLOT(cancelConnect()));
+
+    connectTimer.setInterval(5000);
+    connectTimer.setSingleShot(false);
+    connect(&connectTimer, SIGNAL(timeout()), this, SLOT(retryConnect()));
 }
 
 NetworkCore::~NetworkCore()
 {
+    delete infoBoxDialog;
     delete socket;
     delete server;
 }
@@ -27,27 +41,74 @@ bool NetworkCore::startServer(uint port)
     return server->listen(QHostAddress::Any, port);
 }
 
-bool NetworkCore::connectToServer(QString host, uint port)
+bool NetworkCore::connectToServer(QString host, uint p)
 {
-    qDebug() << "Connecting to" << host << "on port" << port;
-    socket->disconnectFromHost();
+    Q_ASSERT(!connectTimer.isActive());
+
+    qDebug() << "Connecting to" << host << "on port" << p;
+
+    infoBoxDialog->show();
+    hostName = host;
+    port = p;
+    connectAttempts = 0;
+    retryConnect();
+
+    return true;
+}
+
+void NetworkCore::retryConnect()
+{
+    if(socket->state() == QAbstractSocket::ConnectedState)
+    {
+        connectTimer.stop();
+        infoBoxDialog->close();
+        return;
+    }
+
     disconnectAll();
     setupSocket(socket);
-    socket->connectToHost(host, port);
-    return true;
+    connectAttempts++;
+
+    if(connectAttempts > 5)
+    {
+        connectTimer.stop();
+        QMessageBox::critical(infoBoxDialog, "Error",
+            "Host could not be contacted!");
+        infoBoxDialog->close();
+        return;
+    }
+
+    infoBox.label->setText(QString("Connecting to %1:%2... (attempt %3/5)")
+        .arg(hostName).arg(port).arg(connectAttempts));
+
+    qDebug() << "Trying to connect to" << hostName << ":" <<
+        port << "for the" << connectAttempts << "time";
+
+    socket->connectToHost(hostName, port);
+
+    if(!connectTimer.isActive()) connectTimer.start();
+}
+
+void NetworkCore::cancelConnect()
+{
+    connectTimer.stop();
+    disconnectAll();
+    infoBoxDialog->close();
 }
 
 void NetworkCore::connected()
 {
+    Q_ASSERT(!getIsServer());
+
     QTcpSocket *s = qobject_cast<QTcpSocket*>(sender());
     qDebug() << "Connected to" << s->peerAddress();
     connections.append(s);
 
-    if(!getIsServer())
-    {
-        // join the game
-        GAME->getRules()->executeRule("ruleJoinGame");
-    }
+    connectTimer.stop();
+    infoBoxDialog->close();
+
+    // join the game
+    GAME->getRules()->executeRule("ruleJoinGame");
 }
 
 void NetworkCore::disconnectSocket(QTcpSocket *s)
@@ -154,6 +215,8 @@ void NetworkCore::connectionClosed()
             GAME->reset();
         }
     }
+
+    infoBoxDialog->close();
 }
 
 void NetworkCore::packetReceived(QTcpSocket *s, NetworkPacket &packet)
