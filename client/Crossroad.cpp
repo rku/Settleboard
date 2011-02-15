@@ -118,22 +118,33 @@ void Crossroad::placePlayerObject(PlayerObject *p)
     }
 }
 
+unsigned int Crossroad::getId()
+{
+    if(GAME->getBoard()->getCrossroads().contains(this))
+    {
+        return GAME->getBoard()->getCrossroads().indexOf(this);
+    }
+
+    Q_ASSERT(false); // this should never happen
+    return 0;
+}
+
 // QDataStream operators
 
 QDataStream &operator<<(QDataStream &stream, const CrossroadPtr &obj)
 {
-    stream << obj.object->getVertex();
+    stream << (quint16)obj.object->getId();
     return stream;
 }
 
 QDataStream &operator>>(QDataStream &stream, CrossroadPtr &obj)
 {
-    QVector3D v;
+    quint16 id;
 
-    stream >> v;
+    stream >> id;
     // find object with vertex v
-    obj.object = GAME->getBoard()->getCrossroadAtVertex(v);
-    Q_ASSERT(obj.object != NULL);
+    Q_ASSERT(id < GAME->getBoard()->getCrossroads().size());
+    obj.object = GAME->getBoard()->getCrossroads().at(id);
 
     return stream;
 }

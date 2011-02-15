@@ -116,25 +116,33 @@ void Roadway::placePlayerObject(PlayerObject *p)
     }
 }
 
+unsigned int Roadway::getId()
+{
+    if(GAME->getBoard()->getRoadways().contains(this))
+    {
+        return GAME->getBoard()->getRoadways().indexOf(this);
+    }
+
+    Q_ASSERT(false); // this should never happend
+    return 0;
+}
+
 // QDataStream operators
 
 QDataStream &operator<<(QDataStream &stream, const RoadwayPtr &obj)
 {
-    stream << obj.object->getVertexA();
-    stream << obj.object->getVertexB();
+    stream << (quint16)obj.object->getId();
     return stream;
 }
 
 QDataStream &operator>>(QDataStream &stream, RoadwayPtr &obj)
 {
-    QVector3D v1, v2;
+    quint16 id;
+    stream >> id;
 
-    stream >> v1;
-    stream >> v2;
-
-    // find object with vertices v1/v2 
-    obj.object = GAME->getBoard()->getRoadwayWithVertices(v1, v2);
-    Q_ASSERT(obj.object != NULL);
+    // find object
+    Q_ASSERT(id < GAME->getBoard()->getRoadways().size());
+    obj.object = GAME->getBoard()->getRoadways().at(id);
 
     return stream;
 }
