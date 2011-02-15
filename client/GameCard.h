@@ -40,7 +40,7 @@ typedef struct _GameCard {
 #define GAMECARD_KNIGHT GameCard( \
     "Development", "Knight", \
     "If you play this card, you can steal a card from another player.",\
-    "CardKnight.png", "rulePlayKngihtCard", false)
+    "CardKnight.png", "rulePlayKnightCard", false)
 
 #define GAMECARD_BUILD_ROAD GameCard(\
     "Development",\
@@ -48,6 +48,25 @@ typedef struct _GameCard {
     "Playing this card will allow you to place two roads for free.",\
     "CardBuildRoad.png", "rulePlayBuildRoadCard")
 
+#define GAMECARD_MONOPOLY GameCard(\
+    "Development",\
+    "Monopoly",\
+    "If you play this card, you can specify a resource and all players "\
+    "who have this resource have to hand it to you.",\
+    "CardMonopoly.png", "rulePlayMonopolyCard")
+
+#define GAMECARD_INVENTION GameCard(\
+    "Development",\
+    "Invention",\
+    "If you play this card, you will be able to select two resources of "\
+    "your choice from the bank.",\
+    "CardInvention.png", "rulePlayInventionCard")
+
+#define GAMECARD_WINNINGPOINT GameCard(\
+    "Development",\
+    "Winning Point",\
+    "If you play this card, you will instantly get one winning point!",\
+    "CardWinningPoint.png", "rulePlayWinningPointCard")
 
 #endif
 

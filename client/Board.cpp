@@ -235,7 +235,7 @@ Crossroad* Board::getCrossroadAtVertex(const QVector3D &v)
 
     for(i = crossroads.begin(); i != crossroads.end(); ++i)
     {
-        if((*i)->getVertex() == v) return *i;
+        if(qFuzzyCompare((*i)->getVertex(), v)) return *i;
     }
 
     return NULL;
@@ -247,7 +247,9 @@ Roadway* Board::getRoadwayWithVertices(const QVector3D &vA, const QVector3D &vB)
 
     for(i = roadways.begin(); i != roadways.end(); ++i)
     {
-        if((*i)->getVertexA() == vA && (*i)->getVertexB() == vB) return *i;
+        if(qFuzzyCompare((*i)->getVertexA(), vA) &&
+            qFuzzyCompare((*i)->getVertexB(), vB))
+            return *i;
     }
 
     return NULL;
