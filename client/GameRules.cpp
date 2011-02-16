@@ -883,10 +883,10 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
     mainWindow->addDockWidget(Qt::RightDockWidgetArea, messagePanel);
 
     controlPanel = new ControlPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::TopDockWidgetArea, controlPanel);
+    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, controlPanel);
 
     resourceInfoPanel = new ResourceInfoPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, resourceInfoPanel);
+    mainWindow->addDockWidget(Qt::TopDockWidgetArea, resourceInfoPanel);
 
     return true;
 }

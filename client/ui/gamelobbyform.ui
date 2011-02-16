@@ -266,13 +266,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBoxReady">
-       <property name="text">
-        <string>Ready</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="buttonCancel">
        <property name="text">
         <string>Cancel</string>
@@ -292,6 +285,13 @@
        </property>
        <property name="autoDefault">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxReady">
+       <property name="text">
+        <string>Ready</string>
        </property>
       </widget>
      </item>

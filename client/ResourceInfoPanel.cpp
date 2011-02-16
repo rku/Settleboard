@@ -17,7 +17,7 @@ ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
 
     setMinimumHeight(75);
     setMaximumHeight(75);
-    setAllowedAreas(Qt::BottomDockWidgetArea);
+    setAllowedAreas(Qt::TopDockWidgetArea);
     setFloating(false);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setObjectName("resourceInfoPanel");
@@ -36,12 +36,18 @@ void ResourceInfoPanel::registerResource(const QString name)
         QString("%1.png").arg(name));
     QLabel *iconLabel = new QLabel(this);
     iconLabel->setPixmap(QPixmap(iconFile));
+
     QLabel *amountLabel = new QLabel("x0", this);
+
     QHBoxLayout *l2 = new QHBoxLayout();
     l2->addWidget(iconLabel,0, Qt::AlignRight);
     l2->addWidget(amountLabel,0, Qt::AlignLeft);
+
     QWidget *infoWidget = new QWidget(this);
     infoWidget->setObjectName("resourceInfoWidget");
+    infoWidget->setToolTip(name);
+    infoWidget->setFixedWidth(70);
+    infoWidget->setFixedHeight(30);
     infoWidget->setLayout(l2);
 
     resources.insert(name, amountLabel);
@@ -58,8 +64,8 @@ void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
 
 void ResourceInfoPanel::clear()
 {
-    QHBoxLayout *l = qobject_cast<QHBoxLayout*>(layout());
-    while(l->count() > 1) delete l->takeAt(0); // keep last stretch
+    QHBoxLayout *l = qobject_cast<QHBoxLayout*>(widget()->layout());
+    while(l->count() > 2) delete l->takeAt(1)->widget();
     l->addStretch();
 }
 
