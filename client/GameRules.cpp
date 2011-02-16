@@ -18,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
+
 #include "Crossroad.h"
 #include "HexTile.h"
 #include "Player.h"
@@ -562,7 +564,7 @@ IMPLEMENT_RULE(ruleUpdateGameLobby)
 
 IMPLEMENT_RULE(ruleStartGame)
 {
-    srandom(time(NULL));
+    qsrand(time(NULL));
     diceRolled = false;
     game->getLobby()->hide();
     game->setState(Game::PlayingState);
@@ -680,8 +682,8 @@ IMPLEMENT_RULE(ruleUserActionRollDice)
 {
     SERVER_ONLY_RULE
 
-    quint8 dice1 = quint8( random() / (RAND_MAX + 1.0) * 6 + 1 );
-    quint8 dice2 = quint8( random() / (RAND_MAX + 1.0) * 6 + 1 );
+    quint8 dice1 = quint8( qrand() / (RAND_MAX + 1.0) * 6 + 1 );
+    quint8 dice2 = quint8( qrand() / (RAND_MAX + 1.0) * 6 + 1 );
 
     RULEDATA_PUSH("Dice1Value", dice1);
     RULEDATA_PUSH("Dice2Value", dice2);
