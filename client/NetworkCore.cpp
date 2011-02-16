@@ -14,6 +14,7 @@ NetworkCore::NetworkCore(QObject *parent) : QObject(parent)
 
     // create infobox
     infoBoxDialog = new QDialog();
+    infoBoxDialog->hide();
     infoBox.setupUi(infoBoxDialog);
     infoBoxDialog->setWindowTitle("Network Status");
     connect(infoBox.buttonCancel, SIGNAL(clicked()),
@@ -69,7 +70,7 @@ void NetworkCore::retryConnect()
         return;
     }
 
-    socket->disconnectFromHost();
+    socket->abort();
     connectAttempts++;
 
     if(connectAttempts > 5)
@@ -101,7 +102,7 @@ void NetworkCore::cancelConnect()
         qDebug() << "Connect attempt canceled.";
     }
 
-    infoBoxDialog->close();
+    infoBoxDialog->hide();
 }
 
 void NetworkCore::connected()
@@ -123,10 +124,10 @@ void NetworkCore::disconnectSocket(QTcpSocket *s)
 {
     qDebug() << "Disconnecting from" << s->peerAddress();
     s->disconnect(this);
-    s->disconnectFromHost();
+    s->close();
     connections.removeAll(s);
     if(players.contains(s)) players.remove(s);
-    if(s != socket) delete s;
+    if(s != socket) s->deleteLater();
 }
 
 void NetworkCore::disconnectAll()

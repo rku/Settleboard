@@ -1,5 +1,6 @@
 
-CONFIG += debug
+CONFIG += qt debug
+#DEFINES += QT_NO_DEBUG_OUTPUT
 TEMPLATE = app
 DEPENDPATH += . client
 INCLUDEPATH += . client
