@@ -33,6 +33,7 @@ GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
     setMinimumHeight(120);
     setMaximumHeight(120);
     setFeatures(QDockWidget::DockWidgetMovable);
+    setTitleBarWidget(new QWidget(this));
 }
 
 GameInfoPanel::~GameInfoPanel()

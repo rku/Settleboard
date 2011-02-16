@@ -44,14 +44,26 @@ QDockWidget QLabel#turnLabel {
 }
 
 QDockWidget QToolButton {
+    border-style: outset;
     background: #3f3f3f;
     border: 2px solid gray;
     border-radius: 5px;
-    color: orange;
+    color: white;
 }
 
-QDockWidget QToolButton::hover {
+QDockWidget QToolButton:pressed {
+    border-style: inset;
+}
+
+QDockWidget QToolButton:disabled {
+    background: #090909;
+    border: 2px solid #1f1f1f;
+    color: gray;
+}
+
+QDockWidget QToolButton:hover {
     border: 2px solid orange;
+    background: #6f6f6f;
 }
 
 QGroupBox {

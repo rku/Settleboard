@@ -922,6 +922,9 @@ IMPLEMENT_RULE(ruleCanceled)
 
     LOG_SYSTEM_MSG(QString("%1 canceled the current action.")
         .arg(player->getName()));
+
+    EXECUTE_SUBRULE(ruleUpdateInterface);
+
     return true;
 }
 

@@ -24,8 +24,9 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
     setFixedHeight(60);
     setMaximumHeight(60);
     setMinimumHeight(60);
-    setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
+    setFeatures(QDockWidget::NoDockWidgetFeatures);
     setAllowedAreas(Qt::BottomDockWidgetArea);
+    setTitleBarWidget(new QWidget(this));
 }
 
 ControlPanel::~ControlPanel()
@@ -58,7 +59,7 @@ void ControlPanel::endCancelMode()
     QList<QToolButton*>::iterator i;
 
     for(i = b.begin(); i != b.end(); ++i)
-        (*i)->setVisible((*i)->isEnabled());
+        (*i)->setVisible(true);
 }
 
 void ControlPanel::cancel()
@@ -72,6 +73,8 @@ void ControlPanel::registerAction(const QString name, QAction *action)
     Q_ASSERT(!buttons.contains(name));
 
     QToolButton *button = new QToolButton(this);
+    button->setFixedWidth(52);
+    button->setFixedHeight(39);
     QHBoxLayout *l = (QHBoxLayout*)widget()->layout();
 
     Q_ASSERT(l->count() >= 2);
@@ -91,7 +94,6 @@ void ControlPanel::setActionState(const QString name, bool state)
 
     QToolButton *button = buttons.value(name);
     button->setEnabled(state);
-    button->setVisible(state);
 }
 
 void ControlPanel::clear()
@@ -110,6 +112,11 @@ void ControlPanel::actionTriggered()
 {
     QAction *action = qobject_cast<QAction*>(sender());
     if(!action) return;
+
+    // disable all buttons; the have to reenabled by rules now
+    QList<QToolButton*> b = buttons.values();
+    QList<QToolButton*>::iterator i = b.begin();
+    while(i != b.end()) { (*i)->setEnabled(false); i++; }
 
     QString rule = action->data().value<QString>();
     if(rule.isEmpty()) return;

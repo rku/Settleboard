@@ -17,6 +17,7 @@ PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
     setFixedWidth(200);
     setFloating(false);
     setFeatures(QDockWidget::DockWidgetMovable);
+    setTitleBarWidget(new QWidget(this));
 }
 
 PlayerPanel::~PlayerPanel()

@@ -27,6 +27,7 @@ MessagePanel::MessagePanel(const QString &title, QWidget *parent)
     setMinimumWidth(250);
     setMaximumWidth(500);
     setFeatures(QDockWidget::DockWidgetMovable);
+    setTitleBarWidget(new QWidget(this));
 }
 
 MessagePanel::~MessagePanel()
