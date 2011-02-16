@@ -64,6 +64,9 @@ class Game : public QObject
     public slots:
         void reset();
 
+    protected slots:
+        void parseCommandLine();
+
     protected:
         void init();
         void initLocalPlayer();

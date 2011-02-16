@@ -372,7 +372,7 @@ void GameRules::pushRuleData(const QString &identifier, QVariant data)
 
 IMPLEMENT_RULE(ruleStartServer)
 {
-    game->getNetworkCore()->startServer(1234);
+    game->getNetworkCore()->startServer();
     game->setState(Game::PreparingState);
     game->getLobby()->show();
     return executeRule("rulePlayerJoinedGame");

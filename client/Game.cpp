@@ -34,6 +34,9 @@ Game::Game(QObject *parent) : QObject(parent)
 {
     localPlayer = NULL;
     init();
+
+    // parse the command line asynchronously
+    QTimer::singleShot(0, this, SLOT(parseCommandLine()));
 }
 
 Game::~Game()
@@ -65,6 +68,40 @@ void Game::init()
     gameLobby = new GameLobby(mainWindow);
 
     initLocalPlayer();
+}
+
+void Game::parseCommandLine()
+{
+    QStringList args = QCoreApplication::arguments();
+    QStringList::iterator i;
+
+    for(i = args.begin(); i != args.end(); ++i)
+    {
+        QString s = *i;
+
+        if(s.isEmpty()) continue;
+        if(s.at(0) != '-') continue;
+
+        // -server
+        if(s.endsWith("server", Qt::CaseInsensitive))
+        {
+            rules->executeRule("ruleStartServer");
+            return;
+        }
+
+        // -connect <host> [<port>]
+        if(s.endsWith("connect", Qt::CaseInsensitive))
+        {
+            unsigned int port = DEFAULT_NETWORK_PORT;
+            if((++i) == args.end()) qFatal("-connect requires argument");
+            QString hostname = *i;
+            if((++i) != args.end()) port = (*i).toUInt();
+            if(port < 1 || port > 65535) qFatal("invalid network port");
+
+            networkCore->connectToServer(hostname, port);
+            return;
+        }
+    }
 }
 
 void Game::free()

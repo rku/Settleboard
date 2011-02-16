@@ -10,6 +10,8 @@
 
 #include "ui_infoboxform.h"
 
+#define DEFAULT_NETWORK_PORT 1337
+
 class NetworkPacket;
 class Player;
 
@@ -21,7 +23,7 @@ class NetworkCore : public QObject
         NetworkCore(QObject *parent = 0);
         ~NetworkCore();
 
-        bool startServer(uint port);
+        bool startServer(uint port = DEFAULT_NETWORK_PORT);
         bool getIsServer() { return server->isListening(); }
         bool getHasConnection() { return (connections.size()>0); }
         bool connectToServer(QString host, uint port);
