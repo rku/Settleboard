@@ -18,6 +18,8 @@ NetworkCore::NetworkCore(QObject *parent) : QObject(parent)
     infoBoxDialog->setWindowTitle("Network Status");
     connect(infoBox.buttonCancel, SIGNAL(clicked()),
         this, SLOT(cancelConnect()));
+    connect(infoBoxDialog, SIGNAL(finished(int)),
+        this, SLOT(cancelConnect()));
 
     connectTimer.setInterval(5000);
     connectTimer.setSingleShot(false);
@@ -47,6 +49,7 @@ bool NetworkCore::connectToServer(QString host, uint p)
 
     qDebug() << "Connecting to" << host << "on port" << p;
 
+    disconnectAll();
     infoBoxDialog->show();
     hostName = host;
     port = p;
@@ -65,8 +68,7 @@ void NetworkCore::retryConnect()
         return;
     }
 
-    disconnectAll();
-    setupSocket(socket);
+    socket->disconnectFromHost();
     connectAttempts++;
 
     if(connectAttempts > 5)
@@ -91,8 +93,13 @@ void NetworkCore::retryConnect()
 
 void NetworkCore::cancelConnect()
 {
-    connectTimer.stop();
-    disconnectAll();
+    if(socket->state() != QAbstractSocket::ConnectedState)
+    {
+        connectTimer.stop();
+        disconnectAll();
+        qDebug() << "Connect attempt canceled.";
+    }
+
     infoBoxDialog->close();
 }
 
