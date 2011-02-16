@@ -56,7 +56,7 @@ void Crossroad::drawSelectionCircle()
 
     glPushMatrix();
     widget->qglColor((isHighlighted) ? color.lighter() : color);
-    glTranslatef(vertex.x(), vertex.y() + 0.05f, vertex.z());
+    glTranslatef(vertex.x(), vertex.y() + 0.0001f, vertex.z());
     glCallList(selectionCircleListID);
     glPopMatrix();
 }

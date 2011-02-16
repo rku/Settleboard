@@ -79,6 +79,7 @@ QStatusBar {
 
 QDialog {
     background: #3f3f3f;
+    border: 1px solid gray;
 }
 
 QCheckBox {

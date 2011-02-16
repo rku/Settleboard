@@ -39,7 +39,6 @@ void NumberChip::create()
     setIsLightingEnabled(false);
     load(FileManager::getPathOfGLObject("NumberChip"), Qt::gray);
     setNumber(number);
-    setPosY(0.1);
     setScale(0.25);
 
     // set a random rotation angle

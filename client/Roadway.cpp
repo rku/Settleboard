@@ -25,7 +25,7 @@ void Roadway::createSelectionRect()
 {
     glNewList(selectionRectListID, GL_COMPILE);
 
-    glTranslatef(0.0f, 0.01f, 0.0f);
+    glTranslatef(0.0f, 0.0001f, 0.0f);
 
     glBegin(GL_LINES);
 
