@@ -14,12 +14,16 @@ class ControlPanel : public QDockWidget
 
         void registerAction(const QString name, QAction *action);
         void setActionState(const QString name, bool state);
+        void beginCancelMode();
+        void endCancelMode();
         void clear();
 
     protected slots:
         void actionTriggered();
+        void cancel();
 
     protected:
+        QToolButton *buttonCancel;
         QMap<QString, QToolButton*> buttons;
 };
 

@@ -13,6 +13,7 @@ QDockWidget QLabel {
 }
 
 QDockWidget::title {
+    background: black;
 }
 
 QDockWidget QLabel#turnLabel {

@@ -7,8 +7,17 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
 {
     QHBoxLayout *l = new QHBoxLayout();
     QWidget *widget = new QWidget(this);
+
     l->addStretch();
+
+    buttonCancel = new QToolButton(widget);
+    buttonCancel->setVisible(false);
+    buttonCancel->setText("Cancel");
+    l->addWidget(buttonCancel);
+    connect(buttonCancel, SIGNAL(clicked()), this, SLOT(cancel()));
+
     l->addStretch();
+
     widget->setLayout(l);
     setWidget(widget);
 }
@@ -16,6 +25,40 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
 ControlPanel::~ControlPanel()
 {
     clear();
+}
+
+void ControlPanel::beginCancelMode()
+{
+    // hide all buttons
+    QList<QToolButton*> b = buttons.values();
+    QList<QToolButton*>::iterator i;
+
+    for(i = b.begin(); i != b.end(); ++i)
+        (*i)->setVisible(false);
+
+    // show cancel button
+    buttonCancel->setVisible(true);
+}
+
+void ControlPanel::endCancelMode()
+{
+    if(!buttonCancel->isVisible()) return;
+
+    // hide cancel button
+    buttonCancel->setVisible(false);
+
+    // show alle buttons that are enabled
+    QList<QToolButton*> b = buttons.values();
+    QList<QToolButton*>::iterator i;
+
+    for(i = b.begin(); i != b.end(); ++i)
+        (*i)->setVisible((*i)->isEnabled());
+}
+
+void ControlPanel::cancel()
+{
+    endCancelMode();
+    GAME->getRules()->executeRule("ruleCancel");
 }
 
 void ControlPanel::registerAction(const QString name, QAction *action)

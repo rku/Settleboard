@@ -73,6 +73,10 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleHighlightRolledTiles);
     REGISTER_RULE(ruleDrawCardsFromBankStack);
     REGISTER_RULE(ruleInitDockWidgets);
+    REGISTER_RULE(ruleSetCancelable);
+    REGISTER_RULE(ruleUnsetCancelable);
+    REGISTER_RULE(ruleCancel);
+    REGISTER_RULE(ruleCanceled);
     REGISTER_RULE(ruleInitPlayerPanel);
     REGISTER_RULE(ruleUpdatePlayerPanel);
     REGISTER_RULE(ruleInitControlPanel);
@@ -342,6 +346,9 @@ void GameRules::cancelRuleChain()
     ruleData.clear();
     ruleChain.clear();
     isRuleChainWaiting = false;
+
+    Board *board = GAME->getBoard();
+    if(board->getIsSelectionModeActive()) board->endSelectionMode();
 
     qDebug() << "Rule chain canceled";
 }
@@ -891,6 +898,37 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
     return true;
 }
 
+IMPLEMENT_RULE(ruleSetCancelable)
+{
+    LOCAL_ONLY_RULE
+
+    controlPanel->beginCancelMode();
+    return true;
+}
+
+IMPLEMENT_RULE(ruleUnsetCancelable)
+{
+    LOCAL_ONLY_RULE
+
+    controlPanel->endCancelMode();
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCancel)
+{
+    SERVER_ONLY_RULE
+
+    cancelRuleChain();
+    return executeRule("ruleCanceled", player);
+}
+
+IMPLEMENT_RULE(ruleCanceled)
+{
+    LOG_SYSTEM_MSG(QString("%1 canceled the current action.")
+        .arg(player->getName()));
+    return true;
+}
+
 IMPLEMENT_RULE(ruleInitPlayerPanel)
 {
     QList<Player*> players = game->getPlayers();
@@ -1085,7 +1123,9 @@ IMPLEMENT_RULE(ruleUserActionBuildCity)
 
     pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildCity);
+    RULECHAIN_ADD(ruleSetCancelable);
     RULECHAIN_ADD(ruleSelectSettlement);
+    RULECHAIN_ADD(ruleUnsetCancelable);
     RULECHAIN_ADD(ruleSettlementSelected);
     RULECHAIN_ADD(ruleBuildCity);
     startRuleChain();
@@ -1175,7 +1215,9 @@ IMPLEMENT_RULE(ruleUserActionBuildSettlement)
 
     pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildSettlement);
+    RULECHAIN_ADD(ruleSetCancelable);
     RULECHAIN_ADD(ruleSelectCrossroad);
+    RULECHAIN_ADD(ruleUnsetCancelable);
     RULECHAIN_ADD(ruleBuildSettlement);
     startRuleChain();
 
@@ -1277,7 +1319,9 @@ IMPLEMENT_RULE(ruleUserActionBuildRoad)
 
     pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildRoad);
+    RULECHAIN_ADD(ruleSetCancelable);
     RULECHAIN_ADD(ruleSelectRoadway);
+    RULECHAIN_ADD(ruleUnsetCancelable);
     RULECHAIN_ADD(ruleBuildRoad);
     startRuleChain();
     return true;

@@ -164,6 +164,10 @@ class GameRules : public QObject
         DECLARE_RULE(ruleHighlightRolledTiles);
         DECLARE_RULE(ruleDrawCardsFromBankStack);
         DECLARE_RULE(ruleInitDockWidgets);
+        DECLARE_RULE(ruleSetCancelable);
+        DECLARE_RULE(ruleUnsetCancelable);
+        DECLARE_RULE(ruleCancel);
+        DECLARE_RULE(ruleCanceled);
         DECLARE_RULE(ruleInitPlayerPanel);
         DECLARE_RULE(ruleUpdatePlayerPanel);
         DECLARE_RULE(ruleInitControlPanel);
