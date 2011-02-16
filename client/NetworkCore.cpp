@@ -50,6 +50,7 @@ bool NetworkCore::connectToServer(QString host, uint p)
     qDebug() << "Connecting to" << host << "on port" << p;
 
     disconnectAll();
+    setupSocket(socket);
     infoBoxDialog->show();
     hostName = host;
     port = p;
