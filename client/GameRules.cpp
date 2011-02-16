@@ -109,6 +109,7 @@ void GameRules::reset()
 {
     isRuleChainWaiting = false;
     currentPlayer = NULL;
+    turn = 0;
 
     ruleChain.clear();
     ruleData.clear();
@@ -633,9 +634,12 @@ IMPLEMENT_RULE(ruleInitialPlacement)
 IMPLEMENT_RULE(ruleBeginTurn)
 {
     diceRolled = false;
+    turn++;
+    gameInfoPanel->setTurn(turn);
 
     currentPlayer = player;
-    LOG_PLAYER_MSG(QString("%1 begins turn.").arg(player->getName()));
+    LOG_PLAYER_MSG(QString("%1 begins turn %2.")
+        .arg(player->getName()).arg(turn));
 
     EXECUTE_SUBRULE(ruleUpdateInterface);
 
@@ -655,7 +659,8 @@ IMPLEMENT_RULE(ruleEndTurn)
     QList<Player*> players = game->getPlayers();
     Q_ASSERT(players.contains(player));
 
-    LOG_PLAYER_MSG(QString("%1 finished turn.").arg(player->getName()));
+    LOG_PLAYER_MSG(QString("%1 finished turn %2.")
+        .arg(player->getName()).arg(turn));
 
     // hand over to next player
     unsigned int index = players.indexOf(player) + 1;
@@ -1259,7 +1264,7 @@ IMPLEMENT_RULE(ruleCanSelectCrossroad)
 
     for(int i = 0; i < c->getTiles().size(); i++)
     {
-        if(c->getTiles().at(i)->getType() != HexTile::HexTileTypeWater)
+        if(c->getTiles().at(i)->getType() != HexTile::WaterType)
             return true;
     }
 
@@ -1366,7 +1371,7 @@ IMPLEMENT_RULE(ruleCanSelectRoadway)
 
     for(int i = 0; i < r->getTiles().size(); i++)
     {
-        if(r->getTiles().at(i)->getType() != HexTile::HexTileTypeWater)
+        if(r->getTiles().at(i)->getType() != HexTile::WaterType)
             return canSelect;
     }
 

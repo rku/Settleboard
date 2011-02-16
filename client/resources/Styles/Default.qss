@@ -15,6 +15,10 @@ QDockWidget QLabel {
 QDockWidget::title {
 }
 
+QDockWidget QLabel#turnLabel {
+    color: orange;
+}
+
 QDockWidget QToolButton {
     background: #3f3f3f;
     border: 2px solid gray;
@@ -92,13 +96,17 @@ QTextEdit, QLineEdit {
     color: white;
     font-size: 13px;
     border-style: outset;
-    border-color: #2f2f2f;
-    border-width: 2px;
+    border-color: #3f3f3f;
+    border-width: 1px;
     border-radius: 5px;
 }
 
 QTextEdit::disabled, QLineEdit::disabled {
     background: #3f3f3f;
     color: gray;
+}
+
+QDialog#gameConnector QLineEdit {
+    font-size: 14px;
 }
 

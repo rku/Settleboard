@@ -26,6 +26,7 @@
 GameLobby::GameLobby(QWidget *parent) : QDialog(parent)
 {
     ui.setupUi(this);
+    setObjectName("gameLobby");
     init();
 }
 

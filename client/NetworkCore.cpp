@@ -220,6 +220,7 @@ void NetworkCore::connectionClosed()
             // lost connection to server!
             QMessageBox::critical(0, "Disconnected",
                 "Lost connection to game server!");
+            GAME->setState(Game::DisconnectedState);
             GAME->reset();
         }
     }

@@ -32,7 +32,7 @@ class Map : public QObject
             unsigned int x, unsigned int y,
             HexTile::HexTileType, bool fixed = true,
             int chipNumber = -1,
-            HexTile::HexTileType portType = HexTile::HexTileTypeNone);
+            HexTile::HexTileType portType = HexTile::NoType);
         void setSize(const QSize& s) { size = s; }
         void setAuthor(const QString &s) { author = s; }
         void setTitle(const QString &s) { title = s; }

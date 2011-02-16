@@ -26,6 +26,8 @@ GameConnector::GameConnector(QWidget *parent) : QDialog(parent)
 {
     ui.setupUi(this);
 
+    setObjectName("gameConnector");
+
     ui.editRemotePort->setValidator(
         new QRegExpValidator(QRegExp("^[1-9][0-9]+$"), this));
     ui.editRemoteHost->setValidator(

@@ -136,7 +136,7 @@ void MainWindow::showConnector()
 {
     if(GAME->getState() != Game::NoGameState)
     {
-        GAME->reset();
+        if(!GAME->reset()) return;
     }
 
     gameConnector->show();
@@ -146,7 +146,7 @@ void MainWindow::startServer()
 {
     if(GAME->getState() != Game::NoGameState)
     {
-       GAME->reset();
+        if(!GAME->reset()) return;
     }
 
     GAME->getRules()->executeRule("ruleStartServer");

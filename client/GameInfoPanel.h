@@ -16,6 +16,7 @@ class GameInfoPanel : public QDockWidget
 
         void setDiceValues(uint dice1, uint dice2);
         void setCurrentPlayer(Player*);
+        void setTurn(unsigned int);
         void clear();
 
     protected:
@@ -23,6 +24,7 @@ class GameInfoPanel : public QDockWidget
         QLabel *dice1PixmapLabel;
         QLabel *dice2PixmapLabel;
         QLabel *currentPlayerLabel;
+        QLabel *turnLabel;
 };
 
 #endif

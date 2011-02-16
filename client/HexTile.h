@@ -35,14 +35,11 @@ class HexTile : public GLGameModelProxy
     Q_OBJECT
 
     public:
-        enum HexTileType {HexTileTypeNone, HexTileTypeWood,
-            HexTileTypeWater, HexTileTypeWheat, HexTileTypeSheep,
-            HexTileTypeDesert, HexTileTypeOre, HexTileTypeClay,
-            HexTileTypeGold};
+        enum HexTileType {NoType, WoodType, WaterType, WheatType,
+            SheepType, DesertType, OreType, ClayType, GoldType};
 
-        HexTile(HexTileType = HexTileTypeNone,
-            unsigned int x = 0, unsigned int y = 0,
-            QObject *parent = 0);
+        HexTile(HexTileType = NoType, unsigned int x = 0,
+            unsigned int y = 0, QObject *parent = 0);
         ~HexTile();
 
         void setType(HexTileType);

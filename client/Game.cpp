@@ -133,8 +133,16 @@ void Game::initLocalPlayer()
     qDebug() << "Local player is" << localPlayer->getName();
 }
 
-void Game::reset()
+bool Game::reset()
 {
+    if(state == PlayingState)
+    {
+        if(QMessageBox::question(0, "Game Running",
+            "Do you really want to quit the current game?",
+            QMessageBox::Yes | QMessageBox::No,
+            QMessageBox::No) == QMessageBox::No) return false;
+    }
+
     qDebug() << "Resetting game state";
     state = EndingState;
 
@@ -149,5 +157,6 @@ void Game::reset()
     initLocalPlayer();
 
     state = NoGameState;
+    return true;
 }
 

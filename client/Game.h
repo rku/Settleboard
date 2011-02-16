@@ -45,9 +45,11 @@ class Game : public QObject
         static Game* getInstance();
 
         enum GameState {NoGameState, PreparingState, PlayingState,
-            FinishedState, EndingState};
+            FinishedState, EndingState, DisconnectedState};
         void setState(GameState st) { state = st; }
         GameState getState() { return state; }
+
+        bool reset();
 
         GameLobby* getLobby() { return gameLobby; }
         MainWindow* getMainWindow() { return mainWindow; }
@@ -60,9 +62,6 @@ class Game : public QObject
         Player* getLocalPlayer() { return localPlayer; }
         Bank *getBank() { return bank; }
         NetworkCore *getNetworkCore() { return networkCore; }
-
-    public slots:
-        void reset();
 
     protected slots:
         void parseCommandLine();

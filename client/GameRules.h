@@ -191,6 +191,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleCanSelectRoadway);
 
         bool diceRolled;
+        unsigned int turn;
         Player *currentPlayer;
         PlayerPanel *playerPanel;
         ControlPanel *controlPanel;

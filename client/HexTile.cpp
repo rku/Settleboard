@@ -57,7 +57,7 @@ void HexTile::setType(HexTileType t)
     QColor color;
     QString surfaceTexture;
 
-    if(t == HexTileTypeNone)
+    if(t == NoType)
     {
         type = t;
         return;
@@ -65,35 +65,35 @@ void HexTile::setType(HexTileType t)
 
     switch(t)
     {
-        case HexTileTypeWater:
+        case WaterType:
             surfaceTexture = "water.jpg";
             color.setRgb(22,73,142,255);
             break;
-        case HexTileTypeDesert:
+        case DesertType:
             surfaceTexture = "desert.jpg";
             color.setRgb(225,255,255,255);
             break;
-        case HexTileTypeWood:
+        case WoodType:
             surfaceTexture = "wood.jpg";
             color.setRgb(27,150,11,255);
             break;
-        case HexTileTypeSheep:
+        case SheepType:
             surfaceTexture = "sheep.jpg";
             color.setRgb(208,241,206,255);
             break;
-        case HexTileTypeWheat:
+        case WheatType:
             surfaceTexture = "wheat.jpg";
             color.setRgb(237,239,97,255); 
             break;
-        case HexTileTypeOre:
+        case OreType:
             surfaceTexture = "ore.jpg";
             color.setRgb(106,112,124,255);
             break;
-        case HexTileTypeGold:
+        case GoldType:
             surfaceTexture = "gold.jpg"; 
             color.setRgb(222,224,35,255);
             break;
-        case HexTileTypeClay:
+        case ClayType:
             surfaceTexture = "clay.jpg";
             color.setRgb(231,126,33,255);
             break;
@@ -109,7 +109,7 @@ void HexTile::setType(HexTileType t)
 
 void HexTile::draw()
 {
-    if(getType() == HexTileTypeNone) return;
+    if(getType() == NoType) return;
 
     GLGameModel::draw();
 
@@ -163,12 +163,12 @@ const QString HexTile::getResourceName(HexTileType t)
 {
     switch(t)
     {
-        case HexTileTypeOre:    return "Ore";
-        case HexTileTypeGold:   return "Gold";
-        case HexTileTypeWheat:  return "Wheat";
-        case HexTileTypeSheep:  return "Sheep";
-        case HexTileTypeWood:   return "Lumber";
-        case HexTileTypeClay:   return "Clay";
+        case OreType:    return "Ore";
+        case GoldType:   return "Gold";
+        case WheatType:  return "Wheat";
+        case SheepType:  return "Sheep";
+        case WoodType:   return "Lumber";
+        case ClayType:   return "Clay";
         default: return QString();
     }
 }
