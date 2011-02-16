@@ -11,14 +11,16 @@ ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
     QWidget *widget = new QWidget(this);
 
     l->addStretch();
+    l->addStretch();
     widget->setLayout(l);
     setWidget(widget);
 
-    setMinimumHeight(80);
-    setMaximumHeight(80);
+    setMinimumHeight(75);
+    setMaximumHeight(75);
     setAllowedAreas(Qt::BottomDockWidgetArea);
     setFloating(false);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
+    setObjectName("resourceInfoPanel");
 }
 
 ResourceInfoPanel::~ResourceInfoPanel()
@@ -39,11 +41,11 @@ void ResourceInfoPanel::registerResource(const QString name)
     l2->addWidget(iconLabel,0, Qt::AlignRight);
     l2->addWidget(amountLabel,0, Qt::AlignLeft);
     QWidget *infoWidget = new QWidget(this);
+    infoWidget->setObjectName("resourceInfoWidget");
     infoWidget->setLayout(l2);
 
     resources.insert(name, amountLabel);
-    l->addWidget(infoWidget);
-    l->addStretch();
+    l->insertWidget(resources.count(), infoWidget);
 }
 
 void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
@@ -58,5 +60,6 @@ void ResourceInfoPanel::clear()
 {
     QHBoxLayout *l = qobject_cast<QHBoxLayout*>(layout());
     while(l->count() > 1) delete l->takeAt(0); // keep last stretch
+    l->addStretch();
 }
 

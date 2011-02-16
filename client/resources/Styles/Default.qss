@@ -28,6 +28,12 @@ QDockWidget {
     color: white;
 }
 
+QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget {
+    border: 1px solid gray;
+    background: #2f2f2f;
+    border-radius: 5px;
+}
+
 QDockWidget::title {
     background: black;
     padding: 3px;

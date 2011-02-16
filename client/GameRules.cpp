@@ -876,10 +876,10 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
     playerPanel = new PlayerPanel("", mainWindow);
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
 
-    gameInfoPanel = new GameInfoPanel("Game Info", mainWindow);
+    gameInfoPanel = new GameInfoPanel("", mainWindow);
     mainWindow->addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
 
-    messagePanel = new MessagePanel("Messages", mainWindow);
+    messagePanel = new MessagePanel("", mainWindow);
     mainWindow->addDockWidget(Qt::RightDockWidgetArea, messagePanel);
 
     controlPanel = new ControlPanel("", mainWindow);
