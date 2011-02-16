@@ -1362,13 +1362,27 @@ IMPLEMENT_RULE(ruleCanSelectRoadway)
 
     Roadway *r = RULEDATA_POP("Roadway").value<Roadway*>();
     QList<Crossroad*> crossroads = r->getCrossroads();
+    QList<Roadway*> roadways = r->getNeighbours();
     bool canSelect = false;
 
+    // find crossroads, the player has a building on
     for(int i = 0; i < crossroads.size(); i++)
     {
-        if(crossroads.at(i)->getIsPlayerObjectPlaced()) canSelect = true;
+        Crossroad *c = crossroads.at(i);
+        if(c->getIsPlayerObjectPlaced() &&
+            c->getPlayerObject()->getOwner() == player) canSelect = true;
     }
 
+    // is a neighbour road ours?
+    for(int i = 0; i < roadways.size(); i++)
+    {
+        Roadway *rw = roadways.at(i);
+        if(rw->getIsPlayerObjectPlaced() &&
+            rw->getPlayerObject()->getOwner() == player) canSelect = true;
+    }
+
+    // we cannot build roads at water tiles
+    // (these are the standard rules without seafarers)
     for(int i = 0; i < r->getTiles().size(); i++)
     {
         if(r->getTiles().at(i)->getType() != HexTile::WaterType)
