@@ -38,6 +38,7 @@ class PlayerPanel;
 class ControlPanel;
 class MessagePanel;
 class GameInfoPanel;
+class ResourceInfoPanel;
 class NetworkPacket;
 class GameLobby;
 
@@ -173,6 +174,8 @@ class GameRules : public QObject
         DECLARE_RULE(ruleInitControlPanel);
         DECLARE_RULE(ruleUpdateControlPanel);
         DECLARE_RULE(ruleUpdateGameInfoPanel);
+        DECLARE_RULE(ruleInitResourceInfoPanel);
+        DECLARE_RULE(ruleUpdateResourceInfoPanel);
         DECLARE_RULE(ruleGenerateBoard);
         DECLARE_RULE(ruleUpdateInterface);
         DECLARE_RULE(ruleBoardObjectSelected);
@@ -201,6 +204,7 @@ class GameRules : public QObject
         ControlPanel *controlPanel;
         GameInfoPanel *gameInfoPanel;
         MessagePanel *messagePanel;
+        ResourceInfoPanel *resourceInfoPanel;
         RuleData ruleData;
         RuleChain ruleChain;
         QStack<RuleData> ruleDataStack;

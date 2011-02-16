@@ -12,6 +12,11 @@ PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
     layout->addStretch();
     widget->setLayout(layout);
     setWidget(widget);
+
+    setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    setFixedWidth(200);
+    setFloating(false);
+    setFeatures(QDockWidget::DockWidgetMovable);
 }
 
 PlayerPanel::~PlayerPanel()

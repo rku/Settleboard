@@ -28,6 +28,11 @@ GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
 
     widget->setLayout(l);
     setWidget(widget);
+
+    setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    setMinimumHeight(120);
+    setMaximumHeight(120);
+    setFeatures(QDockWidget::DockWidgetMovable);
 }
 
 GameInfoPanel::~GameInfoPanel()

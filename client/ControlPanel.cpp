@@ -20,6 +20,12 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
 
     widget->setLayout(l);
     setWidget(widget);
+
+    setFixedHeight(60);
+    setMaximumHeight(60);
+    setMinimumHeight(60);
+    setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
+    setAllowedAreas(Qt::TopDockWidgetArea);
 }
 
 ControlPanel::~ControlPanel()

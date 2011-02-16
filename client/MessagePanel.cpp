@@ -21,6 +21,12 @@ MessagePanel::MessagePanel(const QString &title, QWidget *parent)
 
     widget->setLayout(l);
     setWidget(widget);
+
+    setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
+    setMinimumHeight(250);
+    setMinimumWidth(250);
+    setMaximumWidth(500);
+    setFeatures(QDockWidget::DockWidgetMovable);
 }
 
 MessagePanel::~MessagePanel()

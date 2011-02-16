@@ -31,6 +31,7 @@
 #include "ControlPanel.h"
 #include "MessagePanel.h"
 #include "GameInfoPanel.h"
+#include "ResourceInfoPanel.h"
 #include "FileManager.h"
 #include "NetworkPacket.h"
 #include "NetworkCore.h"
@@ -45,6 +46,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     gameInfoPanel = NULL;
     messagePanel = NULL;
     controlPanel = NULL;
+    resourceInfoPanel = NULL;
 
     reset();
 
@@ -84,6 +86,8 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleInitControlPanel);
     REGISTER_RULE(ruleUpdateControlPanel);
     REGISTER_RULE(ruleUpdateGameInfoPanel);
+    REGISTER_RULE(ruleInitResourceInfoPanel);
+    REGISTER_RULE(ruleUpdateResourceInfoPanel);
     REGISTER_RULE(ruleGenerateBoard);
     REGISTER_RULE(ruleUpdateInterface);
     REGISTER_RULE(ruleBoardObjectSelected);
@@ -139,6 +143,10 @@ void GameRules::reset()
         mainWindow->removeDockWidget(messagePanel);
         delete messagePanel;
         messagePanel = NULL;
+
+        mainWindow->removeDockWidget(resourceInfoPanel);
+        delete resourceInfoPanel;
+        resourceInfoPanel = NULL;
     }
 }
 
@@ -579,6 +587,7 @@ IMPLEMENT_RULE(ruleInitGame)
     RULECHAIN_ADD(ruleInitDockWidgets);
     RULECHAIN_ADD(ruleInitPlayerPanel);
     RULECHAIN_ADD(ruleInitControlPanel);
+    RULECHAIN_ADD(ruleInitResourceInfoPanel);
     RULECHAIN_ADD(ruleGenerateBoard);
     RULECHAIN_ADD(ruleInitialPlacement);
     RULECHAIN_ADD(ruleBeginTurn)
@@ -865,34 +874,19 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
     QMainWindow *mainWindow = game->getMainWindow();
 
     playerPanel = new PlayerPanel("", mainWindow);
-    playerPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    playerPanel->setFixedWidth(200);
-    playerPanel->setFloating(false);
-    playerPanel->setFeatures(QDockWidget::DockWidgetMovable);
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
 
     gameInfoPanel = new GameInfoPanel("Game Info", mainWindow);
-    gameInfoPanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    gameInfoPanel->setMinimumHeight(150);
-    gameInfoPanel->setMaximumHeight(150);
-    gameInfoPanel->setFeatures(QDockWidget::DockWidgetMovable);
     mainWindow->addDockWidget(Qt::RightDockWidgetArea, gameInfoPanel);
 
     messagePanel = new MessagePanel("Messages", mainWindow);
-    messagePanel->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    messagePanel->setMinimumHeight(250);
-    messagePanel->setMinimumWidth(250);
-    messagePanel->setMaximumWidth(500);
-    messagePanel->setFeatures(QDockWidget::DockWidgetMovable);
     mainWindow->addDockWidget(Qt::RightDockWidgetArea, messagePanel);
 
     controlPanel = new ControlPanel("", mainWindow);
-    controlPanel->setFixedHeight(60);
-    controlPanel->setMaximumHeight(60);
-    controlPanel->setMinimumHeight(60);
-    controlPanel->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
-    controlPanel->setAllowedAreas(Qt::TopDockWidgetArea);
     mainWindow->addDockWidget(Qt::TopDockWidgetArea, controlPanel);
+
+    resourceInfoPanel = new ResourceInfoPanel("", mainWindow);
+    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, resourceInfoPanel);
 
     return true;
 }
@@ -950,20 +944,8 @@ IMPLEMENT_RULE(ruleInitPlayerPanel)
             "City.png", true);
         playerPanel->registerPlayerInfo(*i, "DevelopmentCards", "Development Cards",
             "DevelopmentCard.png");
-
-        if(((Player*)*i)->getIsLocal())
-        {
-            playerPanel->registerPlayerInfo(*i, "Wheat", "Wheat", "Wheat.png");
-            playerPanel->registerPlayerInfo(*i, "Lumber", "Lumber", "Lumber.png");
-            playerPanel->registerPlayerInfo(*i, "Sheep", "Sheep", "Sheep.png");
-            playerPanel->registerPlayerInfo(*i, "Ore", "Ore", "Ore.png");
-            playerPanel->registerPlayerInfo(*i, "Clay", "Clay", "Clay.png");
-        }
-        else
-        {
-            playerPanel->registerPlayerInfo(*i, "ResourceCards", "Resource Cards",
+        playerPanel->registerPlayerInfo(*i, "ResourceCards", "Resource Cards",
                 "Card.png");
-        }
         
         EXECUTE_SUBRULE_FOR_PLAYER(ruleUpdatePlayerPanel, *i);
     }
@@ -983,25 +965,8 @@ IMPLEMENT_RULE(ruleUpdatePlayerPanel)
         player->getNumberOfUnplacedObjectsOfType("City"));
     playerPanel->updatePlayerInfo(player, "DevelopmentCards",
         player->getCardStack()->getNumberOfCards("Development"));
-
-    if(player->getIsLocal())
-    {
-        playerPanel->updatePlayerInfo(player, "Wheat",
-            player->getCardStack()->getNumberOfCards("Resource", "Wheat"));
-        playerPanel->updatePlayerInfo(player, "Lumber",
-            player->getCardStack()->getNumberOfCards("Resource", "Lumber"));
-        playerPanel->updatePlayerInfo(player, "Sheep",
-            player->getCardStack()->getNumberOfCards("Resource", "Sheep"));
-        playerPanel->updatePlayerInfo(player, "Ore",
-            player->getCardStack()->getNumberOfCards("Resource", "Ore"));
-        playerPanel->updatePlayerInfo(player, "Clay",
-            player->getCardStack()->getNumberOfCards("Resource", "Clay"));
-    }
-    else
-    {
-        playerPanel->updatePlayerInfo(player, "ResourceCards",
-            player->getCardStack()->getNumberOfCards("Resource"));
-    }
+    playerPanel->updatePlayerInfo(player, "ResourceCards",
+        player->getCardStack()->getNumberOfCards("Resource"));
 
     return true;
 }
@@ -1093,11 +1058,43 @@ IMPLEMENT_RULE(ruleUpdateGameInfoPanel)
     return true;
 }
 
+IMPLEMENT_RULE(ruleInitResourceInfoPanel)
+{
+    LOCAL_ONLY_RULE
+
+    resourceInfoPanel->registerResource("Wheat");
+    resourceInfoPanel->registerResource("Lumber");
+    resourceInfoPanel->registerResource("Sheep");
+    resourceInfoPanel->registerResource("Ore");
+    resourceInfoPanel->registerResource("Clay");
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleUpdateResourceInfoPanel)
+{
+    LOCAL_ONLY_RULE
+
+    resourceInfoPanel->updateResource("Wheat",
+        player->getCardStack()->getNumberOfCards("Resource", "Wheat"));
+    resourceInfoPanel->updateResource("Lumber",
+        player->getCardStack()->getNumberOfCards("Resource", "Lumber"));
+    resourceInfoPanel->updateResource("Sheep",
+        player->getCardStack()->getNumberOfCards("Resource", "Sheep"));
+    resourceInfoPanel->updateResource("Ore",
+        player->getCardStack()->getNumberOfCards("Resource", "Ore"));
+    resourceInfoPanel->updateResource("Clay",
+        player->getCardStack()->getNumberOfCards("Resource", "Clay"));
+
+    return true;
+}
+
 IMPLEMENT_RULE(ruleUpdateInterface)
 {
     EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
     EXECUTE_SUBRULE(ruleUpdateControlPanel);
     EXECUTE_SUBRULE(ruleUpdateGameInfoPanel);
+    EXECUTE_SUBRULE(ruleUpdateResourceInfoPanel);
 
     game->getBoard()->update();
 
