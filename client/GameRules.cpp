@@ -349,9 +349,6 @@ void GameRules::cancelRuleChain()
     ruleChain.clear();
     isRuleChainWaiting = false;
 
-    Board *board = GAME->getBoard();
-    if(board->getIsSelectionModeActive()) board->endSelectionMode();
-
     qDebug() << "Rule chain canceled";
 }
 
@@ -926,6 +923,9 @@ IMPLEMENT_RULE(ruleCancel)
 
 IMPLEMENT_RULE(ruleCanceled)
 {
+    Board *board = game->getBoard();
+    if(board->getIsSelectionModeActive()) board->endSelectionMode();
+
     LOG_SYSTEM_MSG(QString("%1 canceled the current action.")
         .arg(player->getName()));
     return true;
