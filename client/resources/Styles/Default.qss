@@ -8,12 +8,29 @@ QMainWindow, QDockWidget {
     background: black;
 }
 
+QMainWindow::separator {
+    border: 0px;
+    background: black;
+    width: 2px;
+    height: 2px;
+}
+
+QMainWindow::separator:hover {
+    background: #303030;
+}
+
 QDockWidget QLabel {
+    color: white;
+}
+
+QDockWidget {
+    background: black;
     color: white;
 }
 
 QDockWidget::title {
     background: black;
+    padding: 3px;
 }
 
 QDockWidget QLabel#turnLabel {
@@ -51,6 +68,10 @@ PlayerPanel QGroupBox QLabel {
     font-size: 12px;
 }
 
+QFrame {
+    border: 0px;
+}
+
 QStatusBar {
     background: black;
     color: orange;
@@ -65,8 +86,20 @@ QCheckBox {
     color: white;
 }
 
+QCheckBox::indicator {
+    border-style: outset;
+    border: 2px solid gray;
+    background: darkred;
+}
+
+QCheckBox::indicator:checked {
+    border-style: inset;
+    border: 2px solid white;
+    background: green;
+}
+
 QCheckBox::hover {
-    color: white;
+    color: orange;
 }
 
 QPushButton {
