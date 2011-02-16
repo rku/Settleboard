@@ -293,14 +293,14 @@ void Board::updateBoardState(BoardState &newState)
 void Board::setPosForTile(HexTile *tile)
 {
     float w = tile->getWidth();
-    float d = tile->getDepth() - 0.6f;
+    float d = tile->getDepth() * 0.75f;
     unsigned int row = tile->getRow();
     unsigned int col = tile->getColumn();
     unsigned int width = map->getWidth();
     unsigned int height = map->getHeight();
 
-    // center - boardwidth/2 + tilewidth*col
     tile->setPos(QVector3D(
+        // center - boardwidth/2 + tilewidth*col
         0 - ( width * (w/2) ) + (col * w) + (row % 2) * (w/2),
         0.0f,
         // center - boardheight/2 - tiledepth/2 + row*tiledepth

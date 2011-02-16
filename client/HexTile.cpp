@@ -31,6 +31,10 @@ HexTile::HexTile(HexTileType t, unsigned int x, unsigned int y,
     setColumn(x);
     setRow(y);
 
+    // random rotation (rotate in 60 degree steps)
+    float angle = 60.0 * qRound((qrand() * 5.0) / RAND_MAX);
+    setAngleY(angle);
+
     numberChip = NULL;
     chipNumber = 0;
     setType(t);
