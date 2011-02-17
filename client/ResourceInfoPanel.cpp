@@ -15,11 +15,10 @@ ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
     widget->setLayout(l);
     setWidget(widget);
 
-    setMinimumHeight(55);
-    setMaximumHeight(55);
     setAllowedAreas(Qt::TopDockWidgetArea);
     setFloating(false);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
+    setMaximumHeight(90);
     setObjectName("resourceInfoPanel");
     setTitleBarWidget(new QWidget(this));
 }
@@ -38,17 +37,16 @@ void ResourceInfoPanel::registerResource(const QString name)
     QLabel *iconLabel = new QLabel(this);
     iconLabel->setPixmap(QPixmap(iconFile));
 
-    QLabel *amountLabel = new QLabel("x0", this);
+    QLabel *amountLabel = new QLabel("0", this);
+    amountLabel->setEnabled(false);
 
-    QHBoxLayout *l2 = new QHBoxLayout();
-    l2->addWidget(iconLabel,0, Qt::AlignRight);
-    l2->addWidget(amountLabel,0, Qt::AlignLeft);
+    QVBoxLayout *l2 = new QVBoxLayout();
+    l2->addWidget(iconLabel,0, Qt::AlignCenter);
+    l2->addWidget(amountLabel,0, Qt::AlignCenter);
 
     QWidget *infoWidget = new QWidget(this);
     infoWidget->setObjectName("resourceInfoWidget");
     infoWidget->setToolTip(name);
-    infoWidget->setFixedWidth(70);
-    infoWidget->setFixedHeight(30);
     infoWidget->setLayout(l2);
 
     resources.insert(name, amountLabel);
@@ -60,7 +58,8 @@ void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
     Q_ASSERT(resources.contains(name));
 
     QLabel *amountLabel = resources.value(name);
-    amountLabel->setText(QString("x%1").arg(amount));
+    amountLabel->setText(QString("%1").arg(amount));
+    amountLabel->setEnabled((amount > 0));
 }
 
 void ResourceInfoPanel::clear()

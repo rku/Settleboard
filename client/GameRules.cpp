@@ -849,13 +849,13 @@ IMPLEMENT_RULE(ruleInitGameCards)
 
     // resources
     bank->registerCardStack("Wheat");
-    bank->registerCardStack("Sheep");
+    bank->registerCardStack("Wool");
     bank->registerCardStack("Ore");
     bank->registerCardStack("Lumber");
     bank->registerCardStack("Clay");
 
     bank->registerCard("Wheat",  GAMECARD_WHEAT,  19);
-    bank->registerCard("Sheep",  GAMECARD_SHEEP,  19);
+    bank->registerCard("Wool",   GAMECARD_SHEEP,  19);
     bank->registerCard("Ore",    GAMECARD_ORE,    19);
     bank->registerCard("Lumber", GAMECARD_LUMBER, 19);
     bank->registerCard("Clay",   GAMECARD_CLAY,   19);
@@ -1067,7 +1067,7 @@ IMPLEMENT_RULE(ruleInitResourceInfoPanel)
 
     resourceInfoPanel->registerResource("Wheat");
     resourceInfoPanel->registerResource("Lumber");
-    resourceInfoPanel->registerResource("Sheep");
+    resourceInfoPanel->registerResource("Wool");
     resourceInfoPanel->registerResource("Ore");
     resourceInfoPanel->registerResource("Clay");
 
@@ -1082,8 +1082,8 @@ IMPLEMENT_RULE(ruleUpdateResourceInfoPanel)
         player->getCardStack()->getNumberOfCards("Resource", "Wheat"));
     resourceInfoPanel->updateResource("Lumber",
         player->getCardStack()->getNumberOfCards("Resource", "Lumber"));
-    resourceInfoPanel->updateResource("Sheep",
-        player->getCardStack()->getNumberOfCards("Resource", "Sheep"));
+    resourceInfoPanel->updateResource("Wool",
+        player->getCardStack()->getNumberOfCards("Resource", "Wool"));
     resourceInfoPanel->updateResource("Ore",
         player->getCardStack()->getNumberOfCards("Resource", "Ore"));
     resourceInfoPanel->updateResource("Clay",

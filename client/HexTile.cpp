@@ -170,7 +170,7 @@ const QString HexTile::getResourceName(HexTileType t)
         case OreType:    return "Ore";
         case GoldType:   return "Gold";
         case WheatType:  return "Wheat";
-        case SheepType:  return "Sheep";
+        case SheepType:  return "Wool";
         case WoodType:   return "Lumber";
         case ClayType:   return "Clay";
         default: return QString();

@@ -31,7 +31,7 @@ typedef struct _GameCard {
 #define GAMECARD_LUMBER \
     GameCard("Resource", "Lumber", "Lumber Resource", "CardResourceLumber.png")
 #define GAMECARD_SHEEP \
-    GameCard("Resource", "Sheep", "Sheep Resource", "CardResourceSheep.png")
+    GameCard("Resource", "Wool", "Wool Resource", "CardResourceWool.png")
 #define GAMECARD_CLAY \
     GameCard("Resource", "Clay", "Clay Resource", "CardResourceClay")
 

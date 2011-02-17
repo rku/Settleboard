@@ -29,9 +29,11 @@ QDockWidget {
 }
 
 QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget {
-    border: 1px solid gray;
-    background: #2f2f2f;
-    border-radius: 5px;
+    background: black; 
+}
+
+QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget QLabel:disabled {
+    color: gray;
 }
 
 QDockWidget::title {

@@ -75,6 +75,7 @@ void ControlPanel::registerAction(const QString name, QAction *action)
     QToolButton *button = new QToolButton(this);
     button->setFixedWidth(52);
     button->setFixedHeight(39);
+    button->setIconSize(QSize(48, 36));
     QHBoxLayout *l = (QHBoxLayout*)widget()->layout();
 
     Q_ASSERT(l->count() >= 2);
