@@ -19,13 +19,13 @@ GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
     turnLabel = new QLabel("Initial turn", widget);
     turnLabel->setObjectName("turnLabel");
 
-    l->addWidget(diceTextLabel, 0, 0, Qt::AlignLeft);
-    l->addWidget(die1PixmapLabel, 0, 1, Qt::AlignRight);
-    l->addWidget(die2PixmapLabel, 0, 2, Qt::AlignRight);
-    l->setColumnStretch(3, 1);
+    l->addWidget(turnLabel, 0, 0, 1, 4, Qt::AlignLeft);
     l->addWidget(currentPlayerLabel, 1, 0, 1, 4, Qt::AlignLeft);
-    l->addWidget(turnLabel, 2, 0, 1, 4, Qt::AlignLeft);
+    l->addWidget(diceTextLabel, 2, 0, Qt::AlignLeft);
+    l->addWidget(die1PixmapLabel, 2, 1, Qt::AlignRight);
+    l->addWidget(die2PixmapLabel, 2, 2, Qt::AlignRight);
 
+    l->setColumnStretch(3, 1);
     l->setRowStretch(2, 1);
 
     widget->setLayout(l);

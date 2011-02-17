@@ -33,7 +33,7 @@ QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget {
 }
 
 QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget QLabel {
-    color: gray;
+    color: white;
 }
 
 QDockWidget::title {

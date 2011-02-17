@@ -887,10 +887,10 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
     mainWindow->addDockWidget(Qt::RightDockWidgetArea, messagePanel);
 
     controlPanel = new ControlPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, controlPanel);
+    mainWindow->addDockWidget(Qt::TopDockWidgetArea, controlPanel);
 
     resourceInfoPanel = new ResourceInfoPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::TopDockWidgetArea, resourceInfoPanel);
+    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, resourceInfoPanel);
 
     return true;
 }
@@ -1067,8 +1067,6 @@ IMPLEMENT_RULE(ruleUpdateGameInfoPanel)
 
 IMPLEMENT_RULE(ruleInitResourceInfoPanel)
 {
-    LOCAL_ONLY_RULE
-
     resourceInfoPanel->registerResource("Lumber");
     resourceInfoPanel->registerResource("Clay");
     resourceInfoPanel->registerResource("Wool");
@@ -1080,18 +1078,18 @@ IMPLEMENT_RULE(ruleInitResourceInfoPanel)
 
 IMPLEMENT_RULE(ruleUpdateResourceInfoPanel)
 {
-    LOCAL_ONLY_RULE
+    Player *p = game->getLocalPlayer();
 
     resourceInfoPanel->updateResource("Wheat",
-        player->getCardStack()->getNumberOfCards("Resource", "Wheat"));
+        p->getCardStack()->getNumberOfCards("Resource", "Wheat"));
     resourceInfoPanel->updateResource("Lumber",
-        player->getCardStack()->getNumberOfCards("Resource", "Lumber"));
+        p->getCardStack()->getNumberOfCards("Resource", "Lumber"));
     resourceInfoPanel->updateResource("Wool",
-        player->getCardStack()->getNumberOfCards("Resource", "Wool"));
+        p->getCardStack()->getNumberOfCards("Resource", "Wool"));
     resourceInfoPanel->updateResource("Ore",
-        player->getCardStack()->getNumberOfCards("Resource", "Ore"));
+        p->getCardStack()->getNumberOfCards("Resource", "Ore"));
     resourceInfoPanel->updateResource("Clay",
-        player->getCardStack()->getNumberOfCards("Resource", "Clay"));
+        p->getCardStack()->getNumberOfCards("Resource", "Clay"));
 
     return true;
 }

@@ -21,9 +21,9 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
     widget->setLayout(l);
     setWidget(widget);
 
-    setFixedHeight(60);
-    setMaximumHeight(60);
-    setMinimumHeight(60);
+    setFixedHeight(50);
+    setMaximumHeight(50);
+    setMinimumHeight(50);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setAllowedAreas(Qt::BottomDockWidgetArea);
     setTitleBarWidget(new QWidget(this));
@@ -74,8 +74,8 @@ void ControlPanel::registerAction(const QString name, QAction *action)
 
     QToolButton *button = new QToolButton(this);
     button->setFixedWidth(48);
-    button->setFixedHeight(48);
-    button->setIconSize(QSize(40, 40));
+    button->setFixedHeight(40);
+    button->setIconSize(QSize(32,32));
     QHBoxLayout *l = (QHBoxLayout*)widget()->layout();
 
     Q_ASSERT(l->count() >= 2);
