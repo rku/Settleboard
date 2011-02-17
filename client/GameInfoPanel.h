@@ -14,15 +14,16 @@ class GameInfoPanel : public QDockWidget
         GameInfoPanel(const QString &title, QWidget *parent = 0);
         ~GameInfoPanel();
 
-        void setDiceValues(uint dice1, uint dice2);
+        void setDiceValues(uint die1, uint die2);
+        void clearDiceValues();
         void setCurrentPlayer(Player*);
         void setTurn(unsigned int);
         void clear();
 
     protected:
         QLabel *diceTextLabel;
-        QLabel *dice1PixmapLabel;
-        QLabel *dice2PixmapLabel;
+        QLabel *die1PixmapLabel;
+        QLabel *die2PixmapLabel;
         QLabel *currentPlayerLabel;
         QLabel *turnLabel;
 };

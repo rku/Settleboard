@@ -10,19 +10,18 @@ GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
     QGridLayout *l = new QGridLayout();
     QWidget *widget = new QWidget(this);
 
-    diceTextLabel = new QLabel("Dice values:", widget);
-    dice1PixmapLabel = new QLabel(widget);
-    dice1PixmapLabel->setPixmap(QPixmap(FileManager::getPathOfImage("Die3.png")));
-    dice2PixmapLabel = new QLabel(widget);
-    dice2PixmapLabel->setPixmap(QPixmap(FileManager::getPathOfImage("Die5.png")));
+    diceTextLabel = new QLabel("Rolled:", widget);
+    diceTextLabel->setVisible(false);
+    die1PixmapLabel = new QLabel(widget);
+    die2PixmapLabel = new QLabel(widget);
     currentPlayerLabel = new QLabel("No player", widget);
     currentPlayerLabel->setObjectName("currentPlayerLabel");
     turnLabel = new QLabel("Initial turn", widget);
     turnLabel->setObjectName("turnLabel");
 
     l->addWidget(diceTextLabel, 0, 0, Qt::AlignLeft);
-    l->addWidget(dice1PixmapLabel, 0, 1, Qt::AlignRight);
-    l->addWidget(dice2PixmapLabel, 0, 2, Qt::AlignRight);
+    l->addWidget(die1PixmapLabel, 0, 1, Qt::AlignRight);
+    l->addWidget(die2PixmapLabel, 0, 2, Qt::AlignRight);
     l->setColumnStretch(3, 1);
     l->addWidget(currentPlayerLabel, 1, 0, 1, 4, Qt::AlignLeft);
     l->addWidget(turnLabel, 2, 0, 1, 4, Qt::AlignLeft);
@@ -43,22 +42,33 @@ GameInfoPanel::~GameInfoPanel()
 {
 }
 
-void GameInfoPanel::setDiceValues(uint dice1, uint dice2)
+void GameInfoPanel::setDiceValues(uint die1, uint die2)
 {
-    QString fileNameTemplate("Dice_%1.png");
+    QString fileNameTemplate("Die%1.png");
 
-    QString filePath = FileManager::getPathOfImage(fileNameTemplate.arg(dice1));
-    QPixmap dice1Pixmap(filePath);
-    filePath = FileManager::getPathOfImage(fileNameTemplate.arg(dice2));
-    QPixmap dice2Pixmap(filePath);
+    QString filePath = FileManager::getPathOfImage(fileNameTemplate.arg(die1));
+    QPixmap die1Pixmap(filePath);
+    filePath = FileManager::getPathOfImage(fileNameTemplate.arg(die2));
+    QPixmap die2Pixmap(filePath);
 
-    if(dice1Pixmap.isNull())
-    { dice1PixmapLabel->setText(QString("%1").arg(dice1)); }
-    else { dice1PixmapLabel->setPixmap(dice1Pixmap); }
+    die1PixmapLabel->setToolTip(QString("%1").arg(die1));
+    die2PixmapLabel->setToolTip(QString("%1").arg(die2));
+    diceTextLabel->setVisible(true);
 
-    if(dice2Pixmap.isNull())
-    { dice2PixmapLabel->setText(QString("%1").arg(dice2)); }
-    else { dice1PixmapLabel->setPixmap(dice2Pixmap); }
+    if(die1Pixmap.isNull())
+    { die1PixmapLabel->setText(die1PixmapLabel->toolTip()); }
+    else { die1PixmapLabel->setPixmap(die1Pixmap); }
+
+    if(die2Pixmap.isNull())
+    { die2PixmapLabel->setText(die2PixmapLabel->toolTip()); }
+    else { die2PixmapLabel->setPixmap(die2Pixmap); }
+}
+
+void GameInfoPanel::clearDiceValues()
+{
+    die1PixmapLabel->clear();
+    die2PixmapLabel->clear();
+    diceTextLabel->setVisible(false);
 }
 
 void GameInfoPanel::setCurrentPlayer(Player *currentPlayer)

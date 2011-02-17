@@ -677,6 +677,8 @@ IMPLEMENT_RULE(ruleEndTurn)
     LOG_PLAYER_MSG(QString("%1 finished turn %2.")
         .arg(player->getName()).arg(turn));
 
+    gameInfoPanel->clearDiceValues();
+
     // hand over to next player
     unsigned int index = players.indexOf(player) + 1;
     if(players.size() <= (int)index) index = 0;
@@ -688,11 +690,11 @@ IMPLEMENT_RULE(ruleUserActionRollDice)
 {
     SERVER_ONLY_RULE
 
-    quint8 dice1 = quint8( qrand() / (RAND_MAX + 1.0) * 6 + 1 );
-    quint8 dice2 = quint8( qrand() / (RAND_MAX + 1.0) * 6 + 1 );
+    quint8 die1 = quint8( qrand() / (RAND_MAX + 1.0) * 6 + 1 );
+    quint8 die2 = quint8( qrand() / (RAND_MAX + 1.0) * 6 + 1 );
 
-    RULEDATA_PUSH("Dice1Value", dice1);
-    RULEDATA_PUSH("Dice2Value", dice2);
+    RULEDATA_PUSH("Die1Value", die1);
+    RULEDATA_PUSH("Die2Value", die2);
 
     pushRuleChain();
     RULECHAIN_ADD(ruleDiceRolled);
@@ -706,14 +708,16 @@ IMPLEMENT_RULE(ruleUserActionRollDice)
 
 IMPLEMENT_RULE(ruleDiceRolled)
 {
-    RULEDATA_REQUIRE("Dice1Value");
-    RULEDATA_REQUIRE("Dice2Value");
-    quint8 dice1 = RULEDATA_READ("Dice1Value").value<quint8>();
-    quint8 dice2 = RULEDATA_READ("Dice2Value").value<quint8>();
+    RULEDATA_REQUIRE("Die1Value");
+    RULEDATA_REQUIRE("Die2Value");
+    quint8 die1 = RULEDATA_READ("Die1Value").value<quint8>();
+    quint8 die2 = RULEDATA_READ("Die2Value").value<quint8>();
 
     diceRolled = true;
     LOG_PLAYER_MSG(QString("%1 rolled a %2 (%3, %4).")
-        .arg(player->getName()).arg(dice1 + dice2).arg(dice1).arg(dice2));
+        .arg(player->getName()).arg(die1 + die2).arg(die1).arg(die2));
+
+    gameInfoPanel->setDiceValues(die1, die2);
 
     return true;
 }
@@ -722,10 +726,10 @@ IMPLEMENT_RULE(ruleDrawRolledResources)
 {
     SERVER_ONLY_RULE
 
-    RULEDATA_REQUIRE("Dice1Value");
-    RULEDATA_REQUIRE("Dice2Value");
-    quint8 dice1 = RULEDATA_READ("Dice1Value").value<quint8>();
-    quint8 dice2 = RULEDATA_READ("Dice2Value").value<quint8>();
+    RULEDATA_REQUIRE("Die1Value");
+    RULEDATA_REQUIRE("Die2Value");
+    quint8 die1 = RULEDATA_READ("Die1Value").value<quint8>();
+    quint8 die2 = RULEDATA_READ("Die2Value").value<quint8>();
 
     HexTileList tiles = game->getBoard()->getBoardTiles();
     HexTileList::iterator hI;
@@ -736,7 +740,7 @@ IMPLEMENT_RULE(ruleDrawRolledResources)
         QString stack;
 
         if(!t->getHasNumberChip()) continue;
-        if(t->getChipNumber() != (dice1+dice2)) continue;
+        if(t->getChipNumber() != (die1+die2)) continue;
 
         stack = t->getResourceName();
         if(stack.isEmpty()) continue;
@@ -770,10 +774,10 @@ IMPLEMENT_RULE(ruleDrawRolledResources)
 
 IMPLEMENT_RULE(ruleHighlightRolledTiles)
 {
-    RULEDATA_REQUIRE("Dice1Value");
-    RULEDATA_REQUIRE("Dice2Value");
-    quint8 dice1 = RULEDATA_READ("Dice1Value").value<quint8>();
-    quint8 dice2 = RULEDATA_READ("Dice2Value").value<quint8>();
+    RULEDATA_REQUIRE("Die1Value");
+    RULEDATA_REQUIRE("Die2Value");
+    quint8 die1 = RULEDATA_READ("Die1Value").value<quint8>();
+    quint8 die2 = RULEDATA_READ("Die2Value").value<quint8>();
 
     // IMPLEMENT ME!
     return true;
