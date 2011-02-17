@@ -1065,11 +1065,11 @@ IMPLEMENT_RULE(ruleInitResourceInfoPanel)
 {
     LOCAL_ONLY_RULE
 
-    resourceInfoPanel->registerResource("Wheat");
     resourceInfoPanel->registerResource("Lumber");
-    resourceInfoPanel->registerResource("Wool");
-    resourceInfoPanel->registerResource("Ore");
     resourceInfoPanel->registerResource("Clay");
+    resourceInfoPanel->registerResource("Wool");
+    resourceInfoPanel->registerResource("Wheat");
+    resourceInfoPanel->registerResource("Ore");
 
     return true;
 }

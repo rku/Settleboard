@@ -38,7 +38,6 @@ void ResourceInfoPanel::registerResource(const QString name)
     iconLabel->setPixmap(QPixmap(iconFile));
 
     QLabel *amountLabel = new QLabel("0", this);
-    amountLabel->setEnabled(false);
 
     QVBoxLayout *l2 = new QVBoxLayout();
     l2->addWidget(iconLabel,0, Qt::AlignCenter);
@@ -59,7 +58,6 @@ void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
 
     QLabel *amountLabel = resources.value(name);
     amountLabel->setText(QString("%1").arg(amount));
-    amountLabel->setEnabled((amount > 0));
 }
 
 void ResourceInfoPanel::clear()

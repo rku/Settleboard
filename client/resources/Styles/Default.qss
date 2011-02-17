@@ -32,7 +32,7 @@ QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget {
     background: black; 
 }
 
-QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget QLabel:disabled {
+QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget QLabel {
     color: gray;
 }
 
