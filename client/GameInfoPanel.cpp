@@ -12,7 +12,9 @@ GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
 
     diceTextLabel = new QLabel("Dice values:", widget);
     dice1PixmapLabel = new QLabel(widget);
+    dice1PixmapLabel->setPixmap(QPixmap(FileManager::getPathOfImage("Die3.png")));
     dice2PixmapLabel = new QLabel(widget);
+    dice2PixmapLabel->setPixmap(QPixmap(FileManager::getPathOfImage("Die5.png")));
     currentPlayerLabel = new QLabel("No player", widget);
     currentPlayerLabel->setObjectName("currentPlayerLabel");
     turnLabel = new QLabel("Initial turn", widget);
@@ -21,8 +23,9 @@ GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
     l->addWidget(diceTextLabel, 0, 0, Qt::AlignLeft);
     l->addWidget(dice1PixmapLabel, 0, 1, Qt::AlignRight);
     l->addWidget(dice2PixmapLabel, 0, 2, Qt::AlignRight);
-    l->addWidget(currentPlayerLabel, 1, 0, 1, 3, Qt::AlignLeft);
-    l->addWidget(turnLabel, 2, 0, 1, 3, Qt::AlignLeft);
+    l->setColumnStretch(3, 1);
+    l->addWidget(currentPlayerLabel, 1, 0, 1, 4, Qt::AlignLeft);
+    l->addWidget(turnLabel, 2, 0, 1, 4, Qt::AlignLeft);
 
     l->setRowStretch(2, 1);
 
