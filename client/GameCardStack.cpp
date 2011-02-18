@@ -32,12 +32,42 @@ bool GameCardStack::drawFirstCards(GameCardStack *toStack, uint amount)
     return true;
 }
 
+bool GameCardStack::drawCardsOfType(GameCardStack *toStack,
+    const QString &type, const QString &name, unsigned int amount)
+{
+    QList<GameCard*>::iterator i;
+    QList<GameCard*> foundCards;
+
+    for(i = cards.begin(); i != cards.end(); ++i)
+    {
+        GameCard *card = *i;
+        if(card->type == type && card->name == name)
+            foundCards.append(card);
+    }
+
+    // have we found enough cards?
+    if(foundCards.size() >= amount)
+    {
+        // draw them
+        i = foundCards.begin();
+        while(i != foundCards.end())
+        {
+            cards.removeAll(*i);
+            toStack->addCard(*i);
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
 uint GameCardStack::getNumberOfCards(QString type)
 {
     uint num = 0;
 
     for(int i = 0; i < cards.size(); i++)
-        if(cards.at(0)->type == type) num++;
+        if(cards.at(i)->type == type) num++;
 
     return num;
 }

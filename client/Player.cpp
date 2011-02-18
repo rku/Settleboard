@@ -99,6 +99,7 @@ PlayerObject *Player::getUnplacedObjectOfType(QString type)
         if(!objs.at(i)->getIsPlaced()) return objs.at(i);
     }
 
+    qDebug() << "Unplaced object requested but all are placed!";
     return NULL;
 }
 

@@ -98,6 +98,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleSettlementSelected);
     REGISTER_RULE(ruleUserActionBuildSettlement);
     REGISTER_RULE(ruleBuildSettlement);
+    REGISTER_RULE(ruleBuySettlement);
     REGISTER_RULE(ruleCanBuildSettlement);
     REGISTER_RULE(ruleRemoveSettlement);
     REGISTER_RULE(ruleSelectCrossroad);
@@ -1219,6 +1220,7 @@ IMPLEMENT_RULE(ruleUserActionBuildSettlement)
 
     pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildSettlement);
+    RULECHAIN_ADD(ruleBuySettlement);
     RULECHAIN_ADD(ruleSetCancelable);
     RULECHAIN_ADD(ruleSelectCrossroad);
     RULECHAIN_ADD(ruleUnsetCancelable);
@@ -1236,6 +1238,7 @@ IMPLEMENT_RULE(ruleBuildSettlement)
     Q_ASSERT(cr != NULL);
     Q_ASSERT(!cr->getIsPlayerObjectPlaced());
 
+    // place object
     PlayerObject *bld = player->getUnplacedObjectOfType("Settlement");
     bld->setScale(0.3);
     cr->placePlayerObject(bld);
@@ -1246,8 +1249,37 @@ IMPLEMENT_RULE(ruleBuildSettlement)
     return true;
 }
 
+IMPLEMENT_RULE(ruleBuySettlement)
+{
+    // we already know that there are enough resources
+    // available since ruleCanBuildSettlement passed
+
+    // pay resources
+    GameCardStack *stack = player->getCardStack();
+    stack->drawCardsOfType(
+        game->getBank()->getCardStack("Clay"),
+        "Resource", "Clay", 2);
+    stack->drawCardsOfType(
+        game->getBank()->getCardStack("Lumber"),
+        "Resource", "Lumber", 3);
+
+    return true;
+}
+
 IMPLEMENT_RULE(ruleCanBuildSettlement)
 {
+    // check for available settlement
+    unsigned int n = player->getNumberOfUnplacedObjectsOfType("Settlement");
+    if(n < 1) return false;
+
+    // check resources (3x lumber, 2x clay)
+    GameCardStack *stack = player->getCardStack();
+    Q_ASSERT(stack != NULL);
+    unsigned int clayCards = stack->getNumberOfCards("Resource", "Clay");
+    unsigned int lumberCards = stack->getNumberOfCards("Resource", "Lumber");
+
+    if(clayCards < 2 || lumberCards < 3) return false;
+
     return true;
 }
 

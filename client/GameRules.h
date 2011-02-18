@@ -185,6 +185,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleSelectSettlement);
         DECLARE_RULE(ruleSettlementSelected);
         DECLARE_RULE(ruleUserActionBuildSettlement);
+        DECLARE_RULE(ruleBuySettlement);
         DECLARE_RULE(ruleBuildSettlement);
         DECLARE_RULE(ruleCanBuildSettlement);
         DECLARE_RULE(ruleRemoveSettlement);
