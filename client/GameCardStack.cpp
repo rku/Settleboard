@@ -43,10 +43,12 @@ bool GameCardStack::drawCardsOfType(GameCardStack *toStack,
         GameCard *card = *i;
         if(card->type == type && card->name == name)
             foundCards.append(card);
+
+        if(foundCards.size() == (int)amount) break;
     }
 
     // have we found enough cards?
-    if(foundCards.size() >= amount)
+    if(foundCards.size() >= (int)amount)
     {
         // draw them
         i = foundCards.begin();
@@ -54,6 +56,7 @@ bool GameCardStack::drawCardsOfType(GameCardStack *toStack,
         {
             cards.removeAll(*i);
             toStack->addCard(*i);
+            i++;
         }
 
         return true;

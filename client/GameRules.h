@@ -182,10 +182,13 @@ class GameRules : public QObject
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);
+        DECLARE_RULE(ruleBuyCity);
+        DECLARE_RULE(ruleCanBuyCity);
         DECLARE_RULE(ruleSelectSettlement);
         DECLARE_RULE(ruleSettlementSelected);
         DECLARE_RULE(ruleUserActionBuildSettlement);
         DECLARE_RULE(ruleBuySettlement);
+        DECLARE_RULE(ruleCanBuySettlement);
         DECLARE_RULE(ruleBuildSettlement);
         DECLARE_RULE(ruleCanBuildSettlement);
         DECLARE_RULE(ruleRemoveSettlement);
@@ -194,6 +197,8 @@ class GameRules : public QObject
         DECLARE_RULE(ruleUserActionBuildRoad);
         DECLARE_RULE(ruleBuildRoad);
         DECLARE_RULE(ruleCanBuildRoad);
+        DECLARE_RULE(ruleBuyRoad);
+        DECLARE_RULE(ruleCanBuyRoad);
         DECLARE_RULE(ruleSelectRoadway);
         DECLARE_RULE(ruleSelectRoadwayAtCrossroad);
         DECLARE_RULE(ruleCanSelectRoadway);

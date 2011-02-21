@@ -22,6 +22,8 @@
 #include "Player.h"
 #include "GLGameModelProxy.h"
 #include "FileManager.h"
+#include "Crossroad.h"
+#include "Roadway.h"
 #include "PlayerObject.h"
 
 PlayerObject::PlayerObject(Player *_owner, QString _type, QObject *parent)
@@ -46,5 +48,4 @@ void PlayerObject::setupLightingParameters()
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_color);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_color);
 }
-
 

@@ -28,5 +28,7 @@ class GLGameModelProxy : public GLGameModel
         PlayerObject *playerObject;
 };
 
+Q_DECLARE_METATYPE(GLGameModelProxy*);
+
 #endif
 

@@ -94,11 +94,14 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
+    REGISTER_RULE(ruleBuyCity);
+    REGISTER_RULE(ruleCanBuyCity);
     REGISTER_RULE(ruleSelectSettlement);
     REGISTER_RULE(ruleSettlementSelected);
     REGISTER_RULE(ruleUserActionBuildSettlement);
     REGISTER_RULE(ruleBuildSettlement);
     REGISTER_RULE(ruleBuySettlement);
+    REGISTER_RULE(ruleCanBuySettlement);
     REGISTER_RULE(ruleCanBuildSettlement);
     REGISTER_RULE(ruleRemoveSettlement);
     REGISTER_RULE(ruleSelectCrossroad);
@@ -106,6 +109,8 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleUserActionBuildRoad);
     REGISTER_RULE(ruleBuildRoad);
     REGISTER_RULE(ruleCanBuildRoad);
+    REGISTER_RULE(ruleBuyRoad);
+    REGISTER_RULE(ruleCanBuyRoad);
     REGISTER_RULE(ruleSelectRoadway);
     REGISTER_RULE(ruleSelectRoadwayAtCrossroad);
     REGISTER_RULE(ruleCanSelectRoadway);
@@ -175,9 +180,6 @@ void GameRules::packRuleDataToNetworkPacket(NetworkPacket &packet)
         else if(!qstrcmp(typeName, "Roadway*"))
         { v = qVariantFromValue(RoadwayPtr(i.value().value<Roadway*>())); }
 
-        else if(!qstrcmp(typeName, "GLGameModel*"))
-        { v = qVariantFromValue(GLGameModelPtr(i.value().value<GLGameModel*>())); }
-
         qDebug() << "Packing rule data" << i.key() << v;
         packet.addData(i.key(), v);
     }
@@ -200,9 +202,6 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
 
         else if(!qstrcmp(typeName, "RoadwayPtr"))
         { v = qVariantFromValue(i.value().value<RoadwayPtr>().getObject()); }
-
-        else if(!qstrcmp(typeName, "GLGameModelPtr"))
-        { v = qVariantFromValue(i.value().value<GLGameModelPtr>().getObject()); }
 
         qDebug() << "Unpacking rule data" << i.key() << v;
         ruleData.insertMulti(i.key(), v);
@@ -1040,7 +1039,7 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
     controlPanel->setActionState("BuildSettlement", false);
     controlPanel->setActionState("BuildCity", false);
     controlPanel->setActionState("BuyDevCard", false);
-    controlPanel->setActionState("ShowCards", true);
+    controlPanel->setActionState("ShowCards", false);
     controlPanel->setActionState("Trade", false);
     controlPanel->setActionState("RollDice", false);
     controlPanel->setActionState("EndTurn", false);
@@ -1048,11 +1047,19 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
     if(currentPlayer && currentPlayer->getIsLocal())
     {
         controlPanel->setActionState("BuildRoad",
-            diceRolled && EXECUTE_SUBRULE(ruleCanBuildRoad));
+            diceRolled &&
+            EXECUTE_SUBRULE(ruleCanBuildRoad) &&
+            EXECUTE_SUBRULE(ruleCanBuyRoad));
         controlPanel->setActionState("BuildSettlement",
-            diceRolled && EXECUTE_SUBRULE(ruleCanBuildSettlement));
+            diceRolled &&
+            EXECUTE_SUBRULE(ruleCanBuildSettlement) &&
+            EXECUTE_SUBRULE(ruleCanBuySettlement));
         controlPanel->setActionState("BuildCity",
-            diceRolled && EXECUTE_SUBRULE(ruleCanBuildCity));
+            diceRolled &&
+            EXECUTE_SUBRULE(ruleCanBuildCity) &&
+            EXECUTE_SUBRULE(ruleCanBuyCity));
+        controlPanel->setActionState("ShowCards",
+            (player->getCardStack()->getNumberOfCards() > 0));
         controlPanel->setActionState("RollDice", !diceRolled);
         controlPanel->setActionState("EndTurn", diceRolled);
     }
@@ -1128,10 +1135,12 @@ IMPLEMENT_RULE(ruleUserActionBuildCity)
 
     pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildCity);
+    RULECHAIN_ADD(ruleCanBuyCity);
     RULECHAIN_ADD(ruleSetCancelable);
     RULECHAIN_ADD(ruleSelectSettlement);
     RULECHAIN_ADD(ruleUnsetCancelable);
     RULECHAIN_ADD(ruleSettlementSelected);
+    RULECHAIN_ADD(ruleBuyCity);
     RULECHAIN_ADD(ruleBuildCity);
     startRuleChain();
 
@@ -1164,6 +1173,34 @@ IMPLEMENT_RULE(ruleBuildCity)
 
 IMPLEMENT_RULE(ruleCanBuildCity)
 {
+    unsigned int nC = player->getNumberOfUnplacedObjectsOfType("City");
+    unsigned int nS = player->getNumberOfPlacedObjectsOfType("Settlement");
+
+    if(nC < 1 || nS < 1) return false;
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleBuyCity)
+{
+    GameCardStack *oreStack = game->getBank()->getCardStack("Ore");
+    GameCardStack *wheatStack = game->getBank()->getCardStack("Wheat");
+    GameCardStack *playerStack = player->getCardStack();
+
+    playerStack->drawCardsOfType(oreStack, "Resource", "Ore", 2);
+    playerStack->drawCardsOfType(wheatStack, "Resource", "Wheat", 3);
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanBuyCity)
+{
+    GameCardStack *stack = player->getCardStack();
+    unsigned int nOre = stack->getNumberOfCards("Resource", "Ore");
+    unsigned int nWheat = stack->getNumberOfCards("Resource", "Wheat");
+
+    if(nOre < 2 || nWheat < 3) return false;
+
     return true;
 }
 
@@ -1220,10 +1257,11 @@ IMPLEMENT_RULE(ruleUserActionBuildSettlement)
 
     pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildSettlement);
-    RULECHAIN_ADD(ruleBuySettlement);
+    RULECHAIN_ADD(ruleCanBuySettlement);
     RULECHAIN_ADD(ruleSetCancelable);
     RULECHAIN_ADD(ruleSelectCrossroad);
     RULECHAIN_ADD(ruleUnsetCancelable);
+    RULECHAIN_ADD(ruleBuySettlement);
     RULECHAIN_ADD(ruleBuildSettlement);
     startRuleChain();
 
@@ -1251,17 +1289,12 @@ IMPLEMENT_RULE(ruleBuildSettlement)
 
 IMPLEMENT_RULE(ruleBuySettlement)
 {
-    // we already know that there are enough resources
-    // available since ruleCanBuildSettlement passed
-
-    // pay resources
+    GameCardStack *clayStack = game->getBank()->getCardStack("Clay");
+    GameCardStack *lumberStack = game->getBank()->getCardStack("Lumber");
     GameCardStack *stack = player->getCardStack();
-    stack->drawCardsOfType(
-        game->getBank()->getCardStack("Clay"),
-        "Resource", "Clay", 2);
-    stack->drawCardsOfType(
-        game->getBank()->getCardStack("Lumber"),
-        "Resource", "Lumber", 3);
+
+    stack->drawCardsOfType(clayStack, "Resource", "Clay", 2);
+    stack->drawCardsOfType(lumberStack, "Resource", "Lumber", 3);
 
     return true;
 }
@@ -1272,9 +1305,12 @@ IMPLEMENT_RULE(ruleCanBuildSettlement)
     unsigned int n = player->getNumberOfUnplacedObjectsOfType("Settlement");
     if(n < 1) return false;
 
-    // check resources (3x lumber, 2x clay)
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanBuySettlement)
+{
     GameCardStack *stack = player->getCardStack();
-    Q_ASSERT(stack != NULL);
     unsigned int clayCards = stack->getNumberOfCards("Resource", "Clay");
     unsigned int lumberCards = stack->getNumberOfCards("Resource", "Lumber");
 
@@ -1355,9 +1391,11 @@ IMPLEMENT_RULE(ruleUserActionBuildRoad)
 
     pushRuleChain();
     RULECHAIN_ADD(ruleCanBuildRoad);
+    RULECHAIN_ADD(ruleCanBuyRoad);
     RULECHAIN_ADD(ruleSetCancelable);
     RULECHAIN_ADD(ruleSelectRoadway);
     RULECHAIN_ADD(ruleUnsetCancelable);
+    RULECHAIN_ADD(ruleBuyRoad);
     RULECHAIN_ADD(ruleBuildRoad);
     startRuleChain();
     return true;
@@ -1379,6 +1417,32 @@ IMPLEMENT_RULE(ruleBuildRoad)
 
 IMPLEMENT_RULE(ruleCanBuildRoad)
 {
+    unsigned int nR = player->getNumberOfUnplacedObjectsOfType("Road");
+    if(nR < 1) return false;
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanBuyRoad)
+{
+    GameCardStack *stack = player->getCardStack();
+    unsigned int nClay = stack->getNumberOfCards("Resource", "Clay");
+    unsigned int nLumber = stack->getNumberOfCards("Resource", "Lumber");
+
+    if(nClay < 1 || nLumber < 1) return false;
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleBuyRoad)
+{
+    GameCardStack *clayStack = game->getBank()->getCardStack("Clay");
+    GameCardStack *lumberStack = game->getBank()->getCardStack("Lumber");
+    GameCardStack *playerStack = player->getCardStack();
+
+    playerStack->drawCardsOfType(clayStack, "Resource", "Clay", 1);
+    playerStack->drawCardsOfType(lumberStack, "Resource", "Lumber", 1);
+
     return true;
 }
 

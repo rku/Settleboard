@@ -25,6 +25,7 @@
 #include "GLGameModel.h"
 #include "GLWidget.h"
 #include "Game.h"
+#include "PlayerObject.h"
 #include "OBJGLLoader.h"
 
 GLGameModel::GLGameModel(QObject *parent) : QObject(parent)
@@ -328,24 +329,5 @@ QList<QVector3D> GLGameModel::getVerticesOfGroupWithName(QString name)
 void GLGameModel::setTexture(const QString &materialName, const QString &fileName)
 {
     materials.insert(materialName, fileName);
-}
-
-// QDataStream operators
-
-QDataStream &operator<<(QDataStream &stream, const GLGameModelPtr &obj)
-{
-    stream << obj.object->getPos();
-    return stream;
-}
-
-QDataStream &operator>>(QDataStream &stream, GLGameModelPtr &obj)
-{
-    QVector3D v;
-
-    stream >> v;
-    // find object with vertex v
-    //obj.object = Game::getInstance()->getBoard()->getGLGameModelAtVertex(v);
-
-    return stream;
 }
 

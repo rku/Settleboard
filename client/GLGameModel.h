@@ -137,20 +137,4 @@ class GLGameModel : public QObject
 
 Q_DECLARE_METATYPE(GLGameModel*);
 
-class GLGameModelPtr
-{
-    public:
-        GLGameModelPtr() : object(NULL) {}
-        GLGameModelPtr(GLGameModel *p) { object = p; }
-        GLGameModelPtr(const GLGameModelPtr &c) { object = c.object; }
-        GLGameModel *getObject() { return object; }
-
-        friend QDataStream &operator<<(QDataStream&, const GLGameModelPtr&);
-        friend QDataStream &operator>>(QDataStream&, GLGameModelPtr&);
-
-        GLGameModel *object;
-};
-
-Q_DECLARE_METATYPE(GLGameModelPtr);
-
 #endif /* GLGAMEMODEL_H */
