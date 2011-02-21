@@ -129,7 +129,7 @@ void MainWindow::createDockWidgets()
 
 void MainWindow::createStatusBar()
 {
-    statusBar();
+    //statusBar();
 }
 
 void MainWindow::showConnector()

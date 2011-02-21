@@ -97,7 +97,6 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleBuyCity);
     REGISTER_RULE(ruleCanBuyCity);
     REGISTER_RULE(ruleSelectSettlement);
-    REGISTER_RULE(ruleSettlementSelected);
     REGISTER_RULE(ruleUserActionBuildSettlement);
     REGISTER_RULE(ruleBuildSettlement);
     REGISTER_RULE(ruleBuySettlement);
@@ -1087,17 +1086,18 @@ IMPLEMENT_RULE(ruleInitResourceInfoPanel)
 IMPLEMENT_RULE(ruleUpdateResourceInfoPanel)
 {
     Player *p = game->getLocalPlayer();
+    GameCardStack *stack = p->getCardStack();
 
     resourceInfoPanel->updateResource("Wheat",
-        p->getCardStack()->getNumberOfCards("Resource", "Wheat"));
+        stack->getNumberOfCards("Resource", "Wheat"));
     resourceInfoPanel->updateResource("Lumber",
-        p->getCardStack()->getNumberOfCards("Resource", "Lumber"));
+        stack->getNumberOfCards("Resource", "Lumber"));
     resourceInfoPanel->updateResource("Wool",
-        p->getCardStack()->getNumberOfCards("Resource", "Wool"));
+        stack->getNumberOfCards("Resource", "Wool"));
     resourceInfoPanel->updateResource("Ore",
-        p->getCardStack()->getNumberOfCards("Resource", "Ore"));
+        stack->getNumberOfCards("Resource", "Ore"));
     resourceInfoPanel->updateResource("Clay",
-        p->getCardStack()->getNumberOfCards("Resource", "Clay"));
+        stack->getNumberOfCards("Resource", "Clay"));
 
     return true;
 }
@@ -1110,7 +1110,6 @@ IMPLEMENT_RULE(ruleUpdateInterface)
     EXECUTE_SUBRULE(ruleUpdateResourceInfoPanel);
 
     game->getBoard()->update();
-
     return true;
 }
 
@@ -1139,7 +1138,6 @@ IMPLEMENT_RULE(ruleUserActionBuildCity)
     RULECHAIN_ADD(ruleSetCancelable);
     RULECHAIN_ADD(ruleSelectSettlement);
     RULECHAIN_ADD(ruleUnsetCancelable);
-    RULECHAIN_ADD(ruleSettlementSelected);
     RULECHAIN_ADD(ruleBuyCity);
     RULECHAIN_ADD(ruleBuildCity);
     startRuleChain();
@@ -1190,6 +1188,9 @@ IMPLEMENT_RULE(ruleBuyCity)
     playerStack->drawCardsOfType(oreStack, "Resource", "Ore", 2);
     playerStack->drawCardsOfType(wheatStack, "Resource", "Wheat", 3);
 
+    LOG_PLAYER_MSG(QString("%1 payed 2 ore and 3 wheat.")
+        .arg(player->getName()));
+
     return true;
 }
 
@@ -1208,7 +1209,6 @@ IMPLEMENT_RULE(ruleSelectSettlement)
 {
     bool selectableObjectFound = false;
     Board *board = game->getBoard();
-
     QList<Crossroad*> crossroads = board->getCrossroads();
 
     for(int i = 0; i < crossroads.size(); i++)
@@ -1231,20 +1231,6 @@ IMPLEMENT_RULE(ruleSelectSettlement)
         suspendRuleChain();
         LOG_SYSTEM_MSG(QString("Waiting for %1 to select a settlement.").
             arg(player->getName()))
-        return true;
-    }
-
-    return false;
-}
-
-IMPLEMENT_RULE(ruleSettlementSelected)
-{
-    LOCAL_ONLY_RULE
-
-    Board *board = game->getBoard();
-    if(board->getHasSelectedObject())
-    {
-        RULEDATA_PUSH("Crossroad", (Crossroad*)board->getSelectedObject());
         return true;
     }
 
@@ -1296,6 +1282,9 @@ IMPLEMENT_RULE(ruleBuySettlement)
     stack->drawCardsOfType(clayStack, "Resource", "Clay", 2);
     stack->drawCardsOfType(lumberStack, "Resource", "Lumber", 3);
 
+    LOG_PLAYER_MSG(QString("%1 payed 2 clay and 3 lumber.")
+        .arg(player->getName()));
+
     return true;
 }
 
@@ -1325,7 +1314,6 @@ IMPLEMENT_RULE(ruleRemoveSettlement)
     PlayerObject *b = RULEDATA_POP("Settlement").value<PlayerObject*>();
 
     Q_ASSERT(b->getIsPlaced());
-    Q_ASSERT(b->getBaseObject() == (GLGameModelProxy*)b);
     b->getBaseObject()->placePlayerObject(NULL);
     b->setBaseObject(NULL);
     b->getOwner()->increaseWinningPointsBy(-1);
@@ -1442,6 +1430,9 @@ IMPLEMENT_RULE(ruleBuyRoad)
 
     playerStack->drawCardsOfType(clayStack, "Resource", "Clay", 1);
     playerStack->drawCardsOfType(lumberStack, "Resource", "Lumber", 1);
+
+    LOG_PLAYER_MSG(QString("%1 payed 1 clay and 1 lumber")
+        .arg(player->getName()));
 
     return true;
 }
