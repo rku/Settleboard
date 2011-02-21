@@ -50,7 +50,8 @@ HEADERS = client/GLWidget.h \
           client/NetworkPacket.h \
           client/GameLobby.h \
           client/Map.h \
-          client/StandardMap.h
+          client/StandardMap.h \
+          client/Robber.h
 
 SOURCES = client/GLWidget.cpp \
           client/Game.cpp \
@@ -82,5 +83,6 @@ SOURCES = client/GLWidget.cpp \
           client/NetworkPacket.cpp \
           client/GameLobby.cpp \
           client/Map.cpp \
-          client/StandardMap.cpp
+          client/StandardMap.cpp \
+          client/Robber.cpp
 

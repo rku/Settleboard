@@ -26,6 +26,7 @@
 #include "Crossroad.h"
 #include "Roadway.h"
 #include "Player.h"
+#include "HexTile.h"
 #include "FileManager.h"
 #include "MainWindow.h"
 
@@ -56,6 +57,9 @@ void registerMetaTypeOperators()
 
     qRegisterMetaType<PlayerPtr>("PlayerPtr");
     qRegisterMetaTypeStreamOperators<PlayerPtr>("PlayerPtr");
+
+    qRegisterMetaType<HexTilePtr>("HexTilePtr");
+    qRegisterMetaTypeStreamOperators<HexTilePtr>("HexTilePtr");
 }
 
 int main(int argc, char *argv[])

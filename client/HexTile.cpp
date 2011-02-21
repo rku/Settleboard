@@ -23,6 +23,7 @@
 #include "NumberChip.h"
 #include "Roadway.h"
 #include "FileManager.h"
+#include "Robber.h"
 #include "HexTile.h"
 
 HexTile::HexTile(HexTileType t, unsigned int x, unsigned int y,
@@ -36,6 +37,7 @@ HexTile::HexTile(HexTileType t, unsigned int x, unsigned int y,
     setAngleY(angle);
 
     numberChip = NULL;
+    robber = NULL;
     chipNumber = 0;
     setType(t);
 }
@@ -43,6 +45,7 @@ HexTile::HexTile(HexTileType t, unsigned int x, unsigned int y,
 HexTile::~HexTile()
 {
     if(numberChip) delete numberChip;
+    if(robber) delete robber;
 }
 
 void HexTile::setChipNumber(unsigned int number)
@@ -124,6 +127,25 @@ void HexTile::draw()
         numberChip->setPosZ(v.z());
         numberChip->draw();
     }
+
+    if(robber) robber->draw();
+}
+
+void HexTile::setHasRobber(bool b)
+{
+    if(b && (robber == NULL))
+    {
+        robber = new Robber(this);
+        robber->setScale(0.6);
+        robber->setPos(getCenterVertex());
+        return;
+    }
+
+    if(!b && (robber != NULL))
+    {
+        delete robber;
+        robber = NULL;
+    }
 }
 
 HexTile::HexTileType HexTile::getType()
@@ -177,3 +199,14 @@ const QString HexTile::getResourceName(HexTileType t)
     }
 }
 
+// QDataStream operators
+
+QDataStream &operator<<(QDataStream &stream, const HexTilePtr &obj)
+{
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, HexTilePtr &obj)
+{
+    return stream;
+}

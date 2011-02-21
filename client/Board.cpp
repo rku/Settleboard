@@ -74,13 +74,6 @@ void Board::render()
 
     for(int i = 0; i < roadways.size(); ++i)
         roadways.at(i)->draw();
-
-    GLGameModel *robber = new GLGameModel();
-    robber->load(FileManager::getPathOfGLObject("Robber"));
-    robber->setColor(Qt::black);
-    robber->setScale(0.7);
-    robber->draw();
-    delete robber;
 }
 
 void Board::update()

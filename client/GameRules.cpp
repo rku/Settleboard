@@ -91,6 +91,9 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleGenerateBoard);
     REGISTER_RULE(ruleUpdateInterface);
     REGISTER_RULE(ruleBoardObjectSelected);
+    REGISTER_RULE(ruleUserActionMoveRobber);
+    REGISTER_RULE(ruleSelectHexTile);
+    REGISTER_RULE(ruleMoveRobber);
     REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
@@ -179,6 +182,9 @@ void GameRules::packRuleDataToNetworkPacket(NetworkPacket &packet)
         else if(!qstrcmp(typeName, "Roadway*"))
         { v = qVariantFromValue(RoadwayPtr(i.value().value<Roadway*>())); }
 
+        else if(!qstrcmp(typeName, "HexTile*"))
+        { v = qVariantFromValue(HexTilePtr(i.value().value<HexTile*>())); }
+
         qDebug() << "Packing rule data" << i.key() << v;
         packet.addData(i.key(), v);
     }
@@ -201,6 +207,9 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
 
         else if(!qstrcmp(typeName, "RoadwayPtr"))
         { v = qVariantFromValue(i.value().value<RoadwayPtr>().getObject()); }
+
+        else if(!qstrcmp(typeName, "HexTilePtr"))
+        { v = qVariantFromValue(i.value().value<HexTilePtr>().getObject()); }
 
         qDebug() << "Unpacking rule data" << i.key() << v;
         ruleData.insertMulti(i.key(), v);
@@ -370,7 +379,7 @@ void GameRules::pushRuleData(QObject *pointer)
 
     PUSH_TO_RULEDATA_IF_QOBJECT_TYPE(Crossroad);
     PUSH_TO_RULEDATA_IF_QOBJECT_TYPE(Roadway);
-    PUSH_TO_RULEDATA_IF_QOBJECT_TYPE(GLGameModel);
+    PUSH_TO_RULEDATA_IF_QOBJECT_TYPE(HexTile);
     PUSH_TO_RULEDATA_IF_QOBJECT_TYPE(Player);
 
     qDebug() << "Unknown type!";
@@ -588,6 +597,7 @@ IMPLEMENT_RULE(ruleInitGame)
     RULECHAIN_ADD(ruleInitControlPanel);
     RULECHAIN_ADD(ruleInitResourceInfoPanel);
     RULECHAIN_ADD(ruleGenerateBoard);
+    RULECHAIN_ADD(ruleUserActionMoveRobber); // TEST
     RULECHAIN_ADD(ruleInitialPlacement);
     RULECHAIN_ADD(ruleBeginTurn)
     startRuleChain();
@@ -739,6 +749,7 @@ IMPLEMENT_RULE(ruleDrawRolledResources)
         QString stack;
 
         if(!t->getHasNumberChip()) continue;
+        if(t->getHasRobber()) continue;
         if(t->getChipNumber() != (die1+die2)) continue;
 
         stack = t->getResourceName();
@@ -1125,6 +1136,64 @@ IMPLEMENT_RULE(ruleGenerateBoard)
 {
     game->getBoard()->load(new StandardMap(game->getBoard()));
     game->getBoard()->update();
+    return true;
+}
+
+IMPLEMENT_RULE(ruleUserActionMoveRobber)
+{
+    SERVER_ONLY_RULE
+
+    pushRuleChain();
+    RULECHAIN_ADD(ruleSelectHexTile);
+    RULECHAIN_ADD(ruleMoveRobber);
+    startRuleChain();
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleSelectHexTile)
+{
+    bool selectableObjectFound = false;
+    Board *board = game->getBoard();
+    QList<HexTile*> tiles = board->getBoardTiles();
+
+    for(int i = 0; i < tiles.size(); i++)
+    {
+        HexTile *h = tiles.at(i);
+        if(h->getType() != HexTile::WaterType && !h->getHasRobber())
+        {
+            if(player->getIsLocal()) h->setIsSelectable(true);
+            selectableObjectFound = true;
+        }
+    }
+
+    if(selectableObjectFound)
+    {
+        if(player->getIsLocal()) board->setSelectionMode();
+        suspendRuleChain();
+        LOG_SYSTEM_MSG(QString("Waiting for %1 to select a board tile.").
+            arg(player->getName()))
+        return true;
+    }
+
+    return false;
+}
+
+IMPLEMENT_RULE(ruleMoveRobber)
+{
+    RULEDATA_REQUIRE("HexTile");
+    HexTile *tile = RULEDATA_READ("HexTile").value<HexTile*>();
+    Q_ASSERT(tile != NULL);
+
+    // clear current robber
+    QList<HexTile*> tiles = game->getBoard()->getBoardTiles();
+    QList<HexTile*>::iterator i;
+    for(i = tiles.begin(); i != tiles.end(); ++i)
+        if((*i)->getHasRobber()) (*i)->setHasRobber(false);
+
+    // set new robber
+    tile->setHasRobber(true);
+
     return true;
 }
 

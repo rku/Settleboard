@@ -42,6 +42,7 @@ StandardMap::StandardMap(QObject *parent) : Map(parent)
     createTile( 1, 3, HexTile::SheepType, true, 9);
     createTile( 2, 3, HexTile::ClayType, true, 8);
     createTile( 3, 3, HexTile::DesertType);
+    tiles.last()->setHasRobber(true);
     createTile( 4, 3, HexTile::OreType, true, 8);
     createTile( 5, 3, HexTile::SheepType, true, 10);
     createTile( 6, 3, HexTile::WaterType);

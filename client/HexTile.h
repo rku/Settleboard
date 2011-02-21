@@ -29,6 +29,7 @@ class Game;
 class NumberChip;
 class Crossroad;
 class Roadway;
+class Robber;
 
 class HexTile : public GLGameModelProxy
 {
@@ -56,6 +57,9 @@ class HexTile : public GLGameModelProxy
         bool getHasFixedPosition() { return hasFixedPosition; }
         void draw();
 
+        void setHasRobber(bool);
+        bool getHasRobber() { return (robber != NULL); }
+
         QVector3D getCenterVertex();
         QList<QVector3D> getCornerVertices();
 
@@ -74,12 +78,31 @@ class HexTile : public GLGameModelProxy
         bool hasPort;
         bool hasFixedPosition;
         int chipNumber;
+        Robber *robber;
         QPoint position;
         HexTileType type;
         NumberChip *numberChip;
         QList<Crossroad*> crossroads;
         QList<Roadway*> roadways;
 };
+
+Q_DECLARE_METATYPE(HexTile*);
+
+class HexTilePtr
+{
+    public:
+        HexTilePtr() : object(NULL) {}
+        HexTilePtr(HexTile *p) { object = p; }
+        HexTilePtr(const HexTilePtr &c) { object = c.object; }
+        HexTile *getObject() { return object; }
+
+        friend QDataStream &operator<<(QDataStream&, const HexTilePtr&);
+        friend QDataStream &operator>>(QDataStream&, HexTilePtr&);
+
+        HexTile *object;
+};
+
+Q_DECLARE_METATYPE(HexTilePtr);
 
 #endif /* HEX_TILE_H */
 
