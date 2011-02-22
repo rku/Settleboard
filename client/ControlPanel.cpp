@@ -95,7 +95,7 @@ void ControlPanel::setActionState(const QString name, bool state)
 
     QToolButton *button = buttons.value(name);
     button->setEnabled(state);
-    //button->setVisible(state);
+    button->setVisible(state);
 }
 
 void ControlPanel::clear()
@@ -116,12 +116,14 @@ void ControlPanel::actionTriggered()
     if(!action) return;
 
     // disable all buttons; the have to reenabled by rules now
-    QList<QToolButton*> b = buttons.values();
-    QList<QToolButton*>::iterator i = b.begin();
-    while(i != b.end()) { (*i)->setEnabled(false); i++; }
+    QStringList b = buttons.keys();
+    QStringList::iterator i = b.begin();
+    while(i != b.end()) { setActionState(*i, false); i++; }
 
     QString rule = action->data().value<QString>();
     if(rule.isEmpty()) return;
+
+    repaint();
 
     qDebug() << "Control panel action triggered. Rule:" << rule;
     GAME->getRules()->executeRule(rule);
