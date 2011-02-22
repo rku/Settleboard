@@ -95,6 +95,7 @@ void ControlPanel::setActionState(const QString name, bool state)
 
     QToolButton *button = buttons.value(name);
     button->setEnabled(state);
+    //button->setVisible(state);
 }
 
 void ControlPanel::clear()

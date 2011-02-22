@@ -63,13 +63,17 @@ void GLWidget::initializeGL()
     qglClearColor(this->palette().color(this->backgroundRole()));
 
     glShadeModel(GL_SMOOTH);
+
     glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glEnable(GL_BLEND);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //gluPerspective (65.0, width() / height(), 1.0, 1024.0);
+    gluPerspective (65.0, width() / height(), 10.0, 100.0);
 
     glMatrixMode(GL_MODELVIEW);
 
@@ -83,6 +87,7 @@ void GLWidget::initializeGL()
     glLightfv(GL_LIGHT0, GL_DIFFUSE, black_color);
     glLightfv(GL_LIGHT0, GL_SPECULAR, black_color);
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, white_color);
+    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 
     glColorMaterial(GL_FRONT, GL_AMBIENT);
     glEnable(GL_LIGHT0);

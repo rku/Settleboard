@@ -960,7 +960,7 @@ IMPLEMENT_RULE(ruleInitPlayerPanel)
         playerPanel->registerPlayerInfo(*i, "Cities", "Available Cities",
             "City.png", true);
         playerPanel->registerPlayerInfo(*i, "DevelopmentCards", "Development Cards",
-            "DevelopmentCard.png");
+            "DevCard.png");
         playerPanel->registerPlayerInfo(*i, "ResourceCards", "Resource Cards",
                 "Card.png");
         
@@ -1011,13 +1011,13 @@ IMPLEMENT_RULE(ruleInitControlPanel)
     QAction *actionShowCards = new QAction(controlPanel);
     actionShowCards->setData(QString("ruleUserActionShowCards"));
     actionShowCards->setToolTip("Show my cards");
-    actionShowCards->setIcon(QIcon(FileManager::getPathOfImage("Cards.png")));
+    actionShowCards->setIcon(QIcon(FileManager::getPathOfImage("ShowCards.png")));
     controlPanel->registerAction("ShowCards", actionShowCards);
 
     QAction *actionBuyDevCard = new QAction(controlPanel);
     actionBuyDevCard->setData(QString("ruleUserActionBuyDevelopmentCard"));
     actionBuyDevCard->setToolTip("Buy Development Card");
-    actionBuyDevCard->setIcon(QIcon(FileManager::getPathOfImage("BuyDevCard.png")));
+    actionBuyDevCard->setIcon(QIcon(FileManager::getPathOfImage("DevCard.png")));
     controlPanel->registerAction("BuyDevCard", actionBuyDevCard);
 
     QAction *actionTrade = new QAction(controlPanel);
@@ -1029,7 +1029,7 @@ IMPLEMENT_RULE(ruleInitControlPanel)
     QAction *actionRollDice = new QAction(controlPanel);
     actionRollDice->setData(QString("ruleUserActionRollDice"));
     actionRollDice->setToolTip("Roll Dice");
-    actionRollDice->setIcon(QIcon(FileManager::getPathOfImage("Dice.png")));
+    actionRollDice->setIcon(QIcon(FileManager::getPathOfImage("RollDice.png")));
     controlPanel->registerAction("RollDice", actionRollDice);
 
     QAction *actionEndTurn = new QAction(controlPanel);

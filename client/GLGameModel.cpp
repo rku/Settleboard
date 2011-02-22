@@ -183,7 +183,7 @@ void GLGameModel::highlight()
     glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT1, GL_POSITION, light_position);
 
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 60.0);
     glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
     glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
 

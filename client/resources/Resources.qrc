@@ -1,9 +1,9 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-<file>./Images/BuyDevCard.png</file>
+<file>./Images/Card.png</file>
 <file>./Images/City.png</file>
 <file>./Images/Clay.png</file>
-<file>./Images/Dice.png</file>
+<file>./Images/DevCard.png</file>
 <file>./Images/Die1.png</file>
 <file>./Images/Die2.png</file>
 <file>./Images/Die3.png</file>
@@ -14,9 +14,12 @@
 <file>./Images/Lumber.png</file>
 <file>./Images/Ore.png</file>
 <file>./Images/Road.png</file>
+<file>./Images/RollDice.png</file>
 <file>./Images/Settlement.png</file>
+<file>./Images/ShowCards.png</file>
 <file>./Images/Trade.png</file>
 <file>./Images/Wheat.png</file>
+<file>./Images/WinningPoints.png</file>
 <file>./Images/Wool.png</file>
 <file>./Objects/City.obj</file>
 <file>./Objects/HexTile.obj</file>
