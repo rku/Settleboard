@@ -1,6 +1,7 @@
 
 #include "Player.h"
 #include "FileManager.h"
+#include "GamePixmap.h"
 #include "PlayerPanel.h"
 
 PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
@@ -59,19 +60,12 @@ void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
     int rows = (gl->itemAt(0) != NULL) ? gl->rowCount() : 0;
 
     // prepare icon
-    QString iconPath = FileManager::getPathOfImage(iconFile);
-    QImage icon = QImage(iconPath).convertToFormat(QImage::Format_Indexed8);
-    QPixmap pixmap;
-    if(!icon.isNull())
-    {
-        if(usePlayerColor) icon.setColor(0, player->getColor().rgb());
-        pixmap.convertFromImage(icon.scaledToHeight(12));
-    }
+    GamePixmap icon = GamePixmap(iconFile, usePlayerColor);
 
     // add new row for the registered info value
     QLabel *textLabel = new QLabel(description, box);
     QLabel *iconLabel = new QLabel(box);
-    if(!pixmap.isNull()) iconLabel->setPixmap(pixmap);
+    if(!icon.isNull()) iconLabel->setPixmap(icon);
     QLabel *valueLabel = new QLabel("0", box);
 
     gl->addWidget(iconLabel,  rows, 0, Qt::AlignLeft);

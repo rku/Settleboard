@@ -38,6 +38,7 @@
 #include "GameLobby.h"
 #include "Game.h"
 #include "StandardMap.h"
+#include "GamePixmap.h"
 #include "GameRules.h"
 
 GameRules::GameRules(QObject *parent) : QObject(parent)
@@ -993,49 +994,49 @@ IMPLEMENT_RULE(ruleInitControlPanel)
     QAction *actionBuildRoad = new QAction(controlPanel);
     actionBuildRoad->setData(QString("ruleUserActionBuildRoad"));
     actionBuildRoad->setToolTip("Build Road");
-    actionBuildRoad->setIcon(QIcon(FileManager::getPathOfImage("Road.png")));
+    actionBuildRoad->setIcon(QIcon(GamePixmap("Road.png")));
     controlPanel->registerAction("BuildRoad", actionBuildRoad);
 
     QAction *actionBuildSettlement = new QAction(controlPanel);
     actionBuildSettlement->setData(QString("ruleUserActionBuildSettlement"));
     actionBuildSettlement->setToolTip("Build Settlement");
-    actionBuildSettlement->setIcon(QIcon(FileManager::getPathOfImage("Settlement.png")));
+    actionBuildSettlement->setIcon(QIcon(GamePixmap("Settlement.png")));
     controlPanel->registerAction("BuildSettlement", actionBuildSettlement);
 
     QAction *actionBuildCity = new QAction(controlPanel);
     actionBuildCity->setData(QString("ruleUserActionBuildCity"));
     actionBuildCity->setToolTip("Build City");
-    actionBuildCity->setIcon(QIcon(FileManager::getPathOfImage("City.png")));
+    actionBuildCity->setIcon(QIcon(GamePixmap("City.png")));
     controlPanel->registerAction("BuildCity", actionBuildCity);
 
     QAction *actionShowCards = new QAction(controlPanel);
     actionShowCards->setData(QString("ruleUserActionShowCards"));
     actionShowCards->setToolTip("Show my cards");
-    actionShowCards->setIcon(QIcon(FileManager::getPathOfImage("ShowCards.png")));
+    actionShowCards->setIcon(QIcon(GamePixmap("ShowCards.png")));
     controlPanel->registerAction("ShowCards", actionShowCards);
 
     QAction *actionBuyDevCard = new QAction(controlPanel);
     actionBuyDevCard->setData(QString("ruleUserActionBuyDevelopmentCard"));
     actionBuyDevCard->setToolTip("Buy Development Card");
-    actionBuyDevCard->setIcon(QIcon(FileManager::getPathOfImage("DevCard.png")));
+    actionBuyDevCard->setIcon(QIcon(GamePixmap("DevCard.png")));
     controlPanel->registerAction("BuyDevCard", actionBuyDevCard);
 
     QAction *actionTrade = new QAction(controlPanel);
     actionTrade->setData(QString("ruleUserActionTrade"));
     actionTrade->setToolTip("Trade");
-    actionTrade->setIcon(QIcon(FileManager::getPathOfImage("Trade.png")));
+    actionTrade->setIcon(QIcon(GamePixmap("Trade.png")));
     controlPanel->registerAction("Trade", actionTrade);
 
     QAction *actionRollDice = new QAction(controlPanel);
     actionRollDice->setData(QString("ruleUserActionRollDice"));
     actionRollDice->setToolTip("Roll Dice");
-    actionRollDice->setIcon(QIcon(FileManager::getPathOfImage("RollDice.png")));
+    actionRollDice->setIcon(QIcon(GamePixmap("RollDice.png")));
     controlPanel->registerAction("RollDice", actionRollDice);
 
     QAction *actionEndTurn = new QAction(controlPanel);
     actionEndTurn->setData(QString("ruleUserActionEndTurn"));
     actionEndTurn->setToolTip("End Turn");
-    actionEndTurn->setIcon(QIcon(FileManager::getPathOfImage("EndTurn.png")));
+    actionEndTurn->setIcon(QIcon(GamePixmap("EndTurn.png")));
     controlPanel->registerAction("EndTurn", actionEndTurn);
 
     EXECUTE_SUBRULE(ruleUpdateControlPanel);
