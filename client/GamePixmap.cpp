@@ -4,15 +4,31 @@
 #include "Player.h"
 #include "GamePixmap.h"
 
-GamePixmap::GamePixmap(const QString &fileName, bool colorate)
+GamePixmap::GamePixmap(const QString &fileName)
     : QPixmap()
 {
     load(FileManager::getPathOfImage(fileName));
-    if(colorate) setOverlayColor(GAME->getLocalPlayer()->getColor());
+}
+
+GamePixmap::GamePixmap(const QString &fileName, const QColor &color)
+{
+    load(FileManager::getPathOfImage(fileName));
+    setOverlayColor(color);
 }
 
 GamePixmap::~GamePixmap()
 {
+}
+
+void GamePixmap::scale(const QSize &newSize)
+{
+    if(isNull()) return;
+
+    QPixmap p = scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QImage img = p.toImage();
+
+    detach();
+    convertFromImage(img);
 }
 
 void GamePixmap::setOverlayColor(const QColor &color)
@@ -41,6 +57,12 @@ void GamePixmap::setOverlayColor(const QColor &color)
         }
     }
 
+    detach();
     convertFromImage(img);
+}
+
+QIcon GamePixmap::toIcon()
+{
+    return QIcon(*this);
 }
 

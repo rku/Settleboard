@@ -60,7 +60,9 @@ void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
     int rows = (gl->itemAt(0) != NULL) ? gl->rowCount() : 0;
 
     // prepare icon
-    GamePixmap icon = GamePixmap(iconFile, usePlayerColor);
+    GamePixmap icon = GamePixmap(iconFile);
+    if(usePlayerColor) icon.setOverlayColor(player->getColor());
+    icon.scale(QSize(16,16));
 
     // add new row for the registered info value
     QLabel *textLabel = new QLabel(description, box);

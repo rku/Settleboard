@@ -7,11 +7,14 @@
 class GamePixmap : public QPixmap
 {
     public:
-        GamePixmap(const QString &fileName, bool colorate = true);
+        GamePixmap(const QString &fileName);
+        GamePixmap(const QString &fileName, const QColor&);
         ~GamePixmap();
 
-    protected:
+        void scale(const QSize&);
         void setOverlayColor(const QColor&);
+
+        QIcon toIcon();
 };
 
 #endif

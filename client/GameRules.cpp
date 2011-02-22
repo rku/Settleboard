@@ -952,18 +952,18 @@ IMPLEMENT_RULE(ruleInitPlayerPanel)
 
     for(i = players.begin(); i != players.end(); ++i)
     {
-        playerPanel->registerPlayerInfo(*i, "WinningPoints", "Winning Points",
-            "WinningPoints.png");
-        playerPanel->registerPlayerInfo(*i, "Roads", "Available Roads",
-            "Road.png", true);
-        playerPanel->registerPlayerInfo(*i, "Settlements", "Available Settlements",
-            "Settlement.png", true);
-        playerPanel->registerPlayerInfo(*i, "Cities", "Available Cities",
-            "City.png", true);
-        playerPanel->registerPlayerInfo(*i, "DevelopmentCards", "Development Cards",
-            "DevCard.png");
-        playerPanel->registerPlayerInfo(*i, "ResourceCards", "Resource Cards",
-                "Card.png");
+        playerPanel->registerPlayerInfo(*i,
+            "WinningPoints", "Winning Points", "WinningPoints.png");
+        playerPanel->registerPlayerInfo(*i,
+            "Roads", "Available Roads", "Road.png", true);
+        playerPanel->registerPlayerInfo(*i,
+            "Settlements", "Available Settlements", "Settlement.png", true);
+        playerPanel->registerPlayerInfo(*i,
+            "Cities", "Available Cities", "City.png", true);
+        playerPanel->registerPlayerInfo(*i,
+            "DevelopmentCards", "Development Cards", "DevCard.png", true);
+        playerPanel->registerPlayerInfo(*i,
+            "ResourceCards", "Resource Cards", "Card.png", true);
         
         EXECUTE_SUBRULE_FOR_PLAYER(ruleUpdatePlayerPanel, *i);
     }
@@ -991,56 +991,57 @@ IMPLEMENT_RULE(ruleUpdatePlayerPanel)
 
 IMPLEMENT_RULE(ruleInitControlPanel)
 {
+    QColor color = game->getLocalPlayer()->getColor();
+
     QAction *actionBuildRoad = new QAction(controlPanel);
     actionBuildRoad->setData(QString("ruleUserActionBuildRoad"));
     actionBuildRoad->setToolTip("Build Road");
-    actionBuildRoad->setIcon(QIcon(GamePixmap("Road.png")));
+    actionBuildRoad->setIcon(GamePixmap("Road.png", color).toIcon());
     controlPanel->registerAction("BuildRoad", actionBuildRoad);
 
     QAction *actionBuildSettlement = new QAction(controlPanel);
     actionBuildSettlement->setData(QString("ruleUserActionBuildSettlement"));
     actionBuildSettlement->setToolTip("Build Settlement");
-    actionBuildSettlement->setIcon(QIcon(GamePixmap("Settlement.png")));
+    actionBuildSettlement->setIcon(GamePixmap("Settlement.png", color).toIcon());
     controlPanel->registerAction("BuildSettlement", actionBuildSettlement);
 
     QAction *actionBuildCity = new QAction(controlPanel);
     actionBuildCity->setData(QString("ruleUserActionBuildCity"));
     actionBuildCity->setToolTip("Build City");
-    actionBuildCity->setIcon(QIcon(GamePixmap("City.png")));
+    actionBuildCity->setIcon(GamePixmap("City.png", color).toIcon());
     controlPanel->registerAction("BuildCity", actionBuildCity);
 
     QAction *actionShowCards = new QAction(controlPanel);
     actionShowCards->setData(QString("ruleUserActionShowCards"));
     actionShowCards->setToolTip("Show my cards");
-    actionShowCards->setIcon(QIcon(GamePixmap("ShowCards.png")));
+    actionShowCards->setIcon(GamePixmap("ShowCards.png", color).toIcon());
     controlPanel->registerAction("ShowCards", actionShowCards);
 
     QAction *actionBuyDevCard = new QAction(controlPanel);
     actionBuyDevCard->setData(QString("ruleUserActionBuyDevelopmentCard"));
     actionBuyDevCard->setToolTip("Buy Development Card");
-    actionBuyDevCard->setIcon(QIcon(GamePixmap("DevCard.png")));
+    actionBuyDevCard->setIcon(GamePixmap("DevCard.png", color).toIcon());
     controlPanel->registerAction("BuyDevCard", actionBuyDevCard);
 
     QAction *actionTrade = new QAction(controlPanel);
     actionTrade->setData(QString("ruleUserActionTrade"));
     actionTrade->setToolTip("Trade");
-    actionTrade->setIcon(QIcon(GamePixmap("Trade.png")));
+    actionTrade->setIcon(GamePixmap("Trade.png", color).toIcon());
     controlPanel->registerAction("Trade", actionTrade);
 
     QAction *actionRollDice = new QAction(controlPanel);
     actionRollDice->setData(QString("ruleUserActionRollDice"));
     actionRollDice->setToolTip("Roll Dice");
-    actionRollDice->setIcon(QIcon(GamePixmap("RollDice.png")));
+    actionRollDice->setIcon(GamePixmap("RollDice.png", color).toIcon());
     controlPanel->registerAction("RollDice", actionRollDice);
 
     QAction *actionEndTurn = new QAction(controlPanel);
     actionEndTurn->setData(QString("ruleUserActionEndTurn"));
     actionEndTurn->setToolTip("End Turn");
-    actionEndTurn->setIcon(QIcon(GamePixmap("EndTurn.png")));
+    actionEndTurn->setIcon(GamePixmap("EndTurn.png", color).toIcon());
     controlPanel->registerAction("EndTurn", actionEndTurn);
 
     EXECUTE_SUBRULE(ruleUpdateControlPanel);
-
     return true;
 }
 
