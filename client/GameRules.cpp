@@ -598,7 +598,6 @@ IMPLEMENT_RULE(ruleInitGame)
     RULECHAIN_ADD(ruleInitControlPanel);
     RULECHAIN_ADD(ruleInitResourceInfoPanel);
     RULECHAIN_ADD(ruleGenerateBoard);
-    RULECHAIN_ADD(ruleUserActionMoveRobber); // TEST
     RULECHAIN_ADD(ruleInitialPlacement);
     RULECHAIN_ADD(ruleBeginTurn)
     startRuleChain();

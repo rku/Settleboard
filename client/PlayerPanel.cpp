@@ -7,6 +7,7 @@
 PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
+    columns = 3;
     QVBoxLayout *layout = new QVBoxLayout();
     QWidget *widget = new QWidget(this);
 
@@ -57,7 +58,17 @@ void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
     QGridLayout *gl = (QGridLayout*)box->layout();
 
     // the grid always has one row, even if there's nothing inside
-    int rows = (gl->itemAt(0) != NULL) ? gl->rowCount() : 0;
+    int row = 0;
+    int col = 0;
+    while(gl->itemAtPosition(row, col) != 0)
+    {
+        col++;
+        if(col >= (int)(columns * 2))
+        {
+            row++;
+            col = 0;
+        }
+    }
 
     // prepare icon
     GamePixmap icon = GamePixmap(iconFile);
@@ -65,14 +76,14 @@ void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
     icon.scale(QSize(16,16));
 
     // add new row for the registered info value
-    QLabel *textLabel = new QLabel(description, box);
     QLabel *iconLabel = new QLabel(box);
     if(!icon.isNull()) iconLabel->setPixmap(icon);
+    iconLabel->setToolTip(description);
     QLabel *valueLabel = new QLabel("0", box);
+    valueLabel->setToolTip(description);
 
-    gl->addWidget(iconLabel,  rows, 0, Qt::AlignLeft);
-    gl->addWidget(textLabel,  rows, 1, Qt::AlignLeft);
-    gl->addWidget(valueLabel, rows, 2, Qt::AlignRight);
+    gl->addWidget(iconLabel,  row, col, Qt::AlignRight);
+    gl->addWidget(valueLabel, row, col + 1, Qt::AlignLeft);
 
     playerInfos.insertMulti(player, infoName);
 }
@@ -86,10 +97,13 @@ void PlayerPanel::updatePlayerInfo(Player *player, const QString infoName, int v
     Q_ASSERT(playerInfos.contains(player));
     Q_ASSERT(playerInfos.values(player).contains(infoName));
 
+    // the list of values is adjacently ordered
     QList<QString> values = playerInfos.values(player);
-    int row = values.size() - values.indexOf(infoName) - 1;
-    Q_ASSERT(gl->itemAtPosition(row, 2) != NULL);
-    QLabel *label = (QLabel*)gl->itemAtPosition(row, 2)->widget();
+    int index = values.size() - values.indexOf(infoName) - 1;
+    int row = qRound(index / columns);
+    int col = qRound(index % columns) * 2 + 1;
+    Q_ASSERT(gl->itemAtPosition(row, col) != NULL);
+    QLabel *label = (QLabel*)gl->itemAtPosition(row, col)->widget();
     label->setText(QString("%1").arg(value));
 }
 
