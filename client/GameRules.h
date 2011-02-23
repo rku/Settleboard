@@ -119,6 +119,7 @@ class GameRules : public QObject
 
         void reset();
         bool executeRule(QString name);
+        bool executeLocalRule(QString name);
         bool getIsRuleChainWaiting() { return isRuleChainWaiting; }
         void continueRuleChain();
         void cancelRuleChain();
@@ -207,6 +208,11 @@ class GameRules : public QObject
         DECLARE_RULE(ruleUserActionBuyDevelopmentCard);
         DECLARE_RULE(ruleCanBuyDevelopmentCard);
         DECLARE_RULE(ruleBuyDevelopmentCard);
+        DECLARE_RULE(ruleCanPlayKnightCard);
+        DECLARE_RULE(ruleCanPlayBuildRoadCard);
+        DECLARE_RULE(ruleCanPlayMonopolyCard);
+        DECLARE_RULE(ruleCanPlayInventionCard);
+        DECLARE_RULE(ruleCanPlayWinningPointCard);
 
         bool diceRolled;
         unsigned int turn;

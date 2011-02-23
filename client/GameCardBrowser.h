@@ -23,6 +23,7 @@
 
 #include <QtGui>
 
+#include "GameCard.h"
 #include "ui_cardbrowserform.h"
 
 class GameCardBrowser : public QDialog
@@ -40,11 +41,13 @@ class GameCardBrowser : public QDialog
         void navigateLeft();
         void navigateRight();
         void cardSelectionChanged();
+        void playSelectedCard();
 
     private:
         void init();
 
         int position;
+        GameCard *selectedCard;
         Ui::CardBrowserForm ui;
 };
 

@@ -9,17 +9,19 @@
 typedef struct _GameCard {
     _GameCard(const _GameCard &c)
         : type(c.type), name(c.name), description(c.description),
-        pixmap(c.pixmap), playRule(c.playRule), isSecret(c.isSecret) {}
+        pixmap(c.pixmap), playRule(c.playRule), canPlayRule(c.canPlayRule),
+        isSecret(c.isSecret) {}
     _GameCard(QString t, QString n, QString d, QString i = QString(),
-        QString p = QString(), bool s = true)
+        QString p = QString(), QString c = QString(), bool s = true)
         : type(t), name(n), description(d), pixmap(GamePixmap(i)),
-            playRule(p), isSecret(s) {}
+            playRule(p), canPlayRule(c), isSecret(s) {}
 
     QString type;
     QString name;
     QString description;
     GamePixmap pixmap;
     QString playRule;
+    QString canPlayRule;
     bool isSecret;
 } GameCard;
 
@@ -43,33 +45,38 @@ typedef struct _GameCard {
 #define GAMECARD_KNIGHT GameCard( \
     "Development", "Knight", \
     "If you play this card, you can steal a card from another player.",\
-    "CardDevelopmentKnight.png", "rulePlayKnightCard", false)
+    "CardDevelopmentKnight.png", "rulePlayKnightCard",\
+    "ruleCanPlayKnightCard", false)
 
 #define GAMECARD_BUILD_ROAD GameCard(\
     "Development",\
     "Build Road",\
     "Playing this card will allow you to place two roads for free.",\
-    "CardDevelopmentBuildRoad.png", "rulePlayBuildRoadCard")
+    "CardDevelopmentBuildRoad.png", "rulePlayBuildRoadCard",\
+    "ruleCanPlayBuildRoadCard")
 
 #define GAMECARD_MONOPOLY GameCard(\
     "Development",\
     "Monopoly",\
     "If you play this card, you can specify a resource and all players "\
     "who have this resource have to hand it over to you.",\
-    "CardDevelopmentMonopoly.png", "rulePlayMonopolyCard")
+    "CardDevelopmentMonopoly.png", "rulePlayMonopolyCard",\
+    "ruleCanPlayMonopolyCard")
 
 #define GAMECARD_INVENTION GameCard(\
     "Development",\
     "Invention",\
     "If you play this card, you will be able to select two resources of "\
     "your choice from the bank.",\
-    "CardDevelopmentInvention.png", "rulePlayInventionCard")
+    "CardDevelopmentInvention.png", "rulePlayInventionCard",\
+    "ruleCanPlayInventionCard")
 
 #define GAMECARD_WINNINGPOINT GameCard(\
     "Development",\
     "Winning Point",\
     "If you play this card, you will instantly get a winning point!",\
-    "CardDevelopmentWinningPoint.png", "rulePlayWinningPointCard")
+    "CardDevelopmentWinningPoint.png", "rulePlayWinningPointCard",\
+    "ruleCanPlayWinningPointCard")
 
 #endif
 

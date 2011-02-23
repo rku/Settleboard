@@ -39,6 +39,8 @@ void GameCardBrowser::clear()
 
     ui.buttonNavigateLeft->setEnabled(false);
     ui.buttonNavigateRight->setEnabled(false);
+
+    selectedCard = NULL;
 }
 
 void GameCardBrowser::init()
@@ -64,6 +66,9 @@ void GameCardBrowser::init()
         this, SLOT(navigateLeft()));
     connect(ui.buttonNavigateRight, SIGNAL(clicked()),
         this, SLOT(navigateRight()));
+
+    connect(ui.buttonPlaySelectedCard, SIGNAL(clicked()),
+        this, SLOT(playSelectedCard()));
 
     position = 0;
 }
@@ -138,5 +143,15 @@ void GameCardBrowser::cardSelectionChanged()
     GameCard *card = l->getCard();
     ui.textEditDescription->setText(QString("%1:\n\n%2")
         .arg(card->name).arg(card->description));
+    selectedCard = card;
+
+    bool canPlayCard = GAME->getRules()->executeLocalRule(card->canPlayRule);
+    ui.buttonPlaySelectedCard->setEnabled(canPlayCard);
+}
+
+void GameCardBrowser::playSelectedCard()
+{
+    Q_ASSERT(selectedCard != NULL);
+    GAME->getRules()->executeRule(selectedCard->playRule);
 }
 

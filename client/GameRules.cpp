@@ -121,6 +121,11 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleUserActionBuyDevelopmentCard);
     REGISTER_RULE(ruleCanBuyDevelopmentCard);
     REGISTER_RULE(ruleBuyDevelopmentCard);
+    REGISTER_RULE(ruleCanPlayKnightCard);
+    REGISTER_RULE(ruleCanPlayBuildRoadCard);
+    REGISTER_RULE(ruleCanPlayMonopolyCard);
+    REGISTER_RULE(ruleCanPlayInventionCard);
+    REGISTER_RULE(ruleCanPlayWinningPointCard);
 }
 
 GameRules::~GameRules()
@@ -237,7 +242,7 @@ bool GameRules::executeRuleFromNetwork(NetworkPacket &packet)
 
 bool GameRules::executeRule(QString name)
 {
-    qDebug() << "Trying to execute local player rule:" << name;
+    qDebug() << "Trying to execute rule:" << name;
     Q_ASSERT(rules.contains(name));
 
     if(!GAME->getNetworkCore()->getHasConnection() ||
@@ -258,12 +263,24 @@ bool GameRules::executeRule(QString name)
     return true;
 }
 
+bool GameRules::executeLocalRule(QString name)
+{
+    qDebug() << "Executing local rule" << name;
+    Q_ASSERT(rules.contains(name));
+    Q_ASSERT(currentPlayer != NULL);
+
+    Player *player = GAME->getLocalPlayer();
+    GameRule rule = rules.value(name);
+    return (this->*rule.ruleFunc)(GAME, player);
+}
+
 bool GameRules::executeSubRule(QString name, Player *player)
 {
     Q_ASSERT(player != NULL);
-    Q_ASSERT(rules.contains(name));
 
     qDebug() << "Executing nested rule" << name << player->getName();
+    Q_ASSERT(rules.contains(name));
+
     GameRule rule = rules.value(name);
     return (this->*rule.ruleFunc)(GAME, player);
 }
@@ -1651,6 +1668,42 @@ IMPLEMENT_RULE(ruleBuyDevelopmentCard)
 
     EXECUTE_SUBRULE(ruleUpdateInterface);
 
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanPlayKnightCard)
+{
+    if(player != currentPlayer) return false;
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanPlayBuildRoadCard)
+{
+    if(!diceRolled) return false;
+    if(player != currentPlayer) return false;
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanPlayMonopolyCard)
+{
+    if(!diceRolled) return false;
+    if(player != currentPlayer) return false;
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanPlayInventionCard)
+{
+    if(!diceRolled) return false;
+    if(player != currentPlayer) return false;
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanPlayWinningPointCard)
+{
     return true;
 }
 
