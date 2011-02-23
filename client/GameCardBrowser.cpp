@@ -152,6 +152,7 @@ void GameCardBrowser::cardSelectionChanged()
 void GameCardBrowser::playSelectedCard()
 {
     Q_ASSERT(selectedCard != NULL);
+    close();
     GAME->getRules()->executeRule(selectedCard->playRule);
 }
 

@@ -210,6 +210,8 @@ class GameRules : public QObject
         DECLARE_RULE(ruleBuyDevelopmentCard);
         DECLARE_RULE(ruleCanPlayKnightCard);
         DECLARE_RULE(ruleCanPlayBuildRoadCard);
+        DECLARE_RULE(ruleUserActionPlayBuildRoadCard);
+        DECLARE_RULE(rulePlayBuildRoadCard);
         DECLARE_RULE(ruleCanPlayMonopolyCard);
         DECLARE_RULE(ruleCanPlayInventionCard);
         DECLARE_RULE(ruleCanPlayWinningPointCard);

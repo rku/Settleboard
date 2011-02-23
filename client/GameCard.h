@@ -45,14 +45,14 @@ typedef struct _GameCard {
 #define GAMECARD_KNIGHT GameCard( \
     "Development", "Knight", \
     "If you play this card, you can steal a card from another player.",\
-    "CardDevelopmentKnight.png", "rulePlayKnightCard",\
+    "CardDevelopmentKnight.png", "ruleUserActionPlayKnightCard",\
     "ruleCanPlayKnightCard", false)
 
 #define GAMECARD_BUILD_ROAD GameCard(\
     "Development",\
     "Build Road",\
     "Playing this card will allow you to place two roads for free.",\
-    "CardDevelopmentBuildRoad.png", "rulePlayBuildRoadCard",\
+    "CardDevelopmentBuildRoad.png", "ruleUserActionPlayBuildRoadCard",\
     "ruleCanPlayBuildRoadCard")
 
 #define GAMECARD_MONOPOLY GameCard(\
@@ -60,7 +60,7 @@ typedef struct _GameCard {
     "Monopoly",\
     "If you play this card, you can specify a resource and all players "\
     "who have this resource have to hand it over to you.",\
-    "CardDevelopmentMonopoly.png", "rulePlayMonopolyCard",\
+    "CardDevelopmentMonopoly.png", "ruleUserActionPlayMonopolyCard",\
     "ruleCanPlayMonopolyCard")
 
 #define GAMECARD_INVENTION GameCard(\
@@ -68,14 +68,14 @@ typedef struct _GameCard {
     "Invention",\
     "If you play this card, you will be able to select two resources of "\
     "your choice from the bank.",\
-    "CardDevelopmentInvention.png", "rulePlayInventionCard",\
+    "CardDevelopmentInvention.png", "ruleUserActionPlayInventionCard",\
     "ruleCanPlayInventionCard")
 
 #define GAMECARD_WINNINGPOINT GameCard(\
     "Development",\
     "Winning Point",\
     "If you play this card, you will instantly get a winning point!",\
-    "CardDevelopmentWinningPoint.png", "rulePlayWinningPointCard",\
+    "CardDevelopmentWinningPoint.png", "ruleUserActionPlayWinningPointCard",\
     "ruleCanPlayWinningPointCard")
 
 #endif

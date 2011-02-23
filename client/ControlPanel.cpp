@@ -110,6 +110,15 @@ void ControlPanel::clear()
     }
 }
 
+void ControlPanel::disable()
+{
+    // disable all buttons; the have to reenabled by rules now
+    QStringList b = buttons.keys();
+    QStringList::iterator i = b.begin();
+    while(i != b.end()) { setActionState(*i, false); i++; }
+    repaint();
+}
+
 void ControlPanel::actionTriggered()
 {
     QAction *action = qobject_cast<QAction*>(sender());
@@ -118,10 +127,7 @@ void ControlPanel::actionTriggered()
     if(rule.isEmpty()) return; // no rule associated with action
 
     // disable all buttons; the have to reenabled by rules now
-    QStringList b = buttons.keys();
-    QStringList::iterator i = b.begin();
-    while(i != b.end()) { setActionState(*i, false); i++; }
-    repaint();
+    disable();
 
     qDebug() << "Control panel action triggered. Rule:" << rule;
     GAME->getRules()->executeRule(rule);

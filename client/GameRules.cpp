@@ -123,6 +123,8 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleBuyDevelopmentCard);
     REGISTER_RULE(ruleCanPlayKnightCard);
     REGISTER_RULE(ruleCanPlayBuildRoadCard);
+    REGISTER_RULE(ruleUserActionPlayBuildRoadCard);
+    REGISTER_RULE(rulePlayBuildRoadCard);
     REGISTER_RULE(ruleCanPlayMonopolyCard);
     REGISTER_RULE(ruleCanPlayInventionCard);
     REGISTER_RULE(ruleCanPlayWinningPointCard);
@@ -881,6 +883,8 @@ IMPLEMENT_RULE(ruleInitPlayers)
 IMPLEMENT_RULE(ruleInitGameCards)
 {
     Bank *bank = game->getBank();
+
+    bank->registerCardStack("Discarded"); // the stack for discarded cards
 
     // resources
     bank->registerCardStack("Wheat");
@@ -1682,6 +1686,42 @@ IMPLEMENT_RULE(ruleCanPlayBuildRoadCard)
 {
     if(!diceRolled) return false;
     if(player != currentPlayer) return false;
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleUserActionPlayBuildRoadCard)
+{
+    SERVER_ONLY_RULE
+
+    pushRuleChain();
+    RULECHAIN_ADD(rulePlayBuildRoadCard);
+    RULECHAIN_ADD(ruleCanBuildRoad);
+    RULECHAIN_ADD(ruleSetCancelable);
+    RULECHAIN_ADD(ruleSelectRoadway);
+    RULECHAIN_ADD(ruleUnsetCancelable);
+    RULECHAIN_ADD(ruleBuildRoad);
+    RULECHAIN_ADD(ruleCanBuildRoad);
+    RULECHAIN_ADD(ruleSetCancelable);
+    RULECHAIN_ADD(ruleSelectRoadway);
+    RULECHAIN_ADD(ruleUnsetCancelable);
+    RULECHAIN_ADD(ruleBuildRoad);
+    startRuleChain();
+
+    return true;
+}
+
+IMPLEMENT_RULE(rulePlayBuildRoadCard)
+{
+    GameCardStack *ps = player->getCardStack();
+    GameCardStack *dc = game->getBank()->getCardStack("Discarded");
+
+    ps->drawCardsOfType(dc, "Development", "Build Road", 1);
+
+    LOG_PLAYER_MSG(QString("%1 plays a Build Road card.")
+        .arg(player->getName()));
+
+    EXECUTE_SUBRULE(ruleUpdateInterface);
 
     return true;
 }

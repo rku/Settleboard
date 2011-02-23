@@ -17,6 +17,7 @@ class ControlPanel : public QDockWidget
         void beginCancelMode();
         void endCancelMode();
         void clear();
+        void disable();
 
     protected slots:
         void actionTriggered();
