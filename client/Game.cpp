@@ -27,6 +27,7 @@
 #include "GameRules.h"
 #include "MainWindow.h"
 #include "GameLobby.h"
+#include "GameCardBrowser.h"
 
 #include "Game.h"
 
@@ -66,8 +67,14 @@ void Game::init()
     bank = new Bank();
     networkCore = new NetworkCore(this);
     gameLobby = new GameLobby(mainWindow);
+    gameCardBrowser = new GameCardBrowser(mainWindow);
 
     initLocalPlayer();
+}
+
+void Game::browseLocalGameCards()
+{
+    gameCardBrowser->show();
 }
 
 void Game::parseCommandLine()
@@ -107,6 +114,7 @@ void Game::parseCommandLine()
 void Game::free()
 {
     while(!players.isEmpty()) delete players.takeFirst();
+    delete gameCardBrowser;
     delete gameLobby;
     delete networkCore;
     delete bank;

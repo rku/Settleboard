@@ -1,6 +1,11 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
 <file>./Images/Card.png</file>
+<file>./Images/CardResourceClay.png</file>
+<file>./Images/CardResourceLumber.png</file>
+<file>./Images/CardResourceOre.png</file>
+<file>./Images/CardResourceWheat.png</file>
+<file>./Images/CardResourceWool.png</file>
 <file>./Images/City.png</file>
 <file>./Images/Clay.png</file>
 <file>./Images/DevCard.png</file>

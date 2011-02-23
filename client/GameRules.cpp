@@ -39,6 +39,7 @@
 #include "Game.h"
 #include "StandardMap.h"
 #include "GamePixmap.h"
+#include "GameCardBrowser.h"
 #include "GameRules.h"
 
 GameRules::GameRules(QObject *parent) : QObject(parent)
@@ -1011,9 +1012,11 @@ IMPLEMENT_RULE(ruleInitControlPanel)
     controlPanel->registerAction("BuildCity", actionBuildCity);
 
     QAction *actionShowCards = new QAction(controlPanel);
-    actionShowCards->setData(QString("ruleUserActionShowCards"));
+    actionShowCards->setData(QString());
     actionShowCards->setToolTip("Show my cards");
     actionShowCards->setIcon(GamePixmap("ShowCards.png", color).toIcon());
+    connect(actionShowCards, SIGNAL(triggered()),
+        game, SLOT(browseLocalGameCards()));
     controlPanel->registerAction("ShowCards", actionShowCards);
 
     QAction *actionBuyDevCard = new QAction(controlPanel);

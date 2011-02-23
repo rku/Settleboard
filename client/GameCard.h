@@ -4,18 +4,21 @@
 
 #include <QString>
 
+#include "GamePixmap.h"
+
 typedef struct _GameCard {
     _GameCard(const _GameCard &c)
         : type(c.type), name(c.name), description(c.description),
-        iconFileName(c.iconFileName), playRule(c.playRule), isSecret(c.isSecret) {}
+        pixmap(c.pixmap), playRule(c.playRule), isSecret(c.isSecret) {}
     _GameCard(QString t, QString n, QString d, QString i = QString(),
         QString p = QString(), bool s = true)
-        : type(t), name(n), description(d), iconFileName(i), playRule(p), isSecret(s) {}
+        : type(t), name(n), description(d), pixmap(GamePixmap(i)),
+            playRule(p), isSecret(s) {}
 
     QString type;
     QString name;
     QString description;
-    QString iconFileName;
+    GamePixmap pixmap;
     QString playRule;
     bool isSecret;
 } GameCard;
@@ -33,7 +36,7 @@ typedef struct _GameCard {
 #define GAMECARD_SHEEP \
     GameCard("Resource", "Wool", "Wool Resource", "CardResourceWool.png")
 #define GAMECARD_CLAY \
-    GameCard("Resource", "Clay", "Clay Resource", "CardResourceClay")
+    GameCard("Resource", "Clay", "Clay Resource", "CardResourceClay.png")
 
 // DEVELOPMENT CARDS
 

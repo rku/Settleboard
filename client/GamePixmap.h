@@ -2,6 +2,7 @@
 #ifndef GAMEPIXMAP_H
 #define GAMEPIXMAP_H 1
 
+#include <QIcon>
 #include <QPixmap>
 
 class GamePixmap : public QPixmap

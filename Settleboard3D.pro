@@ -17,7 +17,8 @@ FORMS = client/ui/connectorform.ui \
         client/ui/prefsform.ui \
         client/ui/tradeform.ui \
         client/ui/gamelobbyform.ui \
-        client/ui/infoboxform.ui
+        client/ui/infoboxform.ui \
+        client/ui/cardbrowserform.ui
 
 HEADERS = client/GLWidget.h \
           client/GLTypes.h \
@@ -52,7 +53,8 @@ HEADERS = client/GLWidget.h \
           client/Map.h \
           client/StandardMap.h \
           client/Robber.h \
-          client/GamePixmap.h
+          client/GamePixmap.h \
+          client/GameCardBrowser.h
 
 SOURCES = client/GLWidget.cpp \
           client/Game.cpp \
@@ -86,5 +88,6 @@ SOURCES = client/GLWidget.cpp \
           client/Map.cpp \
           client/StandardMap.cpp \
           client/Robber.cpp \
-          client/GamePixmap.cpp
+          client/GamePixmap.cpp \
+          client/GameCardBrowser.cpp
 
