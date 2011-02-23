@@ -13,16 +13,11 @@ GameCardView::GameCardView(QWidget *parent) : QWidget(parent)
 
     QVBoxLayout *l = new QVBoxLayout();
 
-    labelName = new QLabel(this);
-    labelName->setObjectName("labelName");
-    labelName->setAlignment(Qt::AlignCenter);
-
     labelPixmap = new QLabel(this);
     labelPixmap->setScaledContents(false);
     labelPixmap->setObjectName("labelPixmap");
     labelPixmap->setAlignment(Qt::AlignCenter);
 
-    l->addWidget(labelName);
     l->addWidget(labelPixmap);
 
     setLayout(l);
@@ -32,7 +27,6 @@ GameCardView::GameCardView(QWidget *parent) : QWidget(parent)
 
 void GameCardView::clear()
 {
-    labelName->clear();
     labelPixmap->clear();
     setIsSelected(false);
     card = NULL;
@@ -43,8 +37,7 @@ void GameCardView::setCard(GameCard *c)
 {
     card = c;
 
-    labelName->setText(c->name);
-    labelPixmap->setToolTip(c->description);
+    labelPixmap->setToolTip(c->name);
     labelPixmap->setPixmap(c->pixmap);
     setVisible(true);
 }
@@ -59,9 +52,6 @@ void GameCardView::setIsSelected(bool b)
 
     style()->unpolish(this);
     style()->polish(this);
-
-    style()->unpolish(labelName);
-    style()->polish(labelName);
 
     style()->unpolish(labelPixmap);
     style()->polish(labelPixmap);

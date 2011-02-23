@@ -124,7 +124,7 @@ QCheckBox::indicator:checked {
 }
 
 QCheckBox::hover {
-    color: orange;
+    color: #6f6f6f;
 }
 
 QPushButton {
@@ -143,7 +143,7 @@ QPushButton::disabled {
 }
 
 QPushButton::hover {
-    border: 2px solid orange;
+    border: 2px solid #6f6f6f;
 }
 
 QDialog QLabel {
@@ -170,13 +170,12 @@ QDialog#gameConnector QLineEdit {
 }
 
 QDialog#gameCardBrowser GameCardView QLabel#labelPixmap {
-    border: 3px solid gray;
-    border-style: outset;
+    border: 3px solid #3f3f3f;
     border-radius: 5px;
-    background: black;
 }
 
 QDialog#gameCardBrowser GameCardView[isSelected="true"] QLabel#labelPixmap {
-    border: 3px solid orange;
+    border: 3px solid #bfbfbf;
+    background: #6f6f6f;
 }
 

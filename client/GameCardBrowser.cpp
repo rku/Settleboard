@@ -44,6 +44,7 @@ void GameCardBrowser::clear()
 void GameCardBrowser::init()
 {
     setModal(true);
+    layout()->setSizeConstraint(QLayout::SetFixedSize);
 
     ui.buttonClose->setEnabled(true);
     ui.buttonPlaySelectedCard->setEnabled(false);
@@ -69,8 +70,6 @@ void GameCardBrowser::init()
 
 void GameCardBrowser::update()
 {
-    clear();
-
     GameCardStack *stack = GAME->getLocalPlayer()->getCardStack();
     QList<GameCard*> cards = stack->getCardsOfType("Development");
     unsigned int n = cards.size();
@@ -107,7 +106,10 @@ void GameCardBrowser::update()
 void GameCardBrowser::show()
 {
     position = 0;
+    clear();
     update();
+    resize(QSize(1,1));
+    adjustSize();
     QDialog::show();
 }
 
@@ -134,7 +136,7 @@ void GameCardBrowser::cardSelectionChanged()
     if(l != ui.gameCardView4) ui.gameCardView4->setIsSelected(false);
 
     GameCard *card = l->getCard();
-    ui.textEditDescription->setText(QString("%1: %2")
+    ui.textEditDescription->setText(QString("%1:\n\n%2")
         .arg(card->name).arg(card->description));
 }
 

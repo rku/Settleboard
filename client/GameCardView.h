@@ -29,7 +29,6 @@ class GameCardView : public QWidget
     protected:
         void mousePressEvent(QMouseEvent*);
 
-        QLabel *labelName;
         QLabel *labelPixmap;
         bool isSelected;
         GameCard *card;
