@@ -35,7 +35,10 @@ class GameCardBrowser : public QDialog
         void show();
 
     protected slots:
+        void clear();
         void update();
+        void navigateLeft();
+        void navigateRight();
 
     private:
         void init();
