@@ -54,7 +54,8 @@ HEADERS = client/GLWidget.h \
           client/StandardMap.h \
           client/Robber.h \
           client/GamePixmap.h \
-          client/GameCardBrowser.h
+          client/GameCardBrowser.h \
+          client/GameCardView.h
 
 SOURCES = client/GLWidget.cpp \
           client/Game.cpp \
@@ -89,5 +90,6 @@ SOURCES = client/GLWidget.cpp \
           client/StandardMap.cpp \
           client/Robber.cpp \
           client/GamePixmap.cpp \
-          client/GameCardBrowser.cpp
+          client/GameCardBrowser.cpp \
+          client/GameCardView.cpp
 

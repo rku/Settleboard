@@ -169,3 +169,14 @@ QDialog#gameConnector QLineEdit {
     font-size: 14px;
 }
 
+QDialog#gameCardBrowser GameCardView QLabel#labelPixmap {
+    border: 3px solid gray;
+    border-style: outset;
+    border-radius: 5px;
+    background: black;
+}
+
+QDialog#gameCardBrowser GameCardView[isSelected="true"] QLabel#labelPixmap {
+    border: 3px solid orange;
+}
+

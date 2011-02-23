@@ -118,6 +118,9 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleSelectRoadway);
     REGISTER_RULE(ruleSelectRoadwayAtCrossroad);
     REGISTER_RULE(ruleCanSelectRoadway);
+    REGISTER_RULE(ruleUserActionBuyDevelopmentCard);
+    REGISTER_RULE(ruleCanBuyDevelopmentCard);
+    REGISTER_RULE(ruleBuyDevelopmentCard);
 }
 
 GameRules::~GameRules()
@@ -1073,7 +1076,10 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
             EXECUTE_SUBRULE(ruleCanBuildCity) &&
             EXECUTE_SUBRULE(ruleCanBuyCity));
         controlPanel->setActionState("ShowCards",
-            (player->getCardStack()->getNumberOfCards() > 0));
+            (player->getCardStack()->getNumberOfCards("Development") > 0));
+        controlPanel->setActionState("BuyDevCard",
+            diceRolled &&
+            EXECUTE_SUBRULE(ruleCanBuyDevelopmentCard));
         controlPanel->setActionState("RollDice", !diceRolled);
         controlPanel->setActionState("EndTurn", diceRolled);
     }
@@ -1598,5 +1604,53 @@ IMPLEMENT_RULE(ruleCanSelectRoadway)
     }
 
     return false;
+}
+
+IMPLEMENT_RULE(ruleUserActionBuyDevelopmentCard)
+{
+    SERVER_ONLY_RULE
+
+    pushRuleChain();
+    RULECHAIN_ADD(ruleCanBuyDevelopmentCard);
+    RULECHAIN_ADD(ruleBuyDevelopmentCard);
+    startRuleChain();
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCanBuyDevelopmentCard)
+{
+    // is a card available?
+    GameCardStack *devCardStack = game->getBank()->getCardStack("Development");
+    if(devCardStack->getNumberOfCards() < 1) return false;
+
+    // check resources
+    GameCardStack *pStack = player->getCardStack();
+    unsigned int nWheat = pStack->getNumberOfCards("Resource", "Wheat");
+    unsigned int nOre = pStack->getNumberOfCards("Resource", "Ore");
+
+    if(nWheat < 1 || nOre < 1) return false;
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleBuyDevelopmentCard)
+{
+    GameCardStack *devCardStack = game->getBank()->getCardStack("Development");
+    GameCardStack *wheatStack = game->getBank()->getCardStack("Wheat");
+    GameCardStack *oreStack = game->getBank()->getCardStack("Ore");
+    GameCardStack *pStack = player->getCardStack();
+
+    pStack->drawCardsOfType(wheatStack, "Resource", "Wheat", 1);
+    pStack->drawCardsOfType(oreStack, "Resource", "Ore", 1);
+
+    devCardStack->drawFirstCards(pStack, 1);
+
+    LOG_PLAYER_MSG(QString("%1 bought a development card.")
+        .arg(player->getName()));
+
+    EXECUTE_SUBRULE(ruleUpdateInterface);
+
+    return true;
 }
 

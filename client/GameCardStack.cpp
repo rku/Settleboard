@@ -17,6 +17,20 @@ void GameCardStack::addCard(GameCard *card)
     cards.insert(cards.begin(), card);
 }
 
+const QList<GameCard*> GameCardStack::getCardsOfType(const QString &type)
+{
+    QList<GameCard*> foundCards;
+    QList<GameCard*>::iterator i;
+
+    for(i = cards.begin(); i != cards.end(); ++i)
+    {
+        GameCard *c = *i;
+        if(c->type == type) foundCards.append(c);
+    }
+
+    return foundCards;
+}
+
 void GameCardStack::shuffle()
 {
 }

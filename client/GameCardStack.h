@@ -15,6 +15,7 @@ class GameCardStack
 
         void addCard(GameCard*);
         const QList<GameCard*>& getCards() { return cards; }
+        const QList<GameCard*> getCardsOfType(const QString &type);
         void shuffle();
         bool drawFirstCards(GameCardStack *toStack, uint amount = 1);
         bool drawCardsOfType(GameCardStack *toStack, const QString &type,

@@ -204,6 +204,9 @@ class GameRules : public QObject
         DECLARE_RULE(ruleSelectRoadway);
         DECLARE_RULE(ruleSelectRoadwayAtCrossroad);
         DECLARE_RULE(ruleCanSelectRoadway);
+        DECLARE_RULE(ruleUserActionBuyDevelopmentCard);
+        DECLARE_RULE(ruleCanBuyDevelopmentCard);
+        DECLARE_RULE(ruleBuyDevelopmentCard);
 
         bool diceRolled;
         unsigned int turn;

@@ -39,6 +39,7 @@ class GameCardBrowser : public QDialog
         void update();
         void navigateLeft();
         void navigateRight();
+        void cardSelectionChanged();
 
     private:
         void init();

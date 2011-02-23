@@ -32,14 +32,10 @@ GameCardBrowser::GameCardBrowser(QWidget *parent) : QDialog(parent)
 
 void GameCardBrowser::clear()
 {
-    ui.labelName1->clear();
-    ui.labelPixmap1->clear();
-    ui.labelName2->clear();
-    ui.labelPixmap2->clear();
-    ui.labelName3->clear();
-    ui.labelPixmap3->clear();
-    ui.labelName4->clear();
-    ui.labelPixmap4->clear();
+    ui.gameCardView1->clear();
+    ui.gameCardView2->clear();
+    ui.gameCardView3->clear();
+    ui.gameCardView4->clear();
 
     ui.buttonNavigateLeft->setEnabled(false);
     ui.buttonNavigateRight->setEnabled(false);
@@ -49,12 +45,19 @@ void GameCardBrowser::init()
 {
     setModal(true);
 
-    ui.checkBoxResource->setCheckState(Qt::Unchecked);
-    ui.checkBoxDevelopment->setCheckState(Qt::Checked);
     ui.buttonClose->setEnabled(true);
     ui.buttonPlaySelectedCard->setEnabled(false);
 
     clear();
+
+    connect(ui.gameCardView1, SIGNAL(selected()),
+        this, SLOT(cardSelectionChanged()));
+    connect(ui.gameCardView2, SIGNAL(selected()),
+        this, SLOT(cardSelectionChanged()));
+    connect(ui.gameCardView3, SIGNAL(selected()),
+        this, SLOT(cardSelectionChanged()));
+    connect(ui.gameCardView4, SIGNAL(selected()),
+        this, SLOT(cardSelectionChanged()));
 
     connect(ui.buttonNavigateLeft, SIGNAL(clicked()),
         this, SLOT(navigateLeft()));
@@ -69,36 +72,34 @@ void GameCardBrowser::update()
     clear();
 
     GameCardStack *stack = GAME->getLocalPlayer()->getCardStack();
-    unsigned int n = stack->getNumberOfCards();
+    QList<GameCard*> cards = stack->getCardsOfType("Development");
+    unsigned int n = cards.size();
     if(n < 1) return;
 
-    unsigned int middle = qRound(n / 2);
+    unsigned int middle = (n % 2) ? n / 2 : (n - 1) / 2;
     int startIndex = middle + position - 1;
 
     if(startIndex < 0) startIndex = 0;
     if(startIndex >= (int)n) startIndex = n - 1;
 
-    // show cards
-    QList<GameCard*> cards = stack->getCards();
-
     int i;
-    for(i = 0; i < 4 && cards.size() > i; i++)
+    for(i = 0; i < 4 && cards.size() > (startIndex + i); i++)
     {
-        QLabel *lPixmap, *lName;
+        GameCardView *view;
 
         switch(i)
         {
-            case 0: lPixmap = ui.labelPixmap1; lName = ui.labelName1; break;
-            case 1: lPixmap = ui.labelPixmap2; lName = ui.labelName2; break;
-            case 2: lPixmap = ui.labelPixmap3; lName = ui.labelName3; break;
-            case 3: lPixmap = ui.labelPixmap4; lName = ui.labelName4; break;
+            case 0: view = ui.gameCardView1; break;
+            case 1: view = ui.gameCardView2; break;
+            case 2: view = ui.gameCardView3; break;
+            case 3: view = ui.gameCardView4; break;
             default: Q_ASSERT(false);
         }
 
-        lPixmap->setPixmap(cards.at(startIndex + i)->pixmap);
-        lName->setText(cards.at(startIndex + i)->name);
+        view->setCard(cards.at(startIndex + i));
     }
 
+    ui.gameCardView1->setIsSelected(true);
     ui.buttonNavigateRight->setEnabled(cards.size() > (startIndex + i));
     ui.buttonNavigateLeft->setEnabled(startIndex > 0);
 }
@@ -120,5 +121,20 @@ void GameCardBrowser::navigateRight()
 {
     position++;
     update();
+}
+
+void GameCardBrowser::cardSelectionChanged()
+{
+    GameCardView *l = qobject_cast<GameCardView*>(sender());
+    Q_ASSERT(l);
+
+    if(l != ui.gameCardView1) ui.gameCardView1->setIsSelected(false);
+    if(l != ui.gameCardView2) ui.gameCardView2->setIsSelected(false);
+    if(l != ui.gameCardView3) ui.gameCardView3->setIsSelected(false);
+    if(l != ui.gameCardView4) ui.gameCardView4->setIsSelected(false);
+
+    GameCard *card = l->getCard();
+    ui.textEditDescription->setText(QString("%1: %2")
+        .arg(card->name).arg(card->description));
 }
 

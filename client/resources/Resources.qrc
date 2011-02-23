@@ -1,6 +1,11 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
 <file>./Images/Card.png</file>
+<file>./Images/CardDevelopmentBuildRoad.png</file>
+<file>./Images/CardDevelopmentInvention.png</file>
+<file>./Images/CardDevelopmentKnight.png</file>
+<file>./Images/CardDevelopmentMonopoly.png</file>
+<file>./Images/CardDevelopmentWinningPoint.png</file>
 <file>./Images/CardResourceClay.png</file>
 <file>./Images/CardResourceLumber.png</file>
 <file>./Images/CardResourceOre.png</file>
@@ -15,6 +20,7 @@
 <file>./Images/Die4.png</file>
 <file>./Images/Die5.png</file>
 <file>./Images/Die6.png</file>
+<file>./Images/EmptyCard.png</file>
 <file>./Images/EndTurn.png</file>
 <file>./Images/Lumber.png</file>
 <file>./Images/Ore.png</file>
