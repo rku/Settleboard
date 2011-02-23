@@ -203,10 +203,23 @@ const QString HexTile::getResourceName(HexTileType t)
 
 QDataStream &operator<<(QDataStream &stream, const HexTilePtr &obj)
 {
+    QList<HexTile*> tiles = GAME->getBoard()->getBoardTiles();
+
+    Q_ASSERT(tiles.contains(obj.object));
+    stream << (qint16)tiles.indexOf(obj.object);
+
     return stream;
 }
 
 QDataStream &operator>>(QDataStream &stream, HexTilePtr &obj)
 {
+    QList<HexTile*> tiles = GAME->getBoard()->getBoardTiles();
+
+    qint16 index;
+    stream >> index;
+
+    Q_ASSERT(index >= 0 && index < tiles.size());
+    obj.object = tiles.at(index);
+
     return stream;
 }

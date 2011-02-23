@@ -96,6 +96,8 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleUserActionMoveRobber);
     REGISTER_RULE(ruleSelectHexTile);
     REGISTER_RULE(ruleMoveRobber);
+    REGISTER_RULE(ruleSelectOtherPlayerAtHexTile);
+    REGISTER_RULE(ruleStealResourceFromPlayer);
     REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
@@ -194,6 +196,9 @@ void GameRules::packRuleDataToNetworkPacket(NetworkPacket &packet)
         else if(!qstrcmp(typeName, "Roadway*"))
         { v = qVariantFromValue(RoadwayPtr(i.value().value<Roadway*>())); }
 
+        else if(!qstrcmp(typeName, "Player*"))
+        { v = qVariantFromValue(PlayerPtr(i.value().value<Player*>())); }
+
         else if(!qstrcmp(typeName, "HexTile*"))
         { v = qVariantFromValue(HexTilePtr(i.value().value<HexTile*>())); }
 
@@ -220,11 +225,14 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
         else if(!qstrcmp(typeName, "RoadwayPtr"))
         { v = qVariantFromValue(i.value().value<RoadwayPtr>().getObject()); }
 
+        else if(!qstrcmp(typeName, "PlayerPtr"))
+        { v = qVariantFromValue(i.value().value<PlayerPtr>().getObject()); }
+
         else if(!qstrcmp(typeName, "HexTilePtr"))
         { v = qVariantFromValue(i.value().value<HexTilePtr>().getObject()); }
 
         qDebug() << "Unpacking rule data" << i.key() << v;
-        ruleData.insertMulti(i.key(), v);
+        ruleData.insert(i.key(), v);
     }
 }
 
@@ -412,7 +420,7 @@ void GameRules::pushRuleData(QObject *pointer)
 
 void GameRules::pushRuleData(const QString &identifier, QVariant data)
 {
-    ruleData.insertMulti(identifier, data);
+    ruleData.insert(identifier, data);
 }
 
 // STANDARD RULES
@@ -689,7 +697,6 @@ IMPLEMENT_RULE(ruleBeginTurn)
         .arg(player->getName()).arg(turn));
 
     EXECUTE_SUBRULE(ruleUpdateInterface);
-
     return true;
 }
 
@@ -722,16 +729,29 @@ IMPLEMENT_RULE(ruleUserActionRollDice)
 {
     SERVER_ONLY_RULE
 
+    pushRuleChain();
+
     quint8 die1 = quint8( qrand() / (RAND_MAX + 1.0) * 6 + 1 );
     quint8 die2 = quint8( qrand() / (RAND_MAX + 1.0) * 6 + 1 );
 
     RULEDATA_PUSH("Die1Value", die1);
     RULEDATA_PUSH("Die2Value", die2);
 
-    pushRuleChain();
     RULECHAIN_ADD(ruleDiceRolled);
-    RULECHAIN_ADD(ruleDrawRolledResources);
-    RULECHAIN_ADD(ruleHighlightRolledTiles);
+
+    if((die1+die2) == 7)
+    {
+        RULECHAIN_ADD(ruleSelectHexTile);
+        RULECHAIN_ADD(ruleMoveRobber);
+        RULECHAIN_ADD(ruleSelectOtherPlayerAtHexTile);
+        RULECHAIN_ADD(ruleStealResourceFromPlayer);
+    }
+    else
+    {
+        RULECHAIN_ADD(ruleDrawRolledResources);
+        RULECHAIN_ADD(ruleHighlightRolledTiles);
+    }
+
     RULECHAIN_ADD(ruleUpdateInterface);
     startRuleChain();
 
@@ -1224,6 +1244,62 @@ IMPLEMENT_RULE(ruleMoveRobber)
 
     // set new robber
     tile->setHasRobber(true);
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleSelectOtherPlayerAtHexTile)
+{
+    RULEDATA_REQUIRE("HexTile");
+    HexTile *tile = RULEDATA_READ("HexTile").value<HexTile*>();
+    Q_ASSERT(tile != NULL);
+
+    // collect player buildings
+    int selectableFound = 0;
+    Player *selectedPlayer = NULL;
+    Board *board = game->getBoard();
+    QList<Crossroad*> crossroads = board->getCrossroads();
+    QList<Crossroad*>::iterator iC;
+    for(iC = crossroads.begin(); iC != crossroads.end(); ++iC)
+    {
+        Crossroad *c = *iC;
+        if(!c->getIsPlayerObjectPlaced()) continue;
+
+        PlayerObject *obj = c->getPlayerObject();
+        if(obj->getOwner() == player) continue;
+
+        obj->setIsSelectable(true);
+        if(selectedPlayer != obj->getOwner()) selectableFound++;
+        selectedPlayer = obj->getOwner();
+    }
+
+    if(selectableFound > 0)
+    {
+        // only one hit - select it
+        if(selectableFound == 1)
+        {
+            RULEDATA_PUSH("Player", selectedPlayer);
+            return true;
+        }
+
+        // more than one hit - let the user decide
+        if(player->getIsLocal()) board->setSelectionMode();
+        suspendRuleChain();
+        LOG_SYSTEM_MSG(QString("Waiting for %1 to select a player.").
+            arg(player->getName()))
+        return true;
+    }
+
+    LOG_SYSTEM_MSG("No player found to steal from.");
+    return true;
+}
+
+IMPLEMENT_RULE(ruleStealResourceFromPlayer)
+{
+    if(!ruleData.contains("Player")) return true;
+
+    Player *p = RULEDATA_READ("Player").value<Player*>();
+    Q_ASSERT(p != NULL);
 
     return true;
 }

@@ -95,7 +95,7 @@ typedef struct _RuleChainElement {
     ruleChain.insert(ruleChain.begin(), _rce); }
 
 #define RULEDATA_REQUIRE(n) Q_ASSERT(ruleData.contains(n));
-#define RULEDATA_PUSH(n, i) ruleData.insertMulti(n, qVariantFromValue(i))
+#define RULEDATA_PUSH(n, i) ruleData.insert(n, qVariantFromValue(i))
 #define RULEDATA_POP(n)     ruleData.take(n)
 #define RULEDATA_READ(n)    ruleData.value(n)
 
@@ -183,6 +183,8 @@ class GameRules : public QObject
         DECLARE_RULE(ruleUserActionMoveRobber);
         DECLARE_RULE(ruleSelectHexTile);
         DECLARE_RULE(ruleMoveRobber);
+        DECLARE_RULE(ruleSelectOtherPlayerAtHexTile);
+        DECLARE_RULE(ruleStealResourceFromPlayer);
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);
