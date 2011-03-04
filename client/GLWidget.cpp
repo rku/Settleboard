@@ -209,7 +209,7 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 
 void GLWidget::setPerspective()
 {
-    gluPerspective(CAM_FOV, (GLfloat) width() / (GLfloat) height(), 1.0, 1024.0);
+    gluPerspective(CAM_FOV, (GLfloat) width() / (GLfloat) height(), 1.0f, 1024.0f);
 }
 
 void GLWidget::beginGLSelection(QPoint pos)

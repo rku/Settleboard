@@ -285,8 +285,8 @@ void Board::updateBoardState(BoardState &newState)
 
 void Board::setPosForTile(HexTile *tile)
 {
-    float w = tile->getWidth();
-    float d = tile->getDepth() * 0.75f;
+    float w = tile->getWidth() * 0.982f;
+    float d = tile->getDepth() * 0.742f;
     unsigned int row = tile->getRow();
     unsigned int col = tile->getColumn();
     unsigned int width = map->getWidth();
