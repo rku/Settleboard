@@ -371,7 +371,11 @@ void GameRules::continueRuleChain()
         if(rce.suspend) break;
 
         // cancel rule, if a rule fails
-        if(!executeRule(rce.name, rce.player)) cancelRuleChain();
+        if(!executeRule(rce.name, rce.player))
+        {
+            qDebug() << "Rule" << rce.name << "returned false.";
+            cancelRuleChain();
+        }
 
         if(isRuleChainWaiting) break; // detect nested suspensions
 
@@ -389,6 +393,7 @@ void GameRules::ruleChainFinished()
     ruleData.clear();
     isRuleChainWaiting = false;
     GAME->getBoard()->resetBoardState();
+    executeLocalRule("ruleUpdateInterface");
 }
 
 void GameRules::cancelRuleChain()
@@ -752,7 +757,6 @@ IMPLEMENT_RULE(ruleUserActionRollDice)
         RULECHAIN_ADD(ruleHighlightRolledTiles);
     }
 
-    RULECHAIN_ADD(ruleUpdateInterface);
     startRuleChain();
 
     return true;
@@ -1254,6 +1258,8 @@ IMPLEMENT_RULE(ruleSelectOtherPlayerAtHexTile)
     HexTile *tile = RULEDATA_READ("HexTile").value<HexTile*>();
     Q_ASSERT(tile != NULL);
 
+    qDebug() << "Getting players at tile...";
+
     // collect player buildings
     int selectableFound = 0;
     Player *selectedPlayer = NULL;
@@ -1271,6 +1277,7 @@ IMPLEMENT_RULE(ruleSelectOtherPlayerAtHexTile)
         obj->setIsSelectable(true);
         if(selectedPlayer != obj->getOwner()) selectableFound++;
         selectedPlayer = obj->getOwner();
+        qDebug() << "Found player at tile:" << selectedPlayer->getName();
     }
 
     if(selectableFound > 0)
@@ -1279,6 +1286,8 @@ IMPLEMENT_RULE(ruleSelectOtherPlayerAtHexTile)
         if(selectableFound == 1)
         {
             RULEDATA_PUSH("Player", selectedPlayer);
+            qDebug() << "Automatically selected player:" <<
+                selectedPlayer->getName();
             return true;
         }
 
@@ -1296,10 +1305,13 @@ IMPLEMENT_RULE(ruleSelectOtherPlayerAtHexTile)
 
 IMPLEMENT_RULE(ruleStealResourceFromPlayer)
 {
-    if(!ruleData.contains("Player")) return true;
+    if(!ruleData.contains("Player")) return false;
 
     Player *p = RULEDATA_READ("Player").value<Player*>();
     Q_ASSERT(p != NULL);
+
+    qDebug() << player->getName() << "is about to steal a resource from"
+        << p->getName();
 
     return true;
 }
