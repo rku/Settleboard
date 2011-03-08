@@ -37,6 +37,7 @@ void GameCardBrowser::clear()
     ui.gameCardView3->clear();
     ui.gameCardView4->clear();
 
+    ui.buttonAccept->setEnabled(false);
     ui.buttonNavigateLeft->setEnabled(false);
     ui.buttonNavigateRight->setEnabled(false);
 
@@ -220,6 +221,8 @@ void GameCardBrowser::cardSelectionChanged()
 
 void GameCardBrowser::acceptClicked()
 {
+    ui.buttonAccept->setEnabled(false);
+
     switch(mode)
     {
         case PlayCardMode:
@@ -236,16 +239,16 @@ void GameCardBrowser::acceptClicked()
 void GameCardBrowser::playSelectedCard()
 {
     Q_ASSERT(selectedCards.size() == 1);
-    close();
 
     QString playRule = selectedCards.at(0)->getPlayRule();
     if(!playRule.isEmpty()) GAME->getRules()->executeRule(playRule);
+
+    close();
 }
 
 void GameCardBrowser::commitCardSelection()
 {
     Q_ASSERT(!acceptRule.isEmpty());
-
     GAME->getRules()->executeRule(acceptRule);
 }
 

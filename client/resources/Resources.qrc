@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
 <file>./Images/Card.png</file>
+<file>./Images/CardCover.png</file>
 <file>./Images/CardDevelopmentBuildRoad.png</file>
 <file>./Images/CardDevelopmentInvention.png</file>
 <file>./Images/CardDevelopmentKnight.png</file>

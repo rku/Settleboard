@@ -1059,14 +1059,6 @@ IMPLEMENT_RULE(ruleInitControlPanel)
     actionBuildCity->setIcon(GamePixmap("City.png", color).toIcon());
     controlPanel->registerAction("BuildCity", actionBuildCity);
 
-    QAction *actionShowCards = new QAction(controlPanel);
-    actionShowCards->setData(QString());
-    actionShowCards->setToolTip("Show my cards");
-    actionShowCards->setIcon(GamePixmap("ShowCards.png", color).toIcon());
-    connect(actionShowCards, SIGNAL(triggered()),
-        game, SLOT(browseLocalGameCards()));
-    controlPanel->registerAction("ShowCards", actionShowCards);
-
     QAction *actionBuyDevCard = new QAction(controlPanel);
     actionBuyDevCard->setData(QString("ruleUserActionBuyDevelopmentCard"));
     actionBuyDevCard->setToolTip("Buy Development Card");
@@ -1078,6 +1070,14 @@ IMPLEMENT_RULE(ruleInitControlPanel)
     actionTrade->setToolTip("Trade");
     actionTrade->setIcon(GamePixmap("Trade.png", color).toIcon());
     controlPanel->registerAction("Trade", actionTrade);
+
+    QAction *actionShowCards = new QAction(controlPanel);
+    actionShowCards->setData(QString());
+    actionShowCards->setToolTip("Show my cards");
+    actionShowCards->setIcon(GamePixmap("ShowCards.png", color).toIcon());
+    connect(actionShowCards, SIGNAL(triggered()),
+        game, SLOT(browseLocalGameCards()));
+    controlPanel->registerAction("ShowCards", actionShowCards);
 
     QAction *actionRollDice = new QAction(controlPanel);
     actionRollDice->setData(QString("ruleUserActionRollDice"));
