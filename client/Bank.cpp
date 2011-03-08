@@ -37,7 +37,7 @@ void Bank::registerCard(QString stack, GameCard card, uint totalAmount)
         cardStacks[stack]->addCard(copiedCard);
     }
 
-    qDebug() << "Created" << totalAmount << card.name << "cards for" << stack;
+    qDebug() << "Created" << totalAmount << card.getName() << "cards for" << stack;
 }
 
 GameCardStack* Bank::getCardStack(QString stack)

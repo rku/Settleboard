@@ -6,24 +6,36 @@
 
 #include "GamePixmap.h"
 
-typedef struct _GameCard {
-    _GameCard(const _GameCard &c)
-        : type(c.type), name(c.name), description(c.description),
-        pixmap(c.pixmap), playRule(c.playRule), canPlayRule(c.canPlayRule),
-        isSecret(c.isSecret) {}
-    _GameCard(QString t, QString n, QString d, QString i = QString(),
-        QString p = QString(), QString c = QString(), bool s = true)
-        : type(t), name(n), description(d), pixmap(GamePixmap(i)),
+class GameCard
+{
+    public:
+        GameCard(const GameCard &c)
+            : type(c.type), name(c.name), description(c.description),
+            pixmap(c.pixmap), playRule(c.playRule), canPlayRule(c.canPlayRule),
+            isSecret(c.isSecret) {}
+
+        GameCard(QString t, QString n, QString d, QString i = QString(),
+            QString p = QString(), QString c = QString(), bool s = true)
+            : type(t), name(n), description(d), pixmap(GamePixmap(i)),
             playRule(p), canPlayRule(c), isSecret(s) {}
 
-    QString type;
-    QString name;
-    QString description;
-    GamePixmap pixmap;
-    QString playRule;
-    QString canPlayRule;
-    bool isSecret;
-} GameCard;
+        const QString &getType() { return type; }
+        const QString &getName() { return name; }
+        const QString &getDescription() { return description; }
+        const GamePixmap &getPixmap() { return pixmap; }
+        const QString &getPlayRule() { return playRule; }
+        const QString &getCanPlayRule() { return canPlayRule; }
+        bool getIsSecret() { return isSecret; }
+
+    private:
+        QString type;
+        QString name;
+        QString description;
+        GamePixmap pixmap;
+        QString playRule;
+        QString canPlayRule;
+        bool isSecret;
+};
 
 // all available game cards are defined here at the moment
 

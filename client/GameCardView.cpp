@@ -9,6 +9,7 @@
 GameCardView::GameCardView(QWidget *parent) : QWidget(parent)
 {
     isSelected = false;
+    isSecret = false;
     card = NULL;
 
     QVBoxLayout *l = new QVBoxLayout();
@@ -37,8 +38,8 @@ void GameCardView::setCard(GameCard *c)
 {
     card = c;
 
-    labelPixmap->setToolTip(c->name);
-    labelPixmap->setPixmap(c->pixmap);
+    labelPixmap->setToolTip(c->getName());
+    labelPixmap->setPixmap(c->getPixmap());
     setVisible(true);
 }
 

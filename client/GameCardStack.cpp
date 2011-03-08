@@ -25,7 +25,7 @@ const QList<GameCard*> GameCardStack::getCardsOfType(const QString &type)
     for(i = cards.begin(); i != cards.end(); ++i)
     {
         GameCard *c = *i;
-        if(c->type == type) foundCards.append(c);
+        if(c->getType() == type) foundCards.append(c);
     }
 
     return foundCards;
@@ -55,7 +55,7 @@ bool GameCardStack::drawCardsOfType(GameCardStack *toStack,
     for(i = cards.begin(); i != cards.end(); ++i)
     {
         GameCard *card = *i;
-        if(card->type == type && card->name == name)
+        if(card->getType() == type && card->getName() == name)
             foundCards.append(card);
 
         if(foundCards.size() == (int)amount) break;
@@ -84,7 +84,7 @@ uint GameCardStack::getNumberOfCards(QString type)
     uint num = 0;
 
     for(int i = 0; i < cards.size(); i++)
-        if(cards.at(i)->type == type) num++;
+        if(cards.at(i)->getType() == type) num++;
 
     return num;
 }
@@ -94,7 +94,8 @@ uint GameCardStack::getNumberOfCards(QString type, QString name)
     uint num = 0;
 
     for(int i = 0; i < cards.size(); i++)
-        if(cards.at(i)->type == type && cards.at(i)->name == name) num++;
+        if(cards.at(i)->getType() == type && cards.at(i)->getName() == name)
+            num++;
 
     return num;
 }

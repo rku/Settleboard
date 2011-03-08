@@ -233,7 +233,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="buttonPlaySelectedCard">
+       <widget class="QPushButton" name="buttonAccept">
         <property name="text">
          <string>Play Selected Card</string>
         </property>

@@ -40,7 +40,15 @@ void GameCardBrowser::clear()
     ui.buttonNavigateLeft->setEnabled(false);
     ui.buttonNavigateRight->setEnabled(false);
 
-    selectedCard = NULL;
+    position = 0;
+    selectedCards.clear();
+    cardStack = NULL;
+    showCardDescription = true;
+    selectAmount = -1;
+    cardFilterType.clear();
+    cardFilterName.clear();
+    acceptRule.clear();
+    cancelRule.clear();
 }
 
 void GameCardBrowser::init()
@@ -49,7 +57,7 @@ void GameCardBrowser::init()
     layout()->setSizeConstraint(QLayout::SetFixedSize);
 
     ui.buttonClose->setEnabled(true);
-    ui.buttonPlaySelectedCard->setEnabled(false);
+    ui.buttonAccept->setEnabled(false);
 
     clear();
 
@@ -67,16 +75,16 @@ void GameCardBrowser::init()
     connect(ui.buttonNavigateRight, SIGNAL(clicked()),
         this, SLOT(navigateRight()));
 
-    connect(ui.buttonPlaySelectedCard, SIGNAL(clicked()),
+    connect(ui.buttonAccept, SIGNAL(clicked()),
         this, SLOT(playSelectedCard()));
-
-    position = 0;
 }
 
 void GameCardBrowser::update()
 {
-    GameCardStack *stack = GAME->getLocalPlayer()->getCardStack();
-    QList<GameCard*> cards = stack->getCardsOfType("Development");
+    Q_ASSERT(cardStack != NULL);
+
+    QList<GameCard*> cards = (cardFilterType.isEmpty()) ?
+        cardStack->getCards() : cardStack->getCardsOfType(cardFilterType);
     unsigned int n = cards.size();
     if(n < 1) return;
 
@@ -103,31 +111,74 @@ void GameCardBrowser::update()
         view->setCard(cards.at(startIndex + i));
     }
 
-    ui.gameCardView1->setIsSelected(true);
     ui.buttonNavigateRight->setEnabled(cards.size() > (startIndex + i));
     ui.buttonNavigateLeft->setEnabled(startIndex > 0);
 }
 
-void GameCardBrowser::show()
+void GameCardBrowser::show(CardBrowserMode m)
 {
+    mode = m;
     position = 0;
-    clear();
     update();
+    if(selectAmount < 1) ui.gameCardView1->setIsSelected(true);
     resize(QSize(1,1));
     adjustSize();
     QDialog::show();
 }
 
+void GameCardBrowser::close()
+{
+    clear();
+    QDialog::close();
+}
+
+void GameCardBrowser::setCardFilter(const QString &type, const QString &name)
+{
+    cardFilterType = type;
+    cardFilterName = name;
+    update();
+}
+
+void GameCardBrowser::setCardStack(GameCardStack *stack)
+{
+    cardStack = stack;
+    if(isVisible()) update();
+}
+
+void GameCardBrowser::setIsCancelable(bool b)
+{
+    ui.buttonClose->setVisible(b);
+    if(isVisible()) update();
+}
+
+void GameCardBrowser::setAcceptButtonText(const QString &text)
+{
+    ui.buttonAccept->setText(text);
+    if(isVisible()) update();
+}
+
+void GameCardBrowser::setDescription(const QString &text)
+{
+    ui.textEditDescription->setText(text);
+    if(isVisible()) update();
+}
+
+void GameCardBrowser::setSelectAmount(unsigned int n)
+{
+    selectAmount = n;
+    if(isVisible()) update();
+}
+
 void GameCardBrowser::navigateLeft()
 {
     position--;
-    update();
+    if(isVisible()) update();
 }
 
 void GameCardBrowser::navigateRight()
 {
     position++;
-    update();
+    if(isVisible()) update();
 }
 
 void GameCardBrowser::cardSelectionChanged()
@@ -142,17 +193,59 @@ void GameCardBrowser::cardSelectionChanged()
 
     GameCard *card = l->getCard();
     ui.textEditDescription->setText(QString("%1:\n\n%2")
-        .arg(card->name).arg(card->description));
-    selectedCard = card;
+        .arg(card->getName()).arg(card->getDescription()));
 
-    bool canPlayCard = GAME->getRules()->executeLocalRule(card->canPlayRule);
-    ui.buttonPlaySelectedCard->setEnabled(canPlayCard);
+    if(selectAmount < 1)
+    {
+        // single selection
+        selectedCards.clear();
+        selectedCards.append(card);
+    }
+    else
+    {
+        if(selectedCards.contains(card))
+        {
+            selectedCards.removeAll(card);
+        }
+        else
+        {
+            selectedCards.append(card);
+        }
+    }
+
+    bool canPlayCard = GAME->getRules()->executeLocalRule(card->getCanPlayRule());
+    ui.buttonAccept->setEnabled(canPlayCard);
+    update();
+}
+
+void GameCardBrowser::acceptClicked()
+{
+    switch(mode)
+    {
+        case PlayCardMode:
+            playSelectedCard();
+            break;
+        case SelectCardsMode:
+            commitCardSelection();
+            break;
+        default:
+            Q_ASSERT(false);
+    }
 }
 
 void GameCardBrowser::playSelectedCard()
 {
-    Q_ASSERT(selectedCard != NULL);
+    Q_ASSERT(selectedCards.size() == 1);
     close();
-    GAME->getRules()->executeRule(selectedCard->playRule);
+
+    QString playRule = selectedCards.at(0)->getPlayRule();
+    if(!playRule.isEmpty()) GAME->getRules()->executeRule(playRule);
+}
+
+void GameCardBrowser::commitCardSelection()
+{
+    Q_ASSERT(!acceptRule.isEmpty());
+
+    GAME->getRules()->executeRule(acceptRule);
 }
 

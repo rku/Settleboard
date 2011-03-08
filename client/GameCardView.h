@@ -22,6 +22,8 @@ class GameCardView : public QWidget
 
         void setIsSelected(bool);
         bool getIsSelected() { return isSelected; }
+        void setIsSecret(bool);
+        bool getIsSecret() { return isSecret; }
 
     signals:
         void selected();
@@ -31,6 +33,7 @@ class GameCardView : public QWidget
 
         QLabel *labelPixmap;
         bool isSelected;
+        bool isSecret;
         GameCard *card;
 };
 
