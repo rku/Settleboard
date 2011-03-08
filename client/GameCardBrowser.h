@@ -27,6 +27,7 @@
 #include "ui_cardbrowserform.h"
 
 class GameCardStack;
+class Player;
 
 class GameCardBrowser : public QDialog
 {
@@ -36,12 +37,11 @@ class GameCardBrowser : public QDialog
         GameCardBrowser(QWidget *parent = 0);
 
         enum CardBrowserMode { PlayCardMode, SelectCardsMode };
-        void show(CardBrowserMode);
+        void show(Player*, CardBrowserMode);
 
         void setCardFilter(const QString &type, const QString &name = QString());
         void setAcceptRule(const QString &s) { acceptRule = s; }
         void setCancelRule(const QString &s) { cancelRule = s; }
-        void setCardStack(GameCardStack*);
         void setIsCancelable(bool);
         void setAcceptButtonText(const QString &text);
         void setDescription(const QString &text);
@@ -64,8 +64,8 @@ class GameCardBrowser : public QDialog
         void commitCardSelection();
 
         int position;
+        Player *player;
         CardBrowserMode mode;
-        GameCardStack *cardStack;
         QList<GameCard*> selectedCards;
         bool showCardDescription;
         int selectAmount;

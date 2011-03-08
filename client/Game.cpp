@@ -75,11 +75,10 @@ void Game::init()
 void Game::browseLocalGameCards()
 {
     gameCardBrowser->close();
-    gameCardBrowser->setCardStack(getLocalPlayer()->getCardStack());
     gameCardBrowser->setCardFilter("Development");
     gameCardBrowser->setIsCancelable(true);
     gameCardBrowser->setAcceptButtonText("Play Selected Card");
-    gameCardBrowser->show(GameCardBrowser::PlayCardMode);
+    gameCardBrowser->show(getLocalPlayer(), GameCardBrowser::PlayCardMode);
 }
 
 void Game::parseCommandLine()

@@ -43,7 +43,7 @@ void GameCardBrowser::clear()
 
     position = 0;
     selectedCards.clear();
-    cardStack = NULL;
+    player = NULL;
     showCardDescription = true;
     selectAmount = -1;
     cardFilterType.clear();
@@ -82,10 +82,11 @@ void GameCardBrowser::init()
 
 void GameCardBrowser::update()
 {
-    Q_ASSERT(cardStack != NULL);
+    Q_ASSERT(player != NULL);
 
+    GameCardStack *stack = player->getCardStack();
     QList<GameCard*> cards = (cardFilterType.isEmpty()) ?
-        cardStack->getCards() : cardStack->getCardsOfType(cardFilterType);
+        stack->getCards() : stack->getCardsOfType(cardFilterType);
     unsigned int n = cards.size();
     if(n < 1) return;
 
@@ -116,8 +117,11 @@ void GameCardBrowser::update()
     ui.buttonNavigateLeft->setEnabled(startIndex > 0);
 }
 
-void GameCardBrowser::show(CardBrowserMode m)
+void GameCardBrowser::show(Player *p, CardBrowserMode m)
 {
+    Q_ASSERT(p != NULL);
+
+    player = p;
     mode = m;
     position = 0;
     update();
@@ -137,49 +141,38 @@ void GameCardBrowser::setCardFilter(const QString &type, const QString &name)
 {
     cardFilterType = type;
     cardFilterName = name;
-    update();
-}
-
-void GameCardBrowser::setCardStack(GameCardStack *stack)
-{
-    cardStack = stack;
-    if(isVisible()) update();
 }
 
 void GameCardBrowser::setIsCancelable(bool b)
 {
     ui.buttonClose->setVisible(b);
-    if(isVisible()) update();
 }
 
 void GameCardBrowser::setAcceptButtonText(const QString &text)
 {
     ui.buttonAccept->setText(text);
-    if(isVisible()) update();
 }
 
 void GameCardBrowser::setDescription(const QString &text)
 {
     ui.textEditDescription->setText(text);
-    if(isVisible()) update();
 }
 
 void GameCardBrowser::setSelectAmount(unsigned int n)
 {
     selectAmount = n;
-    if(isVisible()) update();
 }
 
 void GameCardBrowser::navigateLeft()
 {
     position--;
-    if(isVisible()) update();
+    update();
 }
 
 void GameCardBrowser::navigateRight()
 {
     position++;
-    if(isVisible()) update();
+    update();
 }
 
 void GameCardBrowser::cardSelectionChanged()
@@ -214,8 +207,8 @@ void GameCardBrowser::cardSelectionChanged()
         }
     }
 
-    bool canPlayCard = GAME->getRules()->executeLocalRule(card->getCanPlayRule());
-    ui.buttonAccept->setEnabled(canPlayCard);
+    ui.buttonAccept->setEnabled(
+        GAME->getRules()->executeLocalRule(card->getCanPlayRule()));
     update();
 }
 
