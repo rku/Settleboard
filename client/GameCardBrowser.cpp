@@ -111,7 +111,8 @@ void GameCardBrowser::update()
         }
 
         GameCard *card = cards.at(startIndex + i);
-        view->setIsSecret(card->getIsSecret() && player == GAME->getLocalPlayer());
+        view->setIsSecret(card->getIsSecret() &&
+            player != GAME->getLocalPlayer());
         view->setCard(card);
     }
 
