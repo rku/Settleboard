@@ -34,13 +34,32 @@ void GameCardView::clear()
     setVisible(false);
 }
 
+void GameCardView::setIsSecret(bool b)
+{
+    isSecret = b;
+    if(card != NULL) setCard(card);
+}
+
 void GameCardView::setCard(GameCard *c)
 {
     card = c;
 
-    labelPixmap->setToolTip(c->getName());
-    labelPixmap->setPixmap(c->getPixmap());
-    setVisible(true);
+    if(card != NULL)
+    {
+        if(isSecret)
+        {
+            labelPixmap->setToolTip(QString());
+            labelPixmap->setPixmap(GameCard::getCoverPixmap());
+        }
+        else
+        {
+            labelPixmap->setToolTip(card->getName());
+            labelPixmap->setPixmap(card->getPixmap());
+        }
+
+        setVisible(true);
+    }
+    else clear();
 }
 
 void GameCardView::setIsSelected(bool b)

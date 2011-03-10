@@ -110,7 +110,9 @@ void GameCardBrowser::update()
             default: Q_ASSERT(false);
         }
 
-        view->setCard(cards.at(startIndex + i));
+        GameCard *card = cards.at(startIndex + i);
+        view->setIsSecret(card->getIsSecret() && player == GAME->getLocalPlayer());
+        view->setCard(card);
     }
 
     ui.buttonNavigateRight->setEnabled(cards.size() > (startIndex + i));

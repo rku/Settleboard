@@ -3,8 +3,10 @@
 #define GAMECARD_H 1
 
 #include <QString>
+#include <QtDebug>
 
 #include "GamePixmap.h"
+#include "FileManager.h"
 
 class GameCard
 {
@@ -26,6 +28,12 @@ class GameCard
         const QString &getPlayRule() { return playRule; }
         const QString &getCanPlayRule() { return canPlayRule; }
         bool getIsSecret() { return isSecret; }
+
+        static GamePixmap &getCoverPixmap()
+        {
+            static GamePixmap coverPixmap = GamePixmap("CardCover.png");
+            return coverPixmap;
+        }
 
     private:
         QString type;
