@@ -74,7 +74,7 @@ void GameInfoPanel::clearDiceValues()
 void GameInfoPanel::setCurrentPlayer(Player *currentPlayer)
 {
     QString text = QString("%1's turn").arg(currentPlayer->getName());
-    QString style = QString("color: %1").arg(currentPlayer->getColor().name());
+    QString style = QString("color: %1").arg(currentPlayer->getColor().lighter(130).name());
     currentPlayerLabel->setText(text);
     currentPlayerLabel->setStyleSheet(style);
 }

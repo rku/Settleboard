@@ -44,7 +44,8 @@ QGroupBox* PlayerPanel::getPlayerBox(Player *player)
     else box = playerBoxes.value(player);
 
     QString style = QString("::title { color: %1; }");
-    QColor color = (player->getIsDisconnected()) ? Qt::gray : player->getColor();
+    QColor color = (player->getIsDisconnected()) ? 
+        Qt::gray : player->getColor().lighter(130);
     box->setStyleSheet(style.arg(color.name()));
     box->setTitle((player->getIsDisconnected())?"Disconnected":player->getName());
 

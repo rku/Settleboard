@@ -84,6 +84,7 @@ QGroupBox::title {
 
 PlayerPanel QGroupBox QLabel {
     color: white;
+    font-family: fixed;
     font-size: 12px;
 }
 
@@ -153,6 +154,7 @@ QDialog QLabel {
 QTextEdit, QLineEdit {
     background: #050505;
     color: white;
+    font-family: fixed;
     font-size: 13px;
     border-style: outset;
     border-color: #3f3f3f;
@@ -166,6 +168,7 @@ QTextEdit::disabled, QLineEdit::disabled {
 }
 
 QDialog#gameConnector QLineEdit {
+    font-family: fixed;
     font-size: 14px;
 }
 

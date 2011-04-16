@@ -21,8 +21,8 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
     widget->setLayout(l);
     setWidget(widget);
 
-    setFixedHeight(50);
-    setMaximumHeight(50);
+    setFixedHeight(70);
+    setMaximumHeight(70);
     setMinimumHeight(50);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setAllowedAreas(Qt::BottomDockWidgetArea);

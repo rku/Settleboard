@@ -18,7 +18,7 @@ ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
     setAllowedAreas(Qt::TopDockWidgetArea);
     setFloating(false);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
-    setMaximumHeight(90);
+    setMaximumHeight(120);
     setObjectName("resourceInfoPanel");
     setTitleBarWidget(new QWidget(this));
 }

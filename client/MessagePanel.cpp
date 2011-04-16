@@ -46,7 +46,7 @@ void MessagePanel::addLogMessage(Player *player, const QString msg)
 {
     QString format("- %1");
 
-    output->setTextColor(player->getColor());
+    output->setTextColor(player->getColor().lighter(130));
     output->append(format.arg(msg));
 }
 
