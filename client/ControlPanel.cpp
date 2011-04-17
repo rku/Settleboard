@@ -5,10 +5,10 @@
 ControlPanel::ControlPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
-    QHBoxLayout *l = new QHBoxLayout();
+    QGridLayout *l = new QGridLayout();
     QWidget *widget = new QWidget(this);
 
-    l->addStretch();
+    //l->addStretch();
 
     buttonCancel = new QToolButton(widget);
     buttonCancel->setVisible(false);
@@ -16,14 +16,14 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
     l->addWidget(buttonCancel);
     connect(buttonCancel, SIGNAL(clicked()), this, SLOT(cancel()));
 
-    l->addStretch();
+    l->setRowStretch(0, 1);
 
     widget->setLayout(l);
     setWidget(widget);
 
-    setFixedHeight(70);
-    setMaximumHeight(70);
-    setMinimumHeight(50);
+    setFixedWidth(160);
+    //setMaximumHeight(70);
+    //setMinimumHeight(50);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setAllowedAreas(Qt::BottomDockWidgetArea);
     setTitleBarWidget(new QWidget(this));
@@ -76,13 +76,17 @@ void ControlPanel::registerAction(const QString name, QAction *action)
     button->setFixedWidth(48);
     button->setFixedHeight(40);
     button->setIconSize(QSize(32,32));
-    QHBoxLayout *l = (QHBoxLayout*)widget()->layout();
+    QGridLayout *l = (QGridLayout*)widget()->layout();
 
-    Q_ASSERT(l->count() >= 2);
+    int row = (l->count() - 1) / 3 + 1;
+    int col = (l->count() - 1) % 3;
 
     action->setStatusTip(action->toolTip());
     button->setDefaultAction(action);
-    l->insertWidget(l->count() - 1, button);
+    l->addWidget(button, row, col);
+
+    l->setRowStretch(row, 0);
+    l->setRowStretch(row + 1, 1);
 
     connect(action, SIGNAL(triggered()), this, SLOT(actionTriggered()));
 

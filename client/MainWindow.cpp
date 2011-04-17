@@ -34,6 +34,7 @@ MainWindow::MainWindow()
     instance = this;
 
     setWindowTitle(tr("Settleboard3D"));
+    resize(QSize(800,600));
 
     createDialogs();
     createActions();
@@ -122,9 +123,9 @@ void MainWindow::createToolBars()
 void MainWindow::createDockWidgets()
 {
     setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
-    setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
     setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
-    setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+    setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
 }
 
 void MainWindow::createStatusBar()

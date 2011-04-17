@@ -8,11 +8,11 @@ PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
     columns = 3;
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout *lt = new QVBoxLayout();
     QWidget *widget = new QWidget(this);
 
-    layout->addStretch();
-    widget->setLayout(layout);
+    lt->addStretch();
+    widget->setLayout(lt);
     setWidget(widget);
 
     setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);

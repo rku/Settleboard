@@ -26,14 +26,16 @@ GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
     l->addWidget(die2PixmapLabel, 2, 2, Qt::AlignRight);
 
     l->setColumnStretch(3, 1);
-    l->setRowStretch(2, 1);
+    l->setRowStretch(3, 1);
 
     widget->setLayout(l);
     setWidget(widget);
 
     setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    setMinimumHeight(120);
-    setMaximumHeight(120);
+    //setMinimumHeight(120);
+    //setMinimumWHeight(150);
+    //setMaximumHeight(200);
+    setFixedWidth(200);
     setFeatures(QDockWidget::DockWidgetMovable);
     setTitleBarWidget(new QWidget(this));
 }
