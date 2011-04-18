@@ -61,7 +61,7 @@ void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
 
 void ResourceInfoPanel::clear()
 {
-    QHBoxLayout *l = qobject_cast<QHBoxLayout*>(widget()->layout());
-    while(l->count() > 2) delete l->takeAt(1)->widget();
+    QVBoxLayout *l = qobject_cast<QVBoxLayout*>(widget()->layout());
+    while(l->count() > 1) delete l->takeAt(1)->widget();
 }
 
