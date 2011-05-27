@@ -4,6 +4,8 @@
 
 #include <QtGui>
 
+class GameCard;
+
 class GameCardPanel : public QDockWidget
 {
     Q_OBJECT
@@ -12,9 +14,16 @@ class GameCardPanel : public QDockWidget
         GameCardPanel(const QString &title, QWidget *parent = 0);
         ~GameCardPanel();
 
-    protected:
+        void clear();
+        void addCard(GameCard *card);
+
+    protected slots:
+        void updateButtonState();
+        void showCardInfo();
+        void playCard();
 
     private:
+        QList<GameCard*> cards;
         QPushButton *buttonInfo;
         QPushButton *buttonPlay;
         QListWidget *cardList;

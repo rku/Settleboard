@@ -22,14 +22,8 @@ MessagePanel::MessagePanel(const QString &title, QWidget *parent)
     widget->setLayout(l);
     setWidget(widget);
 
-    setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    //setFixedHeight(100);
-    //setMinimumHeight(100);
-    //setMinimumWidth(250);
-    //setMaximumWidth(500);
-    //setMaximumHeight(200);
-    //setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
-    setFeatures(QDockWidget::DockWidgetMovable);
+    setMinimumHeight(150);
+    setFeatures(QDockWidget::NoDockWidgetFeatures);
     setTitleBarWidget(new QWidget(this));
 }
 

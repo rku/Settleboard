@@ -40,7 +40,6 @@
 #include "Game.h"
 #include "StandardMap.h"
 #include "GamePixmap.h"
-#include "GameCardBrowser.h"
 #include "GameRules.h"
 
 GameRules::GameRules(QObject *parent) : QObject(parent)
@@ -92,6 +91,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleUpdateGameInfoPanel);
     REGISTER_RULE(ruleInitResourceInfoPanel);
     REGISTER_RULE(ruleUpdateResourceInfoPanel);
+    REGISTER_RULE(ruleUpdateGameCardPanel);
     REGISTER_RULE(ruleGenerateBoard);
     REGISTER_RULE(ruleUpdateInterface);
     REGISTER_RULE(ruleBoardObjectSelected);
@@ -1080,14 +1080,6 @@ IMPLEMENT_RULE(ruleInitControlPanel)
     actionTrade->setIcon(GamePixmap("Trade.png", color).toIcon());
     controlPanel->registerAction("Trade", actionTrade);
 
-    QAction *actionShowCards = new QAction(controlPanel);
-    actionShowCards->setData(QString());
-    actionShowCards->setToolTip("Show my cards");
-    actionShowCards->setIcon(GamePixmap("ShowCards.png", color).toIcon());
-    connect(actionShowCards, SIGNAL(triggered()),
-        game, SLOT(browseLocalGameCards()));
-    controlPanel->registerAction("ShowCards", actionShowCards);
-
     QAction *actionRollDice = new QAction(controlPanel);
     actionRollDice->setData(QString("ruleUserActionRollDice"));
     actionRollDice->setToolTip("Roll Dice");
@@ -1110,7 +1102,6 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
     controlPanel->setActionState("BuildSettlement", false);
     controlPanel->setActionState("BuildCity", false);
     controlPanel->setActionState("BuyDevCard", false);
-    controlPanel->setActionState("ShowCards", false);
     controlPanel->setActionState("Trade", false);
     controlPanel->setActionState("RollDice", false);
     controlPanel->setActionState("EndTurn", false);
@@ -1129,8 +1120,6 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
             diceRolled &&
             EXECUTE_SUBRULE(ruleCanBuildCity) &&
             EXECUTE_SUBRULE(ruleCanBuyCity));
-        controlPanel->setActionState("ShowCards",
-            (player->getCardStack()->getNumberOfCards("Development") > 0));
         controlPanel->setActionState("BuyDevCard",
             diceRolled &&
             EXECUTE_SUBRULE(ruleCanBuyDevelopmentCard));
@@ -1177,12 +1166,24 @@ IMPLEMENT_RULE(ruleUpdateResourceInfoPanel)
     return true;
 }
 
+IMPLEMENT_RULE(ruleUpdateGameCardPanel)
+{
+    Player *p = game->getLocalPlayer();
+    GameCardStack *stack = p->getCardStack();
+    QList<GameCard*> cards = stack->getCardsOfType("Development");
+
+    gameCardPanel->clear();
+    foreach(GameCard *card, cards) gameCardPanel->addCard(card);
+    return true;
+}
+
 IMPLEMENT_RULE(ruleUpdateInterface)
 {
     EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
     EXECUTE_SUBRULE(ruleUpdateControlPanel);
     EXECUTE_SUBRULE(ruleUpdateGameInfoPanel);
     EXECUTE_SUBRULE(ruleUpdateResourceInfoPanel);
+    EXECUTE_SUBRULE(ruleUpdateGameCardPanel);
 
     game->getBoard()->update();
     return true;

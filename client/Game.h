@@ -32,7 +32,6 @@ class TextureManager;
 class MainWindow;
 class NetworkCore;
 class GameLobby;
-class GameCardBrowser;
 
 #define GAME Game::getInstance()
 
@@ -63,10 +62,6 @@ class Game : public QObject
         Player* getLocalPlayer() { return localPlayer; }
         Bank *getBank() { return bank; }
         NetworkCore *getNetworkCore() { return networkCore; }
-        GameCardBrowser *getGameCardBrowser() { return gameCardBrowser; }
-
-    public slots:
-        void browseLocalGameCards();
 
     protected slots:
         void parseCommandLine();
@@ -90,7 +85,6 @@ class Game : public QObject
         Player *localPlayer;
         Bank *bank;
         NetworkCore *networkCore;
-        GameCardBrowser *gameCardBrowser;
 };
 
 #endif
