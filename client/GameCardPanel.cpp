@@ -1,4 +1,5 @@
 
+#include "Game.h"
 #include "GameCard.h"
 #include "GameCardPanel.h"
 
@@ -41,23 +42,35 @@ GameCardPanel::~GameCardPanel()
 
 void GameCardPanel::updateButtonState()
 {
-    QList<QListWidgetItem*> items = cardList->selectedItems();
+    int row = cardList->currentRow();
+    bool selected = (cardList->selectedItems().count() > 0);
 
-    buttonInfo->setEnabled(items.count() > 0);
+    // card info button
+    buttonInfo->setEnabled(selected);
+
+    // play card button
+    bool canPlay = false;
+    if(selected && row >= 0)
+    {
+        GameCard *card = cards.at(row);
+        canPlay = GAME->getRules()->executeLocalRule(card->getCanPlayRule());
+    }
+    buttonPlay->setEnabled(canPlay);
 }
 
 void GameCardPanel::showCardInfo()
 {
     QDialog *infoDialog = new QDialog(this);
-    QList<QListWidgetItem*> items = cardList->selectedItems();
 
-    Q_ASSERT(items.count() > 0);
-    QListWidgetItem *item = items.at(0);
-    int index = qvariant_cast<int>(item->data(Qt::UserRole));
-    GameCard *card = cards.at(index);
+    int row = cardList->currentRow();
+    Q_ASSERT(row >= 0);
+    GameCard *card = cards.at(row);
 
     infoDialog->setModal(true);
     infoDialog->setFixedSize(QSize(300, 200));
+
+    QString title("Development Card: %1");
+    infoDialog->setWindowTitle(title.arg(card->getName()));
 
     QGridLayout *layout = new QGridLayout();
 
@@ -78,6 +91,11 @@ void GameCardPanel::showCardInfo()
 
 void GameCardPanel::playCard()
 {
+    int row = cardList->currentRow();
+    Q_ASSERT(row >= 0);
+
+    QString playRule = cards.at(row)->getPlayRule();
+    if(!playRule.isEmpty()) GAME->getRules()->executeRule(playRule);
 }
 
 void GameCardPanel::clear()
@@ -96,7 +114,6 @@ void GameCardPanel::addCard(GameCard *card)
 
     // also save a pointer to the GameCard for each list entry
     // in order to be able to access it easily
-    item->setData(Qt::UserRole, qVariantFromValue((int)cards.count()));
     cards.append(card);
 }
 
