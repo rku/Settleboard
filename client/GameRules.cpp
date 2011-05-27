@@ -32,6 +32,7 @@
 #include "MessagePanel.h"
 #include "GameInfoPanel.h"
 #include "ResourceInfoPanel.h"
+#include "GameCardPanel.h"
 #include "FileManager.h"
 #include "NetworkPacket.h"
 #include "NetworkCore.h"
@@ -49,6 +50,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     messagePanel = NULL;
     controlPanel = NULL;
     resourceInfoPanel = NULL;
+    gameCardPanel = NULL;
 
     reset();
 
@@ -169,6 +171,10 @@ void GameRules::reset()
         mainWindow->removeDockWidget(resourceInfoPanel);
         delete resourceInfoPanel;
         resourceInfoPanel = NULL;
+
+        mainWindow->removeDockWidget(gameCardPanel);
+        delete gameCardPanel;
+        gameCardPanel = NULL;
     }
 }
 
@@ -937,16 +943,19 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
     QMainWindow *mainWindow = game->getMainWindow();
 
     playerPanel = new PlayerPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::LeftDockWidgetArea, playerPanel);
+    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, playerPanel);
 
     gameInfoPanel = new GameInfoPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, gameInfoPanel);
+    mainWindow->addDockWidget(Qt::LeftDockWidgetArea, gameInfoPanel);
 
     controlPanel = new ControlPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, controlPanel);
+    mainWindow->addDockWidget(Qt::LeftDockWidgetArea, controlPanel);
 
     resourceInfoPanel = new ResourceInfoPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, resourceInfoPanel);
+    mainWindow->addDockWidget(Qt::LeftDockWidgetArea, resourceInfoPanel);
+
+    gameCardPanel = new GameCardPanel("", mainWindow);
+    mainWindow->addDockWidget(Qt::LeftDockWidgetArea, gameCardPanel);
 
     messagePanel = new MessagePanel("", mainWindow);
     mainWindow->addDockWidget(Qt::BottomDockWidgetArea, messagePanel);

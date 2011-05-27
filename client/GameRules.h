@@ -39,6 +39,7 @@ class ControlPanel;
 class MessagePanel;
 class GameInfoPanel;
 class ResourceInfoPanel;
+class GameCardPanel;
 class NetworkPacket;
 class GameLobby;
 
@@ -225,6 +226,7 @@ class GameRules : public QObject
         ControlPanel *controlPanel;
         GameInfoPanel *gameInfoPanel;
         MessagePanel *messagePanel;
+        GameCardPanel *gameCardPanel;
         ResourceInfoPanel *resourceInfoPanel;
         RuleData ruleData;
         RuleChain ruleChain;

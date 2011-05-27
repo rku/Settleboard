@@ -8,24 +8,19 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
     QGridLayout *l = new QGridLayout();
     QWidget *widget = new QWidget(this);
 
-    //l->addStretch();
-
     buttonCancel = new QToolButton(widget);
     buttonCancel->setVisible(false);
     buttonCancel->setText("Cancel");
     l->addWidget(buttonCancel);
     connect(buttonCancel, SIGNAL(clicked()), this, SLOT(cancel()));
 
-    l->setRowStretch(0, 1);
+    l->setColumnStretch(4, 1);
 
     widget->setLayout(l);
     setWidget(widget);
 
-    setFixedWidth(160);
-    //setMaximumHeight(70);
-    //setMinimumHeight(50);
+    setMaximumHeight(150);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
-    setAllowedAreas(Qt::BottomDockWidgetArea);
     setTitleBarWidget(new QWidget(this));
 }
 

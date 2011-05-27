@@ -7,7 +7,7 @@
 ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
-    QVBoxLayout *l = new QVBoxLayout();
+    QHBoxLayout *l = new QHBoxLayout();
     QWidget *widget = new QWidget(this);
 
     l->addStretch();
@@ -16,8 +16,8 @@ ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
     setWidget(widget);
 
     setFloating(false);
+    setFixedHeight(80);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
-    setFixedWidth(80);
     setObjectName("resourceInfoPanel");
     setTitleBarWidget(new QWidget(this));
 }
@@ -29,7 +29,7 @@ ResourceInfoPanel::~ResourceInfoPanel()
 
 void ResourceInfoPanel::registerResource(const QString name)
 {
-    QVBoxLayout *l = qobject_cast<QVBoxLayout*>(widget()->layout());
+    QHBoxLayout *l = qobject_cast<QHBoxLayout*>(widget()->layout());
 
     QString iconFile = FileManager::getPathOfImage(
         QString("%1.png").arg(name));
@@ -38,7 +38,7 @@ void ResourceInfoPanel::registerResource(const QString name)
         Qt::KeepAspectRatio, Qt::SmoothTransformation));
     QLabel *amountLabel = new QLabel("0x", this);
 
-    QHBoxLayout *l2 = new QHBoxLayout();
+    QVBoxLayout *l2 = new QVBoxLayout();
     l2->addWidget(iconLabel,0, Qt::AlignCenter);
     l2->addWidget(amountLabel,0, Qt::AlignCenter);
 
@@ -48,7 +48,7 @@ void ResourceInfoPanel::registerResource(const QString name)
     infoWidget->setLayout(l2);
 
     resources.insert(name, amountLabel);
-    l->insertWidget(resources.count(), infoWidget);
+    l->insertWidget(resources.count() - 1, infoWidget);
 }
 
 void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
@@ -61,7 +61,7 @@ void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
 
 void ResourceInfoPanel::clear()
 {
-    QVBoxLayout *l = qobject_cast<QVBoxLayout*>(widget()->layout());
-    while(l->count() > 1) delete l->takeAt(1)->widget();
+    QHBoxLayout *l = qobject_cast<QHBoxLayout*>(widget()->layout());
+    while(l->count() > 1) delete l->takeAt(0)->widget();
 }
 

@@ -31,12 +31,8 @@ GameInfoPanel::GameInfoPanel(const QString &title, QWidget *parent)
     widget->setLayout(l);
     setWidget(widget);
 
-    setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    //setMinimumHeight(120);
-    //setMinimumWHeight(150);
-    //setMaximumHeight(200);
-    setFixedWidth(200);
-    setFeatures(QDockWidget::DockWidgetMovable);
+    setFixedHeight(110);
+    setFeatures(QDockWidget::NoDockWidgetFeatures);
     setTitleBarWidget(new QWidget(this));
 }
 

@@ -151,6 +151,15 @@ QDialog QLabel {
     color: white;
 }
 
+QListWidget {
+    background: #050505;
+    color: white;
+    border-style: outset;
+    border-color: #3f3f3f;
+    border-width: 1px;
+    border-radius: 5px;
+}
+
 QTextEdit, QLineEdit {
     background: #050505;
     color: white;
