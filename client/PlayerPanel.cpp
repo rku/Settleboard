@@ -8,18 +8,16 @@ PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
     columns = 3;
-    QVBoxLayout *lt = new QVBoxLayout();
+    QHBoxLayout *lt = new QHBoxLayout();
     QWidget *widget = new QWidget(this);
 
-    lt->addStretch();
     widget->setLayout(lt);
     setWidget(widget);
 
-    setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    setFixedWidth(200);
-    setFloating(false);
-    setFeatures(QDockWidget::DockWidgetMovable);
+    setFeatures(QDockWidget::NoDockWidgetFeatures);
     setTitleBarWidget(new QWidget(this));
+
+    clear();
 }
 
 PlayerPanel::~PlayerPanel()
@@ -34,12 +32,14 @@ QGroupBox* PlayerPanel::getPlayerBox(Player *player)
     {
         // create a new one
         box = new QGroupBox(widget());
+        box->setFixedWidth(200);
 
-        QVBoxLayout *l = (QVBoxLayout*)widget()->layout();
-        Q_ASSERT(l->count() > 0); // we expect at least a stretcher
-        l->insertWidget(l->count() - 1, box);
+        QHBoxLayout *l = (QHBoxLayout*)widget()->layout();
+        //Q_ASSERT(l->count() > 0); // we expect at least a stretcher
+        l->insertWidget(l->count(), box);
         box->setLayout(new QGridLayout());
         playerBoxes.insert(player, box);
+        setFixedWidth(220*playerBoxes.count());
     }
     else box = playerBoxes.value(player);
 
@@ -119,5 +119,7 @@ void PlayerPanel::clear()
         widget()->layout()->removeWidget(box);
         delete box;
     }
+
+    setFixedWidth(20);
 }
 

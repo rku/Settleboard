@@ -942,9 +942,6 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
 {
     QMainWindow *mainWindow = game->getMainWindow();
 
-    playerPanel = new PlayerPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, playerPanel);
-
     gameInfoPanel = new GameInfoPanel("", mainWindow);
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, gameInfoPanel);
 
@@ -956,6 +953,9 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
 
     gameCardPanel = new GameCardPanel("", mainWindow);
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, gameCardPanel);
+
+    playerPanel = new PlayerPanel("", mainWindow);
+    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, playerPanel);
 
     messagePanel = new MessagePanel("", mainWindow);
     mainWindow->addDockWidget(Qt::BottomDockWidgetArea, messagePanel);
