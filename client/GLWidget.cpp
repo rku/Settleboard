@@ -42,6 +42,7 @@ GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent)
     lastMousePos.setY(0);
 
     setMouseTracking(true);
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 GLWidget::~GLWidget()
@@ -194,9 +195,30 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     lastMousePos = event->pos();
 }
 
+void GLWidget::keyPressEvent(QKeyEvent *event)
+{
+    switch(event->key())
+    {
+        case Qt::Key_Plus:
+            zoomByDelta(CAM_ZOOM_DELTA);
+            break;
+        case Qt::Key_Minus:
+            zoomByDelta(-CAM_ZOOM_DELTA);
+            break;
+        default:
+            QGLWidget::keyPressEvent(event);
+            break;
+    }
+}
+
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
-    cameraDistance += (event->delta() < 0) ? CAM_ZOOM_DELTA : -CAM_ZOOM_DELTA;
+    zoomByDelta((event->delta() < 0) ? CAM_ZOOM_DELTA : -CAM_ZOOM_DELTA);
+}
+
+void GLWidget::zoomByDelta(GLdouble delta)
+{
+    cameraDistance += (delta < 0) ? CAM_ZOOM_DELTA : -CAM_ZOOM_DELTA;
 
     if(cameraDistance < cameraMinDistance)
         cameraDistance = cameraMinDistance;

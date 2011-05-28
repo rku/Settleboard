@@ -56,10 +56,12 @@ class GLWidget : public QGLWidget
         void resizeGL(int width, int height);
         void mousePressEvent(QMouseEvent *event);
         void mouseMoveEvent(QMouseEvent *event);
+        void keyPressEvent(QKeyEvent *event);
         void wheelEvent(QWheelEvent *event);
         void setPerspective();
 
     private:
+        void zoomByDelta(GLdouble delta);
         void updateCameraPos();
 
         GLdouble cameraAngleX;
