@@ -1,9 +1,9 @@
 /**
- * RSETTLE
+ * Settleboard3D
  *
  * This file is part of
- * rSETTLE - A board game like settlers.
- * Copyright (C) 2007 Rene Kuettner <rene@bitkanal.net>
+ * Settleboard3D - A board game like settlers.
+ * Copyright (C) 2010, 2011 Rene Kuettner <rene@bitkanal.net>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
