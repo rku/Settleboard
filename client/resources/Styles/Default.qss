@@ -68,11 +68,12 @@ QDockWidget QToolButton:hover {
 }
 
 QGroupBox {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #303030, stop: 1 #3a3a3a);
+    background-color: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0,
+                                      stop: 0 #000000, stop: 1 #252525);
     border: 2px solid gray;
     border-radius: 5px;
     margin-top: 1ex;
+    padding: 10px;
     color: white
  }
 

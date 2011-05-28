@@ -26,6 +26,7 @@ class PlayerPanel : public QDockWidget
         QGroupBox *getPlayerBox(Player*);
 
         unsigned int columns;
+        unsigned int boxWidth;
         QMap<Player*, QString> playerInfos;
         QMap<Player*, QGroupBox*> playerBoxes;
 };

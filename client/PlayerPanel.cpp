@@ -7,7 +7,8 @@
 PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
-    columns = 3;
+    boxWidth = 160;
+    columns = 2;
     QHBoxLayout *lt = new QHBoxLayout();
     QWidget *widget = new QWidget(this);
 
@@ -32,14 +33,16 @@ QGroupBox* PlayerPanel::getPlayerBox(Player *player)
     {
         // create a new one
         box = new QGroupBox(widget());
-        box->setFixedWidth(200);
+        box->setFixedWidth(boxWidth);
 
         QHBoxLayout *l = (QHBoxLayout*)widget()->layout();
+        QGridLayout *innerL = new QGridLayout();
         //Q_ASSERT(l->count() > 0); // we expect at least a stretcher
         l->insertWidget(l->count(), box);
-        box->setLayout(new QGridLayout());
+        innerL->setVerticalSpacing(10);
+        box->setLayout(innerL);
         playerBoxes.insert(player, box);
-        setFixedWidth(220*playerBoxes.count());
+        setFixedWidth((boxWidth + 20)*playerBoxes.count());
     }
     else box = playerBoxes.value(player);
 
@@ -87,6 +90,9 @@ void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
     gl->addWidget(valueLabel, row, col + 1, Qt::AlignLeft);
 
     playerInfos.insertMulti(player, infoName);
+
+    gl->setRowStretch(row, 0);
+    gl->setRowStretch(row + 1, 1);
 }
 
 void PlayerPanel::updatePlayerInfo(Player *player, const QString infoName, int value)
@@ -120,6 +126,6 @@ void PlayerPanel::clear()
         delete box;
     }
 
-    setFixedWidth(20);
+    setFixedWidth(10);
 }
 
