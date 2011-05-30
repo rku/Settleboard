@@ -33,6 +33,7 @@ GameCardPanel::GameCardPanel(const QString &title, QWidget *parent)
     l->addWidget(caption, 0, 0, 1, 2);
 
     cardList = new QListWidget(this);
+    cardList->setAttribute(Qt::WA_MacShowFocusRect, false);
     l->addWidget(cardList, 1, 0, 1, 2);
     connect(cardList, SIGNAL(itemSelectionChanged()), this,
         SLOT(updateButtonState()));

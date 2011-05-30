@@ -29,10 +29,13 @@ GameConnector::GameConnector(QWidget *parent) : QDialog(parent)
     setObjectName("gameConnector");
 
     ui.editRemotePort->setText("1337");
+    ui.editRemotePort->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui.editRemotePort->setValidator(
         new QRegExpValidator(QRegExp("^[1-9][0-9]+$"), this));
     ui.editRemoteHost->setValidator(
         new QRegExpValidator(QRegExp("^[0-9a-zA-Z\\.-]+$"), this));
+
+    ui.editRemoteHost->setAttribute(Qt::WA_MacShowFocusRect, false);
 
     connect(ui.editRemoteHost, SIGNAL(textChanged(const QString&)),
         this, SLOT(textChanged(const QString&)));

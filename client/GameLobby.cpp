@@ -63,6 +63,7 @@ void GameLobby::init()
     connect(ui.buttonStartGame, SIGNAL(clicked()),
         this, SLOT(accept()));
 
+    ui.lineEditChatInput->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui.lineEditChatInput->setFocus();
     clearPlayerList();
 }

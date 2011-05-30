@@ -29,6 +29,7 @@ MessagePanel::MessagePanel(const QString &title, QWidget *parent)
     QWidget *widget = new QWidget(this);
 
     input = new QLineEdit(widget);
+    input->setAttribute(Qt::WA_MacShowFocusRect, false);
     connect(input, SIGNAL(returnPressed()),
         this, SLOT(newMessageAvailable()));
 
