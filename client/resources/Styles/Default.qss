@@ -152,7 +152,7 @@ QDialog QLabel {
     color: white;
 }
 
-QListWidget {
+QListWidget, QListWidget::disabled {
     background: #050505;
     color: white;
     border-style: outset;
