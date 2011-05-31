@@ -28,7 +28,7 @@ PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
 {
     boxWidth = 160;
     columns = 2;
-    QHBoxLayout *lt = new QHBoxLayout();
+    QGridLayout *lt = new QGridLayout();
     QWidget *widget = new QWidget(this);
 
     widget->setLayout(lt);
@@ -54,10 +54,9 @@ QGroupBox* PlayerPanel::getPlayerBox(Player *player)
         box = new QGroupBox(widget());
         box->setFixedWidth(boxWidth);
 
-        QHBoxLayout *l = (QHBoxLayout*)widget()->layout();
+        QGridLayout *l = (QGridLayout*)widget()->layout();
         QGridLayout *innerL = new QGridLayout();
-        //Q_ASSERT(l->count() > 0); // we expect at least a stretcher
-        l->insertWidget(l->count(), box);
+        l->addWidget(box, 1, playerBoxes.count());
         innerL->setVerticalSpacing(10);
         box->setLayout(innerL);
         playerBoxes.insert(player, box);
