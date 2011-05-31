@@ -6,17 +6,18 @@ QGLWidget {
 QMainWindow, QDockWidget {
     color: white;
     background: black;
+    background-image: url(:/Images/UiBackground.png);
 }
 
 QMainWindow::separator {
     border: 0px;
-    background: black;
+    background: #3f3f3f;
     width: 2px;
     height: 2px;
 }
 
 QMainWindow::separator:hover {
-    background: #303030;
+    background: white;
 }
 
 QDockWidget QLabel {
@@ -68,8 +69,6 @@ QDockWidget QToolButton:hover {
 }
 
 QGroupBox {
-    background-color: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0,
-                                      stop: 0 #000000, stop: 1 #252525);
     border: 2px solid gray;
     border-radius: 5px;
     margin-top: 1ex;
@@ -131,7 +130,7 @@ QCheckBox::hover {
 
 QPushButton {
     border-style: outset;
-    border: 2px solid black;
+    border: 2px solid #3f3f3f;
     border-radius: 5px;
     padding: 4px;
     background: #9f9f9f;
@@ -139,9 +138,9 @@ QPushButton {
 }
 
 QPushButton::disabled {
-    background: #101010;
+    background: black;
     color: gray;
-    border: 2px solid black;
+    border: 2px solid #3f3f3f;
 }
 
 QPushButton::hover {
@@ -180,15 +179,5 @@ QTextEdit::disabled, QLineEdit::disabled {
 QDialog#gameConnector QLineEdit {
     font-family: fixed;
     font-size: 14px;
-}
-
-QDialog#gameCardBrowser GameCardView QLabel#labelPixmap {
-    border: 3px solid #3f3f3f;
-    border-radius: 5px;
-}
-
-QDialog#gameCardBrowser GameCardView[isSelected="true"] QLabel#labelPixmap {
-    border: 3px solid #bfbfbf;
-    background: #6f6f6f;
 }
 
