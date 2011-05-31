@@ -43,6 +43,7 @@ MessagePanel::MessagePanel(const QString &title, QWidget *parent)
     setWidget(widget);
 
     setMinimumHeight(200);
+    setFixedWidth(500);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setTitleBarWidget(new QWidget(this));
 }

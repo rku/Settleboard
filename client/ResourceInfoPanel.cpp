@@ -30,6 +30,7 @@ ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
     QWidget *widget = new QWidget(this);
 
     l->addStretch();
+    l->addStretch();
     l->setSpacing(0);
     widget->setLayout(l);
     setWidget(widget);
@@ -67,7 +68,7 @@ void ResourceInfoPanel::registerResource(const QString name)
     infoWidget->setLayout(l2);
 
     resources.insert(name, amountLabel);
-    l->insertWidget(resources.count() - 1, infoWidget);
+    l->insertWidget(resources.count(), infoWidget);
 }
 
 void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
@@ -81,6 +82,6 @@ void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
 void ResourceInfoPanel::clear()
 {
     QHBoxLayout *l = qobject_cast<QHBoxLayout*>(widget()->layout());
-    while(l->count() > 1) delete l->takeAt(0)->widget();
+    while(l->count() > 2) delete l->takeAt(1)->widget();
 }
 
