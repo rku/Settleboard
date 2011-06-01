@@ -1052,25 +1052,36 @@ IMPLEMENT_RULE(ruleInitControlPanel)
 
     QAction *actionBuildRoad = new QAction(controlPanel);
     actionBuildRoad->setData(QString("ruleUserActionBuildRoad"));
-    actionBuildRoad->setToolTip("Build Road");
+    actionBuildRoad->setToolTip("Build Road<br />"
+        "1x <img src=':/Images/Lumber.png' width='16' height='16' /> "
+        "1x <img src=':/Images/Clay.png' width='16' height='16' />");
     actionBuildRoad->setIcon(GamePixmap("Road.png", color).toIcon());
     controlPanel->registerAction("BuildRoad", actionBuildRoad);
 
     QAction *actionBuildSettlement = new QAction(controlPanel);
     actionBuildSettlement->setData(QString("ruleUserActionBuildSettlement"));
-    actionBuildSettlement->setToolTip("Build Settlement");
+    actionBuildSettlement->setToolTip("Build Settlement<br />"
+        "1x <img src=':/Images/Clay.png' width='16' height='16' /> "
+        "1x <img src=':/Images/Lumber.png' width='16' height='16' /> "
+        "1x <img src=':/Images/Wool.png' width='16' height='16' /> "
+        "1x <img src=':/Images/Wheat.png' width='16' height='16' />");
     actionBuildSettlement->setIcon(GamePixmap("Settlement.png", color).toIcon());
     controlPanel->registerAction("BuildSettlement", actionBuildSettlement);
 
     QAction *actionBuildCity = new QAction(controlPanel);
     actionBuildCity->setData(QString("ruleUserActionBuildCity"));
-    actionBuildCity->setToolTip("Build City");
+    actionBuildCity->setToolTip("Build City<br />"
+        "2x <img src=':/Images/Wheat.png' width='16' height='16' /> "
+        "3x <img src=':/Images/Ore.png' width='16' height='16' />");
     actionBuildCity->setIcon(GamePixmap("City.png", color).toIcon());
     controlPanel->registerAction("BuildCity", actionBuildCity);
 
     QAction *actionBuyDevCard = new QAction(controlPanel);
     actionBuyDevCard->setData(QString("ruleUserActionBuyDevelopmentCard"));
-    actionBuyDevCard->setToolTip("Buy Development Card");
+    actionBuyDevCard->setToolTip("Buy Development Card<br />"
+        "1x <img src=':/Images/Wheat.png' width='16' height='16' /> "
+        "1x <img src=':/Images/Wool.png' width='16' height='16' /> "
+        "1x <img src=':/Images/Ore.png' width='16' height='16' />");
     actionBuyDevCard->setIcon(GamePixmap("DevCard.png", color).toIcon());
     controlPanel->registerAction("BuyDevCard", actionBuyDevCard);
 

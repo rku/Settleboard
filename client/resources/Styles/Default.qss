@@ -210,3 +210,11 @@ QDialog#gameConnector QLineEdit {
     font-size: 14px;
 }
 
+QToolTip {
+    border: 1px solid #afafaf;
+    border-radius: 4px;
+    background: #101010;
+    padding: 3px;
+    opacity: 225;
+}
+
