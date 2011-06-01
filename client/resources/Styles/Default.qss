@@ -6,7 +6,6 @@ QGLWidget {
 QMainWindow, QDockWidget {
     color: white;
     background: black;
-    background-image: url(:/Images/UiBackground.png);
 }
 
 QMainWindow::separator {
@@ -17,7 +16,7 @@ QMainWindow::separator {
 }
 
 QMainWindow::separator:hover {
-    background: white;
+    background: #3f3f3f;
 }
 
 QDockWidget QLabel {
@@ -31,6 +30,8 @@ QDockWidget {
 
 QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget {
     background: black; 
+    border: 1px solid #3f3f3f;
+    border-radius: 5px;
 }
 
 QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget QLabel {
@@ -69,6 +70,7 @@ QDockWidget QToolButton:hover {
 }
 
 QGroupBox {
+    background-color: black;
     border: 2px solid gray;
     border-radius: 5px;
     margin-top: 1ex;
@@ -78,7 +80,7 @@ QGroupBox {
 
 QGroupBox::title {
     subcontrol-origin: margin;
-    subcontrol-position: top center; /* position at the top center */
+    subcontrol-position: top center;
     padding: 0 3px;
 }
 

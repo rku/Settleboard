@@ -33,7 +33,8 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
     l->addWidget(buttonCancel);
     connect(buttonCancel, SIGNAL(clicked()), this, SLOT(cancel()));
 
-    l->setColumnStretch(4, 1);
+    l->setColumnStretch(5, 1);
+    l->setColumnStretch(0, 1);
 
     widget->setLayout(l);
     setWidget(widget);
@@ -93,7 +94,7 @@ void ControlPanel::registerAction(const QString name, QAction *action)
     QGridLayout *l = (QGridLayout*)widget()->layout();
 
     int row = (l->count() - 1) / 3 + 1;
-    int col = (l->count() - 1) % 3;
+    int col = (l->count() - 1) % 3 + 1;
 
     action->setStatusTip(action->toolTip());
     button->setDefaultAction(action);
