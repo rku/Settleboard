@@ -1394,10 +1394,10 @@ IMPLEMENT_RULE(ruleBuyCity)
     GameCardStack *wheatStack = game->getBank()->getCardStack("Wheat");
     GameCardStack *playerStack = player->getCardStack();
 
-    playerStack->drawCardsOfType(oreStack, "Resource", "Ore", 2);
-    playerStack->drawCardsOfType(wheatStack, "Resource", "Wheat", 3);
+    playerStack->drawCardsOfType(oreStack, "Resource", "Ore", 3);
+    playerStack->drawCardsOfType(wheatStack, "Resource", "Wheat", 2);
 
-    LOG_PLAYER_MSG(QString("%1 payed 2 ore and 3 wheat.")
+    LOG_PLAYER_MSG(QString("%1 payed 3 ore and 2 wheat.")
         .arg(player->getName()));
 
     return true;
@@ -1409,7 +1409,7 @@ IMPLEMENT_RULE(ruleCanBuyCity)
     unsigned int nOre = stack->getNumberOfCards("Resource", "Ore");
     unsigned int nWheat = stack->getNumberOfCards("Resource", "Wheat");
 
-    if(nOre < 2 || nWheat < 3) return false;
+    if(nOre < 3 || nWheat < 2) return false;
 
     return true;
 }
@@ -1486,12 +1486,16 @@ IMPLEMENT_RULE(ruleBuySettlement)
 {
     GameCardStack *clayStack = game->getBank()->getCardStack("Clay");
     GameCardStack *lumberStack = game->getBank()->getCardStack("Lumber");
+    GameCardStack *woolStack = game->getBank()->getCardStack("Wool");
+    GameCardStack *wheatStack = game->getBank()->getCardStack("Wheat");
     GameCardStack *stack = player->getCardStack();
 
-    stack->drawCardsOfType(clayStack, "Resource", "Clay", 2);
-    stack->drawCardsOfType(lumberStack, "Resource", "Lumber", 3);
+    stack->drawCardsOfType(clayStack, "Resource", "Clay", 1);
+    stack->drawCardsOfType(lumberStack, "Resource", "Lumber", 1);
+    stack->drawCardsOfType(woolStack, "Resource", "Wool", 1);
+    stack->drawCardsOfType(wheatStack, "Resource", "Wheat", 1);
 
-    LOG_PLAYER_MSG(QString("%1 payed 2 clay and 3 lumber.")
+    LOG_PLAYER_MSG(QString("%1 payed 1 clay, 1 lumber, 1 wool and 1 wheat.")
         .arg(player->getName()));
 
     return true;
@@ -1511,8 +1515,11 @@ IMPLEMENT_RULE(ruleCanBuySettlement)
     GameCardStack *stack = player->getCardStack();
     unsigned int clayCards = stack->getNumberOfCards("Resource", "Clay");
     unsigned int lumberCards = stack->getNumberOfCards("Resource", "Lumber");
+    unsigned int wheatCards = stack->getNumberOfCards("Resource", "Wheat");
+    unsigned int woolCards = stack->getNumberOfCards("Resource", "Wool");
 
-    if(clayCards < 2 || lumberCards < 3) return false;
+    if(clayCards < 1 || lumberCards < 1 || wheatCards < 1 ||
+        woolCards < 1) return false;
 
     return true;
 }
@@ -1758,8 +1765,9 @@ IMPLEMENT_RULE(ruleCanBuyDevelopmentCard)
     GameCardStack *pStack = player->getCardStack();
     unsigned int nWheat = pStack->getNumberOfCards("Resource", "Wheat");
     unsigned int nOre = pStack->getNumberOfCards("Resource", "Ore");
+    unsigned int nWool = pStack->getNumberOfCards("Resource", "Wool");
 
-    if(nWheat < 1 || nOre < 1) return false;
+    if(nWheat < 1 || nOre < 1 || nWool < 1) return false;
 
     return true;
 }
@@ -1769,10 +1777,12 @@ IMPLEMENT_RULE(ruleBuyDevelopmentCard)
     GameCardStack *devCardStack = game->getBank()->getCardStack("Development");
     GameCardStack *wheatStack = game->getBank()->getCardStack("Wheat");
     GameCardStack *oreStack = game->getBank()->getCardStack("Ore");
+    GameCardStack *woolStack = game->getBank()->getCardStack("Wool");
     GameCardStack *pStack = player->getCardStack();
 
     pStack->drawCardsOfType(wheatStack, "Resource", "Wheat", 1);
     pStack->drawCardsOfType(oreStack, "Resource", "Ore", 1);
+    pStack->drawCardsOfType(woolStack, "Resource", "Wool", 1);
 
     devCardStack->drawFirstCards(pStack, 1);
 
