@@ -180,13 +180,13 @@ QTextEdit::disabled, QLineEdit::disabled {
 
 QScrollBar:vertical {
     background: black;
-    border: 1px solid #3f3f3f;
+    border: 1px solid black;
     border-radius: 3px;
     margin: 0px;
 }
 
 QScrollBar::handle:vertical {
-    background: #3f3f3f;
+    background: #afafaf;
     border-radius: 3px;
 }
 
