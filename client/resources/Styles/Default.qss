@@ -178,6 +178,34 @@ QTextEdit::disabled, QLineEdit::disabled {
     color: gray;
 }
 
+QScrollBar:vertical {
+    background: black;
+    border: 1px solid #3f3f3f;
+    border-radius: 3px;
+    margin: 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #3f3f3f;
+    border-radius: 3px;
+}
+
+QScrollBar::add-line:vertical {
+    height: 0px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+    height: 0px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+background: none;
+}
+
 QDialog#gameConnector QLineEdit {
     font-family: fixed;
     font-size: 14px;
