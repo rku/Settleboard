@@ -10,13 +10,13 @@ QMainWindow, QDockWidget {
 
 QMainWindow::separator {
     border: 0px;
-    background: #3f3f3f;
+    background: #2f2f2f;
     width: 2px;
     height: 2px;
 }
 
 QMainWindow::separator:hover {
-    background: #3f3f3f;
+    background: #2f2f2f;
 }
 
 QDockWidget QLabel {
@@ -30,8 +30,6 @@ QDockWidget {
 
 QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget {
     background: black; 
-    border: 1px solid #3f3f3f;
-    border-radius: 5px;
 }
 
 QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget QLabel {
@@ -70,7 +68,7 @@ QDockWidget QToolButton:hover {
 }
 
 QGroupBox {
-    background-color: black;
+    background-color: #101010;
     border: 2px solid gray;
     border-radius: 5px;
     margin-top: 1ex;
@@ -188,6 +186,7 @@ QScrollBar:vertical {
 QScrollBar::handle:vertical {
     background: #afafaf;
     border-radius: 3px;
+    min-height: 30px;
 }
 
 QScrollBar::add-line:vertical {
