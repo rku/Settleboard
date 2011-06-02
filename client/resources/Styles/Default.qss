@@ -213,8 +213,8 @@ QDialog#gameConnector QLineEdit {
 QToolTip {
     border: 1px solid #afafaf;
     border-radius: 4px;
-    background: #101010;
+    background: black;
+    color: white;
     padding: 3px;
-    opacity: 225;
 }
 
