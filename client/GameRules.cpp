@@ -1269,6 +1269,8 @@ IMPLEMENT_RULE(ruleMoveRobber)
 
     // set new robber
     tile->setHasRobber(true);
+    LOG_SYSTEM_MSG(QString("%1 moved the robber.").
+        arg(player->getName()));
 
     return true;
 }
@@ -1285,7 +1287,7 @@ IMPLEMENT_RULE(ruleSelectOtherPlayerAtHexTile)
     int selectableFound = 0;
     Player *selectedPlayer = NULL;
     Board *board = game->getBoard();
-    QList<Crossroad*> crossroads = board->getCrossroads();
+    QList<Crossroad*> crossroads = tile->getCrossroads();
     QList<Crossroad*>::iterator iC;
     for(iC = crossroads.begin(); iC != crossroads.end(); ++iC)
     {
@@ -1333,6 +1335,8 @@ IMPLEMENT_RULE(ruleStealResourceFromPlayer)
 
     qDebug() << player->getName() << "is about to steal a resource from"
         << p->getName();
+    LOG_SYSTEM_MSG(QString("%1 is about to steal a resource from %2").
+        arg(player->getName()).arg(p->getName()));
 
     return true;
 }
