@@ -13,6 +13,7 @@ QT += network opengl
 RCC_DIR = build/
 RESOURCES = client/resources/Resources.qrc
 RC_FILE = client/icons/Settleboard.rc
+ICON = client/icons/Settleboard.icns
 
 FORMS = client/ui/connectorform.ui \
         client/ui/prefsform.ui \
