@@ -12,6 +12,7 @@ TARGET = Settleboard3D
 QT += network opengl
 RCC_DIR = build/
 RESOURCES = client/resources/Resources.qrc
+RC_FILE = client/icons/Settleboard.rc
 
 FORMS = client/ui/connectorform.ui \
         client/ui/prefsform.ui \

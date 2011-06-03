@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("Settleboard3D");
     app.setApplicationVersion("0.0.1.beta");
     app.setOrganizationDomain("bitkanal.net");
+    app.setWindowIcon(QIcon(":/Images/LogoIcon.png"));
 
     registerMetaTypeOperators();
     loadStyleSheet();
