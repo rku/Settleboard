@@ -399,7 +399,7 @@ void GameRules::ruleChainFinished()
     ruleData.clear();
     isRuleChainWaiting = false;
     GAME->getBoard()->resetBoardState();
-    executeLocalRule("ruleUpdateInterface");
+    executeRule("ruleUpdateInterface");
 }
 
 void GameRules::cancelRuleChain()
