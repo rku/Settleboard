@@ -79,6 +79,11 @@ typedef struct _RuleChainElement {
 #define IMPLEMENT_RULE(a) bool GameRules::a(Game *game, Player *player)
 #define EXECUTE_SUBRULE(n) executeSubRule(#n, player)
 #define EXECUTE_SUBRULE_FOR_PLAYER(n,p) executeSubRule(#n, p)
+#define RULECHAIN_ADD_SUSPENSION() \
+    if(GAME->getNetworkCore()->getIsServer()) { \
+        RuleChainElement _rce; \
+        _rce.suspend = true; \
+        ruleChain.append(_rce); }
 #define RULECHAIN_ADD(n) \
     if(GAME->getNetworkCore()->getIsServer()) { \
     RuleChainElement _rce; \
@@ -189,6 +194,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleStealResourceFromPlayer);
         DECLARE_RULE(ruleDropResources);
         DECLARE_RULE(rulePlayerDropResources);
+        DECLARE_RULE(rulePlayerResourcesDropped);
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);

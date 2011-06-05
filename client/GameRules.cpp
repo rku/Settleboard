@@ -102,6 +102,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleStealResourceFromPlayer);
     REGISTER_RULE(ruleDropResources);
     REGISTER_RULE(rulePlayerDropResources);
+    REGISTER_RULE(rulePlayerResourcesDropped);
     REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
@@ -376,18 +377,20 @@ void GameRules::continueRuleChain()
     {
         RuleChainElement rce = ruleChain.takeFirst();
         isRuleChainWaiting = rce.suspend;
-        if(rce.suspend) break;
-
-        // cancel rule, if a rule fails
-        if(!executeRule(rce.name, rce.player))
+        if(!rce.suspend)
         {
-            qDebug() << "Rule" << rce.name << "returned false.";
-            cancelRuleChain();
+            // cancel rule, if a rule fails
+            if(!executeRule(rce.name, rce.player))
+            {
+                qDebug() << "Rule" << rce.name << "returned false.";
+                cancelRuleChain();
+            }
         }
-
-        if(isRuleChainWaiting) break; // detect nested suspensions
+        else qDebug() << "Rule chain suspended.";
 
         if(ruleChain.size() == 0) popRuleChain();
+
+        if(isRuleChainWaiting) break; // detect nested suspensions
     }
 
     if(ruleChain.size() == 0) ruleChainFinished();
@@ -1351,12 +1354,27 @@ IMPLEMENT_RULE(ruleDropResources)
     // select players who have to drop resources and
     // execute rulePlayerDropResources for each of them
     QList<Player*> players = game->getPlayers();
+    QList<Player*> affectedPlayers;
     foreach(Player *p, players)
     {
         if(p->getCardStack()->getNumberOfCards("Resource") > 7)
         {
-            executeRule("rulePlayerDropResources", p);
+            affectedPlayers.append(p);
         }
+    }
+
+    // create rulechain
+    if(affectedPlayers.count() > 0)
+    {
+        pushRuleChain();
+
+        foreach(Player *p, affectedPlayers)
+        {
+            RULECHAIN_ADD_WITH_PLAYER(rulePlayerDropResources, p);
+            if(!p->getIsLocal()) RULECHAIN_ADD_SUSPENSION();
+        }
+
+        startRuleChain();
     }
 
     return true;
@@ -1378,10 +1396,26 @@ IMPLEMENT_RULE(rulePlayerDropResources)
         return true;
     }
 
+    LOG_SYSTEM_MSG(QString("You have to drop %1 resource cards.").
+        arg(nCardsToDrop));
+
     // resource card selection dialog goes here...
     QMessageBox msgBox;
     msgBox.setText("DROP RESOURCES");
     msgBox.exec();
+
+    // send rule for dropped resources to player
+    // server then has to continue the rule chain!
+    executeRule("rulePlayerResourcesDropped");
+
+    return true;
+}
+
+IMPLEMENT_RULE(rulePlayerResourcesDropped)
+{
+    // get the dropped resources from ruledata...
+
+    if(isRuleChainWaiting) continueRuleChain();
 
     return true;
 }
