@@ -149,7 +149,9 @@ void GameRules::reset()
     turn = 0;
 
     ruleChain.clear();
+    ruleChainStack.clear();
     ruleData.clear();
+    ruleDataStack.clear();
 
     if(playerPanel)
     {
