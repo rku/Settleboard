@@ -100,6 +100,8 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleMoveRobber);
     REGISTER_RULE(ruleSelectOtherPlayerAtHexTile);
     REGISTER_RULE(ruleStealResourceFromPlayer);
+    REGISTER_RULE(ruleDropResources);
+    REGISTER_RULE(rulePlayerDropResources);
     REGISTER_RULE(ruleUserActionBuildCity);
     REGISTER_RULE(ruleBuildCity);
     REGISTER_RULE(ruleCanBuildCity);
@@ -752,6 +754,7 @@ IMPLEMENT_RULE(ruleUserActionRollDice)
 
     if((die1+die2) == 7)
     {
+        RULECHAIN_ADD(ruleDropResources);
         RULECHAIN_ADD(ruleSelectHexTile);
         RULECHAIN_ADD(ruleMoveRobber);
         RULECHAIN_ADD(ruleSelectOtherPlayerAtHexTile);
@@ -1337,6 +1340,48 @@ IMPLEMENT_RULE(ruleStealResourceFromPlayer)
         << p->getName();
     LOG_SYSTEM_MSG(QString("%1 is about to steal a resource from %2").
         arg(player->getName()).arg(p->getName()));
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleDropResources)
+{
+    SERVER_ONLY_RULE
+
+    // select players who have to drop resources and
+    // execute rulePlayerDropResources for each of them
+    QList<Player*> players = game->getPlayers();
+    foreach(Player *p, players)
+    {
+        if(p->getCardStack()->getNumberOfCards("Resource") > 7)
+        {
+            executeRule("rulePlayerDropResources", p);
+        }
+    }
+
+    return true;
+}
+
+IMPLEMENT_RULE(rulePlayerDropResources)
+{
+    qDebug() << "Forcing " << player->getName() << "to drop resources.";
+
+    // calculate number of cards to drop
+    int nCards = player->getCardStack()->getNumberOfCards("Resource");
+    Q_ASSERT(nCards > 7); // if this fails, something went wrong
+    int nCardsToDrop = qCeil(nCards / 2);
+
+    if(!player->getIsLocal())
+    {
+        LOG_SYSTEM_MSG(QString("Waiting for %1 to drop %2 resource cards.").
+            arg(player->getName()).arg(nCardsToDrop));
+        return true;
+    }
+
+    // resource card selection dialog goes here...
+    QMessageBox msgBox;
+    msgBox.setText("DROP RESOURCES");
+    msgBox.exec();
 
     return true;
 }

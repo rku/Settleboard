@@ -187,6 +187,8 @@ class GameRules : public QObject
         DECLARE_RULE(ruleMoveRobber);
         DECLARE_RULE(ruleSelectOtherPlayerAtHexTile);
         DECLARE_RULE(ruleStealResourceFromPlayer);
+        DECLARE_RULE(ruleDropResources);
+        DECLARE_RULE(rulePlayerDropResources);
         DECLARE_RULE(ruleUserActionBuildCity);
         DECLARE_RULE(ruleBuildCity);
         DECLARE_RULE(ruleCanBuildCity);
