@@ -923,16 +923,16 @@ IMPLEMENT_RULE(ruleInitGameCards)
     bank->registerCardStack("Lumber");
     bank->registerCardStack("Clay");
 
-    bank->registerCard("Wheat",  GAMECARD_WHEAT,  19);
-    bank->registerCard("Wool",   GAMECARD_SHEEP,  19);
-    bank->registerCard("Ore",    GAMECARD_ORE,    19);
-    bank->registerCard("Lumber", GAMECARD_LUMBER, 19);
-    bank->registerCard("Clay",   GAMECARD_CLAY,   19);
+    bank->registerCard("Wheat",  GameCard::createResourceCardWheat(),  19);
+    bank->registerCard("Wool",   GameCard::createResourceCardWool(),   19);
+    bank->registerCard("Ore",    GameCard::createResourceCardOre(),    19);
+    bank->registerCard("Lumber", GameCard::createResourceCardLumber(), 19);
+    bank->registerCard("Clay",   GameCard::createResourceCardClay(),   19);
 
     // development cards
     bank->registerCardStack("Development");
-    bank->registerCard("Development", GAMECARD_KNIGHT, 14);
-    bank->registerCard("Development", GAMECARD_BUILD_ROAD, 2);
+    bank->registerCard("Development", GameCard::createDevelopmentCardKnight(), 14);
+    bank->registerCard("Development", GameCard::createDevelopmentCardBuildRoad(), 2);
     bank->getCardStack("Development")->shuffle();
 
     return true;

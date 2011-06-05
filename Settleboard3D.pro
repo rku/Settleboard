@@ -78,6 +78,7 @@ SOURCES = client/GLWidget.cpp \
           client/OBJGLLoader.cpp \
           client/Crossroad.cpp \
           client/Roadway.cpp \
+          client/GameCard.cpp \
           client/Bank.cpp \
           client/GameCardStack.cpp \
           client/ControlPanel.cpp \
