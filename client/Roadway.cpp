@@ -91,7 +91,7 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
 
     // calculate a vector that stands orthogonal on vector ab 
     //
-    // the idea is to use a plane ab is a normal vector for
+    // the idea is to use a plane which ab is a normal vector for
     // then set y to 0, x (randomly chosen) to ab.x() and calculate
     // the corresponding z value in that plane - the resulting vector
     // has the right direction and can be normalized to a length of 1
