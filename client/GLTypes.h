@@ -34,6 +34,13 @@
     GLfloat y;
 } Vertex2f;*/
 
+typedef struct _GLRect3D {
+    QVector3D a;
+    QVector3D b;
+    QVector3D c;
+    QVector3D d;
+} GLRect3D;
+
 typedef struct _GLModelFace {
     QString materialName;
     QVector<GLuint> vertexIds;

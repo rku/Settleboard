@@ -48,10 +48,10 @@ void Roadway::createSelectionRect()
 
     glBegin(GL_QUADS);
 
-    glVertex3f(vertexA.x(), vertexA.y(), vertexA.z());
-    glVertex3f(vertexB.x(), vertexB.y(), vertexB.z());
-    glVertex3f(vertexC.x(), vertexC.y(), vertexC.z());
-    glVertex3f(vertexD.x(), vertexD.y(), vertexD.z());
+    glVertex3f(selRect.a.x(), selRect.a.y(), selRect.a.z());
+    glVertex3f(selRect.b.x(), selRect.b.y(), selRect.b.z());
+    glVertex3f(selRect.c.x(), selRect.c.y(), selRect.c.z());
+    glVertex3f(selRect.d.x(), selRect.d.y(), selRect.d.z());
 
     glEnd();
 
@@ -81,6 +81,8 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
 {
     // always start with the vector having the lowest x value
     if(b.x() < a.x()) qSwap(a,b); 
+    vertexA = a;
+    vertexB = b;
 
     // calculate vertices for a selection rectangle of this roadway
 
@@ -112,10 +114,10 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
     //      /
     // D<--a-->A
     //
-    vertexA = a + 0.2*ab + d;
-    vertexB = b - 0.2*ab + d;
-    vertexC = b - 0.2*ab - d;
-    vertexD = a + 0.2*ab - d;
+    selRect.a = a + 0.2*ab + d;
+    selRect.b = b - 0.2*ab + d;
+    selRect.c = b - 0.2*ab - d;
+    selRect.d = a + 0.2*ab - d;
 
     // we have to make sure that vertices appear in counterclockwise
     // order since this is required for opengl to draw a front face
@@ -126,21 +128,18 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
     // the area by 2 and we only use 3 vertices instead of all 4)
     //
     // a positive value for A means vertices are ordered clockwise
-    qreal A = (vertexA.z()+vertexB.z())*(vertexA.x()-vertexB.x()) +
-              (vertexB.z()+vertexC.z())*(vertexB.x()-vertexC.x()) +
-              (vertexC.z()+vertexA.z())*(vertexC.x()-vertexA.x());
+    qreal A = (selRect.a.z()+selRect.b.z())*(selRect.a.x()-selRect.b.x()) +
+              (selRect.b.z()+selRect.c.z())*(selRect.b.x()-selRect.c.x()) +
+              (selRect.c.z()+selRect.a.z())*(selRect.c.x()-selRect.a.x());
     if(A >= 0)
     {
-        qSwap(vertexA, vertexB);
-        qSwap(vertexC, vertexD);
+        qSwap(selRect.a, selRect.b);
+        qSwap(selRect.c, selRect.d);
     }
 
     // calculate center between a and b, where objects should be placed
     // coords of centerVertex: vector(0->a) + 0.5*vector(a->b)
     centerVertex = a + 0.5 * ab;
-
-    // set direction for player objects
-    objectDirection = ab.normalized();
 }
 
 void Roadway::addTile(HexTile *tile)
@@ -176,7 +175,7 @@ void Roadway::placePlayerObject(PlayerObject *p)
 
     if(playerObject != NULL)
     {
-        playerObject->pointInDirection(objectDirection);
+        playerObject->pointInDirection(vertexB - vertexA);
         playerObject->setPos(centerVertex);
     }
 }
