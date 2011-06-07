@@ -61,6 +61,7 @@ class Roadway : public GLGameModelProxy
         void createSelectionRect();
 
         QVector3D centerVertex;
+        QVector3D objectDirection;
         QVector3D vertexA;
         QVector3D vertexB;
         QVector3D vertexC;

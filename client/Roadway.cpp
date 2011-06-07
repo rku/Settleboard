@@ -101,22 +101,24 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
     // since we have set a value for x and y we can calculate z easily:
     Q_ASSERT(ab.z() != 0);
     QVector3D d(ab.x(), 0, - (ab.x() * ab.x()) / ab.z());
+
+    // normalize it and set an appropriate length
     d.normalize();
+    d *= ab.length() / 16;
 
     // now use this vector to create vertices A,B,C,D (rect corners)
     // 
     //      C<--b-->B
     //         /
-    //        /                  the vector --> is width *  d
-    //       /                              <-- is width * -d
+    //        /                  the vector --> is  d
+    //       /                              <-- is -d
     //      /
     // D<--a-->A
     //
-    qreal width = ab.length() / 16;
-    vertexA = a + width*d;
-    vertexB = b + width*d;
-    vertexC = b - width*d;
-    vertexD = a - width*d;
+    vertexA = a + d;
+    vertexB = b + d;
+    vertexC = b - d;
+    vertexD = a - d;
 
     // we have to make sure that the vertices appear in counterclockwise
     // order since this is required for opengl to draw a front face
@@ -139,6 +141,9 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
     // calculate center between a and b, where objects should be placed
     // coords of centerVertex: vector(0->a) + 0.5*vector(a->b)
     centerVertex = a + 0.5 * ab;
+
+    // set direction for player objects
+    objectDirection = ab.normalized();
 }
 
 void Roadway::addTile(HexTile *tile)
@@ -174,7 +179,7 @@ void Roadway::placePlayerObject(PlayerObject *p)
 
     if(playerObject != NULL)
     {
-        playerObject->pointInDirection(vertexB - vertexA);
+        playerObject->pointInDirection(objectDirection);
         playerObject->setPos(centerVertex);
     }
 }
