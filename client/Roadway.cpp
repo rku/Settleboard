@@ -69,12 +69,9 @@ void Roadway::draw()
     if(getIsSelectable() && GAME->getBoard()->getIsSelectionModeActive())
     {
         QColor col = GAME->getLocalPlayer()->getColor();
-        float width = 5.0f;
 
-        // draw roadway lines
         glPushMatrix();
         GAME->getGLWidget()->qglColor((getIsHighlighted()) ? col.lighter() : col);
-        glLineWidth(width);
         glCallList(selectionRectListID);
         glPopMatrix();
     }
@@ -115,16 +112,16 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
     //      /
     // D<--a-->A
     //
-    vertexA = a + d;
-    vertexB = b + d;
-    vertexC = b - d;
-    vertexD = a - d;
+    vertexA = a + 0.2*ab + d;
+    vertexB = b - 0.2*ab + d;
+    vertexC = b - 0.2*ab - d;
+    vertexD = a + 0.2*ab - d;
 
-    // we have to make sure that the vertices appear in counterclockwise
+    // we have to make sure that vertices appear in counterclockwise
     // order since this is required for opengl to draw a front face
-    // if they dont, we swap them
+    // - if they dont, we swap them
     //
-    // since we are only interested in the sign of the area, so we use a
+    // since we are only interested in the sign of the area, we use a
     // simplified version of the gaussian trapeze formula (we do not divide
     // the area by 2 and we only use 3 vertices instead of all 4)
     //
