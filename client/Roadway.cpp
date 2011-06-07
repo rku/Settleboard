@@ -46,10 +46,12 @@ void Roadway::createSelectionRect()
 
     glTranslatef(0.0f, 0.0001f, 0.0f);
 
-    glBegin(GL_LINES);
+    glBegin(GL_QUADS);
 
     glVertex3f(vertexA.x(), vertexA.y(), vertexA.z());
     glVertex3f(vertexB.x(), vertexB.y(), vertexB.z());
+    glVertex3f(vertexC.x(), vertexC.y(), vertexC.z());
+    glVertex3f(vertexD.x(), vertexD.y(), vertexD.z());
 
     glEnd();
 
@@ -83,16 +85,58 @@ void Roadway::setVertices(QVector3D a, QVector3D b)
     // always start with the vector having the lowest x value
     if(b.x() < a.x()) qSwap(a,b); 
 
-    // add vertices
-    vertexA = a;
-    vertexB = b;
+    // calculate vertices for a selection rectangle of this roadway
 
-    // calculate center between a and b, where objects
-    // should be placed
-
-    // calculate the vector between a and b
+    // create vector representing the line we want to draw our rect at
     QVector3D ab = b - a;
 
+    // calculate a vector that stands orthogonal on vector ab 
+    //
+    // the idea is to use a plane ab is a normal vector for
+    // then set y to 0, x (randomly chosen) to ab.x() and calculate
+    // the corresponding z value in that plane - the resulting vector
+    // has the right direction and can be normalized to a length of 1
+    //
+    // the plane we use is: x*ab.x() + y*ab.y() + z*ab.z() = 0
+    // since we have set a value for x and y we can calculate z easily:
+    Q_ASSERT(ab.z() != 0);
+    QVector3D d(ab.x(), 0, - (ab.x() * ab.x()) / ab.z());
+    d.normalize();
+
+    // now use this vector to create vertices A,B,C,D (rect corners)
+    // 
+    //      C<--b-->B
+    //         /
+    //        /                  the vector --> is width *  d
+    //       /                              <-- is width * -d
+    //      /
+    // D<--a-->A
+    //
+    qreal width = ab.length() / 16;
+    vertexA = a + width*d;
+    vertexB = b + width*d;
+    vertexC = b - width*d;
+    vertexD = a - width*d;
+
+    // we have to make sure that the vertices appear in counterclockwise
+    // order since this is required for opengl to draw a front face
+    // if they dont, we swap them
+    //
+    // since we are only interested in the sign of the area, so we use a
+    // simplified version of the gaussian trapeze formula (we do not divide
+    // the area by 2 and we only use 3 vertices instead of all 4)
+    //
+    // a positive value for A means vertices are ordered clockwise
+    qreal A = (vertexA.z()+vertexB.z())*(vertexA.x()-vertexB.x()) +
+              (vertexB.z()+vertexC.z())*(vertexB.x()-vertexC.x()) +
+              (vertexC.z()+vertexA.z())*(vertexC.x()-vertexA.x());
+    if(A >= 0)
+    {
+        qSwap(vertexA, vertexB);
+        qSwap(vertexC, vertexD);
+    }
+
+    // calculate center between a and b, where objects should be placed
     // coords of centerVertex: vector(0->a) + 0.5*vector(a->b)
     centerVertex = a + 0.5 * ab;
 }

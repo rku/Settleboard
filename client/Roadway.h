@@ -63,6 +63,8 @@ class Roadway : public GLGameModelProxy
         QVector3D centerVertex;
         QVector3D vertexA;
         QVector3D vertexB;
+        QVector3D vertexC;
+        QVector3D vertexD;
         GLuint selectionRectListID;
         QList<HexTile*> tiles;
         QList<Roadway*> neighbours;
