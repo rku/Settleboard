@@ -91,7 +91,6 @@ void GLGameModel::create()
                 currentTex = 0;
                 glBindTexture(GL_TEXTURE_2D, 0);
                 glDisable(GL_TEXTURE_2D);
-                GAME->getGLWidget()->qglColor(color);
             }
         }
 
@@ -197,12 +196,27 @@ void GLGameModel::draw()
 
     glPushMatrix();
     transform();
+    GAME->getGLWidget()->qglColor(color);
     if(getIsHighlighted()) highlight();
     setupLightingParameters();
     glCallList(displayListID);
     glDisable(GL_LIGHT1);
     glFinish();
     glPopMatrix();
+}
+
+void GLGameModel::drawOutline(QColor outlineColor)
+{
+    if(!created) create();
+
+    QColor preservedColor = color;
+    color = outlineColor;
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    draw();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    color = preservedColor;
 }
 
 void GLGameModel::setAngleX(GLfloat i)
