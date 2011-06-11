@@ -26,8 +26,7 @@
 PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
-    boxWidth = 160;
-    columns = 2;
+    columns = 1;
     QGridLayout *lt = new QGridLayout();
     QWidget *widget = new QWidget(this);
 
@@ -52,7 +51,6 @@ QGroupBox* PlayerPanel::getPlayerBox(Player *player)
     {
         // create a new one
         box = new QGroupBox(widget());
-        box->setFixedWidth(boxWidth);
 
         QGridLayout *l = (QGridLayout*)widget()->layout();
         QGridLayout *innerL = new QGridLayout();
@@ -60,7 +58,9 @@ QGroupBox* PlayerPanel::getPlayerBox(Player *player)
         innerL->setVerticalSpacing(10);
         box->setLayout(innerL);
         playerBoxes.insert(player, box);
-        setFixedWidth((boxWidth + 20)*playerBoxes.count());
+
+        l->setColumnStretch(playerBoxes.count(), 0);
+        l->setColumnStretch(playerBoxes.count()+1, 1);
     }
     else box = playerBoxes.value(player);
 
@@ -101,11 +101,13 @@ void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
     QLabel *iconLabel = new QLabel(box);
     if(!icon.isNull()) iconLabel->setPixmap(icon);
     iconLabel->setToolTip(description);
+    QLabel *textLabel = new QLabel(description, box);
     QLabel *valueLabel = new QLabel("0", box);
     valueLabel->setToolTip(description);
 
     gl->addWidget(iconLabel,  row, col, Qt::AlignRight);
-    gl->addWidget(valueLabel, row, col + 1, Qt::AlignLeft);
+    gl->addWidget(textLabel,  row, col + 1, Qt::AlignLeft);
+    gl->addWidget(valueLabel, row, col + 2, Qt::AlignLeft);
 
     playerInfos.insertMulti(player, infoName);
 
@@ -126,7 +128,7 @@ void PlayerPanel::updatePlayerInfo(Player *player, const QString infoName, int v
     QList<QString> values = playerInfos.values(player);
     int index = values.size() - values.indexOf(infoName) - 1;
     int row = qRound(index / columns);
-    int col = qRound(index % columns) * 2 + 1;
+    int col = qRound(index % columns) * 2 + 2;
     Q_ASSERT(gl->itemAtPosition(row, col) != NULL);
     QLabel *label = (QLabel*)gl->itemAtPosition(row, col)->widget();
     label->setText(QString("%1").arg(value));
@@ -143,7 +145,5 @@ void PlayerPanel::clear()
         widget()->layout()->removeWidget(box);
         delete box;
     }
-
-    setFixedWidth(10);
 }
 
