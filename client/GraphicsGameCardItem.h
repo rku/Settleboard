@@ -18,39 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GAMECARDVIEW_H
-#define GAMECARDVIEW_H 1
+#ifndef GRAPHICSGAMECARDITEM_H
+#define GRAPHICSGAMECARDITEM_H 1
 
-#include <QLabel>
-#include <QMouseEvent>
+#include <QtGui>
 
 #include "GameCard.h"
 
-class GameCardView : public QWidget
+class GraphicsGameCardItem : public QGraphicsPixmapItem
 {
-    Q_OBJECT
-    Q_PROPERTY(bool isSelected READ getIsSelected WRITE setIsSelected);
-
     public:
-        GameCardView(QWidget *parent = 0);
+        GraphicsGameCardItem(QGraphicsItem *parent = 0);
 
-        void clear();
-
-        void setCard(GameCard*);
-        GameCard* getCard() { return card; }
-
-        void setIsSelected(bool);
         bool getIsSelected() { return isSelected; }
-        void setIsSecret(bool);
+        void setIsSelected(bool b);
         bool getIsSecret() { return isSecret; }
-
-    signals:
-        void selected();
+        void setIsSecret(bool b);
+        GameCard *getCard() { return card; }
+        void setCard(GameCard *c);
 
     protected:
-        void mousePressEvent(QMouseEvent*);
+        void mousePressEvent (QGraphicsSceneMouseEvent *event);
 
-        QLabel *labelPixmap;
+    private:
         bool isSelected;
         bool isSecret;
         GameCard *card;

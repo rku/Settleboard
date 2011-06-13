@@ -37,6 +37,7 @@
 #include "NetworkPacket.h"
 #include "NetworkCore.h"
 #include "GameLobby.h"
+#include "GameCardSelectionDialog.h"
 #include "Game.h"
 #include "StandardMap.h"
 #include "GamePixmap.h"
