@@ -101,6 +101,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleMoveRobber);
     REGISTER_RULE(ruleSelectOtherPlayerAtHexTile);
     REGISTER_RULE(ruleStealResourceFromPlayer);
+    REGISTER_RULE(rulePlayerResourceStolen);
     REGISTER_RULE(ruleDropResources);
     REGISTER_RULE(rulePlayerDropResources);
     REGISTER_RULE(rulePlayerResourcesDropped);
@@ -1344,8 +1345,51 @@ IMPLEMENT_RULE(ruleStealResourceFromPlayer)
 
     qDebug() << player->getName() << "is about to steal a resource from"
         << p->getName();
-    LOG_SYSTEM_MSG(QString("%1 is about to steal a resource from %2").
-        arg(player->getName()).arg(p->getName()));
+
+    if(!player->getIsLocal())
+    {
+        LOG_SYSTEM_MSG(QString("Waiting for %1 to steal a resource from %2").
+            arg(player->getName()).arg(p->getName()));
+        suspendRuleChain();
+        return true;
+    }
+
+    LOG_SYSTEM_MSG(QString("Select a resource to steal from %1.").
+        arg(p->getName()));
+
+    GameCardSelectionDialog *selDlg = new GameCardSelectionDialog();
+    selDlg->setAcceptActionText("Steal Selected Card");
+    selDlg->setDescriptionText(QString("Select one of %1's cards in order "
+        "to steal it.").arg(p->getName()));
+    selDlg->selectCards(p->getCardStack(), true, 1, true, "Resource");
+
+    Q_ASSERT(selDlg->getSelectedCards().count() == 1);
+    QString cardName = selDlg->getSelectedCards().at(0)->getName();
+    RULEDATA_PUSH("StolenCardName", cardName);
+    executeRule("rulePlayerResourceStolen");
+
+    delete selDlg;
+
+    return true;
+}
+
+IMPLEMENT_RULE(rulePlayerResourceStolen)
+{
+    RULEDATA_REQUIRE("StolenCardName");
+    RULEDATA_REQUIRE("Player");
+    QString cardName = RULEDATA_POP("StolenCardName").value<QString>();
+    Player *p = RULEDATA_READ("Player").value<Player*>();
+
+    p->getCardStack()->drawCards(player->getCardStack(),
+        "Resource", cardName, 1); 
+
+    LOG_PLAYER_MSG(QString("%1 has stolen a %2 card from %3!").
+        arg(player->getName()).arg(cardName).arg(p->getName()));
+
+    EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
+    EXECUTE_SUBRULE(ruleUpdateResourceInfoPanel);
+
+    if(isRuleChainWaiting) continueRuleChain();
 
     return true;
 }
