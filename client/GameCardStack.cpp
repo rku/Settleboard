@@ -65,7 +65,7 @@ bool GameCardStack::drawFirstCards(GameCardStack *toStack, uint amount)
     return true;
 }
 
-bool GameCardStack::drawCardsOfType(GameCardStack *toStack,
+bool GameCardStack::drawCards(GameCardStack *toStack,
     const QString &type, const QString &name, unsigned int amount)
 {
     QList<GameCard*>::iterator i;

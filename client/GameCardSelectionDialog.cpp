@@ -134,7 +134,7 @@ void GameCardSelectionDialog::updateSelectedCards()
 }
 
 void GameCardSelectionDialog::selectCards(GameCardStack *stack,
-    bool secret, int amount, bool exact)
+    bool secret, int amount, bool exact, QString type)
 {
     numberOfRequiredCards = amount;
     requireExactSelection = exact;
@@ -143,8 +143,11 @@ void GameCardSelectionDialog::selectCards(GameCardStack *stack,
     // add cards to scene
     for(unsigned int i = 0; i < stack->getNumberOfCards(); ++i)
     {
+        GameCard *card = stack->getCards().at(i);
+        if(!type.isNull() && card->getType() != type) continue;
+
         GraphicsGameCardItem *item = new GraphicsGameCardItem();
-        item->setCard(stack->getCards().at(i));
+        item->setCard(card);
         item->setIsSecret(secret);
         scene->addItem(item);
     }

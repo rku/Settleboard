@@ -1403,20 +1403,55 @@ IMPLEMENT_RULE(rulePlayerDropResources)
         arg(nCardsToDrop));
 
     // resource card selection dialog goes here...
-    QMessageBox msgBox;
-    msgBox.setText("DROP RESOURCES");
-    msgBox.exec();
+    GameCardSelectionDialog *selDlg = new GameCardSelectionDialog();
+    selDlg->setAcceptActionText("Drop Selected Cards");
+    selDlg->setDescriptionText(QString("You have too many resource cards!"
+        "<br /><br />You have to select <b>%1</b> of your cards to be dropped.").
+        arg(nCardsToDrop));
+    selDlg->selectCards(player->getCardStack(), false, nCardsToDrop,
+        true, "Resource");
 
     // send rule for dropped resources to player
     // server then has to continue the rule chain!
+    QStringList droppedResourceNames;
+    foreach(GameCard *card, selDlg->getSelectedCards())
+        droppedResourceNames.append(card->getName());
+    RULEDATA_PUSH("DroppedResourceNames", droppedResourceNames);
     executeRule("rulePlayerResourcesDropped");
 
+    delete selDlg;
     return true;
 }
 
 IMPLEMENT_RULE(rulePlayerResourcesDropped)
 {
     // get the dropped resources from ruledata...
+    RULEDATA_REQUIRE("DroppedResourceNames");
+    QStringList resourceNames = RULEDATA_POP("DroppedResourceNames").value<QStringList>();
+
+    // drop cards
+    GameCardStack *stack = player->getCardStack();
+    QMap<QString, int> dropped;
+    foreach(QString name, resourceNames)
+    {
+        GameCardStack *bankStack = GAME->getBank()->getCardStack(name);
+        stack->drawCards(bankStack, "Resource", name, 1);
+
+        int n = (dropped.contains(name)) ? dropped.value(name) : 0;
+        dropped.insert(name, n + 1);
+    }
+
+    // update interface and show log message
+    QString logMsg = QString("%1 dropped resources:").arg(player->getName());
+    foreach(QString name, dropped.keys())
+    {
+        logMsg.append(QString(" %1 %2,").arg(dropped.value(name)).arg(name));
+    }
+    logMsg.remove(logMsg.length() - 1, 1);
+    LOG_PLAYER_MSG(logMsg);
+
+    EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
+    EXECUTE_SUBRULE(ruleUpdateResourceInfoPanel);
 
     if(isRuleChainWaiting) continueRuleChain();
 
@@ -1480,8 +1515,8 @@ IMPLEMENT_RULE(ruleBuyCity)
     GameCardStack *wheatStack = game->getBank()->getCardStack("Wheat");
     GameCardStack *playerStack = player->getCardStack();
 
-    playerStack->drawCardsOfType(oreStack, "Resource", "Ore", 3);
-    playerStack->drawCardsOfType(wheatStack, "Resource", "Wheat", 2);
+    playerStack->drawCards(oreStack, "Resource", "Ore", 3);
+    playerStack->drawCards(wheatStack, "Resource", "Wheat", 2);
 
     LOG_PLAYER_MSG(QString("%1 payed 3 ore and 2 wheat.")
         .arg(player->getName()));
@@ -1576,10 +1611,10 @@ IMPLEMENT_RULE(ruleBuySettlement)
     GameCardStack *wheatStack = game->getBank()->getCardStack("Wheat");
     GameCardStack *stack = player->getCardStack();
 
-    stack->drawCardsOfType(clayStack, "Resource", "Clay", 1);
-    stack->drawCardsOfType(lumberStack, "Resource", "Lumber", 1);
-    stack->drawCardsOfType(woolStack, "Resource", "Wool", 1);
-    stack->drawCardsOfType(wheatStack, "Resource", "Wheat", 1);
+    stack->drawCards(clayStack, "Resource", "Clay", 1);
+    stack->drawCards(lumberStack, "Resource", "Lumber", 1);
+    stack->drawCards(woolStack, "Resource", "Wool", 1);
+    stack->drawCards(wheatStack, "Resource", "Wheat", 1);
 
     LOG_PLAYER_MSG(QString("%1 payed 1 clay, 1 lumber, 1 wool and 1 wheat.")
         .arg(player->getName()));
@@ -1730,8 +1765,8 @@ IMPLEMENT_RULE(ruleBuyRoad)
     GameCardStack *lumberStack = game->getBank()->getCardStack("Lumber");
     GameCardStack *playerStack = player->getCardStack();
 
-    playerStack->drawCardsOfType(clayStack, "Resource", "Clay", 1);
-    playerStack->drawCardsOfType(lumberStack, "Resource", "Lumber", 1);
+    playerStack->drawCards(clayStack, "Resource", "Clay", 1);
+    playerStack->drawCards(lumberStack, "Resource", "Lumber", 1);
 
     LOG_PLAYER_MSG(QString("%1 payed 1 clay and 1 lumber")
         .arg(player->getName()));
@@ -1866,9 +1901,9 @@ IMPLEMENT_RULE(ruleBuyDevelopmentCard)
     GameCardStack *woolStack = game->getBank()->getCardStack("Wool");
     GameCardStack *pStack = player->getCardStack();
 
-    pStack->drawCardsOfType(wheatStack, "Resource", "Wheat", 1);
-    pStack->drawCardsOfType(oreStack, "Resource", "Ore", 1);
-    pStack->drawCardsOfType(woolStack, "Resource", "Wool", 1);
+    pStack->drawCards(wheatStack, "Resource", "Wheat", 1);
+    pStack->drawCards(oreStack, "Resource", "Ore", 1);
+    pStack->drawCards(woolStack, "Resource", "Wool", 1);
 
     devCardStack->drawFirstCards(pStack, 1);
 
@@ -1921,7 +1956,7 @@ IMPLEMENT_RULE(rulePlayBuildRoadCard)
     GameCardStack *ps = player->getCardStack();
     GameCardStack *dc = game->getBank()->getCardStack("Discarded");
 
-    ps->drawCardsOfType(dc, "Development", "Build Road", 1);
+    ps->drawCards(dc, "Development", "Build Road", 1);
 
     LOG_PLAYER_MSG(QString("%1 plays a Build Road card.")
         .arg(player->getName()));

@@ -35,7 +35,7 @@ class GameCardSelectionDialog : public QDialog
 
         const QList<GameCard*>& getSelectedCards() { return selectedCards; }
         void selectCards(GameCardStack *stack, bool secret = false,
-            int amount = 0, bool exact = false);
+            int amount = 0, bool exact = false, QString type = QString());
 
         void setAcceptActionText(QString text);
         void setDescriptionText(QString text);
