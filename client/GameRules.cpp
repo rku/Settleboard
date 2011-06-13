@@ -1386,6 +1386,7 @@ IMPLEMENT_RULE(rulePlayerResourceStolen)
     LOG_PLAYER_MSG(QString("%1 has stolen a %2 card from %3!").
         arg(player->getName()).arg(cardName).arg(p->getName()));
 
+    EXECUTE_SUBRULE_FOR_PLAYER(ruleUpdatePlayerPanel, p);
     EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
     EXECUTE_SUBRULE(ruleUpdateResourceInfoPanel);
 
