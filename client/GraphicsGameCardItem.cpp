@@ -29,11 +29,11 @@ GraphicsGameCardItem::GraphicsGameCardItem(QGraphicsItem *parent)
     isSecret = false;
     card = NULL;
 
-    QGraphicsColorizeEffect *shadow = new QGraphicsColorizeEffect();
-    shadow->setEnabled(isSelected);
-    shadow->setColor(Qt::black);
-    shadow->setStrength(0.8);
-    setGraphicsEffect(shadow);
+    QGraphicsColorizeEffect *colorize = new QGraphicsColorizeEffect();
+    colorize->setEnabled(isSelected);
+    colorize->setColor(Qt::black);
+    colorize->setStrength(1.0);
+    setGraphicsEffect(colorize);
 }
 
 void GraphicsGameCardItem::setIsSelected(bool b)
