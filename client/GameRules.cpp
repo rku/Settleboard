@@ -1451,7 +1451,7 @@ IMPLEMENT_RULE(rulePlayerDropResources)
     GameCardSelectionDialog *selDlg = new GameCardSelectionDialog();
     selDlg->setAcceptActionText("Drop Selected Cards");
     selDlg->setDescriptionText(QString("You have too many resource cards!"
-        "<br /><br />You have to select <b>%1</b> of your cards to be dropped.").
+        "<br /><br />You have to select <b>%1</b> of your cards to drop them.").
         arg(nCardsToDrop));
     selDlg->selectCards(player->getCardStack(), false, nCardsToDrop,
         true, "Resource");
