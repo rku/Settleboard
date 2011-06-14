@@ -108,13 +108,13 @@ class GLGameModel : public QObject
 
     protected:
         void create();
-        void createBorder();
+        void createFrame();
         void transform();
         void highlight();
         virtual void setupLightingParameters();
 
         GLuint displayListID;
-        GLuint borderDisplayListID;
+        GLuint frameDisplayListID;
         bool created;
         QString name;
         QVector<QVector3D> vertices;

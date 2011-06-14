@@ -33,7 +33,7 @@ GLGameModel::GLGameModel(QObject *parent) : QObject(parent)
     created = false;
 
     displayListID = glGenLists(1);
-    borderDisplayListID = glGenLists(1);
+    frameDisplayListID = glGenLists(1);
 
     pos    = QVector3D(0.0, 0.0, 0.0); 
     scale  = 1.0f;
@@ -52,7 +52,7 @@ GLGameModel::GLGameModel(QObject *parent) : QObject(parent)
 GLGameModel::~GLGameModel()
 {
     glDeleteLists(displayListID, 1);
-    glDeleteLists(borderDisplayListID, 1);
+    glDeleteLists(frameDisplayListID, 1);
 }
 
 void GLGameModel::create()
@@ -130,9 +130,36 @@ void GLGameModel::create()
     glDisable(GL_TEXTURE_2D);
     glEndList();
 
-    createBorder();
+    createFrame();
 
     created = true;
+}
+
+void GLGameModel::createFrame()
+{
+    glNewList(frameDisplayListID, GL_COMPILE);
+
+    for(int i = 0; i < glModelFaces.size(); ++i)
+    {
+        GLModelFace face = glModelFaces.at(i);
+
+        // draw the model
+        glBegin(GL_POLYGON);
+
+        for(int n = 0; n < face.vertexIds.size(); ++n)
+        {
+            int x = face.vertexIds.at(n);
+
+            if(x < 0 || x >= vertices.size()) continue;
+
+            QVector3D v = vertices.at(x);
+            glVertex3f(v.x(), v.y(), v.z());
+        }
+
+        glEnd();
+    }
+
+    glEndList();
 }
 
 void GLGameModel::load(QString filename, QColor objColor)
@@ -147,10 +174,6 @@ void GLGameModel::load(QString filename, QColor objColor)
     glModelFaces  = obj->glModelFaces;
 
     setColor(objColor);
-}
-
-void GLGameModel::createBorder()
-{
 }
 
 void GLGameModel::setupLightingParameters()
@@ -212,9 +235,16 @@ void GLGameModel::drawOutline(QColor outlineColor)
     QColor preservedColor = color;
     color = outlineColor;
 
+    glPushMatrix();
+    transform();
+    GAME->getGLWidget()->qglColor(color);
+
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    draw();
+    glCallList(frameDisplayListID);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glFinish();
+    glPopMatrix();
 
     color = preservedColor;
 }
