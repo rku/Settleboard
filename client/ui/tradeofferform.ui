@@ -403,7 +403,6 @@
  </widget>
  <resources>
   <include location="../resources/Resources.qrc"/>
-  <include location="../../resources/Resources.qrc"/>
  </resources>
  <connections>
   <connection>
