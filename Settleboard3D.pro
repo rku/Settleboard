@@ -59,6 +59,7 @@ HEADERS = client/GLWidget.h \
           client/GameCardSelectionDialog.h \
           client/GameCardPanel.h \
           client/GraphicsGameCardItem.h \
+          client/GraphicsCardSelectionScene.h \
           client/Utils.h
 
 SOURCES = client/GLWidget.cpp \
@@ -97,5 +98,6 @@ SOURCES = client/GLWidget.cpp \
           client/GamePixmap.cpp \
           client/GameCardSelectionDialog.cpp \
           client/GameCardPanel.cpp \
-          client/GraphicsGameCardItem.cpp
+          client/GraphicsGameCardItem.cpp \
+          client/GraphicsCardSelectionScene.cpp
 

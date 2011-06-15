@@ -20,14 +20,20 @@
 
 #include <QtDebug>
 
-#include "FileManager.h"
-#include "GraphicsGameCardItem.h"
 #include "Utils.h"
+#include "FileManager.h"
+#include "GraphicsCardSelectionScene.h"
 #include "GameCardSelectionDialog.h"
 
 GameCardSelectionDialog::GameCardSelectionDialog(QWidget *parent)
     : QDialog(parent)
 {
+    setFixedSize(QSize(500,300));
+    setModal(true);
+    setWindowTitle("Select Cards");
+    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::WindowTitleHint);
+
     QGridLayout *l = new QGridLayout();
     l->setVerticalSpacing(20);
 
@@ -36,6 +42,8 @@ GameCardSelectionDialog::GameCardSelectionDialog(QWidget *parent)
     l->addWidget(textLabel, 1, 0);
 
     graphicsView = new QGraphicsView(this);
+    graphicsView->setTransformationAnchor(QGraphicsView::NoAnchor);
+    graphicsView->viewport()->setAutoFillBackground(false);
     l->addWidget(graphicsView, 0, 0);
 
     acceptButton = new QPushButton("Accept", this);
@@ -44,19 +52,13 @@ GameCardSelectionDialog::GameCardSelectionDialog(QWidget *parent)
 
     setLayout(l);
 
-    scene = new QGraphicsScene(graphicsView);
+    scene = new GraphicsCardSelectionScene(graphicsView);
     graphicsView->setScene(scene);
-    graphicsView->setTransformationAnchor(QGraphicsView::NoAnchor);
-    graphicsView->viewport()->setAutoFillBackground(false);
 
     connect(scene, SIGNAL(changed(const QList<QRectF>&)), this,
         SLOT(sceneChanged(const QList<QRectF>&)));
 
-    setFixedSize(QSize(500,300));
-    setModal(true);
-    setWindowTitle("Select Cards");
-    setWindowFlags(Qt::FramelessWindowHint);
-    setWindowFlags(Qt::WindowTitleHint);
+    show(); // required for layout calculation
 }
 
 GameCardSelectionDialog::~GameCardSelectionDialog()
@@ -66,71 +68,21 @@ GameCardSelectionDialog::~GameCardSelectionDialog()
     delete acceptButton;
 }
 
+const QList<GameCard*>& GameCardSelectionDialog::getSelectedCards()
+{
+    return scene->getSelectedCards();
+}
+
 void GameCardSelectionDialog::sceneChanged(const QList<QRectF> &rects)
 {
     Q_UNUSED(rects);
 
     // update button state
-    updateSelectedCards();
+    const QList<GameCard*> cards = scene->getSelectedCards();
     acceptButton->setEnabled(
-        (((selectedCards.count() >= numberOfRequiredCards) && !requireExactSelection) ||
-        (selectedCards.count() == numberOfRequiredCards)) ||
+        (((cards.count() >= numberOfRequiredCards) && !requireExactSelection) ||
+        (cards.count() == numberOfRequiredCards)) ||
         (numberOfRequiredCards == 0));
-}
-
-void GameCardSelectionDialog::drawScene()
-{
-    QList<QGraphicsItem*> items = scene->items();
-    int n = items.count();
-    if(n < 1) return; 
-
-    qreal w, h, xoffset;
-    qreal f = 1.0;
-
-    do {
-        w = width() * f * 0.8; // the width of the arc
-        h = height() * f * 0.6; // the height of the arc
-        xoffset = w / n;
-        f -= 0.1;
-    } while(xoffset >= 45.0 && f > 0.1);
-
-    qreal x = - xoffset * ((n == 1) ? 0 : (n / 2)); // starting position
-    qreal r = (w*w + h*h) / (2 * h); // the radius of the circle as a function of w and h
-
-    if(n % 2) x -= xoffset / 2;
-
-    for(int i = 0; i < n; ++i)
-    {
-        GraphicsGameCardItem *item;
-        item = static_cast<GraphicsGameCardItem*>(items.at(i));
-
-        qreal y = r + qSqrt(r*r - x*x); // the y offset for this card on the arc
-
-        item->setOffset(x, -y);
-        item->setTransformOriginPoint(item->offset());
-        item->setRotation(360 * qAsin(x/r) / (2 * M_PI)); // the card's rotation angle as degrees
-        x += xoffset;
-    }
-
-    QRectF rect = scene->sceneRect();
-    scene->setSceneRect(rect.x(), rect.y() - 50.0,
-        rect.width(), rect.height() + 50.0);
-}
-
-void GameCardSelectionDialog::updateSelectedCards()
-{
-    selectedCards.clear();
-
-    for(int i = 0; i < scene->items().count(); ++i)
-    {
-        GraphicsGameCardItem *item;
-        item = static_cast<GraphicsGameCardItem*>(scene->items().at(i));
-
-        if(item->getIsSelected())
-        {
-            selectedCards.append(item->getCard());
-        }
-    }
 }
 
 void GameCardSelectionDialog::selectCards(GameCardStack *stack,
@@ -141,18 +93,9 @@ void GameCardSelectionDialog::selectCards(GameCardStack *stack,
     acceptButton->setEnabled(false);
 
     // add cards to scene
-    for(unsigned int i = 0; i < stack->getNumberOfCards(); ++i)
-    {
-        GameCard *card = stack->getCards().at(i);
-        if(!type.isNull() && card->getType() != type) continue;
+    scene->setCards(stack, secret, type);
 
-        GraphicsGameCardItem *item = new GraphicsGameCardItem();
-        item->setCard(card);
-        item->setIsSecret(secret);
-        scene->addItem(item);
-    }
-
-    drawScene();
+    // run the dialog
     exec();
 }
 

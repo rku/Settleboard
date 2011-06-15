@@ -18,40 +18,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GAMECARDSELECTIONDIALOG_H
-#define GAMECARDSELECTIONDIALOG_H 1
+#ifndef GRAPHICSCARDSELECTIONSCENE_H
+#define GRAPHICSCARDSELECTIONSCENE_H 1
 
 #include <QtGui>
 
 #include "GameCardStack.h"
 
-class GraphicsCardSelectionScene;
-
-class GameCardSelectionDialog : public QDialog
+class GraphicsCardSelectionScene : public QGraphicsScene
 {
     Q_OBJECT
 
     public:
-        GameCardSelectionDialog(QWidget *parent = 0);
-        ~GameCardSelectionDialog();
+        GraphicsCardSelectionScene(QWidget *parent = 0);
+        ~GraphicsCardSelectionScene();
 
+        void setCards(GameCardStack *cards,
+            bool secret = false, QString type = QString());
         const QList<GameCard*>& getSelectedCards();
-        void selectCards(GameCardStack *stack, bool secret = false,
-            int amount = 0, bool exact = false, QString type = QString());
 
-        void setAcceptActionText(QString text);
-        void setDescriptionText(QString text);
-
-    protected slots:
-        void sceneChanged(const QList<QRectF>&);
+    protected:
+        void calculateScene();
+        void updateSelectedCards();
 
     private:
-        int numberOfRequiredCards;
-        bool requireExactSelection;
-        QGraphicsView *graphicsView;
-        GraphicsCardSelectionScene *scene;
-        QPushButton *acceptButton;
-        QLabel *textLabel;
+        QList<GameCard*> selectedCards;
 };
 
 #endif
