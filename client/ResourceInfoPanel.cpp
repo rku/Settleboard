@@ -20,23 +20,22 @@
 
 #include <QHBoxLayout>
 
-#include "FileManager.h"
+#include "Game.h"
+#include "ResourceManager.h"
+#include "ResourceInfoWidget.h"
 #include "ResourceInfoPanel.h"
 
 ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
-    QHBoxLayout *l = new QHBoxLayout();
-    QWidget *widget = new QWidget(this);
-
-    l->addStretch();
-    l->addStretch();
-    l->setSpacing(0);
-    widget->setLayout(l);
-    setWidget(widget);
+    infoWidget = new ResourceInfoWidget(this,
+        ResourceInfoWidget::ResourceInfoVerticalDirection,
+        ResourceInfoWidget::ResourceInfoHorizontalDirection,
+        false, QSize(24,24));
+    setWidget(infoWidget);
 
     setFloating(false);
-    setFixedHeight(80);
+    setFixedHeight(60);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setObjectName("resourceInfoPanel");
     setTitleBarWidget(new QWidget(this));
@@ -47,41 +46,20 @@ ResourceInfoPanel::~ResourceInfoPanel()
     clear();
 }
 
-void ResourceInfoPanel::registerResource(const QString name)
+void ResourceInfoPanel::update()
 {
-    QHBoxLayout *l = qobject_cast<QHBoxLayout*>(widget()->layout());
+    ResourceManager *rm = GAME->getResourceManager();
+    Player *player = GAME->getLocalPlayer();
+    QMap<QString, int> res = rm->getPlayerResources(player);
 
-    QString iconFile = FileManager::getPathOfImage(
-        QString("%1.png").arg(name));
-    QLabel *iconLabel = new QLabel(this);
-    iconLabel->setPixmap(QPixmap(iconFile).scaled(QSize(16,16),
-        Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    QLabel *amountLabel = new QLabel("0x", this);
-
-    QVBoxLayout *l2 = new QVBoxLayout();
-    l2->addWidget(iconLabel,0, Qt::AlignCenter);
-    l2->addWidget(amountLabel,0, Qt::AlignCenter);
-
-    QWidget *infoWidget = new QWidget(this);
-    infoWidget->setObjectName("resourceInfoWidget");
-    infoWidget->setToolTip(name);
-    infoWidget->setLayout(l2);
-
-    resources.insert(name, amountLabel);
-    l->insertWidget(resources.count(), infoWidget);
-}
-
-void ResourceInfoPanel::updateResource(const QString &name, unsigned int amount)
-{
-    Q_ASSERT(resources.contains(name));
-
-    QLabel *amountLabel = resources.value(name);
-    amountLabel->setText(QString("%1x").arg(amount));
+    foreach(QString name, res.keys())
+    {
+        infoWidget->setResourceAmount(name, res.value(name));
+    }
 }
 
 void ResourceInfoPanel::clear()
 {
-    QHBoxLayout *l = qobject_cast<QHBoxLayout*>(widget()->layout());
-    while(l->count() > 2) delete l->takeAt(1)->widget();
+    //infoWidget->clear();
 }
 

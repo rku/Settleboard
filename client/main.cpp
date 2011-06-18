@@ -26,6 +26,7 @@
 #include "Crossroad.h"
 #include "Roadway.h"
 #include "Player.h"
+#include "TradeOffer.h"
 #include "HexTile.h"
 #include "FileManager.h"
 #include "MainWindow.h"
@@ -60,6 +61,9 @@ void registerMetaTypeOperators()
 
     qRegisterMetaType<HexTilePtr>("HexTilePtr");
     qRegisterMetaTypeStreamOperators<HexTilePtr>("HexTilePtr");
+
+    qRegisterMetaType<TradeOfferPtr>("TradeOfferPtr");
+    qRegisterMetaTypeStreamOperators<TradeOfferPtr>("TradeOfferPtr");
 }
 
 int main(int argc, char *argv[])

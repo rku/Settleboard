@@ -34,6 +34,8 @@
 #include "ResourceInfoPanel.h"
 #include "GameCardPanel.h"
 #include "FileManager.h"
+#include "ResourceManager.h"
+#include "TradeOffer.h"
 #include "NetworkPacket.h"
 #include "NetworkCore.h"
 #include "GameLobby.h"
@@ -90,6 +92,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleInitControlPanel);
     REGISTER_RULE(ruleUpdateControlPanel);
     REGISTER_RULE(ruleUpdateGameInfoPanel);
+    REGISTER_RULE(ruleInitResources);
     REGISTER_RULE(ruleInitResourceInfoPanel);
     REGISTER_RULE(ruleUpdateResourceInfoPanel);
     REGISTER_RULE(ruleUpdateGameCardPanel);
@@ -433,6 +436,7 @@ void GameRules::pushRuleData(QObject *pointer)
     PUSH_TO_RULEDATA_IF_QOBJECT_TYPE(Roadway);
     PUSH_TO_RULEDATA_IF_QOBJECT_TYPE(HexTile);
     PUSH_TO_RULEDATA_IF_QOBJECT_TYPE(Player);
+    PUSH_TO_RULEDATA_IF_QOBJECT_TYPE(TradeOffer);
 
     qDebug() << "Unknown type!";
     Q_ASSERT(false);
@@ -642,6 +646,7 @@ IMPLEMENT_RULE(ruleInitGame)
     SERVER_ONLY_RULE
 
     pushRuleChain();
+    RULECHAIN_ADD(ruleInitResources);
     RULECHAIN_ADD(ruleInitGameCards);
     RULECHAIN_ADD(ruleInitPlayers);
     RULECHAIN_ADD(ruleInitDockWidgets);
@@ -1157,33 +1162,29 @@ IMPLEMENT_RULE(ruleUpdateGameInfoPanel)
     return true;
 }
 
-IMPLEMENT_RULE(ruleInitResourceInfoPanel)
+IMPLEMENT_RULE(ruleInitResources)
 {
-    resourceInfoPanel->registerResource("Lumber");
-    resourceInfoPanel->registerResource("Clay");
-    resourceInfoPanel->registerResource("Wool");
-    resourceInfoPanel->registerResource("Wheat");
-    resourceInfoPanel->registerResource("Ore");
+    ResourceManager *resourceManager = game->getResourceManager();
+    resourceManager->clear();
+    resourceManager->registerResource("Lumber");
+    resourceManager->registerResource("Clay");
+    resourceManager->registerResource("Wool");
+    resourceManager->registerResource("Wheat");
+    resourceManager->registerResource("Ore");
 
     return true;
 }
 
+IMPLEMENT_RULE(ruleInitResourceInfoPanel)
+{
+    // nothing to be done here yet
+    return true;
+}
+
+
 IMPLEMENT_RULE(ruleUpdateResourceInfoPanel)
 {
-    Player *p = game->getLocalPlayer();
-    GameCardStack *stack = p->getCardStack();
-
-    resourceInfoPanel->updateResource("Wheat",
-        stack->getNumberOfCards("Resource", "Wheat"));
-    resourceInfoPanel->updateResource("Lumber",
-        stack->getNumberOfCards("Resource", "Lumber"));
-    resourceInfoPanel->updateResource("Wool",
-        stack->getNumberOfCards("Resource", "Wool"));
-    resourceInfoPanel->updateResource("Ore",
-        stack->getNumberOfCards("Resource", "Ore"));
-    resourceInfoPanel->updateResource("Clay",
-        stack->getNumberOfCards("Resource", "Clay"));
-
+    resourceInfoPanel->update();
     return true;
 }
 

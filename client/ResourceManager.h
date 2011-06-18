@@ -18,26 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESOURCEINFOPANEL_H
-#define RESOURCEINFOPANEL_H 1
+#ifndef RESOURCEMANAGER_H
+#define RESOURCEMANAGER_H 1
 
 #include <QtGui>
 
-class ResourceInfoWidget;
+class Player;
 
-class ResourceInfoPanel : public QDockWidget
+class ResourceManager : public QObject
 {
     Q_OBJECT
 
     public:
-        ResourceInfoPanel(const QString &title, QWidget *parent = 0);
-        ~ResourceInfoPanel();
+        ResourceManager(QObject *parent = 0);
+        ~ResourceManager();
 
-        void update();
+        void registerResource(const QString name);
+        const QStringList& getResources() { return resources; }
+        QString getResourceIconFilename(QString name);
         void clear();
 
+        const QMap<QString, int> getPlayerResources(Player *player);
+
     protected:
-        ResourceInfoWidget *infoWidget;
+        QStringList resources;
 };
 
 #endif

@@ -17,10 +17,11 @@ ICON = client/icons/Settleboard.icns
 
 FORMS = client/ui/connectorform.ui \
         client/ui/prefsform.ui \
-        client/ui/tradeform.ui \
         client/ui/gamelobbyform.ui \
         client/ui/infoboxform.ui \
-        client/ui/cardbrowserform.ui
+        client/ui/tradeofferform.ui \
+        client/ui/tradecreateform.ui \
+        client/ui/tradeform.ui
 
 HEADERS = client/GLWidget.h \
           client/GLTypes.h \
@@ -30,6 +31,7 @@ HEADERS = client/GLWidget.h \
           client/NumberChip.h \
           client/MainWindow.h \
           client/TextureManager.h \
+          client/ResourceManager.h \
           client/GLGameModel.h \
           client/GLGameModelProxy.h \
           client/Board.h \
@@ -60,6 +62,9 @@ HEADERS = client/GLWidget.h \
           client/GameCardPanel.h \
           client/GraphicsGameCardItem.h \
           client/GraphicsCardSelectionScene.h \
+          client/TradeOffer.h \
+          client/TradeOfferDialog.h \
+          client/ResourceInfoWidget.h \
           client/Utils.h
 
 SOURCES = client/GLWidget.cpp \
@@ -70,6 +75,7 @@ SOURCES = client/GLWidget.cpp \
           client/main.cpp \
           client/MainWindow.cpp \
           client/TextureManager.cpp \
+          client/ResourceManager.cpp \
           client/GLGameModel.cpp \
           client/GLGameModelProxy.cpp \
           client/Board.cpp\
@@ -99,5 +105,8 @@ SOURCES = client/GLWidget.cpp \
           client/GameCardSelectionDialog.cpp \
           client/GameCardPanel.cpp \
           client/GraphicsGameCardItem.cpp \
-          client/GraphicsCardSelectionScene.cpp
+          client/GraphicsCardSelectionScene.cpp \
+          client/TradeOffer.cpp \
+          client/TradeOfferDialog.cpp \
+          client/ResourceInfoWidget.cpp
 

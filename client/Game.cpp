@@ -24,6 +24,7 @@
 #include "OBJGLLoader.h"
 #include "GLWidget.h"
 #include "TextureManager.h"
+#include "ResourceManager.h"
 #include "GameRules.h"
 #include "MainWindow.h"
 #include "GameLobby.h"
@@ -52,6 +53,7 @@ void Game::init()
     // initialize game objects
     glWidget = new GLWidget(mainWindow);
     textureManager = new TextureManager(this);
+    resourceManager = new ResourceManager(this);
     rules = new GameRules(this);
 
     board = new Board(this);
@@ -70,6 +72,7 @@ void Game::init()
     initLocalPlayer();
 }
 
+#include "TradeOffer.h"
 void Game::parseCommandLine()
 {
     QStringList args = QCoreApplication::arguments();
@@ -114,6 +117,7 @@ void Game::free()
     delete board;
     delete rules;
     delete textureManager;
+    delete resourceManager;
 }
 
 Game* Game::getInstance()

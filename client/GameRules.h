@@ -182,6 +182,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleUpdateControlPanel);
         DECLARE_RULE(ruleUpdateGameInfoPanel);
         DECLARE_RULE(ruleInitResourceInfoPanel);
+        DECLARE_RULE(ruleInitResources);
         DECLARE_RULE(ruleUpdateResourceInfoPanel);
         DECLARE_RULE(ruleUpdateGameCardPanel);
         DECLARE_RULE(ruleGenerateBoard);

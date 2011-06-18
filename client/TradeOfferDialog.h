@@ -18,26 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESOURCEINFOPANEL_H
-#define RESOURCEINFOPANEL_H 1
+#ifndef TRADEOFFERDIALOG_H
+#define TRADEOFFERDIALOG_H 1
 
 #include <QtGui>
 
-class ResourceInfoWidget;
+#include "TradeOffer.h"
 
-class ResourceInfoPanel : public QDockWidget
+#include "ui_tradeofferform.h"
+
+class TradeOfferDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        ResourceInfoPanel(const QString &title, QWidget *parent = 0);
-        ~ResourceInfoPanel();
+        TradeOfferDialog(QWidget *parent = 0);
 
-        void update();
-        void clear();
+        void setTradeOffer(TradeOffer *offer);
+        const TradeOffer* getTradeOffer() { return tradeOffer; }
 
-    protected:
-        ResourceInfoWidget *infoWidget;
+    protected slots:
+        void acceptOffer();
+        void rejectOffer();
+        void counterOffer();
+
+    private:
+        Ui::TradeOfferForm ui;
+        TradeOffer *tradeOffer;
 };
 
 #endif

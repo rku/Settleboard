@@ -29,6 +29,7 @@ class OBJGLLoader;
 class Bank;
 class GameRules;
 class TextureManager;
+class ResourceManager;
 class MainWindow;
 class NetworkCore;
 class GameLobby;
@@ -56,6 +57,7 @@ class Game : public QObject
         GLWidget* getGLWidget() { return glWidget; }
         GameRules* getRules() { return rules; }
         TextureManager *getTextureManager() { return textureManager; }
+        ResourceManager *getResourceManager() { return resourceManager; }
         Board *getBoard() { return board; }
         OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
         QList<Player*>& getPlayers() { return players; }
@@ -79,6 +81,7 @@ class Game : public QObject
         GLWidget *glWidget;
         GameRules *rules;
         TextureManager *textureManager;
+        ResourceManager *resourceManager;
         Board *board;
         OBJGLLoader *objGLLoader;
         QList<Player*> players;
