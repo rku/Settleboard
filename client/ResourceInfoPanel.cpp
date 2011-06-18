@@ -35,7 +35,7 @@ ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
     setWidget(infoWidget);
 
     setFloating(false);
-    setFixedHeight(60);
+    setFixedHeight(70);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setObjectName("resourceInfoPanel");
     setTitleBarWidget(new QWidget(this));
