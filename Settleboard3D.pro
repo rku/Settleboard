@@ -62,6 +62,7 @@ HEADERS = client/GLWidget.h \
           client/GameCardPanel.h \
           client/GraphicsGameCardItem.h \
           client/GraphicsCardSelectionScene.h \
+          client/TradeDialog.h \
           client/TradeOffer.h \
           client/TradeOfferDialog.h \
           client/CreateTradeOfferDialog.h \
@@ -107,6 +108,7 @@ SOURCES = client/GLWidget.cpp \
           client/GameCardPanel.cpp \
           client/GraphicsGameCardItem.cpp \
           client/GraphicsCardSelectionScene.cpp \
+          client/TradeDialog.cpp \
           client/TradeOffer.cpp \
           client/TradeOfferDialog.cpp \
           client/CreateTradeOfferDialog.cpp \

@@ -19,6 +19,14 @@ QMainWindow::separator:hover {
     background: #2f2f2f;
 }
 
+ResourceInfoWidget QLabel#nullnumber {
+    color: #454545;
+}
+
+ResourceInfoWidget QLabel#number {
+    color: white;
+}
+
 QDockWidget QLabel {
     color: white;
 }

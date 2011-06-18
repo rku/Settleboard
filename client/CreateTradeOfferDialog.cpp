@@ -73,11 +73,6 @@ void CreateTradeOfferDialog::placeOffer()
         return;
     }
 
-    qDebug() << "Offer created";
-    qDebug() << "BankOnly:" << tradeOffer->getIsBankOnly();
-    qDebug() << "Offered:" << tradeOffer->getOfferedResources();
-    qDebug() << "Wanted:" << tradeOffer->getWantedResources();
-
     // everything seems to be fine, accept the dialog
     accept();
 }

@@ -26,6 +26,19 @@ TradeOffer::TradeOffer(QObject *parent) : QObject(parent)
     clear();
 }
 
+TradeOffer::TradeOffer(const TradeOffer &other, QObject *parent)
+    : QObject(parent)
+{
+    clear();
+
+    state = other.state;
+    fromPlayer = other.fromPlayer;
+    toPlayer = other.toPlayer;
+    isBankOnly = other.isBankOnly;
+    offeredResources = other.offeredResources;
+    wantedResources = other.wantedResources;
+}
+
 void TradeOffer::show()
 {
     TradeOfferDialog *dlg = new TradeOfferDialog();

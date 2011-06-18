@@ -31,12 +31,14 @@ class TradeOffer : public QObject
 
     public:
         TradeOffer(QObject *parent = 0);
+        TradeOffer(const TradeOffer &other, QObject *parent = 0);
 
         void show();
 
         enum TradeOfferState {OfferUnused, OfferAccepted, OfferRejected,
             OfferPlaced};
-        void setOfferState(TradeOfferState s) { state = s; }
+        void setState(TradeOfferState s) { state = s; }
+        TradeOfferState getState() { return state; }
 
         void setFromPlayer(Player *from);
         Player *getFromPlayer() { return fromPlayer; }

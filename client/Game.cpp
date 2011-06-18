@@ -72,7 +72,6 @@ void Game::init()
     initLocalPlayer();
 }
 
-#include "TradeOffer.h"
 void Game::parseCommandLine()
 {
     QStringList args = QCoreApplication::arguments();

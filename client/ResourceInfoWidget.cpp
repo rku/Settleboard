@@ -31,6 +31,7 @@ ResourceInfoWidget::ResourceInfoWidget(QWidget *parent,
       widgetDirection(theWidgetDirection), isEditable(editable),
       iconSize(theIconSize)
 {
+    setObjectName("ResourceInfo");
     createUi();
 }
 
@@ -50,7 +51,8 @@ void ResourceInfoWidget::setResourceAmount(QString name, int amount)
     }
 
     QLabel *label = static_cast<QLabel*>(resources.value(name));
-    label->setText(QString("%1x").arg(amount));
+    label->setText(QString("x%1").arg(amount));
+    label->setObjectName((amount > 0) ? "number" : "nullnumber"); // used for styles
 }
 
 int ResourceInfoWidget::getResourceAmount(QString name)
@@ -133,6 +135,7 @@ QWidget* ResourceInfoWidget::createInfoLabel()
     QLabel *label = new QLabel("0x", this);
     label->setAlignment((infoDirection == ResourceInfoVerticalDirection) ?
         Qt::AlignCenter | Qt::AlignVCenter : Qt::AlignLeft | Qt::AlignVCenter);
+    label->setObjectName("nullnumber");
 
     return static_cast<QWidget*>(label);
 }

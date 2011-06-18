@@ -34,12 +34,15 @@
     </widget>
    </item>
    <item>
-    <widget class="QListView" name="listViewTradeOffers">
+    <widget class="QListWidget" name="listWidgetTradeOffers">
      <property name="maximumSize">
       <size>
        <width>16777215</width>
        <height>120</height>
       </size>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::ListMode</enum>
      </property>
     </widget>
    </item>
@@ -56,6 +59,16 @@
       <number>6</number>
      </property>
      <item>
+      <widget class="QPushButton" name="buttonShowSelectedOffer">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Show Selected Offer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -69,9 +82,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="buttonRequestTrade">
+      <widget class="QPushButton" name="buttonCreateTrade">
        <property name="text">
-        <string>Request Trade</string>
+        <string>Create Trade</string>
        </property>
       </widget>
      </item>
