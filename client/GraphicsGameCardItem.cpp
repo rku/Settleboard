@@ -30,7 +30,7 @@ GraphicsGameCardItem::GraphicsGameCardItem(QGraphicsItem *parent)
     card = NULL;
 
     QGraphicsColorizeEffect *colorize = new QGraphicsColorizeEffect();
-    colorize->setEnabled(isSelected);
+    colorize->setEnabled(!isSelected);
     colorize->setColor(Qt::black);
     colorize->setStrength(1.0);
     setGraphicsEffect(colorize);
@@ -41,7 +41,7 @@ void GraphicsGameCardItem::setIsSelected(bool b)
     if(b == isSelected) return;
 
     isSelected = b;
-    graphicsEffect()->setEnabled(isSelected);
+    graphicsEffect()->setEnabled(!isSelected);
 
     qreal f = 20.0;
     if(isSelected) f *= -1;
