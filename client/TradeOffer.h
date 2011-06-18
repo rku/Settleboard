@@ -44,8 +44,10 @@ class TradeOffer : public QObject
         Player *getToPlayer() { return toPlayer; }
 
         void setOfferedResource(QString name, int amount);
+        void addOfferedResource(QString name, int amount = 1);
         int getOfferedResource(QString name);
         void setWantedResource(QString name, int amount);
+        void addWantedResource(QString name, int amount = 1);
         int getWantedResource(QString name);
 
         void setOfferedResources(QMap<QString, int> &r)
@@ -59,6 +61,8 @@ class TradeOffer : public QObject
 
         bool getIsBankOnly() { return isBankOnly; }
         void setIsBankOnly(bool b) { isBankOnly = b; }
+
+        void clear();
 
     private:
         TradeOfferState state;

@@ -23,11 +23,7 @@
 
 TradeOffer::TradeOffer(QObject *parent) : QObject(parent)
 {
-    state = OfferUnused;
-
-    fromPlayer = NULL;
-    toPlayer = NULL;
-    isBankOnly = false;
+    clear();
 }
 
 void TradeOffer::show()
@@ -53,6 +49,12 @@ void TradeOffer::setOfferedResource(QString name, int amount)
     offeredResources.insert(name, amount);
 }
 
+void TradeOffer::addOfferedResource(QString name, int amount)
+{
+    int newValue = offeredResources.value(name) + amount;
+    offeredResources.insert(name, newValue);
+}
+
 int TradeOffer::getOfferedResource(QString name)
 {
     Q_ASSERT(offeredResources.contains(name));
@@ -64,10 +66,26 @@ void TradeOffer::setWantedResource(QString name, int amount)
     wantedResources.insert(name, amount);
 }
 
+void TradeOffer::addWantedResource(QString name, int amount)
+{
+    int newValue = wantedResources.value(name) + amount;
+    wantedResources.insert(name, newValue);
+}
+
 int TradeOffer::getWantedResource(QString name)
 {
     Q_ASSERT(wantedResources.contains(name));
     return wantedResources.value(name);
+}
+
+void TradeOffer::clear()
+{
+    offeredResources.clear();
+    wantedResources.clear();
+    isBankOnly = false;
+    fromPlayer = NULL;
+    toPlayer = NULL;
+    state = OfferUnused;
 }
 
 // QDataStream operators

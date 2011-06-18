@@ -41,6 +41,9 @@ class CreateTradeOfferDialog : public QDialog
     protected:
         bool event(QEvent *event);
 
+    protected slots:
+        void placeOffer();
+
     private:
         Ui::CreateTradeOfferForm ui;
         GraphicsCardSelectionScene *cardSelectionScene;

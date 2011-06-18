@@ -67,6 +67,18 @@ int ResourceInfoWidget::getResourceAmount(QString name)
     return label->text().toInt();
 }
 
+const QMap<QString, int> ResourceInfoWidget::getResourceAmounts()
+{
+    QMap<QString, int> amounts;
+
+    foreach(QString name, resources.keys())
+    {
+        amounts.insert(name, getResourceAmount(name));
+    }
+
+    return amounts;
+}
+
 void ResourceInfoWidget::setIsEditable(bool b)
 {
     isEditable = b;

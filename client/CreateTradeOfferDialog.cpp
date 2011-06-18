@@ -27,24 +27,59 @@ CreateTradeOfferDialog::CreateTradeOfferDialog(QWidget *parent) : QDialog(parent
 {
     ui.setupUi(this);
 
+    tradeOffer = new TradeOffer(this);
+
     setFixedSize(QSize(500, 400));
 
     ui.graphicsViewCardSelection->viewport()->setAutoFillBackground(false);
-    ui.widgetResourceInfo->setIsEditable(true);
-
-    // test
-    Player *p = GAME->getLocalPlayer();
-    GameCardStack *stack = p->getCardStack();
-    stack->addCard(new GameCard(GameCard::createResourceCardWheat()));
-    stack->addCard(new GameCard(GameCard::createResourceCardWheat()));
-    stack->addCard(new GameCard(GameCard::createResourceCardWheat()));
-    stack->addCard(new GameCard(GameCard::createResourceCardWheat()));
-    stack->addCard(new GameCard(GameCard::createResourceCardWheat()));
-    stack->addCard(new GameCard(GameCard::createResourceCardWheat()));
-    stack->addCard(new GameCard(GameCard::createResourceCardWheat()));
+    ui.widgetWantedResources->setIsEditable(true);
 
     cardSelectionScene = new GraphicsCardSelectionScene(this);
     ui.graphicsViewCardSelection->setScene(cardSelectionScene);
+
+    connect(ui.buttonPlaceOffer, SIGNAL(clicked()), this, SLOT(placeOffer()));
+}
+
+void CreateTradeOfferDialog::placeOffer()
+{
+    tradeOffer->clear();
+
+    tradeOffer->setFromPlayer(GAME->getLocalPlayer());
+    tradeOffer->setIsBankOnly(ui.checkBoxBankOnly->checkState() == Qt::Checked);
+
+    // offered
+    const QList<GameCard*> cards = cardSelectionScene->getSelectedCards();
+    foreach(GameCard *card, cards)
+    {
+        tradeOffer->addOfferedResource(card->getName());
+    }
+
+    // wanted
+    const QMap<QString, int> wantedAmounts =
+        ui.widgetWantedResources->getResourceAmounts();
+    foreach(QString name, wantedAmounts.keys())
+    {
+        int amount = wantedAmounts.value(name);
+        if(amount < 1) continue;
+        tradeOffer->addWantedResource(name, amount);
+    }
+
+    // at least one resource has to be wanted or offered
+    if( (tradeOffer->getWantedResources().count()  < 1) &&
+        (tradeOffer->getOfferedResources().count() < 1))
+    {
+        QMessageBox::information(this, "No resources selected",
+            "You have to select at least one resource to offer or to want!");
+        return;
+    }
+
+    qDebug() << "Offer created";
+    qDebug() << "BankOnly:" << tradeOffer->getIsBankOnly();
+    qDebug() << "Offered:" << tradeOffer->getOfferedResources();
+    qDebug() << "Wanted:" << tradeOffer->getWantedResources();
+
+    // everything seems to be fine, accept the dialog
+    accept();
 }
 
 bool CreateTradeOfferDialog::event(QEvent *event)

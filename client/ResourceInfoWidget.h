@@ -39,6 +39,7 @@ class ResourceInfoWidget : public QWidget
 
         void setResourceAmount(QString name, int amount);
         int getResourceAmount(QString name);
+        const QMap<QString, int> getResourceAmounts();
 
         void setIsEditable(bool b);
 

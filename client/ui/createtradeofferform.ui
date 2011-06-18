@@ -64,7 +64,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <widget class="ResourceInfoWidget" name="widgetResourceInfo" native="true">
+       <widget class="ResourceInfoWidget" name="widgetWantedResources" native="true">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -100,9 +100,6 @@
          </item>
          <item>
           <widget class="QPushButton" name="buttonCancelOffer">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
            <property name="text">
             <string>Cancel</string>
            </property>
@@ -114,7 +111,7 @@
          <item>
           <widget class="QPushButton" name="buttonPlaceOffer">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Place This Offer</string>
