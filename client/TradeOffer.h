@@ -57,10 +57,14 @@ class TradeOffer : public QObject
         const QMap<QString, int>& getWantedResources()
             { return wantedResources; }
 
+        bool getIsBankOnly() { return isBankOnly; }
+        void setIsBankOnly(bool b) { isBankOnly = b; }
+
     private:
         TradeOfferState state;
         Player *fromPlayer;
         Player *toPlayer;
+        bool isBankOnly;
         QMap<QString, int> wantedResources;
         QMap<QString, int> offeredResources;
 };

@@ -27,6 +27,7 @@ TradeOffer::TradeOffer(QObject *parent) : QObject(parent)
 
     fromPlayer = NULL;
     toPlayer = NULL;
+    isBankOnly = false;
 }
 
 void TradeOffer::show()
@@ -75,6 +76,7 @@ QDataStream &operator<<(QDataStream &stream, const TradeOfferPtr &obj)
 {
     stream << PlayerPtr(obj.object->getFromPlayer());
     stream << PlayerPtr(obj.object->getToPlayer());
+    stream << obj.object->getIsBankOnly();
     stream << obj.object->getOfferedResources();
     stream << obj.object->getWantedResources();
     return stream;
@@ -84,15 +86,18 @@ QDataStream &operator>>(QDataStream &stream, TradeOfferPtr &obj)
 {
     QMap<QString, int> offeredResources, wantedResources;
     PlayerPtr fromPlayerPtr, toPlayerPtr;
+    bool bankOnly;
 
     stream >> fromPlayerPtr;
     stream >> toPlayerPtr;
+    stream >> bankOnly;
     stream >> offeredResources;
     stream >> wantedResources;
 
     obj.object = new TradeOffer();
     obj.object->setFromPlayer(fromPlayerPtr.getObject());
     obj.object->setToPlayer(toPlayerPtr.getObject());
+    obj.object->setIsBankOnly(bankOnly);
     obj.object->setOfferedResources(offeredResources);
     obj.object->setWantedResources(wantedResources);
 
