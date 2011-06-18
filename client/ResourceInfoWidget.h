@@ -40,6 +40,8 @@ class ResourceInfoWidget : public QWidget
         void setResourceAmount(QString name, int amount);
         int getResourceAmount(QString name);
 
+        void setIsEditable(bool b);
+
     protected:
         void createUi();
         void resetUi();

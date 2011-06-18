@@ -39,7 +39,7 @@ void GraphicsCardSelectionScene::calculateScene()
     // check if there is a view this scene is drawn in
     if(views().isEmpty()) return;
     QGraphicsView *view = views().first();
-    
+
     int n = items().count();
     if(n < 1) return; 
 
@@ -95,6 +95,11 @@ const QList<GameCard*>& GraphicsCardSelectionScene::getSelectedCards()
 {
     updateSelectedCards();
     return selectedCards;
+}
+
+void GraphicsCardSelectionScene::recalculate()
+{
+    calculateScene();
 }
 
 void GraphicsCardSelectionScene::setCards(GameCardStack *stack,

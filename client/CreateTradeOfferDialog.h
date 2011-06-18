@@ -18,33 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GRAPHICSCARDSELECTIONSCENE_H
-#define GRAPHICSCARDSELECTIONSCENE_H 1
+#ifndef CREATETRADEOFFERDIALOG_H
+#define CREATETRADEOFFERDIALOG_H 1
 
 #include <QtGui>
 
-#include "GameCardStack.h"
+#include "TradeOffer.h"
 
-class GraphicsCardSelectionScene : public QGraphicsScene
+#include "ui_createtradeofferform.h"
+
+class GraphicsCardSelectionScene;
+
+class CreateTradeOfferDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        GraphicsCardSelectionScene(QWidget *parent = 0);
-        ~GraphicsCardSelectionScene();
+        CreateTradeOfferDialog(QWidget *parent = 0);
 
-        void setCards(GameCardStack *cards,
-            bool secret = false, QString type = QString());
-        const QList<GameCard*>& getSelectedCards();
-
-        void recalculate();
+        const TradeOffer* getTradeOffer() { return tradeOffer; }
 
     protected:
-        void calculateScene();
-        void updateSelectedCards();
+        bool event(QEvent *event);
 
     private:
-        QList<GameCard*> selectedCards;
+        Ui::CreateTradeOfferForm ui;
+        GraphicsCardSelectionScene *cardSelectionScene;
+        TradeOffer *tradeOffer;
 };
 
 #endif

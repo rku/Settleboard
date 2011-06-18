@@ -67,6 +67,12 @@ int ResourceInfoWidget::getResourceAmount(QString name)
     return label->text().toInt();
 }
 
+void ResourceInfoWidget::setIsEditable(bool b)
+{
+    isEditable = b;
+    createUi();
+}
+
 void ResourceInfoWidget::createUi()
 {
     ResourceManager *rm = GAME->getResourceManager();
@@ -132,5 +138,7 @@ void ResourceInfoWidget::resetUi()
     {
         delete resources.take(resources.keys().first());
     }
+
+    while(children().count() > 0) delete children().first();
 }
 

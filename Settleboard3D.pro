@@ -20,7 +20,7 @@ FORMS = client/ui/connectorform.ui \
         client/ui/gamelobbyform.ui \
         client/ui/infoboxform.ui \
         client/ui/tradeofferform.ui \
-        client/ui/tradecreateform.ui \
+        client/ui/createtradeofferform.ui \
         client/ui/tradeform.ui
 
 HEADERS = client/GLWidget.h \
@@ -64,6 +64,7 @@ HEADERS = client/GLWidget.h \
           client/GraphicsCardSelectionScene.h \
           client/TradeOffer.h \
           client/TradeOfferDialog.h \
+          client/CreateTradeOfferDialog.h \
           client/ResourceInfoWidget.h \
           client/Utils.h
 
@@ -108,5 +109,6 @@ SOURCES = client/GLWidget.cpp \
           client/GraphicsCardSelectionScene.cpp \
           client/TradeOffer.cpp \
           client/TradeOfferDialog.cpp \
+          client/CreateTradeOfferDialog.cpp \
           client/ResourceInfoWidget.cpp
 
