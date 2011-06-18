@@ -224,6 +224,6 @@ QToolTip {
     background: black;
     color: white;
     padding: 3px;
-    opacity: 200;
+    opacity: 220;
 }
 
