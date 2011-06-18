@@ -20,7 +20,7 @@ QMainWindow::separator:hover {
 }
 
 ResourceInfoWidget QLabel#nullnumber {
-    color: #454545;
+    color: #555555;
 }
 
 ResourceInfoWidget QLabel#number {
@@ -224,5 +224,6 @@ QToolTip {
     background: black;
     color: white;
     padding: 3px;
+    opacity: 200;
 }
 

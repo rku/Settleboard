@@ -140,6 +140,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleCanPlayMonopolyCard);
     REGISTER_RULE(ruleCanPlayInventionCard);
     REGISTER_RULE(ruleCanPlayWinningPointCard);
+    REGISTER_RULE(ruleUserActionTrade);
 }
 
 GameRules::~GameRules()
@@ -1149,6 +1150,7 @@ IMPLEMENT_RULE(ruleUpdateControlPanel)
         controlPanel->setActionState("BuyDevCard",
             diceRolled &&
             EXECUTE_SUBRULE(ruleCanBuyDevelopmentCard));
+        controlPanel->setActionState("Trade", diceRolled);
         controlPanel->setActionState("RollDice", !diceRolled);
         controlPanel->setActionState("EndTurn", diceRolled);
     }
@@ -2029,6 +2031,11 @@ IMPLEMENT_RULE(ruleCanPlayInventionCard)
 }
 
 IMPLEMENT_RULE(ruleCanPlayWinningPointCard)
+{
+    return true;
+}
+
+IMPLEMENT_RULE(ruleUserActionTrade)
 {
     return true;
 }

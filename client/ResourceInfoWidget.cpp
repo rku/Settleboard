@@ -53,6 +53,9 @@ void ResourceInfoWidget::setResourceAmount(QString name, int amount)
     QLabel *label = static_cast<QLabel*>(resources.value(name));
     label->setText(QString("x%1").arg(amount));
     label->setObjectName((amount > 0) ? "number" : "nullnumber"); // used for styles
+
+    style()->unpolish(label);
+    style()->polish(label);
 }
 
 int ResourceInfoWidget::getResourceAmount(QString name)
@@ -136,6 +139,9 @@ QWidget* ResourceInfoWidget::createInfoLabel()
     label->setAlignment((infoDirection == ResourceInfoVerticalDirection) ?
         Qt::AlignCenter | Qt::AlignVCenter : Qt::AlignLeft | Qt::AlignVCenter);
     label->setObjectName("nullnumber");
+
+    style()->unpolish(label);
+    style()->polish(label);
 
     return static_cast<QWidget*>(label);
 }
