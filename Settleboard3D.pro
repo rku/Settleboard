@@ -66,6 +66,7 @@ HEADERS = client/GLWidget.h \
           client/TradeOffer.h \
           client/TradeOfferDialog.h \
           client/CreateTradeOfferDialog.h \
+          client/TradeManager.h \
           client/ResourceInfoWidget.h \
           client/Utils.h
 
@@ -111,6 +112,7 @@ SOURCES = client/GLWidget.cpp \
           client/TradeDialog.cpp \
           client/TradeOffer.cpp \
           client/TradeOfferDialog.cpp \
+          client/TradeManager.cpp \
           client/CreateTradeOfferDialog.cpp \
           client/ResourceInfoWidget.cpp
 

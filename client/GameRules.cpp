@@ -35,6 +35,7 @@
 #include "GameCardPanel.h"
 #include "FileManager.h"
 #include "ResourceManager.h"
+#include "TradeManager.h"
 #include "TradeOffer.h"
 #include "NetworkPacket.h"
 #include "NetworkCore.h"
@@ -141,6 +142,7 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleCanPlayInventionCard);
     REGISTER_RULE(ruleCanPlayWinningPointCard);
     REGISTER_RULE(ruleUserActionTrade);
+    REGISTER_RULE(rulePlaceTradeOffer);
 }
 
 GameRules::~GameRules()
@@ -219,6 +221,9 @@ void GameRules::packRuleDataToNetworkPacket(NetworkPacket &packet)
         else if(!qstrcmp(typeName, "HexTile*"))
         { v = qVariantFromValue(HexTilePtr(i.value().value<HexTile*>())); }
 
+        else if(!qstrcmp(typeName, "TradeOffer*"))
+        { v = qVariantFromValue(TradeOfferPtr(i.value().value<TradeOffer*>())); }
+
         qDebug() << "Packing rule data" << i.key() << v;
         packet.addData(i.key(), v);
     }
@@ -247,6 +252,9 @@ void GameRules::unpackRuleDataFromNetworkPacket(NetworkPacket &packet)
 
         else if(!qstrcmp(typeName, "HexTilePtr"))
         { v = qVariantFromValue(i.value().value<HexTilePtr>().getObject()); }
+
+        else if(!qstrcmp(typeName, "TradeOfferPtr"))
+        { v = qVariantFromValue(i.value().value<TradeOfferPtr>().getObject()); }
 
         qDebug() << "Unpacking rule data" << i.key() << v;
         ruleData.insert(i.key(), v);
@@ -2037,6 +2045,26 @@ IMPLEMENT_RULE(ruleCanPlayWinningPointCard)
 
 IMPLEMENT_RULE(ruleUserActionTrade)
 {
+    if(player == currentPlayer && player->getIsLocal())
+    {
+        game->getTradeManager()->showDialog();
+    }
+
+    return true;
+}
+
+IMPLEMENT_RULE(rulePlaceTradeOffer)
+{
+    RULEDATA_REQUIRE("TradeOffer");
+    TradeOffer *offer = RULEDATA_POP("TradeOffer").value<TradeOffer*>();
+
+    if(player == currentPlayer && !player->getIsLocal())
+    {
+        offer->setFromPlayer(player);
+        offer->show();
+        delete offer;
+    }
+
     return true;
 }
 

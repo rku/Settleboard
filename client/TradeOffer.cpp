@@ -50,6 +50,7 @@ void TradeOffer::show()
 void TradeOffer::setFromPlayer(Player *from)
 {
     fromPlayer = from;
+    if(toPlayer == NULL) toPlayer = from;
 }
 
 void TradeOffer::setToPlayer(Player *to)
@@ -105,6 +106,9 @@ void TradeOffer::clear()
 
 QDataStream &operator<<(QDataStream &stream, const TradeOfferPtr &obj)
 {
+    Q_ASSERT(obj.object->getFromPlayer() != NULL);
+    Q_ASSERT(obj.object->getToPlayer() != NULL);
+
     stream << PlayerPtr(obj.object->getFromPlayer());
     stream << PlayerPtr(obj.object->getToPlayer());
     stream << obj.object->getIsBankOnly();

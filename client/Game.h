@@ -30,6 +30,7 @@ class Bank;
 class GameRules;
 class TextureManager;
 class ResourceManager;
+class TradeManager;
 class MainWindow;
 class NetworkCore;
 class GameLobby;
@@ -58,6 +59,7 @@ class Game : public QObject
         GameRules* getRules() { return rules; }
         TextureManager *getTextureManager() { return textureManager; }
         ResourceManager *getResourceManager() { return resourceManager; }
+        TradeManager *getTradeManager() { return tradeManager; }
         Board *getBoard() { return board; }
         OBJGLLoader *getOBJGLLoader() { return objGLLoader; }
         QList<Player*>& getPlayers() { return players; }
@@ -82,6 +84,7 @@ class Game : public QObject
         GameRules *rules;
         TextureManager *textureManager;
         ResourceManager *resourceManager;
+        TradeManager *tradeManager;
         Board *board;
         OBJGLLoader *objGLLoader;
         QList<Player*> players;

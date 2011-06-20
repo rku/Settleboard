@@ -230,6 +230,7 @@ class GameRules : public QObject
         DECLARE_RULE(ruleCanPlayInventionCard);
         DECLARE_RULE(ruleCanPlayWinningPointCard);
         DECLARE_RULE(ruleUserActionTrade);
+        DECLARE_RULE(rulePlaceTradeOffer);
 
         bool diceRolled;
         unsigned int turn;

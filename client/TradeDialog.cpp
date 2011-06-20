@@ -20,6 +20,7 @@
 
 #include "Game.h"
 #include "FileManager.h"
+#include "TradeManager.h"
 #include "CreateTradeOfferDialog.h"
 #include "TradeOffer.h"
 #include "TradeDialog.h" 
@@ -47,7 +48,7 @@ void TradeDialog::createTradeOffer()
     if(dlg->exec() == QDialog::Accepted)
     {
         const TradeOffer *offer = dlg->getTradeOffer();
-        // FIXME: send offer.... (offer will be destroyed with dialog!)
+        GAME->getTradeManager()->placeOffer(offer);
     }
 
     delete dlg;

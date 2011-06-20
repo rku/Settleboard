@@ -25,6 +25,7 @@
 #include "GLWidget.h"
 #include "TextureManager.h"
 #include "ResourceManager.h"
+#include "TradeManager.h"
 #include "GameRules.h"
 #include "MainWindow.h"
 #include "GameLobby.h"
@@ -54,6 +55,7 @@ void Game::init()
     glWidget = new GLWidget(mainWindow);
     textureManager = new TextureManager(this);
     resourceManager = new ResourceManager(this);
+    tradeManager = new TradeManager(this);
     rules = new GameRules(this);
 
     board = new Board(this);
