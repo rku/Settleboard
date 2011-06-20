@@ -63,7 +63,7 @@ void TradeOfferDialog::setTradeOffer(TradeOffer *offer)
     ui.labelFromPlayer->setText(
         (fromPlayer == NULL) ? "Unknown" : fromPlayer->getName());
     ui.labelToPlayer->setText(
-        (toPlayer == NULL) ? "Everyone" : toPlayer->getName());
+        (toPlayer == fromPlayer) ? "Everyone" : toPlayer->getName());
 
     // set offered resources
     ResourceInfoWidget *offered = ui.widgetResourcesOffered;

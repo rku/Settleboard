@@ -22,6 +22,8 @@
 #define TRADEMANAGER_H
 
 #include <QtCore>
+
+#include "Player.h"
 #include "TradeOffer.h"
 
 class TradeDialog;
@@ -40,7 +42,7 @@ class TradeManager : public QObject
         void clear();
 
     private:
-        QMap<QUuid, TradeOffer*> trades;
+        QMap<Player*, TradeOffer*> trades;
         TradeDialog *tradeDialog;
 };
 

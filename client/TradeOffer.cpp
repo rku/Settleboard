@@ -23,6 +23,8 @@
 
 TradeOffer::TradeOffer(QObject *parent) : QObject(parent)
 {
+    id = QUuid::createUuid();
+
     clear();
 }
 
@@ -31,6 +33,7 @@ TradeOffer::TradeOffer(const TradeOffer &other, QObject *parent)
 {
     clear();
 
+    id = other.id;
     state = other.state;
     fromPlayer = other.fromPlayer;
     toPlayer = other.toPlayer;
@@ -106,11 +109,7 @@ void TradeOffer::clear()
 
 QDataStream &operator<<(QDataStream &stream, const TradeOfferPtr &obj)
 {
-    Q_ASSERT(obj.object->getFromPlayer() != NULL);
-    Q_ASSERT(obj.object->getToPlayer() != NULL);
-
-    stream << PlayerPtr(obj.object->getFromPlayer());
-    stream << PlayerPtr(obj.object->getToPlayer());
+    stream << obj.object->getId();
     stream << obj.object->getIsBankOnly();
     stream << obj.object->getOfferedResources();
     stream << obj.object->getWantedResources();
@@ -120,18 +119,16 @@ QDataStream &operator<<(QDataStream &stream, const TradeOfferPtr &obj)
 QDataStream &operator>>(QDataStream &stream, TradeOfferPtr &obj)
 {
     QMap<QString, int> offeredResources, wantedResources;
-    PlayerPtr fromPlayerPtr, toPlayerPtr;
+    QUuid id;
     bool bankOnly;
 
-    stream >> fromPlayerPtr;
-    stream >> toPlayerPtr;
+    stream >> id;
     stream >> bankOnly;
     stream >> offeredResources;
     stream >> wantedResources;
 
     obj.object = new TradeOffer();
-    obj.object->setFromPlayer(fromPlayerPtr.getObject());
-    obj.object->setToPlayer(toPlayerPtr.getObject());
+    obj.object->setId(id);
     obj.object->setIsBankOnly(bankOnly);
     obj.object->setOfferedResources(offeredResources);
     obj.object->setWantedResources(wantedResources);

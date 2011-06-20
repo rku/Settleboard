@@ -64,9 +64,13 @@ class TradeOffer : public QObject
         bool getIsBankOnly() { return isBankOnly; }
         void setIsBankOnly(bool b) { isBankOnly = b; }
 
+        QUuid getId() { return id; }
+        void setId(QUuid theId) { id = theId; }
+
         void clear();
 
     private:
+        QUuid id;
         TradeOfferState state;
         Player *fromPlayer;
         Player *toPlayer;

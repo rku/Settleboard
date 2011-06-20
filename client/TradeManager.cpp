@@ -48,11 +48,11 @@ void TradeManager::placeOffer(const TradeOffer *offer)
 
 void TradeManager::addOffer(TradeOffer *offer)
 {
-    trades.insert(QUuid(), offer);
+    trades.insert(offer->getFromPlayer(), offer);
 }
 
 void TradeManager::clear()
 {
-    trades.clear();
+    foreach(Player *p, trades.keys()) delete trades.take(p);
 }
 

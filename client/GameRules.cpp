@@ -2058,7 +2058,8 @@ IMPLEMENT_RULE(rulePlaceTradeOffer)
     RULEDATA_REQUIRE("TradeOffer");
     TradeOffer *offer = RULEDATA_POP("TradeOffer").value<TradeOffer*>();
 
-    if(player == currentPlayer && !player->getIsLocal())
+    if(player == currentPlayer && !player->getIsLocal()
+        && !offer->getIsBankOnly())
     {
         offer->setFromPlayer(player);
         offer->show();
