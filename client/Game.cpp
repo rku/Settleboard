@@ -159,6 +159,7 @@ bool Game::reset()
     gameLobby->reset();
     board->reset();
     rules->reset();
+    tradeManager->clear();
     initLocalPlayer();
 
     state = NoGameState;
