@@ -231,6 +231,13 @@ class GameRules : public QObject
         DECLARE_RULE(ruleCanPlayWinningPointCard);
         DECLARE_RULE(ruleUserActionTrade);
         DECLARE_RULE(rulePlaceTradeOffer);
+        DECLARE_RULE(ruleTradeOfferPlaced);
+        DECLARE_RULE(ruleRejectTradeOffer);
+        DECLARE_RULE(ruleTradeOfferRejected);
+        DECLARE_RULE(ruleAcceptTradeOffer);
+        DECLARE_RULE(ruleTradeOfferAccepted);
+        DECLARE_RULE(ruleCreateCounterOffer);
+        DECLARE_RULE(ruleCounterOfferCreated);
 
         bool diceRolled;
         unsigned int turn;

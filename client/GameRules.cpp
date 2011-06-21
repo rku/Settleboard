@@ -143,6 +143,13 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleCanPlayWinningPointCard);
     REGISTER_RULE(ruleUserActionTrade);
     REGISTER_RULE(rulePlaceTradeOffer);
+    REGISTER_RULE(ruleTradeOfferPlaced);
+    REGISTER_RULE(ruleRejectTradeOffer);
+    REGISTER_RULE(ruleTradeOfferRejected);
+    REGISTER_RULE(ruleAcceptTradeOffer);
+    REGISTER_RULE(ruleTradeOfferAccepted);
+    REGISTER_RULE(ruleCreateCounterOffer);
+    REGISTER_RULE(ruleCounterOfferCreated);
 }
 
 GameRules::~GameRules()
@@ -751,6 +758,7 @@ IMPLEMENT_RULE(ruleEndTurn)
         .arg(player->getName()).arg(turn));
 
     gameInfoPanel->clearDiceValues();
+    game->getTradeManager()->clear();
 
     // hand over to next player
     unsigned int index = players.indexOf(player) + 1;
@@ -2055,16 +2063,84 @@ IMPLEMENT_RULE(ruleUserActionTrade)
 
 IMPLEMENT_RULE(rulePlaceTradeOffer)
 {
+    SERVER_ONLY_RULE
+
+    RULEDATA_REQUIRE("TradeOffer");
+    TradeOffer *offer = RULEDATA_READ("TradeOffer").value<TradeOffer*>();
+
+    if(player == currentPlayer && !offer->getIsBankOnly())
+    {
+        return executeRule("ruleTradeOfferPlaced", player);
+    }
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleTradeOfferPlaced)
+{
     RULEDATA_REQUIRE("TradeOffer");
     TradeOffer *offer = RULEDATA_POP("TradeOffer").value<TradeOffer*>();
 
-    if(player == currentPlayer && !player->getIsLocal()
-        && !offer->getIsBankOnly())
+    if(!player->getIsLocal())
     {
-        offer->setFromPlayer(player);
         offer->show();
-        delete offer;
     }
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleRejectTradeOffer)
+{
+    SERVER_ONLY_RULE
+    RULEDATA_REQUIRE("TradeOffer");
+
+    return executeRule("ruleTradeOfferRejected", player);
+}
+
+IMPLEMENT_RULE(ruleTradeOfferRejected)
+{
+    RULEDATA_REQUIRE("TradeOffer");
+    TradeOffer *offer = RULEDATA_POP("TradeOffer").value<TradeOffer*>();
+
+    //FIXME: implement me
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleAcceptTradeOffer)
+{
+    SERVER_ONLY_RULE
+    RULEDATA_REQUIRE("TradeOffer");
+
+    return executeRule("ruleTradeOfferAccepted", player);
+}
+
+IMPLEMENT_RULE(ruleTradeOfferAccepted)
+{
+    RULEDATA_REQUIRE("TradeOffer");
+    TradeOffer *offer = RULEDATA_POP("TradeOffer").value<TradeOffer*>();
+
+    //FIXME: implement me
+ 
+    return true;
+}
+
+IMPLEMENT_RULE(ruleCreateCounterOffer)
+{
+    SERVER_ONLY_RULE
+    RULEDATA_REQUIRE("TradeOffer");
+
+    //FIXME: implement me
+
+    return executeRule("ruleCounterOfferCreated", player);
+}
+
+IMPLEMENT_RULE(ruleCounterOfferCreated)
+{
+    RULEDATA_REQUIRE("TradeOffer");
+    TradeOffer *offer = RULEDATA_POP("TradeOffer").value<TradeOffer*>();
+
+    //FIXME: implement me
 
     return true;
 }
