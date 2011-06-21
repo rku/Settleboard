@@ -41,6 +41,8 @@ class Player : public QObject
         Player(QObject *parent = 0);
         ~Player();
 
+        static Player* findPlayerWithId(QString theId);
+
         void setId(QString _id) { id = _id; }
         const QString getId() { return id.toString(); }
         const QColor &getColor() { return color; }

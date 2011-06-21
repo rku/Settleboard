@@ -43,6 +43,26 @@ Player::~Player()
     while(!objects.isEmpty()) delete objects.take(objects.keys()[0]);
 }
 
+Player* Player::findPlayerWithId(QString theId)
+{
+    Player *player = NULL;
+
+    // find player
+    QList<Player*> players = GAME->getPlayers();
+    QList<Player*>::iterator i;
+    for(i = players.begin(); i != players.end(); ++i)
+    {
+        Player *p = *i;
+        if(p->getId() == theId)
+        {
+            player = *i;
+            break;
+        }
+    }
+
+    return player;
+}
+
 void Player::addObjectOfType(QString type)
 {
     PlayerObject *newObj = new PlayerObject(this, type, this);
@@ -135,17 +155,7 @@ QDataStream &operator>>(QDataStream &stream, PlayerPtr &obj)
     Q_ASSERT(!name.isEmpty());
 
     // find player
-    QList<Player*> players = GAME->getPlayers();
-    QList<Player*>::iterator i;
-    for(i = players.begin(); i != players.end(); ++i)
-    {
-        Player *p = *i;
-        if(p->getId() == id)
-        {
-            obj.object = *i;
-            break;
-        }
-    }
+    obj.object = Player::findPlayerWithId(id);
 
     // create new one
     if(obj.object == NULL)
