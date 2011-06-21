@@ -124,8 +124,7 @@ QDataStream &operator<<(QDataStream &stream, const TradeOfferPtr &obj)
 QDataStream &operator>>(QDataStream &stream, TradeOfferPtr &obj)
 {
     QMap<QString, int> offeredResources, wantedResources;
-    QString fromPlayerId, toPlayerId;
-    QUuid id;
+    QString id, fromPlayerId, toPlayerId;
     bool bankOnly;
 
     stream >> id;

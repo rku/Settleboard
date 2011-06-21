@@ -54,11 +54,11 @@ class TradeOffer : public QObject
         void addWantedResource(QString name, int amount = 1);
         int getWantedResource(QString name);
 
-        void setOfferedResources(QMap<QString, int> &r)
+        void setOfferedResources(QMap<QString, int> r)
             { offeredResources = r; }
         const QMap<QString, int>& getOfferedResources()
             { return offeredResources; }
-        void setWantedResources(QMap<QString, int> &r)
+        void setWantedResources(QMap<QString, int> r)
             { wantedResources = r; }
         const QMap<QString, int>& getWantedResources()
             { return wantedResources; }
