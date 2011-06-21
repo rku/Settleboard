@@ -18,12 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Game.h"
+#include "TradeManager.h"
 #include "TradeOfferDialog.h"
 #include "TradeOffer.h"
 
 TradeOffer::TradeOffer(QObject *parent) : QObject(parent)
 {
     id = QUuid::createUuid();
+    GAME->getTradeManager()->addOffer(this); // register
 
     clear();
 }
@@ -100,7 +103,7 @@ void TradeOffer::clear()
     offeredResources.clear();
     wantedResources.clear();
     isBankOnly = false;
-    fromPlayer = NULL;
+    fromPlayer = GAME->getLocalPlayer(); // fromPlayer must have a value
     toPlayer = NULL;
     state = OfferUnused;
 }
@@ -110,6 +113,8 @@ void TradeOffer::clear()
 QDataStream &operator<<(QDataStream &stream, const TradeOfferPtr &obj)
 {
     stream << obj.object->getId();
+    stream << obj.object->getFromPlayer()->getId();
+    stream << obj.object->getToPlayerId();
     stream << obj.object->getIsBankOnly();
     stream << obj.object->getOfferedResources();
     stream << obj.object->getWantedResources();
@@ -119,16 +124,21 @@ QDataStream &operator<<(QDataStream &stream, const TradeOfferPtr &obj)
 QDataStream &operator>>(QDataStream &stream, TradeOfferPtr &obj)
 {
     QMap<QString, int> offeredResources, wantedResources;
+    QString fromPlayerId, toPlayerId;
     QUuid id;
     bool bankOnly;
 
     stream >> id;
+    stream >> fromPlayerId;
+    stream >> toPlayerId;
     stream >> bankOnly;
     stream >> offeredResources;
     stream >> wantedResources;
 
     obj.object = new TradeOffer();
     obj.object->setId(id);
+    obj.object->setFromPlayer(Player::findPlayerWithId(fromPlayerId));
+    obj.object->setToPlayer(Player::findPlayerWithId(toPlayerId));
     obj.object->setIsBankOnly(bankOnly);
     obj.object->setOfferedResources(offeredResources);
     obj.object->setWantedResources(wantedResources);

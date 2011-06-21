@@ -44,6 +44,8 @@ class TradeOffer : public QObject
         Player *getFromPlayer() { return fromPlayer; }
         void setToPlayer(Player *to);
         Player *getToPlayer() { return toPlayer; }
+        const QString getToPlayerId()
+            { return (toPlayer == NULL) ? QString() : toPlayer->getId(); }
 
         void setOfferedResource(QString name, int amount);
         void addOfferedResource(QString name, int amount = 1);
@@ -64,8 +66,8 @@ class TradeOffer : public QObject
         bool getIsBankOnly() { return isBankOnly; }
         void setIsBankOnly(bool b) { isBankOnly = b; }
 
-        QUuid getId() { return id; }
-        void setId(QUuid theId) { id = theId; }
+        QString getId() { return id.toString(); }
+        void setId(QString theId) { id = QUuid(theId); }
 
         void clear();
 
