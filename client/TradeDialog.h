@@ -35,6 +35,8 @@ class TradeDialog : public QDialog
         TradeDialog(QWidget *parent = 0);
 
         void addTrade(TradeOffer *offer);
+        void removeTrade(TradeOffer *offer);
+        void clear();
 
     protected slots:
         void createTradeOffer();

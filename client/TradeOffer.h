@@ -32,16 +32,21 @@ class TradeOffer : public QObject
     public:
         TradeOffer(QObject *parent = 0);
         TradeOffer(const TradeOffer &other, QObject *parent = 0);
+        ~TradeOffer();
 
         void show();
 
         enum TradeOfferState {OfferUnused, OfferAccepted, OfferRejected,
             OfferPlaced};
-        void setState(TradeOfferState s) { state = s; }
-        TradeOfferState getState() { return state; }
 
+        TradeOfferState getState() { return state; }
+        void setState(TradeOfferState s) { state = s; }
+ 
+        // if fromPlayer or toPlayer == NULL, it means 'Bank'
         void setFromPlayer(Player *from);
         Player *getFromPlayer() { return fromPlayer; }
+        const QString getFromPlayerId()
+            { return (fromPlayer == NULL) ? QString() : fromPlayer->getId(); }
         void setToPlayer(Player *to);
         Player *getToPlayer() { return toPlayer; }
         const QString getToPlayerId()
@@ -58,18 +63,29 @@ class TradeOffer : public QObject
             { offeredResources = r; }
         const QMap<QString, int>& getOfferedResources()
             { return offeredResources; }
+        QString getOfferedResourcesAsString();
         void setWantedResources(QMap<QString, int> r)
             { wantedResources = r; }
         const QMap<QString, int>& getWantedResources()
             { return wantedResources; }
+        QString getWantedResourcesAsString();
 
         bool getIsBankOnly() { return isBankOnly; }
         void setIsBankOnly(bool b) { isBankOnly = b; }
 
         QString getId() { return id.toString(); }
         void setId(QString theId) { id = QUuid(theId); }
+        void newId() { id = QUuid::createUuid(); }
+
+        void accept();
+        void reject();
+        void execute();
 
         void clear();
+
+    protected:
+        QString resourcesToString(QMap<QString, int> &resources);
+        void sendReply();
 
     private:
         QUuid id;

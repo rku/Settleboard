@@ -23,7 +23,6 @@
 
 #include <QtCore>
 
-#include "Player.h"
 #include "TradeOffer.h"
 
 class TradeDialog;
@@ -37,12 +36,16 @@ class TradeManager : public QObject
         ~TradeManager();
 
         void showDialog();
-        void placeOffer(const TradeOffer *offer);
+        void placeOffer(TradeOffer *offer);
         void addOffer(TradeOffer *offer);
+        void addReply(TradeOffer *offer);
+        void removeOffer(TradeOffer *offer);
         void clear();
 
+        TradeOffer* getOfferById(QString id);
+
     private:
-        QMap<Player*, TradeOffer*> trades;
+        QMap<QString, TradeOffer*> trades;
         TradeDialog *tradeDialog;
 };
 

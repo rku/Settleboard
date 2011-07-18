@@ -36,7 +36,7 @@ class CreateTradeOfferDialog : public QDialog
     public:
         CreateTradeOfferDialog(QWidget *parent = 0);
 
-        const TradeOffer* getTradeOffer() { return tradeOffer; }
+        TradeOffer* getTradeOffer() { return tradeOffer; }
 
     protected:
         bool event(QEvent *event);

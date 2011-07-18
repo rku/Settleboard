@@ -134,7 +134,7 @@ class GameRules : public QObject
 
     protected:
         void registerRule(QString name, GameRule);
-        void pushRuleChain();
+        void pushRuleChain(bool copyRuleData = false);
         void popRuleChain();
         bool executeRuleFromNetwork(NetworkPacket&);
         bool executeRule(QString name, Player*);
@@ -232,10 +232,12 @@ class GameRules : public QObject
         DECLARE_RULE(ruleUserActionTrade);
         DECLARE_RULE(rulePlaceTradeOffer);
         DECLARE_RULE(ruleTradeOfferPlaced);
-        DECLARE_RULE(ruleRejectTradeOffer);
-        DECLARE_RULE(ruleTradeOfferRejected);
-        DECLARE_RULE(ruleAcceptTradeOffer);
-        DECLARE_RULE(ruleTradeOfferAccepted);
+        DECLARE_RULE(ruleTradeOfferBankReply);
+        DECLARE_RULE(ruleTradeOfferReply);
+        DECLARE_RULE(ruleTradeOfferReplied);
+        DECLARE_RULE(ruleExecuteTrade);
+        DECLARE_RULE(ruleCanExecuteTrade);
+        DECLARE_RULE(ruleTradeExecuted);
         DECLARE_RULE(ruleCreateCounterOffer);
         DECLARE_RULE(ruleCounterOfferCreated);
 

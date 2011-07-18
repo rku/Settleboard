@@ -33,18 +33,19 @@ TradeOfferDialog::TradeOfferDialog(QWidget *parent) : QDialog(parent)
 
 void TradeOfferDialog::acceptOffer()
 {
-    GameRules *rules = GAME->getRules();
+    if(tradeOffer->getState() == TradeOffer::OfferAccepted)
+    {
+        // execute trade
+        tradeOffer->execute();
+        return;
+    }
 
-    rules->pushRuleData(tradeOffer);
-    rules->executeRule("ruleAcceptTradeOffer");
+    tradeOffer->accept();
 }
 
 void TradeOfferDialog::rejectOffer()
 {
-    GameRules *rules = GAME->getRules();
-
-    rules->pushRuleData(tradeOffer);
-    rules->executeRule("ruleRejectTradeOffer");
+    tradeOffer->reject();
 }
 
 void TradeOfferDialog::counterOffer()
@@ -59,11 +60,14 @@ void TradeOfferDialog::setTradeOffer(TradeOffer *offer)
 
     Player *fromPlayer = tradeOffer->getFromPlayer();
     Player *toPlayer = tradeOffer->getToPlayer();
+    TradeOffer::TradeOfferState state = tradeOffer->getState();
 
     ui.labelFromPlayer->setText(
-        (fromPlayer == NULL) ? "Unknown" : fromPlayer->getName());
+        (tradeOffer->getFromPlayer() == NULL) ?
+            QString("Bank") : fromPlayer->getName());
     ui.labelToPlayer->setText(
-        (toPlayer == fromPlayer) ? "Everyone" : toPlayer->getName());
+        (tradeOffer->getToPlayer() == NULL) ?
+            QString("Bank") : toPlayer->getName());
 
     // set offered resources
     ResourceInfoWidget *offered = ui.widgetResourcesOffered;
@@ -82,8 +86,17 @@ void TradeOfferDialog::setTradeOffer(TradeOffer *offer)
     }
 
     // update button states
-    ui.buttonAccept->setEnabled(fromPlayer != GAME->getLocalPlayer());
-    ui.buttonReject->setEnabled(ui.buttonAccept->isEnabled());
-    ui.buttonCounterOffer->setEnabled(ui.buttonAccept->isEnabled());
+    GAME->getRules()->pushRuleData("TradeOfferId", tradeOffer->getId());
+    ui.buttonAccept->setEnabled(fromPlayer != GAME->getLocalPlayer()
+        && GAME->getRules()->executeLocalRule("ruleCanExecuteTrade"));
+    ui.buttonReject->setEnabled(fromPlayer != GAME->getLocalPlayer());
+    ui.buttonCounterOffer->setEnabled(ui.buttonReject->isEnabled());
+
+    // button texts and visiblity
+    ui.buttonAccept->setText((state == TradeOffer::OfferPlaced) ?
+        "Accept" : "Trade");
+    ui.buttonAccept->setVisible((state != TradeOffer::OfferRejected));
+    ui.buttonReject->setVisible((state == TradeOffer::OfferPlaced));
+    ui.buttonCounterOffer->setVisible(ui.buttonReject->isVisible());
 }
 

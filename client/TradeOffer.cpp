@@ -45,6 +45,10 @@ TradeOffer::TradeOffer(const TradeOffer &other, QObject *parent)
     wantedResources = other.wantedResources;
 }
 
+TradeOffer::~TradeOffer()
+{
+}
+
 void TradeOffer::show()
 {
     TradeOfferDialog *dlg = new TradeOfferDialog();
@@ -56,7 +60,6 @@ void TradeOffer::show()
 void TradeOffer::setFromPlayer(Player *from)
 {
     fromPlayer = from;
-    if(toPlayer == NULL) toPlayer = from;
 }
 
 void TradeOffer::setToPlayer(Player *to)
@@ -81,6 +84,11 @@ int TradeOffer::getOfferedResource(QString name)
     return offeredResources.value(name);
 }
 
+QString TradeOffer::getOfferedResourcesAsString()
+{
+    return resourcesToString(offeredResources);
+}
+
 void TradeOffer::setWantedResource(QString name, int amount)
 {
     wantedResources.insert(name, amount);
@@ -98,12 +106,70 @@ int TradeOffer::getWantedResource(QString name)
     return wantedResources.value(name);
 }
 
+QString TradeOffer::getWantedResourcesAsString()
+{
+    return resourcesToString(wantedResources);
+}
+
+void TradeOffer::accept()
+{
+    setState(OfferAccepted);
+    sendReply();
+}
+
+void TradeOffer::reject()
+{
+    setState(OfferRejected);
+    sendReply();
+}
+
+void TradeOffer::execute()
+{
+    GAME->getRules()->pushRuleData("TradeOfferId", this->getId());
+    GAME->getRules()->executeRule("ruleExecuteTrade");
+    GAME->getTradeManager()->removeOffer(this);
+}
+
+QString TradeOffer::resourcesToString(QMap<QString, int> &resources)
+{
+    QString str;
+
+    foreach(QString name, resources.keys())
+    {
+        str.append(QString("%1x %2, ").arg(resources.value(name)).arg(name));
+    }
+
+    if(str.length() > 2) str.remove(str.length() - 2, 2);
+    return str;
+}
+
+void TradeOffer::sendReply()
+{
+    TradeOffer *reply = new TradeOffer(*this);
+
+    // new id
+    reply->newId();
+
+    // swap players
+    reply->setToPlayer(getFromPlayer());
+    reply->setFromPlayer(getToPlayer());
+
+    // swap resources
+    reply->setOfferedResources(getWantedResources());
+    reply->setWantedResources(getOfferedResources());
+
+    GAME->getRules()->pushRuleData(reply);
+    GAME->getRules()->executeRule("ruleTradeOfferReply");
+
+    delete reply;
+}
+
 void TradeOffer::clear()
 {
     offeredResources.clear();
     wantedResources.clear();
     isBankOnly = false;
-    fromPlayer = GAME->getLocalPlayer(); // fromPlayer must have a value
+    fromPlayer = NULL;
     toPlayer = NULL;
     state = OfferUnused;
 }
@@ -113,7 +179,8 @@ void TradeOffer::clear()
 QDataStream &operator<<(QDataStream &stream, const TradeOfferPtr &obj)
 {
     stream << obj.object->getId();
-    stream << obj.object->getFromPlayer()->getId();
+    stream << (quint8)obj.object->getState();
+    stream << obj.object->getFromPlayerId();
     stream << obj.object->getToPlayerId();
     stream << obj.object->getIsBankOnly();
     stream << obj.object->getOfferedResources();
@@ -125,9 +192,11 @@ QDataStream &operator>>(QDataStream &stream, TradeOfferPtr &obj)
 {
     QMap<QString, int> offeredResources, wantedResources;
     QString id, fromPlayerId, toPlayerId;
+    quint8 state;
     bool bankOnly;
 
     stream >> id;
+    stream >> state;
     stream >> fromPlayerId;
     stream >> toPlayerId;
     stream >> bankOnly;
@@ -136,6 +205,7 @@ QDataStream &operator>>(QDataStream &stream, TradeOfferPtr &obj)
 
     obj.object = new TradeOffer();
     obj.object->setId(id);
+    obj.object->setState((TradeOffer::TradeOfferState)state);
     obj.object->setFromPlayer(Player::findPlayerWithId(fromPlayerId));
     obj.object->setToPlayer(Player::findPlayerWithId(toPlayerId));
     obj.object->setIsBankOnly(bankOnly);

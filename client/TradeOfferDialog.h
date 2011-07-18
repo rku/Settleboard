@@ -35,7 +35,7 @@ class TradeOfferDialog : public QDialog
         TradeOfferDialog(QWidget *parent = 0);
 
         void setTradeOffer(TradeOffer *offer);
-        const TradeOffer* getTradeOffer() { return tradeOffer; }
+        TradeOffer* getTradeOffer() { return tradeOffer; }
 
     protected slots:
         void acceptOffer();

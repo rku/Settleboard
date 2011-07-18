@@ -47,7 +47,7 @@ void TradeDialog::createTradeOffer()
     
     if(dlg->exec() == QDialog::Accepted)
     {
-        const TradeOffer *offer = dlg->getTradeOffer();
+        TradeOffer *offer = dlg->getTradeOffer();
         GAME->getTradeManager()->placeOffer(offer);
     }
 
@@ -76,28 +76,58 @@ void TradeDialog::addTrade(TradeOffer *offer)
 {
     Q_ASSERT(!trades.values().contains(offer));
 
-    // text
-    QString text = offer->getFromPlayer()->getName();
-
-    // icon
+    // text and icon
+    QString tmpl;
     QString iconName;
+
     switch(offer->getState())
     {
         case TradeOffer::OfferAccepted:
             iconName = "TradeOk.png";
+            tmpl = "%1 accepted your offer";
             break;
         case TradeOffer::OfferRejected:
-            iconName = "TradeRejected.png";
+            iconName = "TradeReject.png";
+            tmpl = "%1 rejected your offer";
             break;
         default:
             iconName = "TradeAsk.png";
+            tmpl = "%1 created a counter offer";
             break;
     }
+
+    QString name = (offer->getFromPlayer() == NULL) ?
+        "The bank" : offer->getFromPlayer()->getName();
+    QString text = QString(tmpl).arg(name);
     QString iconFilename = FileManager::getPathOfImage(iconName);
     QIcon icon = QIcon(iconFilename);
     QListWidget *parent = ui.listWidgetTradeOffers;
 
     QListWidgetItem *item = new QListWidgetItem(icon, text, parent);
     trades.insert(item, offer);
+    parent->update();
+}
+
+void TradeDialog::removeTrade(TradeOffer *offer)
+{
+    foreach(QListWidgetItem *item, trades.keys())
+    {
+        if(trades.value(item) == offer)
+        {
+            trades.remove(item);
+            delete item;
+        }
+    }
+}
+
+void TradeDialog::clear()
+{
+    foreach(QListWidgetItem *item, trades.keys())
+    {
+        trades.remove(item);
+        delete item;
+    }
+
+    update();
 }
 

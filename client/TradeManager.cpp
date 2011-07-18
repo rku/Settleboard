@@ -32,6 +32,7 @@ TradeManager::TradeManager(QObject *parent) : QObject(parent)
 
 TradeManager::~TradeManager()
 {
+    clear();
     delete tradeDialog;
 }
 
@@ -40,19 +41,47 @@ void TradeManager::showDialog()
     tradeDialog->show();
 }
 
-void TradeManager::placeOffer(const TradeOffer *offer)
+void TradeManager::placeOffer(TradeOffer *offer)
 {
-    GAME->getRules()->pushRuleData(const_cast<TradeOffer*>(offer));
+    offer->setState(TradeOffer::OfferPlaced);
+    GAME->getRules()->pushRuleData(offer);
     GAME->getRules()->executeRule("rulePlaceTradeOffer");
 }
 
 void TradeManager::addOffer(TradeOffer *offer)
 {
-    trades.insert(offer->getFromPlayer(), offer);
+    trades.insert(offer->getId(), offer);
+}
+
+void TradeManager::addReply(TradeOffer *offer)
+{
+    trades.insert(offer->getId(), offer);
+    tradeDialog->addTrade(offer);
+}
+
+void TradeManager::removeOffer(TradeOffer *offer)
+{
+    if(!trades.values().contains(offer)) return;
+
+    trades.remove(trades.key(offer));
+    tradeDialog->removeTrade(offer);
+    offer->deleteLater();
 }
 
 void TradeManager::clear()
 {
-    foreach(Player *p, trades.keys()) delete trades.take(p);
+    tradeDialog->clear();
+    foreach(QString id, trades.keys()) delete trades.take(id);
+}
+
+TradeOffer* TradeManager::getOfferById(QString id)
+{
+    if(trades.contains(id))
+    {
+        return trades.value(id);
+    }
+
+    qDebug() << "Request failed: No offer found for ID:" << id;
+    return NULL;
 }
 
