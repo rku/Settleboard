@@ -54,13 +54,13 @@ QGroupBox* PlayerPanel::getPlayerBox(Player *player)
 
         QGridLayout *l = (QGridLayout*)widget()->layout();
         QGridLayout *innerL = new QGridLayout();
-        l->addWidget(box, 1, playerBoxes.count());
+        l->addWidget(box, playerBoxes.count(), 1);
         innerL->setVerticalSpacing(10);
         box->setLayout(innerL);
         playerBoxes.insert(player, box);
 
-        l->setColumnStretch(playerBoxes.count(), 0);
-        l->setColumnStretch(playerBoxes.count()+1, 1);
+        l->setRowStretch(playerBoxes.count(), 0);
+        l->setRowStretch(playerBoxes.count()+1, 1);
     }
     else box = playerBoxes.value(player);
 

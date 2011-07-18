@@ -144,10 +144,12 @@ GameRules::GameRules(QObject *parent) : QObject(parent)
     REGISTER_RULE(ruleUserActionTrade);
     REGISTER_RULE(rulePlaceTradeOffer);
     REGISTER_RULE(ruleTradeOfferPlaced);
-    REGISTER_RULE(ruleRejectTradeOffer);
-    REGISTER_RULE(ruleTradeOfferRejected);
-    REGISTER_RULE(ruleAcceptTradeOffer);
-    REGISTER_RULE(ruleTradeOfferAccepted);
+    REGISTER_RULE(ruleTradeOfferBankReply);
+    REGISTER_RULE(ruleTradeOfferReply);
+    REGISTER_RULE(ruleTradeOfferReplied);
+    REGISTER_RULE(ruleExecuteTrade);
+    REGISTER_RULE(ruleCanExecuteTrade);
+    REGISTER_RULE(ruleTradeExecuted);
     REGISTER_RULE(ruleCreateCounterOffer);
     REGISTER_RULE(ruleCounterOfferCreated);
 }
@@ -358,7 +360,7 @@ void GameRules::suspendRuleChain()
     }
 }
 
-void GameRules::pushRuleChain()
+void GameRules::pushRuleChain(bool copyRuleData)
 {
     if(ruleChain.size() > 0)
     {
@@ -366,7 +368,7 @@ void GameRules::pushRuleChain()
         ruleChainStack.push(ruleChain);
         ruleDataStack.push(ruleData);
         ruleChain.clear();
-        ruleData.clear();
+        if(!copyRuleData) ruleData.clear();
     }
 }
 
@@ -981,7 +983,7 @@ IMPLEMENT_RULE(ruleInitDockWidgets)
     mainWindow->addDockWidget(Qt::BottomDockWidgetArea, messagePanel);
 
     playerPanel = new PlayerPanel("", mainWindow);
-    mainWindow->addDockWidget(Qt::BottomDockWidgetArea, playerPanel);
+    mainWindow->addDockWidget(Qt::RightDockWidgetArea, playerPanel);
 
     resourceInfoPanel = new ResourceInfoPanel("", mainWindow);
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, resourceInfoPanel);
@@ -2058,6 +2060,8 @@ IMPLEMENT_RULE(ruleUserActionTrade)
         game->getTradeManager()->showDialog();
     }
 
+    EXECUTE_SUBRULE(ruleUpdateInterface);
+
     return true;
 }
 
@@ -2068,10 +2072,39 @@ IMPLEMENT_RULE(rulePlaceTradeOffer)
     RULEDATA_REQUIRE("TradeOffer");
     TradeOffer *offer = RULEDATA_READ("TradeOffer").value<TradeOffer*>();
 
-    if(player == currentPlayer && !offer->getIsBankOnly())
+    pushRuleChain();
+
+    if((player == currentPlayer) && 
+       (!offer->getIsBankOnly()))
     {
-        return executeRule("ruleTradeOfferPlaced", player);
+        RULECHAIN_ADD(ruleTradeOfferPlaced);
     }
+
+    // create bank reply...
+    RULECHAIN_ADD(ruleTradeOfferBankReply);
+    startRuleChain();
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleTradeOfferBankReply)
+{
+    SERVER_ONLY_RULE
+
+    RULEDATA_REQUIRE("TradeOffer");
+    TradeOffer *offer = RULEDATA_READ("TradeOffer").value<TradeOffer*>();
+    Q_ASSERT(offer != NULL);
+    Q_ASSERT(player == currentPlayer);
+
+    TradeOffer *bankOffer = new TradeOffer(*offer); // copy
+    bankOffer->newId();
+    bankOffer->setToPlayer(NULL); // bank
+
+    pushRuleChain();
+    bankOffer->accept();
+    popRuleChain();
+
+    delete bankOffer;
 
     return true;
 }
@@ -2079,49 +2112,126 @@ IMPLEMENT_RULE(rulePlaceTradeOffer)
 IMPLEMENT_RULE(ruleTradeOfferPlaced)
 {
     RULEDATA_REQUIRE("TradeOffer");
-    TradeOffer *offer = RULEDATA_POP("TradeOffer").value<TradeOffer*>();
+    TradeOffer *offer = RULEDATA_READ("TradeOffer").value<TradeOffer*>();
+    Q_ASSERT(offer != NULL);
 
-    if(!player->getIsLocal())
+    if((!player->getIsLocal()) &&
+       (offer->getFromPlayer() == player))
     {
+        offer->setToPlayer(game->getLocalPlayer());
         offer->show();
     }
 
     return true;
 }
 
-IMPLEMENT_RULE(ruleRejectTradeOffer)
+IMPLEMENT_RULE(ruleTradeOfferReply)
 {
     SERVER_ONLY_RULE
     RULEDATA_REQUIRE("TradeOffer");
 
-    return executeRule("ruleTradeOfferRejected", player);
+    return executeRule("ruleTradeOfferReplied", player);
 }
 
-IMPLEMENT_RULE(ruleTradeOfferRejected)
+IMPLEMENT_RULE(ruleTradeOfferReplied)
 {
     RULEDATA_REQUIRE("TradeOffer");
     TradeOffer *offer = RULEDATA_POP("TradeOffer").value<TradeOffer*>();
 
-    //FIXME: implement me
+    if((offer->getFromPlayer() == player) ||
+       (offer->getFromPlayer() == NULL))
+    {
+        game->getTradeManager()->addReply(offer);
+    }
 
     return true;
 }
 
-IMPLEMENT_RULE(ruleAcceptTradeOffer)
+IMPLEMENT_RULE(ruleExecuteTrade)
 {
     SERVER_ONLY_RULE
-    RULEDATA_REQUIRE("TradeOffer");
 
-    return executeRule("ruleTradeOfferAccepted", player);
+    RULEDATA_REQUIRE("TradeOfferId");
+    RULECHAIN_ADD(ruleCanExecuteTrade);
+    RULECHAIN_ADD(ruleTradeExecuted);
+    startRuleChain();
+
+    return true;
 }
 
-IMPLEMENT_RULE(ruleTradeOfferAccepted)
+IMPLEMENT_RULE(ruleCanExecuteTrade)
 {
-    RULEDATA_REQUIRE("TradeOffer");
-    TradeOffer *offer = RULEDATA_POP("TradeOffer").value<TradeOffer*>();
+    RULEDATA_REQUIRE("TradeOfferId");
+    QString id = RULEDATA_POP("TradeOfferId").value<QString>();
+    TradeOffer *offer = game->getTradeManager()->getOfferById(id);
+    Q_ASSERT(offer != NULL);
+    GameCardStack *fromStack = offer->getFromPlayer()->getCardStack();
+    GameCardStack *toStack = offer->getToPlayer()->getCardStack();
+    QMap<QString, int> offered = offer->getOfferedResources();
+    QMap<QString, int> wanted = offer->getWantedResources();
 
-    //FIXME: implement me
- 
+    // check from
+    foreach(QString name, offered.keys())
+    {
+        if(offered.value(name) >
+            (int)fromStack->getNumberOfCards("Resource", name))
+            return false;
+    }
+
+    // check to
+    foreach(QString name, wanted.keys())
+    {
+        if(wanted.value(name) >
+            (int)toStack->getNumberOfCards("Resource", name))
+            return false;
+    }
+
+    return true;
+}
+
+IMPLEMENT_RULE(ruleTradeExecuted)
+{
+    RULEDATA_REQUIRE("TradeOfferId");
+    QString id = RULEDATA_POP("TradeOfferId").value<QString>();
+
+    TradeOffer *offer = game->getTradeManager()->getOfferById(id);
+    Q_ASSERT(offer != NULL);
+
+    if(offer->getToPlayer() != player)
+    {
+        qDebug() << "Player" << player->getName() <<
+            "tried to execute a trade intended for" <<
+            offer->getToPlayer()->getName();
+        return false;
+    }
+
+    // do the trade
+    GameCardStack *fromStack = offer->getFromPlayer()->getCardStack();
+    GameCardStack *toStack = offer->getToPlayer()->getCardStack();
+    QMap<QString, int> offered = offer->getOfferedResources();
+    QMap<QString, int> wanted  = offer->getWantedResources();
+
+    // trade offered cards
+    foreach(QString name, offered.keys())
+    {
+        fromStack->drawCards(toStack, "Resource", name, offered.value(name));
+    }
+
+    // trade wanted cards
+    foreach(QString name, wanted.keys())
+    {
+        toStack->drawCards(fromStack, "Resource", name, wanted.value(name));
+    }
+
+    LOG_PLAYER_MSG(QString("%1 traded %2 with %3 for %4.")
+        .arg(offer->getToPlayer()->getName())
+        .arg(offer->getWantedResourcesAsString())
+        .arg(offer->getFromPlayer()->getName())
+        .arg(offer->getOfferedResourcesAsString()));
+
+    EXECUTE_SUBRULE(ruleUpdateResourceInfoPanel);
+    EXECUTE_SUBRULE(ruleUpdatePlayerPanel);
+
     return true;
 }
 
