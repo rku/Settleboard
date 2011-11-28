@@ -6,7 +6,7 @@ QGLWidget {
 QMainWindow, QDockWidget {
     color: white;
     background: black;
-    background-image: url(':/Images/Bg.jpg');
+    /*background-image: url(':/Images/Bg.jpg');*/
 }
 
 QMainWindow::separator {
