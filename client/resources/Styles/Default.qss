@@ -47,6 +47,7 @@ QDockWidget#resourceInfoPanel QWidget#resourceInfoWidget QLabel {
 
 QDockWidget::title {
     background: black;
+    color: white;
     padding: 3px;
 }
 

@@ -39,7 +39,8 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
     widget->setLayout(l);
     setWidget(widget);
 
-    setMaximumHeight(150);
+    setMaximumWidth(200);
+    //setMaximumHeight(150);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setTitleBarWidget(new QWidget(this));
 }

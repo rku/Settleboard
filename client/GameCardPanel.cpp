@@ -50,6 +50,7 @@ GameCardPanel::GameCardPanel(const QString &title, QWidget *parent)
 
     l->setColumnStretch(2, 1);
     l->setRowStretch(3, 1);
+    setMaximumWidth(200);
     widget->setLayout(l);
     setWidget(widget);
 
