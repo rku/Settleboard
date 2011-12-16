@@ -19,6 +19,7 @@
  */
 
 #include <QtDebug>
+#include <GL/glu.h>
 
 #include "TextureManager.h"
 #include "FileManager.h"

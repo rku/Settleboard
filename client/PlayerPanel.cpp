@@ -26,7 +26,7 @@
 PlayerPanel::PlayerPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
-    columns = 1;
+    columns = 2;
     QGridLayout *lt = new QGridLayout();
     QWidget *widget = new QWidget(this);
 
@@ -101,13 +101,13 @@ void PlayerPanel::registerPlayerInfo(Player *player, const QString infoName,
     QLabel *iconLabel = new QLabel(box);
     if(!icon.isNull()) iconLabel->setPixmap(icon);
     iconLabel->setToolTip(description);
-    QLabel *textLabel = new QLabel(description, box);
+    //QLabel *textLabel = new QLabel(description, box);
     QLabel *valueLabel = new QLabel("0", box);
     valueLabel->setToolTip(description);
 
     gl->addWidget(iconLabel,  row, col, Qt::AlignRight);
-    gl->addWidget(textLabel,  row, col + 1, Qt::AlignLeft);
-    gl->addWidget(valueLabel, row, col + 2, Qt::AlignLeft);
+    //gl->addWidget(textLabel,  row, col + 1, Qt::AlignLeft);
+    gl->addWidget(valueLabel, row, col + 1, Qt::AlignLeft);
 
     playerInfos.insertMulti(player, infoName);
 
@@ -128,7 +128,7 @@ void PlayerPanel::updatePlayerInfo(Player *player, const QString infoName, int v
     QList<QString> values = playerInfos.values(player);
     int index = values.size() - values.indexOf(infoName) - 1;
     int row = qRound(index / columns);
-    int col = qRound(index % columns) * 2 + 2;
+    int col = qRound(index % columns) * 2 + 1;
     Q_ASSERT(gl->itemAtPosition(row, col) != NULL);
     QLabel *label = (QLabel*)gl->itemAtPosition(row, col)->widget();
     label->setText(QString("%1").arg(value));

@@ -21,6 +21,8 @@
 #include <QtGui>
 #include <QtOpenGL>
 
+#include <GL/glu.h>
+
 #include "GLWidget.h"
 
 #define CAM_X_ROT_DELTA         0.006
@@ -231,7 +233,7 @@ void GLWidget::zoomByDelta(GLdouble delta)
 
 void GLWidget::setPerspective()
 {
-    gluPerspective(CAM_FOV, (GLfloat) width() / (GLfloat) height(), 1.0f, 1024.0f);
+    gluPerspective(CAM_FOV, (GLfloat) width() / (GLfloat) height(), 2.0f, 1024.0f);
 }
 
 void GLWidget::beginGLSelection(QPoint pos)

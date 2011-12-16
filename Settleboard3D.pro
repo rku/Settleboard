@@ -10,6 +10,7 @@ UI_DIR = build/
 RCC_DIR = build/
 TARGET = Settleboard3D
 QT += network opengl
+LIBS += -lGLU
 RCC_DIR = build/
 RESOURCES = client/resources/Resources.qrc
 RC_FILE = client/icons/Settleboard.rc
