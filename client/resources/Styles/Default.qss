@@ -1,12 +1,12 @@
 
 QGLWidget {
-    background: #101010;
+    background: black;
 }
 
 QMainWindow, QDockWidget {
     color: white;
-    background: #202020;
-    /*background-image: url(':/Images/Bg.jpg');*/
+    background-color: black;
+    background-image: url(':/Images/Bg.jpg');
 }
 
 QMainWindow::separator {
@@ -29,11 +29,6 @@ ResourceInfoWidget QLabel#number {
 }
 
 QDockWidget QLabel {
-    color: white;
-}
-
-QDockWidget {
-    background: black;
     color: white;
 }
 
