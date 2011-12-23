@@ -33,13 +33,13 @@ ControlPanel::ControlPanel(const QString &title, QWidget *parent)
     l->addWidget(buttonCancel);
     connect(buttonCancel, SIGNAL(clicked()), this, SLOT(cancel()));
 
-    l->setColumnStretch(5, 1);
+    l->setColumnStretch(1, 1);
     l->setColumnStretch(0, 1);
 
     widget->setLayout(l);
     setWidget(widget);
 
-    setMaximumWidth(200);
+    //setMaximumWidth(200);
     //setMaximumHeight(150);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setTitleBarWidget(new QWidget(this));
@@ -94,15 +94,15 @@ void ControlPanel::registerAction(const QString name, QAction *action)
     button->setIconSize(QSize(32,32));
     QGridLayout *l = (QGridLayout*)widget()->layout();
 
-    int row = (l->count() - 1) / 3 + 1;
-    int col = (l->count() - 1) % 3 + 1;
+    int row = 1;
+    int col = l->count() + 1;
 
     action->setStatusTip(action->toolTip());
     button->setDefaultAction(action);
     l->addWidget(button, row, col);
 
-    l->setRowStretch(row, 0);
-    l->setRowStretch(row + 1, 1);
+    l->setColumnStretch(col, 0);
+    l->setColumnStretch(col + 1, 1);
 
     connect(action, SIGNAL(triggered()), this, SLOT(actionTriggered()));
 

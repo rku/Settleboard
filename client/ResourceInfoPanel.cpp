@@ -28,14 +28,21 @@
 ResourceInfoPanel::ResourceInfoPanel(const QString &title, QWidget *parent)
     : QDockWidget(title, parent)
 {
+    QWidget *container = new QWidget(this);
     infoWidget = new ResourceInfoWidget(this,
         ResourceInfoWidget::ResourceInfoVerticalDirection,
         ResourceInfoWidget::ResourceInfoHorizontalDirection,
         false, QSize(24,24));
-    setWidget(infoWidget);
+
+    QGridLayout *l = new QGridLayout();
+    l->setColumnStretch(1, 1);
+    l->addWidget(infoWidget, 1, 2);
+    l->setColumnStretch(3, 1);
+    container->setLayout(l);
+    setWidget(container);
 
     setFloating(false);
-    setFixedHeight(70);
+    setFixedHeight(90);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
     setObjectName("resourceInfoPanel");
     setTitleBarWidget(new QWidget(this));

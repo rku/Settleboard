@@ -1,19 +1,19 @@
 
 QGLWidget {
-    background: black;
+    background: #101010;
 }
 
 QMainWindow, QDockWidget {
     color: white;
-    background: black;
+    background: #202020;
     /*background-image: url(':/Images/Bg.jpg');*/
 }
 
 QMainWindow::separator {
     border: 0px;
-    background: #5f5f5f;
-    width: 2px;
-    height: 2px;
+    background: #3f3f3f;
+    width: 1px;
+    height: 1px;
 }
 
 QMainWindow::separator:hover {
@@ -68,8 +68,8 @@ QDockWidget QToolButton:pressed {
 }
 
 QDockWidget QToolButton:disabled {
-    background: #090909;
-    border: 2px solid #1f1f1f;
+    background: 2f2f2f;
+    border: 2px solid #2f2f2f;
     color: gray;
 }
 
@@ -172,7 +172,7 @@ QListWidget, QListWidget::disabled {
 
 QTextEdit, QLineEdit {
     background: #050505;
-    color: white;
+    color: black;
     font-family: fixed;
     font-size: 13px;
     border-style: outset;
