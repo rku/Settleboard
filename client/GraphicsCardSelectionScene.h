@@ -21,7 +21,7 @@
 #ifndef GRAPHICSCARDSELECTIONSCENE_H
 #define GRAPHICSCARDSELECTIONSCENE_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "GameCardStack.h"
 

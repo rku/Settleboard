@@ -1,4 +1,3 @@
-
 CONFIG += qt debug
 #DEFINES += QT_NO_DEBUG_OUTPUT
 TEMPLATE = app
@@ -9,7 +8,7 @@ OBJECTS_DIR = build/
 UI_DIR = build/
 RCC_DIR = build/
 TARGET = Settleboard3D
-QT += network opengl
+QT += network opengl widgets
 LIBS += -lGLU
 RCC_DIR = build/
 RESOURCES = client/resources/Resources.qrc
@@ -116,4 +115,3 @@ SOURCES = client/GLWidget.cpp \
           client/TradeManager.cpp \
           client/CreateTradeOfferDialog.cpp \
           client/ResourceInfoWidget.cpp
-

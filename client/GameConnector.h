@@ -21,7 +21,7 @@
 #ifndef CONNECTOR_H
 #define CONNECTOR_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "ui_connectorform.h"
 

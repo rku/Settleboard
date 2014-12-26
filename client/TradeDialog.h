@@ -21,7 +21,7 @@
 #ifndef TRADEDIALOG_H
 #define TRADEDIALOG_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "ui_tradeform.h"
 

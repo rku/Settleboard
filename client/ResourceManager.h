@@ -21,7 +21,8 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H 1
 
-#include <QtGui>
+#include <QObject>
+#include <QStringList>
 
 class Player;
 

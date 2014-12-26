@@ -21,7 +21,7 @@
 #ifndef GAMECARD_PANEL_H
 #define GAMECARD_PANEL_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 class GameCard;
 

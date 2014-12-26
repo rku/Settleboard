@@ -1,6 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-<file>./Images/Bg.jpg</file>
 <file>./Images/Card.png</file>
 <file>./Images/CardCover.png</file>
 <file>./Images/CardDevelopmentBuildRoad.png</file>

@@ -21,7 +21,7 @@
 #ifndef PLAYER_PANEL_H
 #define PLAYER_PANEL_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 class Player;
 

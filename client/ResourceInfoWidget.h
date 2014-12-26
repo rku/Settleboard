@@ -21,7 +21,7 @@
 #ifndef RESOURCEINFOWIDGET_H
 #define RESOURCEINFOWIDGET_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 class ResourceInfoWidget : public QWidget
 {

@@ -21,7 +21,7 @@
 #ifndef GAMECARDSELECTIONDIALOG_H
 #define GAMECARDSELECTIONDIALOG_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "GameCardStack.h"
 

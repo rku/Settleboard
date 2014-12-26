@@ -21,7 +21,7 @@
 #ifndef CONTROL_PANEL_H
 #define CONTROL_PANEL_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 class ControlPanel : public QDockWidget
 {

@@ -120,7 +120,7 @@ OBJ *OBJGLLoader::load(QString filename)
 
                 obj.vertices.append(v3d);
             }
-            else switch(parts.at(0).at(1).toAscii())
+            else switch(parts.at(0).at(1).toLatin1())
             {
                 case 't':
                     obj.textureCoords.append(QVector2D(v3d));

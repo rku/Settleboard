@@ -127,8 +127,8 @@ void PlayerPanel::updatePlayerInfo(Player *player, const QString infoName, int v
     // the list of values is adjacently ordered
     QList<QString> values = playerInfos.values(player);
     int index = values.size() - values.indexOf(infoName) - 1;
-    int row = qRound(index / columns);
-    int col = qRound(index % columns) * 2 + 1;
+    int row = index / columns;
+    int col = (index % columns) * 2 + 1;
     Q_ASSERT(gl->itemAtPosition(row, col) != NULL);
     QLabel *label = (QLabel*)gl->itemAtPosition(row, col)->widget();
     label->setText(QString("%1").arg(value));

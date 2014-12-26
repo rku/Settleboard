@@ -21,7 +21,7 @@
 #ifndef PREFSFORM_H
 #define PREFSFORM_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "ui_prefsform.h"
 

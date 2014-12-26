@@ -21,8 +21,6 @@
 #ifndef TRADEOFFER_H
 #define TRADEOFFER_H 1
 
-#include <QtGui>
-
 #include "Player.h"
 
 class TradeOffer : public QObject

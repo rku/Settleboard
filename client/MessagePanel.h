@@ -21,7 +21,7 @@
 #ifndef MESSAGE_PANEL_H
 #define MESSAGE_PANEL_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 class Player;
 

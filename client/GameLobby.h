@@ -21,7 +21,7 @@
 #ifndef GAMELOBBY_H
 #define GAMELOBBY_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "ui_gamelobbyform.h"
 

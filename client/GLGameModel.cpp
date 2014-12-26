@@ -18,8 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QColor>
-
+#include <QtGlobal>
 #include <QColor>
 
 #include "GLGameModel.h"
@@ -283,7 +282,7 @@ void GLGameModel::pointInDirection(QVector3D d)
 
     // roate the object to point in direction
     // we only rotate in the x-z plane
-    qreal cos_y = d.normalized().z();
+    float cos_y = d.normalized().z();
     setAngleY(360.0 * qAcos(cos_y) / (2*M_PI));
 
     //qDebug() << "pointing to" << d << "with angles" << angleX << angleY << angleZ;
@@ -302,7 +301,7 @@ void GLGameModel::transform()
 
 GLfloat GLGameModel::getWidth()
 {
-    qreal xMin = 0, xMax = 0;
+    float xMin = 0.0f, xMax = 0.0f;
 
     for(int i = 0; i < vertices.size(); ++i)
     {
@@ -315,7 +314,7 @@ GLfloat GLGameModel::getWidth()
 
 GLfloat GLGameModel::getHeight()
 {
-    qreal yMin = 0, yMax = 0;
+    float yMin = 0.0f, yMax = 0.0f;
 
     for(int i = 0; i < vertices.size(); ++i)
     {   
@@ -328,12 +327,12 @@ GLfloat GLGameModel::getHeight()
 
 GLfloat GLGameModel::getDepth()
 {
-    float zMin = 0, zMax = 0;
+    float zMin = 0.0f, zMax = 0.0f;
 
     for(int i = 0; i < vertices.size(); ++i)
     {   
-        zMin = qMin(zMin, (float)vertices.at(i).z());
-        zMax = qMax(zMax, (float)vertices.at(i).z());
+        zMin = qMin(zMin, vertices.at(i).z());
+        zMax = qMax(zMax, vertices.at(i).z());
     }   
 
     return zMax - zMin;

@@ -21,7 +21,7 @@
 #ifndef GRAPHICSGAMECARDITEM_H
 #define GRAPHICSGAMECARDITEM_H 1
 
-#include <QtGui>
+#include <QGraphicsPixmapItem>
 
 #include "GameCard.h"
 

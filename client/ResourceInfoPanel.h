@@ -21,7 +21,7 @@
 #ifndef RESOURCEINFOPANEL_H
 #define RESOURCEINFOPANEL_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 class ResourceInfoWidget;
 

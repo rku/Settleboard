@@ -21,7 +21,7 @@
 #ifndef CREATETRADEOFFERDIALOG_H
 #define CREATETRADEOFFERDIALOG_H 1
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "TradeOffer.h"
 

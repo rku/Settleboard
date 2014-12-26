@@ -21,7 +21,6 @@
 #ifndef GAMERULES_H
 #define GAMERULES_H
 
-#include <QtGui>
 #include <QObject>
 #include <QAction>
 #include <QList>
