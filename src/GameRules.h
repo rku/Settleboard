@@ -258,4 +258,3 @@ class GameRules : public QObject
 };
 
 #endif
-

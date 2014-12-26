@@ -1,8 +1,8 @@
 CONFIG += qt debug
 #DEFINES += QT_NO_DEBUG_OUTPUT
 TEMPLATE = app
-DEPENDPATH += . client
-INCLUDEPATH += . client
+DEPENDPATH += . src
+INCLUDEPATH += . src
 MOC_DIR = build/
 OBJECTS_DIR = build/
 UI_DIR = build/
@@ -11,107 +11,107 @@ TARGET = Settleboard3D
 QT += network opengl widgets
 LIBS += -lGLU
 RCC_DIR = build/
-RESOURCES = client/resources/Resources.qrc
-RC_FILE = client/icons/Settleboard.rc
-ICON = client/icons/Settleboard.icns
+RESOURCES = src/resources/Resources.qrc
+RC_FILE = src/icons/Settleboard.rc
+ICON = src/icons/Settleboard.icns
 
-FORMS = client/ui/connectorform.ui \
-        client/ui/prefsform.ui \
-        client/ui/gamelobbyform.ui \
-        client/ui/infoboxform.ui \
-        client/ui/tradeofferform.ui \
-        client/ui/createtradeofferform.ui \
-        client/ui/tradeform.ui
+FORMS = src/ui/connectorform.ui \
+        src/ui/prefsform.ui \
+        src/ui/gamelobbyform.ui \
+        src/ui/infoboxform.ui \
+        src/ui/tradeofferform.ui \
+        src/ui/createtradeofferform.ui \
+        src/ui/tradeform.ui
 
-HEADERS = client/GLWidget.h \
-          client/GLTypes.h \
-          client/Game.h \
-          client/FileManager.h \
-          client/HexTile.h \
-          client/NumberChip.h \
-          client/MainWindow.h \
-          client/TextureManager.h \
-          client/ResourceManager.h \
-          client/GLGameModel.h \
-          client/GLGameModelProxy.h \
-          client/Board.h \
-          client/GameRules.h \
-          client/GameConnector.h \
-          client/PrefsForm.h \
-          client/Player.h \
-          client/PlayerObject.h \
-          client/OBJGLLoader.h \
-          client/Crossroad.h \
-          client/Roadway.h \
-          client/GameCard.h \
-          client/GameCardStack.h \
-          client/Bank.h \
-          client/ControlPanel.h \
-          client/PlayerPanel.h \
-          client/MessagePanel.h \
-          client/GameInfoPanel.h \
-          client/ResourceInfoPanel.h \
-          client/NetworkCore.h \
-          client/NetworkPacket.h \
-          client/GameLobby.h \
-          client/Map.h \
-          client/StandardMap.h \
-          client/Robber.h \
-          client/GamePixmap.h \
-          client/GameCardSelectionDialog.h \
-          client/GameCardPanel.h \
-          client/GraphicsGameCardItem.h \
-          client/GraphicsCardSelectionScene.h \
-          client/TradeDialog.h \
-          client/TradeOffer.h \
-          client/TradeOfferDialog.h \
-          client/CreateTradeOfferDialog.h \
-          client/TradeManager.h \
-          client/ResourceInfoWidget.h \
-          client/Utils.h
+HEADERS = src/GLWidget.h \
+          src/GLTypes.h \
+          src/Game.h \
+          src/FileManager.h \
+          src/HexTile.h \
+          src/NumberChip.h \
+          src/MainWindow.h \
+          src/TextureManager.h \
+          src/ResourceManager.h \
+          src/GLGameModel.h \
+          src/GLGameModelProxy.h \
+          src/Board.h \
+          src/GameRules.h \
+          src/GameConnector.h \
+          src/PrefsForm.h \
+          src/Player.h \
+          src/PlayerObject.h \
+          src/OBJGLLoader.h \
+          src/Crossroad.h \
+          src/Roadway.h \
+          src/GameCard.h \
+          src/GameCardStack.h \
+          src/Bank.h \
+          src/ControlPanel.h \
+          src/PlayerPanel.h \
+          src/MessagePanel.h \
+          src/GameInfoPanel.h \
+          src/ResourceInfoPanel.h \
+          src/NetworkCore.h \
+          src/NetworkPacket.h \
+          src/GameLobby.h \
+          src/Map.h \
+          src/StandardMap.h \
+          src/Robber.h \
+          src/GamePixmap.h \
+          src/GameCardSelectionDialog.h \
+          src/GameCardPanel.h \
+          src/GraphicsGameCardItem.h \
+          src/GraphicsCardSelectionScene.h \
+          src/TradeDialog.h \
+          src/TradeOffer.h \
+          src/TradeOfferDialog.h \
+          src/CreateTradeOfferDialog.h \
+          src/TradeManager.h \
+          src/ResourceInfoWidget.h \
+          src/Utils.h
 
-SOURCES = client/GLWidget.cpp \
-          client/Game.cpp \
-          client/FileManager.cpp \
-          client/HexTile.cpp \
-          client/NumberChip.cpp \
-          client/main.cpp \
-          client/MainWindow.cpp \
-          client/TextureManager.cpp \
-          client/ResourceManager.cpp \
-          client/GLGameModel.cpp \
-          client/GLGameModelProxy.cpp \
-          client/Board.cpp\
-          client/GameRules.cpp \
-          client/GameConnector.cpp \
-          client/PrefsForm.cpp \
-          client/Player.cpp \
-          client/PlayerObject.cpp \
-          client/OBJGLLoader.cpp \
-          client/Crossroad.cpp \
-          client/Roadway.cpp \
-          client/GameCard.cpp \
-          client/Bank.cpp \
-          client/GameCardStack.cpp \
-          client/ControlPanel.cpp \
-          client/PlayerPanel.cpp \
-          client/MessagePanel.cpp \
-          client/GameInfoPanel.cpp \
-          client/ResourceInfoPanel.cpp \
-          client/NetworkCore.cpp \
-          client/NetworkPacket.cpp \
-          client/GameLobby.cpp \
-          client/Map.cpp \
-          client/StandardMap.cpp \
-          client/Robber.cpp \
-          client/GamePixmap.cpp \
-          client/GameCardSelectionDialog.cpp \
-          client/GameCardPanel.cpp \
-          client/GraphicsGameCardItem.cpp \
-          client/GraphicsCardSelectionScene.cpp \
-          client/TradeDialog.cpp \
-          client/TradeOffer.cpp \
-          client/TradeOfferDialog.cpp \
-          client/TradeManager.cpp \
-          client/CreateTradeOfferDialog.cpp \
-          client/ResourceInfoWidget.cpp
+SOURCES = src/GLWidget.cpp \
+          src/Game.cpp \
+          src/FileManager.cpp \
+          src/HexTile.cpp \
+          src/NumberChip.cpp \
+          src/main.cpp \
+          src/MainWindow.cpp \
+          src/TextureManager.cpp \
+          src/ResourceManager.cpp \
+          src/GLGameModel.cpp \
+          src/GLGameModelProxy.cpp \
+          src/Board.cpp\
+          src/GameRules.cpp \
+          src/GameConnector.cpp \
+          src/PrefsForm.cpp \
+          src/Player.cpp \
+          src/PlayerObject.cpp \
+          src/OBJGLLoader.cpp \
+          src/Crossroad.cpp \
+          src/Roadway.cpp \
+          src/GameCard.cpp \
+          src/Bank.cpp \
+          src/GameCardStack.cpp \
+          src/ControlPanel.cpp \
+          src/PlayerPanel.cpp \
+          src/MessagePanel.cpp \
+          src/GameInfoPanel.cpp \
+          src/ResourceInfoPanel.cpp \
+          src/NetworkCore.cpp \
+          src/NetworkPacket.cpp \
+          src/GameLobby.cpp \
+          src/Map.cpp \
+          src/StandardMap.cpp \
+          src/Robber.cpp \
+          src/GamePixmap.cpp \
+          src/GameCardSelectionDialog.cpp \
+          src/GameCardPanel.cpp \
+          src/GraphicsGameCardItem.cpp \
+          src/GraphicsCardSelectionScene.cpp \
+          src/TradeDialog.cpp \
+          src/TradeOffer.cpp \
+          src/TradeOfferDialog.cpp \
+          src/TradeManager.cpp \
+          src/CreateTradeOfferDialog.cpp \
+          src/ResourceInfoWidget.cpp
