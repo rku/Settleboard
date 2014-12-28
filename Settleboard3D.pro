@@ -1,5 +1,4 @@
 CONFIG += qt debug
-#DEFINES += QT_NO_DEBUG_OUTPUT
 TEMPLATE = app
 DEPENDPATH += . src
 INCLUDEPATH += . src
@@ -11,17 +10,17 @@ TARGET = Settleboard3D
 QT += network opengl widgets
 LIBS += -lGLU
 RCC_DIR = build/
-RESOURCES = src/resources/Resources.qrc
-RC_FILE = src/icons/Settleboard.rc
-ICON = src/icons/Settleboard.icns
+RESOURCES = data/resources.qrc
+RC_FILE = data/icons/settleboard.rc
+ICON = data/icons/Settleboard.icns
 
-FORMS = src/ui/connectorform.ui \
-        src/ui/prefsform.ui \
-        src/ui/gamelobbyform.ui \
-        src/ui/infoboxform.ui \
-        src/ui/tradeofferform.ui \
-        src/ui/createtradeofferform.ui \
-        src/ui/tradeform.ui
+FORMS = data/ui/connectorform.ui \
+        data/ui/prefsform.ui \
+        data/ui/gamelobbyform.ui \
+        data/ui/infoboxform.ui \
+        data/ui/tradeofferform.ui \
+        data/ui/createtradeofferform.ui \
+        data/ui/tradeform.ui
 
 HEADERS = src/GLWidget.h \
           src/GLTypes.h \

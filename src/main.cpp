@@ -34,7 +34,7 @@
 // Load stylesheet from file
 void loadStyleSheet()
 {
-    QFile data(FileManager::getPathOfStyleSheet("Default"));
+    QFile data(FileManager::getPathOfStyleSheet("default"));
     QString style;
 
     if(data.open(QFile::ReadOnly))
@@ -72,9 +72,9 @@ int main(int argc, char *argv[])
 
     app.setApplicationName("Settleboard3D");
     app.setApplicationVersion("0.0.1.beta");
-    app.setOrganizationDomain("bitkanal.net");
+    app.setOrganizationDomain("spaceshore.net");
 
-    app.setWindowIcon(QIcon(":/Images/LogoIcon.svg"));
+    app.setWindowIcon(QIcon(":/images/logo-icon.svg"));
 
     registerMetaTypeOperators();
     loadStyleSheet();

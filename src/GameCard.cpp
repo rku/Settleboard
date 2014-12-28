@@ -52,7 +52,7 @@ GameCard::GameCard(QString _type,
 
 GamePixmap& GameCard::getCoverPixmap()
 {
-    static GamePixmap coverPixmap = GamePixmap("CardCover.png");
+    static GamePixmap coverPixmap = GamePixmap("card-cover.png");
     return coverPixmap;
 }
 
@@ -63,7 +63,7 @@ GameCard GameCard::createResourceCardWheat()
     return GameCard("Resource",
                     "Wheat",
                     "Wheat Resource",
-                    "CardResourceWheat.png");
+                    "card-resource-wheat.png");
 }
 
 GameCard GameCard::createResourceCardOre()
@@ -71,7 +71,7 @@ GameCard GameCard::createResourceCardOre()
     return GameCard("Resource",
                     "Ore",
                     "Ore Resource",
-                    "CardResourceOre.png");
+                    "card-resource-ore.png");
 }
 
 GameCard GameCard::createResourceCardLumber()
@@ -79,7 +79,7 @@ GameCard GameCard::createResourceCardLumber()
     return GameCard("Resource",
                     "Lumber",
                     "Lumber Resource",
-                    "CardResourceLumber.png");
+                    "card-resource-lumber.png");
 }
 
 GameCard GameCard::createResourceCardWool()
@@ -87,7 +87,7 @@ GameCard GameCard::createResourceCardWool()
     return GameCard("Resource",
                     "Wool",
                     "Wool Resource",
-                    "CardResourceWool.png");
+                    "card-resource-wool.png");
 }
 
 GameCard GameCard::createResourceCardClay()
@@ -95,7 +95,7 @@ GameCard GameCard::createResourceCardClay()
     return GameCard("Resource",
                     "Clay",
                     "Clay Resource",
-                    "CardResourceClay.png");
+                    "card-resource-clay.png");
 }
 
 // DEVELOPMENT CARDS
@@ -105,7 +105,7 @@ GameCard GameCard::createDevelopmentCardKnight()
     return GameCard("Development",
                     "Knight",
                     "If you play this card, you can steal a card from another player.",
-                    "CardDevelopmentKnight.png",
+                    "card-development-knight.png",
                     "ruleUserActionPlayKnightCard",
                     "ruleCanPlayKnightCard",
                     false);
@@ -116,7 +116,7 @@ GameCard GameCard::createDevelopmentCardBuildRoad()
     return GameCard("Development",
                     "Build Road",
                     "Playing this card will allow you to place two roads for free.",
-                    "CardDevelopmentBuildRoad.png",
+                    "card-development-build-road.png",
                     "ruleUserActionPlayBuildRoadCard",
                     "ruleCanPlayBuildRoadCard");
 }
@@ -128,7 +128,7 @@ GameCard GameCard::createDevelopmentCardMonopoly()
                     "If you play this card, you can specify a resource and "
                     "all players who have this resource have to hand it over "
                     "to you.",
-                    "CardDevelopmentMonopoly.png",
+                    "card-development-monopoly.png",
                     "ruleUserActionPlayMonopolyCard",
                     "ruleCanPlayMonopolyCard");
 }
@@ -139,7 +139,7 @@ GameCard GameCard::createDevelopmentCardInvention()
                     "Invention",
                     "If you play this card, you will be able to select two "
                     "resources of your choice from the bank.",
-                    "CardDevelopmentInvention.png",
+                    "card-development-invention.png",
                     "ruleUserActionPlayInventionCard",
                     "ruleCanPlayInventionCard");
 }
@@ -149,8 +149,7 @@ GameCard GameCard::createDevelopmentCardWinningPoint()
     return GameCard("Development",
                     "Winning Point",
                     "If you play this card, you will instantly get a winning point!",
-                    "CardDevelopmentWinningPoint.png",
+                    "card-development-winning-point.png",
                     "ruleUserActionPlayWinningPointCard",
                     "ruleCanPlayWinningPointCard");
 }
-

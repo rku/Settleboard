@@ -33,6 +33,6 @@ Robber::~Robber()
 
 void Robber::create()
 {
-    load(FileManager::getPathOfGLObject("Robber"), Qt::black);
+    load(FileManager::getPathOfGLObject("robber"), Qt::black);
 }
 

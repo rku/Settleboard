@@ -37,7 +37,7 @@ NumberChip::~NumberChip()
 void NumberChip::create()
 {
     setIsLightingEnabled(false);
-    load(FileManager::getPathOfGLObject("NumberChip"), Qt::gray);
+    load(FileManager::getPathOfGLObject("numberchip"), Qt::gray);
     setNumber(number);
     setScale(0.25);
 

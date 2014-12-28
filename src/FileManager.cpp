@@ -22,27 +22,27 @@
 
 const QString FileManager::getPathOfImage(const QString &filename)
 {
-    return getPathOfResource("Images", filename);
+    return getPathOfResource("images", filename);
 }
 
 const QString FileManager::getPathOfStyleSheet(const QString &name)
 {
-    return getPathOfResource("Styles", name, "qss");
+    return getPathOfResource("styles", name, "qss");
 }
 
 const QString FileManager::getPathOfMap(const QString &name)
 {
-    return getPathOfResource("Maps", name, "rsm");
+    return getPathOfResource("maps", name, "rsm");
 }
 
 const QString FileManager::getPathOfTexture(const QString &name)
 {
-    return getPathOfResource("Textures", name, "obj");
+    return getPathOfResource("textures", name, "obj");
 }
 
 const QString FileManager::getPathOfGLObject(const QString &name)
 {
-    return getPathOfResource("Objects", name, "obj");
+    return getPathOfResource("objects", name, "obj");
 }
 
 const QString FileManager::getPathOfResource(const QString &group,

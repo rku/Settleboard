@@ -48,7 +48,7 @@ const Texture& TextureManager::loadTexture(const QString& filename)
     QImage tex;
     QString filepath;
 
-    filepath = FileManager::getPathOfResource("Textures", filename);
+    filepath = FileManager::getPathOfResource("textures", filename);
 
     newTex.name   = filename;
     newTex.width  = 0;

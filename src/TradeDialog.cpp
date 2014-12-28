@@ -83,15 +83,15 @@ void TradeDialog::addTrade(TradeOffer *offer)
     switch(offer->getState())
     {
         case TradeOffer::OfferAccepted:
-            iconName = "TradeOk.png";
+            iconName = "trade-ok.png";
             tmpl = "%1 accepted your offer";
             break;
         case TradeOffer::OfferRejected:
-            iconName = "TradeReject.png";
+            iconName = "trade-reject.png";
             tmpl = "%1 rejected your offer";
             break;
         default:
-            iconName = "TradeAsk.png";
+            iconName = "trade-ask.png";
             tmpl = "%1 created a counter offer";
             break;
     }

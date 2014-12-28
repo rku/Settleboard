@@ -111,7 +111,7 @@ void HexTile::setType(HexTileType t)
 
     type = t;
     setTexture("surface", surfaceTexture);
-    load(FileManager::getPathOfGLObject("HexTile"), color);
+    load(FileManager::getPathOfGLObject("hextile"), color);
 }
 
 void HexTile::draw()

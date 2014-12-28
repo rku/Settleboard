@@ -933,9 +933,9 @@ IMPLEMENT_RULE(ruleInitPlayers)
     {
         Player *p = players.at(i);
 
-        for(int i = 0; i < 15; i++) p->addObjectOfType("Road");
-        for(int i = 0; i < 5;  i++) p->addObjectOfType("Settlement");
-        for(int i = 0; i < 4;  i++) p->addObjectOfType("City");
+        for(int i = 0; i < 15; i++) p->addObjectOfType("road");
+        for(int i = 0; i < 5;  i++) p->addObjectOfType("settlement");
+        for(int i = 0; i < 4;  i++) p->addObjectOfType("city");
         p->setWinningPoints(0);
 
         qDebug() << "Player" << p->getName() << "initialized";
@@ -1044,17 +1044,17 @@ IMPLEMENT_RULE(ruleInitPlayerPanel)
     for(i = players.begin(); i != players.end(); ++i)
     {
         playerPanel->registerPlayerInfo(*i,
-            "WinningPoints", "Winning Points", "WinningPoints.png");
+            "WinningPoints", "Winning Points", "winning-points.png");
         playerPanel->registerPlayerInfo(*i,
-            "Roads", "Available Roads", "Road.png", true);
+            "Roads", "Available Roads", "road.png", true);
         playerPanel->registerPlayerInfo(*i,
-            "Settlements", "Available Settlements", "Settlement.png", true);
+            "Settlements", "Available Settlements", "settlement.png", true);
         playerPanel->registerPlayerInfo(*i,
-            "Cities", "Available Cities", "City.png", true);
+            "Cities", "Available Cities", "city.png", true);
         playerPanel->registerPlayerInfo(*i,
-            "DevelopmentCards", "Development Cards", "DevCard.png", true);
+            "DevelopmentCards", "Development Cards", "dev-card.png", true);
         playerPanel->registerPlayerInfo(*i,
-            "ResourceCards", "Resource Cards", "Card.png", true);
+            "ResourceCards", "Resource Cards", "card.png", true);
         
         EXECUTE_SUBRULE_FOR_PLAYER(ruleUpdatePlayerPanel, *i);
     }
@@ -1067,11 +1067,11 @@ IMPLEMENT_RULE(ruleUpdatePlayerPanel)
     playerPanel->updatePlayerInfo(player, "WinningPoints",
         player->getWinningPoints());
     playerPanel->updatePlayerInfo(player, "Roads",
-        player->getNumberOfUnplacedObjectsOfType("Road"));
+        player->getNumberOfUnplacedObjectsOfType("road"));
     playerPanel->updatePlayerInfo(player, "Settlements",
-        player->getNumberOfUnplacedObjectsOfType("Settlement"));
+        player->getNumberOfUnplacedObjectsOfType("settlement"));
     playerPanel->updatePlayerInfo(player, "Cities",
-        player->getNumberOfUnplacedObjectsOfType("City"));
+        player->getNumberOfUnplacedObjectsOfType("city"));
     playerPanel->updatePlayerInfo(player, "DevelopmentCards",
         player->getCardStack()->getNumberOfCards("Development"));
     playerPanel->updatePlayerInfo(player, "ResourceCards",
@@ -1087,54 +1087,54 @@ IMPLEMENT_RULE(ruleInitControlPanel)
     QAction *actionBuildRoad = new QAction(controlPanel);
     actionBuildRoad->setData(QString("ruleUserActionBuildRoad"));
     actionBuildRoad->setToolTip("Build Road<br />"
-        "1x <img src=':/Images/Lumber.png' width='16' height='16' /> "
-        "1x <img src=':/Images/Clay.png' width='16' height='16' />");
-    actionBuildRoad->setIcon(GamePixmap("Road.png", color).toIcon());
+        "1x <img src=':/images/lumber.png' width='16' height='16' /> "
+        "1x <img src=':/images/clay.png' width='16' height='16' />");
+    actionBuildRoad->setIcon(GamePixmap("road.png", color).toIcon());
     controlPanel->registerAction("BuildRoad", actionBuildRoad);
 
     QAction *actionBuildSettlement = new QAction(controlPanel);
     actionBuildSettlement->setData(QString("ruleUserActionBuildSettlement"));
     actionBuildSettlement->setToolTip("Build Settlement<br />"
-        "1x <img src=':/Images/Clay.png' width='16' height='16' /> "
-        "1x <img src=':/Images/Lumber.png' width='16' height='16' /> "
-        "1x <img src=':/Images/Wool.png' width='16' height='16' /> "
-        "1x <img src=':/Images/Wheat.png' width='16' height='16' />");
-    actionBuildSettlement->setIcon(GamePixmap("Settlement.png", color).toIcon());
+        "1x <img src=':/images/clay.png' width='16' height='16' /> "
+        "1x <img src=':/images/lumber.png' width='16' height='16' /> "
+        "1x <img src=':/images/wool.png' width='16' height='16' /> "
+        "1x <img src=':/images/wheat.png' width='16' height='16' />");
+    actionBuildSettlement->setIcon(GamePixmap("settlement.png", color).toIcon());
     controlPanel->registerAction("BuildSettlement", actionBuildSettlement);
 
     QAction *actionBuildCity = new QAction(controlPanel);
     actionBuildCity->setData(QString("ruleUserActionBuildCity"));
     actionBuildCity->setToolTip("Build City<br />"
-        "2x <img src=':/Images/Wheat.png' width='16' height='16' /> "
-        "3x <img src=':/Images/Ore.png' width='16' height='16' />");
+        "2x <img src=':/images/wheat.png' width='16' height='16' /> "
+        "3x <img src=':/images/ore.png' width='16' height='16' />");
     actionBuildCity->setIcon(GamePixmap("City.png", color).toIcon());
     controlPanel->registerAction("BuildCity", actionBuildCity);
 
     QAction *actionBuyDevCard = new QAction(controlPanel);
     actionBuyDevCard->setData(QString("ruleUserActionBuyDevelopmentCard"));
     actionBuyDevCard->setToolTip("Buy Development Card<br />"
-        "1x <img src=':/Images/Wheat.png' width='16' height='16' /> "
-        "1x <img src=':/Images/Wool.png' width='16' height='16' /> "
-        "1x <img src=':/Images/Ore.png' width='16' height='16' />");
-    actionBuyDevCard->setIcon(GamePixmap("DevCard.png", color).toIcon());
+        "1x <img src=':/images/wheat.png' width='16' height='16' /> "
+        "1x <img src=':/images/wool.png' width='16' height='16' /> "
+        "1x <img src=':/images/ore.png' width='16' height='16' />");
+    actionBuyDevCard->setIcon(GamePixmap("dev-card.png", color).toIcon());
     controlPanel->registerAction("BuyDevCard", actionBuyDevCard);
 
     QAction *actionTrade = new QAction(controlPanel);
     actionTrade->setData(QString("ruleUserActionTrade"));
     actionTrade->setToolTip("Trade");
-    actionTrade->setIcon(GamePixmap("Trade.png", color).toIcon());
+    actionTrade->setIcon(GamePixmap("trade.png", color).toIcon());
     controlPanel->registerAction("Trade", actionTrade);
 
     QAction *actionRollDice = new QAction(controlPanel);
     actionRollDice->setData(QString("ruleUserActionRollDice"));
     actionRollDice->setToolTip("Roll Dice");
-    actionRollDice->setIcon(GamePixmap("RollDice.png", color).toIcon());
+    actionRollDice->setIcon(GamePixmap("roll-dice.png", color).toIcon());
     controlPanel->registerAction("RollDice", actionRollDice);
 
     QAction *actionEndTurn = new QAction(controlPanel);
     actionEndTurn->setData(QString("ruleUserActionEndTurn"));
     actionEndTurn->setToolTip("End Turn");
-    actionEndTurn->setIcon(GamePixmap("EndTurn.png", color).toIcon());
+    actionEndTurn->setIcon(GamePixmap("end-turn.png", color).toIcon());
     controlPanel->registerAction("EndTurn", actionEndTurn);
 
     EXECUTE_SUBRULE(ruleUpdateControlPanel);
@@ -1552,7 +1552,7 @@ IMPLEMENT_RULE(ruleBuildCity)
     if(EXECUTE_SUBRULE(ruleRemoveSettlement))
     {
         // build city
-        PlayerObject *bld = player->getUnplacedObjectOfType("City");
+        PlayerObject *bld = player->getUnplacedObjectOfType("city");
         bld->setScale(0.7);
         cr->placePlayerObject(bld);
         player->increaseWinningPointsBy(2);
@@ -1567,8 +1567,8 @@ IMPLEMENT_RULE(ruleBuildCity)
 
 IMPLEMENT_RULE(ruleCanBuildCity)
 {
-    unsigned int nC = player->getNumberOfUnplacedObjectsOfType("City");
-    unsigned int nS = player->getNumberOfPlacedObjectsOfType("Settlement");
+    unsigned int nC = player->getNumberOfUnplacedObjectsOfType("city");
+    unsigned int nS = player->getNumberOfPlacedObjectsOfType("settlement");
 
     if(nC < 1 || nS < 1) return false;
 
@@ -1659,7 +1659,7 @@ IMPLEMENT_RULE(ruleBuildSettlement)
     Q_ASSERT(!cr->getIsPlayerObjectPlaced());
 
     // place object
-    PlayerObject *bld = player->getUnplacedObjectOfType("Settlement");
+    PlayerObject *bld = player->getUnplacedObjectOfType("settlement");
     bld->setScale(0.3);
     cr->placePlayerObject(bld);
     player->increaseWinningPointsBy(1);
@@ -1691,7 +1691,7 @@ IMPLEMENT_RULE(ruleBuySettlement)
 IMPLEMENT_RULE(ruleCanBuildSettlement)
 {
     // check for available settlement
-    unsigned int n = player->getNumberOfUnplacedObjectsOfType("Settlement");
+    unsigned int n = player->getNumberOfUnplacedObjectsOfType("settlement");
     if(n < 1) return false;
 
     return true;
@@ -1797,7 +1797,7 @@ IMPLEMENT_RULE(ruleBuildRoad)
     RULEDATA_REQUIRE("Roadway");
     Roadway *r = RULEDATA_POP("Roadway").value<Roadway*>();
 
-    PlayerObject *road = player->getUnplacedObjectOfType("Road");
+    PlayerObject *road = player->getUnplacedObjectOfType("road");
     road->setScale(0.3);
     r->placePlayerObject(road);
     
@@ -1808,7 +1808,7 @@ IMPLEMENT_RULE(ruleBuildRoad)
 
 IMPLEMENT_RULE(ruleCanBuildRoad)
 {
-    unsigned int nR = player->getNumberOfUnplacedObjectsOfType("Road");
+    unsigned int nR = player->getNumberOfUnplacedObjectsOfType("road");
     if(nR < 1) return false;
 
     return true;

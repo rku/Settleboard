@@ -61,7 +61,7 @@ GameInfoPanel::~GameInfoPanel()
 
 void GameInfoPanel::setDiceValues(uint die1, uint die2)
 {
-    QString fileNameTemplate("Die%1.png");
+    QString fileNameTemplate("die%1.png");
 
     QString filePath = FileManager::getPathOfImage(fileNameTemplate.arg(die1));
     QPixmap die1Pixmap(filePath);

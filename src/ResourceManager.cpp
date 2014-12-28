@@ -43,7 +43,7 @@ void ResourceManager::registerResource(const QString name)
 
 QString ResourceManager::getResourceIconFilename(QString name)
 {
-    return FileManager::getPathOfImage(QString("%1.png").arg(name));
+    return FileManager::getPathOfImage(QString("%1.png").arg(name.toLower()));
 }
 
 const QMap<QString, int> ResourceManager::getPlayerResources(Player *player)
